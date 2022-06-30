@@ -1,0 +1,74 @@
+name: Windows
+
+# Trigger the action.
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - github-actions
+
+jobs:
+  VS_2019:
+    name: Windows | VS_2019
+    runs-on: windows-2019
+
+    strategy:
+      fail-fast: false
+      matrix:
+        build_config: [Release, Debug]
+        target_architecture: [x64]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+
+      - name: Prepare Vulkan SDK
+        uses: humbletim/setup-vulkan-sdk@v1.2.0
+        with:
+          vulkan-query-version: 1.3.216.0
+          vulkan-components: Vulkan-Headers, Vulkan-Loader
+          vulkan-use-cache: true
+
+      - name: Generate Project
+        run: cmake --preset="VS_2019" -A ${{ matrix.target_architecture }} 
+
+      - name: Build Project
+        run: cmake --build --preset="VS_2019 ${{ matrix.build_config }}"
+
+      - name: Run Tests
+        run: ctest --preset="VS_2019 ${{ matrix.build_config }}"
+
+  VS_2022:
+    name: Windows | VS_2022
+    runs-on: windows-2022
+
+    strategy:
+      fail-fast: false
+      matrix:
+        build_config: [Release, Debug]
+        target_architecture: [x64]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+
+      - name: Prepare Vulkan SDK
+        uses: humbletim/setup-vulkan-sdk@v1.2.0
+        with:
+          vulkan-query-version: 1.3.216.0
+          vulkan-components: Vulkan-Headers, Vulkan-Loader
+          vulkan-use-cache: true
+
+      - name: Generate Project
+        run: cmake --preset="VS_2022" -A ${{ matrix.target_architecture }}
+
+      - name: Build Project
+        run: cmake --build --preset="VS_2022 ${{ matrix.build_config }}"
+
+      - name: Run Tests
+        run: ctest --preset="VS_2022 ${{ matrix.build_config }}"
