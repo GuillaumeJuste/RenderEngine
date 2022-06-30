@@ -38,9 +38,6 @@ jobs:
       - name: Build Project
         run: cmake --build --preset="VS_2019 ${{ matrix.build_config }}"
 
-      - name: Run Tests
-        run: ctest --preset="VS_2019 ${{ matrix.build_config }}"
-
   VS_2022:
     name: Windows | VS_2022
     runs-on: windows-2022
@@ -69,6 +66,3 @@ jobs:
 
       - name: Build Project
         run: cmake --build --preset="VS_2022 ${{ matrix.build_config }}"
-
-      - name: Run Tests
-        run: ctest --preset="VS_2022 ${{ matrix.build_config }}"
