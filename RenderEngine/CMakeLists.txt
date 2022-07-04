@@ -9,6 +9,8 @@ file(GLOB_RECURSE SOURCES "Source/*")
 # Add source to this project's executable.
 add_executable (RenderEngine ${SOURCES})
 target_include_directories(RenderEngine PUBLIC Include)
+target_compile_definitions(RenderEngine PRIVATE GLFW_INCLUDE_VULKAN)
+
 
 # Add Mathlib library
 add_library(Mathlib SHARED IMPORTED)
@@ -17,6 +19,15 @@ IMPORTED_IMPLIB ${CMAKE_SOURCE_DIR}/ThirdParty/Mathlib/Lib/Mathlib.lib
 IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/ThirdParty/Mathlib/Bin/Mathlib.dll
 INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/ThirdParty/Mathlib/Include)
 target_link_libraries(RenderEngine Mathlib) 
+
+# Add glfw library
+add_library(glfw SHARED IMPORTED)
+set_target_properties(glfw PROPERTIES
+IMPORTED_IMPLIB ${CMAKE_SOURCE_DIR}/ThirdParty/glfw-3.3.7/lib-vc2019/glfw3.lib
+IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/ThirdParty/glfw-3.3.7/lib-vc2019/glfw3.dll
+INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/ThirdParty/glfw-3.3.7/include)
+target_link_libraries(RenderEngine glfw) 
+
 
 find_package(Vulkan REQUIRED)
 if(Vulkan_FOUND)

@@ -1,14 +1,21 @@
-﻿// RenderEngine.cpp : Defines the entry point for the application.
-//
+﻿#include <iostream>
+#include <stdexcept>
+#include <cstdlib>
 
-#include "RenderEngine.h"
-#include "Space/Vec3.hpp"
+#include "Engine/GraphicsApplication.hpp"
 
-using namespace std;
+using namespace RenderEngine;
 
-int main()
-{
-	Mathlib::Vec3 vec3();
-	cout << "Hello CMake." << endl;
-	return 0;
+int main() {
+    GraphicsApplication app;
+
+    try {
+        app.Run();
+    }
+    catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
 }
