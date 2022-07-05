@@ -1,14 +1,17 @@
+#include "Engine/DeviceContext.hpp"
+
 #include <stdexcept>
 
-#include "Engine/DeviceContext.hpp"
 #include "Engine/DebugMessenger.hpp"
 
 using namespace RenderEngine;
 
-DeviceContext::DeviceContext()
+DeviceContext::DeviceContext(Window* _window) :
+    window{ _window }
 {
     CreateInstance();
     SetupDebugMessenger();
+    CreateSurface();
     CreateDevice();
 }
 
@@ -67,12 +70,17 @@ void DeviceContext::SetupDebugMessenger()
     if (!enableValidationLayers)
         return;
 
-    debugMessenger = new DebugMessenger(instance);
+    debugMessenger.InitializeDebugMessenger(instance);
 }
 
 void DeviceContext::CreateDevice()
 {
-    device = Device(instance);
+    device.InitalizeDevice(instance, surface, window);
+}
+
+void DeviceContext::CreateSurface()
+{
+    surface.InitializeSurface(instance, window);
 }
 
 bool DeviceContext::CheckValidationLayerSupport() 
@@ -122,9 +130,10 @@ void DeviceContext::Cleanup()
 
     if (enableValidationLayers) 
     {
-        debugMessenger->Cleanup();
-        delete debugMessenger;
+        debugMessenger.Cleanup();
     }
+
+    surface.Cleanup();
 
     vkDestroyInstance(instance, nullptr);
 }

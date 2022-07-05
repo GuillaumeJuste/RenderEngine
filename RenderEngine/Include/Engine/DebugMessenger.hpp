@@ -3,7 +3,7 @@
 #ifndef RENDERENGINE_DEBUGMESSENGER
 #define RENDERENGINE_DEBUGMESSENGER
 
-#include <GLFW/glfw3.h>
+#include "Vulkan/VulkanBaseInclude.hpp"
 
 namespace RenderEngine
 {
@@ -29,8 +29,10 @@ namespace RenderEngine
 			VkDebugUtilsMessengerEXT _debugMessenger,
 			const VkAllocationCallbacks* _pAllocator);
 	public:
-		DebugMessenger(VkInstance _instance);
+		DebugMessenger() = default;
 		~DebugMessenger() = default;
+
+		void InitializeDebugMessenger(const VkInstance& _instance);
 
 		static void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& _createInfo);
 		void Cleanup();

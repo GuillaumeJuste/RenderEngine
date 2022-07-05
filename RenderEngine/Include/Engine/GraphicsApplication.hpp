@@ -3,7 +3,7 @@
 #ifndef RENDERENGINE_GRAPHICSAPPLICATION
 #define RENDERENGINE_GRAPHICSAPPLICATION
 
-#include <GLFW/glfw3.h>
+#include "Vulkan/VulkanBaseInclude.hpp"
 
 namespace RenderEngine
 {

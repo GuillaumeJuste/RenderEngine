@@ -10,6 +10,9 @@ file(GLOB_RECURSE SOURCES "Source/*")
 add_executable (RenderEngine ${SOURCES})
 target_include_directories(RenderEngine PUBLIC Include)
 target_compile_definitions(RenderEngine PRIVATE GLFW_INCLUDE_VULKAN)
+target_compile_definitions(RenderEngine PRIVATE VK_USE_PLATFORM_WIN32_KHR)
+target_compile_definitions(RenderEngine PRIVATE GLFW_EXPOSE_NATIVE_WIN32)
+target_compile_definitions(RenderEngine PRIVATE NOMINMAX)
 
 
 # Add Mathlib library
@@ -37,3 +40,8 @@ if(Vulkan_FOUND)
 else()
 	message(STATUS "Failed to locate Vulkan SDK")
 endif()
+
+add_custom_command(TARGET RenderEngine POST_BUILD        
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different  
+        ${CMAKE_SOURCE_DIR}/ThirdParty/Mathlib/Bin/Mathlib.dll      
+        $<TARGET_FILE_DIR:RenderEngine>)                 

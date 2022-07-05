@@ -3,14 +3,22 @@
 #ifndef RENDERENGINE_DEVICE
 #define RENDERENGINE_DEVICE
 
-#include <GLFW/glfw3.h>
+#include "Vulkan/VulkanBaseInclude.hpp"
+
+#include "Engine/Surface.hpp"
+#include "SwapChain/SwapChain.hpp"
 
 namespace RenderEngine
 {
+	struct SwapChainSupportDetails;
+	class Window;
+
 	class Device
 	{
 	private:
 		VkInstance instance;
+		Surface surface;
+		Window* window;
 
 		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 		uint32_t graphicsQueueIndex;
@@ -18,20 +26,29 @@ namespace RenderEngine
 		VkDevice logicalDevice;
 		VkQueue graphicsQueue;
 
-		bool IsDeviceSuitable(VkPhysicalDevice _device);
+		VkQueue presentQueue;
+
+		SwapChain swapChain;
+
+		bool IsDeviceSuitable(const VkPhysicalDevice& _device);
+		bool checkDeviceExtensionSupport(const VkPhysicalDevice& _device);
+		
 
 		void PickPhysicalDevice();
 		void CreateLogicalDevice();
 
+		void CreateSwapChain();
+
 	public:
 		Device() = default;
-		Device(VkInstance _instance);
 		~Device() = default;
 
-		const VkPhysicalDevice& GetPhysicalDevice();
-		const uint32_t& GetGraphicsQueueIndex();
-		const VkDevice& GetLogicalDevice();
-		const VkQueue& GetGraphicsQueue();
+		void InitalizeDevice(const VkInstance& _instance, const Surface& _surface, Window* _window);
+
+		const VkPhysicalDevice& GetPhysicalDevice() const;
+		const uint32_t& GetGraphicsQueueIndex() const;
+		const VkDevice& GetLogicalDevice() const;
+		const VkQueue& GetGraphicsQueue() const;
 
 		void Cleanup();
 	};

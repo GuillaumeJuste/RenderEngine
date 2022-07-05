@@ -3,41 +3,35 @@
 #ifndef RENDERENGINE_DEVICECONTEXT
 #define RENDERENGINE_DEVICECONTEXT
 
-#include <GLFW/glfw3.h>
-#include <vector>
-
+#include "Vulkan/VulkanBaseInclude.hpp"
 #include "Engine/Device.hpp"
-
-const std::vector<const char*> validationLayers = {
-	"VK_LAYER_KHRONOS_validation"
-};
-
-#ifdef NDEBUG
-const bool enableValidationLayers = false;
-#else
-const bool enableValidationLayers = true;
-#endif
+#include "Engine/Surface.hpp"
+#include "Engine/DebugMessenger.hpp"
 
 namespace RenderEngine
 {
 	class DebugMessenger;
+	class Window;
 
 	class DeviceContext
 	{
 	private:
 		VkInstance instance;
-		DebugMessenger* debugMessenger;
+		Window* window;
 
+		DebugMessenger debugMessenger;
 		Device device;
+		Surface surface;
 
 		void CreateInstance();
 		void SetupDebugMessenger();
 		void CreateDevice();
+		void CreateSurface();
 
 		bool CheckValidationLayerSupport();
 		std::vector<const char*> GetRequiredExtensions();
 	public:
-		DeviceContext();
+		DeviceContext(Window* _window);
 		~DeviceContext() = default;
 
 		void Cleanup();

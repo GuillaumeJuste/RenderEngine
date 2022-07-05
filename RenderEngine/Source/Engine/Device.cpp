@@ -1,15 +1,63 @@
-#include <stdexcept>
-#include <vector>
-
 #include "Engine/Device.hpp"
+
+#include <stdexcept>
+#include <set>
+
+#include "Engine/Window.hpp"
+#include "Engine/SwapChain/SwapChainCreateInfo.hpp"
+#include "Engine/SwapChain/SwapChainSupportDetails.hpp"
 
 using namespace RenderEngine;
 
-Device::Device(VkInstance _instance) :
-	instance{ _instance }
+void Device::InitalizeDevice(const VkInstance& _instance, const Surface& _surface, Window* _window)
 {
+	instance = _instance;
+	surface = _surface;
+	window = _window;
+
 	PickPhysicalDevice();
 	CreateLogicalDevice();
+	CreateSwapChain();
+}
+
+
+bool Device::IsDeviceSuitable(const VkPhysicalDevice& _device)
+{
+	VkPhysicalDeviceProperties deviceProperties;
+	VkPhysicalDeviceFeatures deviceFeatures;
+	vkGetPhysicalDeviceProperties(_device, &deviceProperties);
+	vkGetPhysicalDeviceFeatures(_device, &deviceFeatures);
+
+	bool extensionsSupported = checkDeviceExtensionSupport(_device);
+
+	bool swapChainAdequate = false;
+	if (extensionsSupported) 
+	{
+		SwapChainSupportDetails swapChainSupport = SwapChain::QuerySwapChainSupport(_device, surface);
+		swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
+	}
+
+	return deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU 
+		&& deviceFeatures.geometryShader 
+		&& extensionsSupported
+		&& swapChainAdequate;
+}
+
+bool Device::checkDeviceExtensionSupport(const VkPhysicalDevice& device)
+{
+	uint32_t extensionCount;
+	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+
+	std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
+
+	std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
+
+	for (const auto& extension : availableExtensions) {
+		requiredExtensions.erase(extension.extensionName);
+	}
+
+	return requiredExtensions.empty();
 }
 
 void Device::PickPhysicalDevice()
@@ -50,23 +98,19 @@ void Device::PickPhysicalDevice()
 	int i = 0;
 	for (const auto& queueFamily : queueFamilies)
 	{
-		if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-			graphicsQueueIndex = i;
+		if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+		{
+			VkBool32 canPresentSurface;
+			vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface.GetVkSurface(), &canPresentSurface);
+			if (canPresentSurface)
+			{
+				graphicsQueueIndex = i;
+				break;
+			}
 		}
 
 		i++;
 	}
-}
-
-bool Device::IsDeviceSuitable(VkPhysicalDevice _device)
-{
-	VkPhysicalDeviceProperties deviceProperties;
-	VkPhysicalDeviceFeatures deviceFeatures;
-	vkGetPhysicalDeviceProperties(_device, &deviceProperties);
-	vkGetPhysicalDeviceFeatures(_device, &deviceFeatures);
-
-	return deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU &&
-		deviceFeatures.geometryShader;
 }
 
 void Device::CreateLogicalDevice()
@@ -88,34 +132,50 @@ void Device::CreateLogicalDevice()
 
 	createInfo.pEnabledFeatures = &deviceFeatures;
 
+	createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
+	createInfo.ppEnabledExtensionNames = deviceExtensions.data();
+
 	if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &logicalDevice) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create logical device!");
 	}
 
 	vkGetDeviceQueue(logicalDevice, graphicsQueueIndex, 0, &graphicsQueue);
+	presentQueue = graphicsQueue;
 }
 
-const VkPhysicalDevice& Device::GetPhysicalDevice()
+void Device::CreateSwapChain()
+{
+	SwapChainCreateInfo createInfo;
+	createInfo.physicalDevice = physicalDevice;
+	createInfo.logicalDevice = logicalDevice;
+	createInfo.surface = surface;
+	createInfo.window = window;
+
+	swapChain.InitializeSwapChain(createInfo);
+}
+
+const VkPhysicalDevice& Device::GetPhysicalDevice() const
 {
 	return physicalDevice;
 }
 
-const uint32_t& Device::GetGraphicsQueueIndex()
+const uint32_t& Device::GetGraphicsQueueIndex()const 
 {
 	return graphicsQueueIndex;
 }
 
-const VkDevice& Device::GetLogicalDevice()
+const VkDevice& Device::GetLogicalDevice() const 
 {
 	return logicalDevice;
 }
 
-const VkQueue& Device::GetGraphicsQueue()
+const VkQueue& Device::GetGraphicsQueue() const
 {
 	return graphicsQueue;
 }
 
 void Device::Cleanup()
 {
+	swapChain.Cleanup();
 	vkDestroyDevice(logicalDevice, nullptr);
 }

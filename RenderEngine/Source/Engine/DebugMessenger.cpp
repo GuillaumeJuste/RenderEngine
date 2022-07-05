@@ -4,10 +4,11 @@
 
 using namespace RenderEngine;
 
-DebugMessenger::DebugMessenger(VkInstance _instance) :
-    instance{ _instance }
+void DebugMessenger::InitializeDebugMessenger(const VkInstance& _instance)
 {
-	VkDebugUtilsMessengerCreateInfoEXT createInfo{};
+    instance = _instance;
+
+    VkDebugUtilsMessengerCreateInfoEXT createInfo{};
     PopulateDebugMessengerCreateInfo(createInfo);
 
     if (CreateDebugUtilsMessengerEXT(&createInfo, nullptr, &debugMessenger) != VK_SUCCESS) {
@@ -31,7 +32,6 @@ VKAPI_ATTR VkBool32 VKAPI_CALL DebugMessenger::DebugCallback(
     void* _pUserData)
 {
     std::cerr << "validation layer: " << _pCallbackData->pMessage << std::endl;
-
     return VK_FALSE;
 }
 

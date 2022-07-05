@@ -22,7 +22,7 @@ void GraphicsApplication::InitWindow()
 void GraphicsApplication::InitVulkan()
 {
     std::cout << "[Initialize] Vulkan" << std::endl;
-    deviceContext = new DeviceContext();
+    deviceContext = new DeviceContext(window);
 }
 
 void GraphicsApplication::MainLoop()
