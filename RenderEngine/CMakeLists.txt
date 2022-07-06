@@ -41,7 +41,13 @@ else()
 	message(STATUS "Failed to locate Vulkan SDK")
 endif()
 
+# Copy .dll to executable folder
 add_custom_command(TARGET RenderEngine POST_BUILD        
     COMMAND ${CMAKE_COMMAND} -E copy_if_different  
         ${CMAKE_SOURCE_DIR}/ThirdParty/Mathlib/Bin/Mathlib.dll      
-        $<TARGET_FILE_DIR:RenderEngine>)                 
+        $<TARGET_FILE_DIR:RenderEngine>)
+
+add_custom_command(TARGET RenderEngine POST_BUILD        
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different  
+        ${CMAKE_SOURCE_DIR}/ThirdParty/glfw-3.3.7/lib-vc2019/glfw3.dll      
+        $<TARGET_FILE_DIR:RenderEngine>)    

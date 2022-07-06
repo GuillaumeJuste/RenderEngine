@@ -6,6 +6,7 @@
 #include "Vulkan/VulkanBaseInclude.hpp"
 
 #include "Engine/Surface.hpp"
+#include "Engine/ImageView/ImageView.hpp"
 
 namespace RenderEngine
 {
@@ -20,11 +21,17 @@ namespace RenderEngine
 		Window* window;
 		VkDevice logicalDevice;
 
-		VkSwapchainKHR vkSwapChain;
+		VkSwapchainKHR vkSwapChain = VK_NULL_HANDLE;
+		size_t swapChainImageCount;
 		std::vector<VkImage> swapChainImages;
 		
 		VkFormat swapChainImageFormat;
 		VkExtent2D swapChainExtent;
+
+		ImageView imageView;
+
+		void CreateVkSwapChain(const SwapChainCreateInfo& _swapChainCreateInfo);
+		void CreateImageView();
 
 		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& _availableFormats);
 		VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& _availablePresentModes);

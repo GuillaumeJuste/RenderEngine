@@ -6,6 +6,7 @@
 
 #include "Engine/SwapChain/SwapChainSupportDetails.hpp"
 #include "Engine/SwapChain/SwapChainCreateInfo.hpp"
+#include "Engine/ImageView/ImageViewCreateInfo.hpp"
 #include "Engine/Window.hpp"
 #include "Misc/Math.hpp"
 
@@ -18,6 +19,12 @@ void SwapChain::InitializeSwapChain(const SwapChainCreateInfo& _swapChainCreateI
 	window = _swapChainCreateInfo.window;
 	logicalDevice = _swapChainCreateInfo.logicalDevice;
 
+	CreateVkSwapChain(_swapChainCreateInfo);
+	//CreateImageView();
+}
+
+void SwapChain::CreateVkSwapChain(const SwapChainCreateInfo& _swapChainCreateInfo)
+{
 	SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(_swapChainCreateInfo.physicalDevice, surface);
 
 	VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(swapChainSupport.formats);
@@ -39,10 +46,10 @@ void SwapChain::InitializeSwapChain(const SwapChainCreateInfo& _swapChainCreateI
 	createInfo.imageColorSpace = surfaceFormat.colorSpace;
 	createInfo.imageExtent = extent;
 	createInfo.imageArrayLayers = 1;
-	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT; 
+	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 	createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-	createInfo.queueFamilyIndexCount = 0; 
-	createInfo.pQueueFamilyIndices = nullptr; 
+	createInfo.queueFamilyIndexCount = 0;
+	createInfo.pQueueFamilyIndices = nullptr;
 	createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
 	createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
 	createInfo.presentMode = presentMode;
@@ -57,8 +64,20 @@ void SwapChain::InitializeSwapChain(const SwapChainCreateInfo& _swapChainCreateI
 	swapChainImages.resize(imageCount);
 	vkGetSwapchainImagesKHR(logicalDevice, vkSwapChain, &imageCount, swapChainImages.data());
 
+	swapChainImageCount = imageCount;
 	swapChainImageFormat = surfaceFormat.format;
 	swapChainExtent = extent;
+}
+
+void SwapChain::CreateImageView()
+{
+	ImageViewCreateInfo createInfo;
+	createInfo.logicalDevice = logicalDevice;
+	createInfo.swapChainImageCount = swapChainImageCount;
+	createInfo.swapChainImages = swapChainImages;
+	createInfo.swapChainImageFormat = swapChainImageFormat;
+
+	imageView.InitializeImageView(createInfo);
 }
 
 SwapChainSupportDetails SwapChain::QuerySwapChainSupport(const VkPhysicalDevice& _device, const Surface& _surface)
@@ -132,6 +151,7 @@ VkExtent2D SwapChain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& _capabili
 
 void SwapChain::Cleanup()
 {
+	//imageView.Cleanup();
 	vkDestroySwapchainKHR(logicalDevice, vkSwapChain, nullptr);
 }
 
