@@ -51,3 +51,11 @@ add_custom_command(TARGET RenderEngine POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different  
         ${CMAKE_SOURCE_DIR}/ThirdParty/glfw-3.3.7/lib-vc2019/glfw3.dll      
         $<TARGET_FILE_DIR:RenderEngine>)    
+
+#compile shaders
+if(WIN32)
+    add_custom_command(TARGET RenderEngine POST_BUILD
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/RenderEngine/Resources/Shaders
+        COMMAND cmd /C ${CMAKE_SOURCE_DIR}/RenderEngine/Resources/Shaders/CompileShader.bat)
+
+endif()
