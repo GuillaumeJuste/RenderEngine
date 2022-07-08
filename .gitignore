@@ -364,3 +364,6 @@ FodyWeavers.xsd
 # CMake out folder
 Build/*
 out/*
+
+#Shader
+*.spv
