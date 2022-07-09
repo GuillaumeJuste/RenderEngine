@@ -12,10 +12,10 @@ namespace RenderEngine
 
 	struct ImageViewCreateInfo
 	{
-		VkDevice logicalDevice;
-		size_t swapChainImageCount;
+		VkDevice logicalDevice = VK_NULL_HANDLE;
+		size_t swapChainImageCount = 2;
 		std::vector<VkImage> swapChainImages;
-		VkFormat swapChainImageFormat;
+		VkFormat swapChainImageFormat = VK_FORMAT_UNDEFINED;
 
 		ImageViewCreateInfo() = default;
 	};
