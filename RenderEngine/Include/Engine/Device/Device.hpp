@@ -7,6 +7,7 @@
 
 #include "Engine/Window/Surface.hpp"
 #include "Engine/SwapChain/SwapChain.hpp"
+#include "Engine/GraphicsPipeline/GraphicsPipeline.hpp"
 
 namespace RenderEngine
 {
@@ -30,6 +31,8 @@ namespace RenderEngine
 
 		SwapChain swapChain;
 
+		GraphicsPipeline graphicsPipeline;
+
 		bool IsDeviceSuitable(const VkPhysicalDevice& _device);
 		bool checkDeviceExtensionSupport(const VkPhysicalDevice& _device);
 		
@@ -38,6 +41,8 @@ namespace RenderEngine
 		void CreateLogicalDevice();
 
 		void CreateSwapChain();
+
+		void CreateGraphicsPipeline();
 
 	public:
 		Device() = default;

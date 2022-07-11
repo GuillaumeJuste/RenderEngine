@@ -6,6 +6,7 @@
 #include "Engine/Window/Window.hpp"
 #include "Engine/SwapChain/SwapChainCreateInfo.hpp"
 #include "Engine/SwapChain/SwapChainSupportDetails.hpp"
+#include "Engine/Shader/Shader.hpp"
 
 using namespace RenderEngine;
 
@@ -18,6 +19,7 @@ void Device::InitalizeDevice(const VkInstance& _instance, const Surface& _surfac
 	PickPhysicalDevice();
 	CreateLogicalDevice();
 	CreateSwapChain();
+	CreateGraphicsPipeline();
 }
 
 
@@ -154,6 +156,15 @@ void Device::CreateSwapChain()
 	swapChain.InitializeSwapChain(createInfo);
 }
 
+void Device::CreateGraphicsPipeline()
+{
+	ShaderCreateInfo vertexShaderCreateInfo(ShaderType::VERTEX_SHADER, "VertexShader.spv", logicalDevice);
+	ShaderCreateInfo fragmentShaderCreateInfo(ShaderType::FRAGMENT_SHADER, "FragmentShader.spv", logicalDevice);
+
+	GraphicsPipelineCreateInfo pipelineInfo(Shader::CreateShader(vertexShaderCreateInfo), Shader::CreateShader(fragmentShaderCreateInfo));
+	graphicsPipeline.InitalizeGraphicsPipeline(pipelineInfo);
+}
+
 const VkPhysicalDevice& Device::GetPhysicalDevice() const
 {
 	return physicalDevice;
@@ -176,6 +187,7 @@ const VkQueue& Device::GetGraphicsQueue() const
 
 void Device::Cleanup()
 {
+	graphicsPipeline.Cleanup();
 	swapChain.Cleanup();
 	vkDestroyDevice(logicalDevice, nullptr);
 }
