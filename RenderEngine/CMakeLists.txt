@@ -14,7 +14,6 @@ target_compile_definitions(RenderEngine PRIVATE VK_USE_PLATFORM_WIN32_KHR)
 target_compile_definitions(RenderEngine PRIVATE GLFW_EXPOSE_NATIVE_WIN32)
 target_compile_definitions(RenderEngine PRIVATE NOMINMAX)
 
-
 # Add Mathlib library
 add_library(Mathlib SHARED IMPORTED)
 set_target_properties(Mathlib PROPERTIES

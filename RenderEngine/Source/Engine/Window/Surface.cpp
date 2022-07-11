@@ -1,8 +1,8 @@
-#include "Engine/Surface.hpp"
+#include "Engine/Window/Surface.hpp"
 
 #include <stdexcept>
 
-#include "Engine/Window.hpp"
+#include "Engine/Window/Window.hpp"
 
 using namespace RenderEngine;
 

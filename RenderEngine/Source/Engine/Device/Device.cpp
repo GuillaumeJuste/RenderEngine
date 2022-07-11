@@ -1,9 +1,9 @@
-#include "Engine/Device.hpp"
+#include "Engine/Device/Device.hpp"
 
 #include <stdexcept>
 #include <set>
 
-#include "Engine/Window.hpp"
+#include "Engine/Window/Window.hpp"
 #include "Engine/SwapChain/SwapChainCreateInfo.hpp"
 #include "Engine/SwapChain/SwapChainSupportDetails.hpp"
 

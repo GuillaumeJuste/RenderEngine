@@ -1,8 +1,8 @@
-#include "Engine/DeviceContext.hpp"
+#include "Engine/Device/DeviceContext.hpp"
 
 #include <stdexcept>
 
-#include "Engine/DebugMessenger.hpp"
+#include "Engine/Debugger/DebugMessenger.hpp"
 
 using namespace RenderEngine;
 

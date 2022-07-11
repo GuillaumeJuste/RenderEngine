@@ -1,6 +1,6 @@
-#include "Engine/GraphicsApplication.hpp"
-#include "Engine/DeviceContext.hpp"
-#include "Engine/Window.hpp"
+#include "Engine/Application/GraphicsApplication.hpp"
+#include "Engine/Device/DeviceContext.hpp"
+#include "Engine/Window/Window.hpp"
 #include <iostream>
 
 using namespace RenderEngine;

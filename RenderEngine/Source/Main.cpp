@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include <cstdlib>
 
-#include "Engine/GraphicsApplication.hpp"
+#include "Engine/Application/GraphicsApplication.hpp"
 
 using namespace RenderEngine;
 

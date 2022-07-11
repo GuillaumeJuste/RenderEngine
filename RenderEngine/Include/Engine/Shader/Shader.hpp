@@ -16,7 +16,7 @@ namespace RenderEngine
 		ShaderType shaderType;
 		VkPipelineShaderStageCreateInfo shaderStageInfo;
 
-		static std::vector<char> readFile(const std::string& _shaderFilePath);
+		static std::vector<char> ReadShaderFile(const std::string& _shaderFilePath);
 
 	public:
 		Shader() = default;

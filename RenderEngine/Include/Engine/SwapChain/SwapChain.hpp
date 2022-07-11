@@ -5,7 +5,7 @@
 
 #include "Vulkan/VulkanBaseInclude.hpp"
 
-#include "Engine/Surface.hpp"
+#include "Engine/Window/Surface.hpp"
 #include "Engine/ImageView/ImageView.hpp"
 
 namespace RenderEngine

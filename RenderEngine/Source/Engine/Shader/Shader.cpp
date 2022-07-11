@@ -4,7 +4,7 @@ using namespace RenderEngine;
 
 Shader Shader::CreateShader(ShaderCreateInfo _createInfo)
 {
-    auto shaderCode = readFile(_createInfo.shaderFilePath);
+    auto shaderCode = ReadShaderFile(_createInfo.shaderFilePath);
 
     Shader newShader;
     newShader.logicalDevice = _createInfo.device;
@@ -29,7 +29,7 @@ Shader Shader::CreateShader(ShaderCreateInfo _createInfo)
 }
 
 
-std::vector<char> readFile(const std::string& _shaderFilePath)
+std::vector<char> Shader::ReadShaderFile(const std::string& _shaderFilePath)
 {
     std::ifstream file(_shaderFilePath, std::ios::ate | std::ios::binary);
 

@@ -5,8 +5,8 @@
 
 #include "Vulkan/VulkanBaseInclude.hpp"
 
-#include "Engine/Surface.hpp"
-#include "SwapChain/SwapChain.hpp"
+#include "Engine/Window/Surface.hpp"
+#include "Engine/SwapChain/SwapChain.hpp"
 
 namespace RenderEngine
 {

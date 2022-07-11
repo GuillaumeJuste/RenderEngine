@@ -7,7 +7,7 @@
 #include "Engine/SwapChain/SwapChainSupportDetails.hpp"
 #include "Engine/SwapChain/SwapChainCreateInfo.hpp"
 #include "Engine/ImageView/ImageViewCreateInfo.hpp"
-#include "Engine/Window.hpp"
+#include "Engine/Window/Window.hpp"
 #include "Misc/Math.hpp"
 
 using namespace RenderEngine;

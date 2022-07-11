@@ -4,9 +4,9 @@
 #define RENDERENGINE_DEVICECONTEXT
 
 #include "Vulkan/VulkanBaseInclude.hpp"
-#include "Engine/Device.hpp"
-#include "Engine/Surface.hpp"
-#include "Engine/DebugMessenger.hpp"
+#include "Engine/Device/Device.hpp"
+#include "Engine/Window/Surface.hpp"
+#include "Engine/Debugger/DebugMessenger.hpp"
 
 namespace RenderEngine
 {

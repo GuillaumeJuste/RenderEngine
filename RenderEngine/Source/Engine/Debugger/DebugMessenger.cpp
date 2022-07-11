@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "Engine/DebugMessenger.hpp"
+#include "Engine/Debugger/DebugMessenger.hpp"
 
 using namespace RenderEngine;
 
