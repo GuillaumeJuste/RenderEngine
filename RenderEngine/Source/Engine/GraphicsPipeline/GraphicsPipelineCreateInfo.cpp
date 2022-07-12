@@ -2,7 +2,7 @@
 
 using namespace RenderEngine;
 
-GraphicsPipelineCreateInfo::GraphicsPipelineCreateInfo(Shader _vertexShader, Shader _fragmentShader) :
+GraphicsPipelineCreateInfo::GraphicsPipelineCreateInfo(const Shader& _vertexShader, const Shader& _fragmentShader) :
 	vertexShader { _vertexShader }, fragmentShader { _fragmentShader}
 {
 }

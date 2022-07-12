@@ -23,7 +23,7 @@ namespace RenderEngine
 		VkDevice device = VK_NULL_HANDLE;
 
 		ShaderCreateInfo() = default;
-		ShaderCreateInfo(ShaderType _shaderType, std::string _shaderFilePath, VkDevice _device);
+		ShaderCreateInfo(ShaderType _shaderType, std::string _shaderFilePath,const VkDevice& _device);
 	};
 }
 

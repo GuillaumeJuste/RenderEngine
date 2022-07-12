@@ -12,14 +12,14 @@ namespace RenderEngine
 	class ImageView
 	{
 	private:
-		VkDevice logicalDevice;
+		VkDevice logicalDevice = VK_NULL_HANDLE;
 		std::vector<VkImageView> swapChainImageViews;
 
 	public:
 		ImageView() = default;
 		~ImageView() = default;
 
-		void InitializeImageView(ImageViewCreateInfo _imageViewCreateInfo);
+		static void InitializeImageView(ImageViewCreateInfo _imageViewCreateInfo, ImageView* _output);
 		void Cleanup();
 
 		const std::vector<VkImageView>& GetSwapChainImageViews();

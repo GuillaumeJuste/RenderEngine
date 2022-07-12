@@ -10,16 +10,16 @@
 
 using namespace RenderEngine;
 
-void Device::InitalizeDevice(const VkInstance& _instance, const Surface& _surface, Window* _window)
+void Device::InitalizeDevice(const DeviceCreateInfo& _createInfo, Device* _output)
 {
-	instance = _instance;
-	surface = _surface;
-	window = _window;
+	_output->instance = _createInfo.instance;
+	_output->surface = _createInfo.surface;
+	_output->window = _createInfo.window;
 
-	PickPhysicalDevice();
-	CreateLogicalDevice();
-	CreateSwapChain();
-	CreateGraphicsPipeline();
+	_output->PickPhysicalDevice();
+	_output->CreateLogicalDevice();
+	_output->CreateSwapChain();
+	_output->CreateGraphicsPipeline();
 }
 
 
@@ -153,16 +153,16 @@ void Device::CreateSwapChain()
 	createInfo.surface = surface;
 	createInfo.window = window;
 
-	swapChain.InitializeSwapChain(createInfo);
+	SwapChain::InitializeSwapChain(createInfo, &swapChain);
 }
 
 void Device::CreateGraphicsPipeline()
 {
-	ShaderCreateInfo vertexShaderCreateInfo(ShaderType::VERTEX_SHADER, "VertexShader.spv", logicalDevice);
-	ShaderCreateInfo fragmentShaderCreateInfo(ShaderType::FRAGMENT_SHADER, "FragmentShader.spv", logicalDevice);
+	ShaderCreateInfo vertexShaderCreateInfo(ShaderType::VERTEX_SHADER, "Resources/Shaders/VertexShader.spv", logicalDevice);
+	ShaderCreateInfo fragmentShaderCreateInfo(ShaderType::FRAGMENT_SHADER, "Resources/Shaders/FragmentShader.spv", logicalDevice);
 
 	GraphicsPipelineCreateInfo pipelineInfo(Shader::CreateShader(vertexShaderCreateInfo), Shader::CreateShader(fragmentShaderCreateInfo));
-	graphicsPipeline.InitalizeGraphicsPipeline(pipelineInfo);
+	GraphicsPipeline::InitalizeGraphicsPipeline(pipelineInfo, &graphicsPipeline);
 }
 
 const VkPhysicalDevice& Device::GetPhysicalDevice() const

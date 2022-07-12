@@ -13,14 +13,14 @@
 using namespace RenderEngine;
 using namespace Mathlib;
 
-void SwapChain::InitializeSwapChain(const SwapChainCreateInfo& _swapChainCreateInfo)
+void SwapChain::InitializeSwapChain(const SwapChainCreateInfo& _swapChainCreateInfo, SwapChain* _output)
 {
-	surface = _swapChainCreateInfo.surface;
-	window = _swapChainCreateInfo.window;
-	logicalDevice = _swapChainCreateInfo.logicalDevice;
+	_output->surface = _swapChainCreateInfo.surface;
+	_output->window = _swapChainCreateInfo.window;
+	_output->logicalDevice = _swapChainCreateInfo.logicalDevice;
 
-	CreateVkSwapChain(_swapChainCreateInfo);
-	//CreateImageView();
+	_output->CreateVkSwapChain(_swapChainCreateInfo);
+	_output->CreateImageView();
 }
 
 void SwapChain::CreateVkSwapChain(const SwapChainCreateInfo& _swapChainCreateInfo)
@@ -77,7 +77,7 @@ void SwapChain::CreateImageView()
 	createInfo.swapChainImages = swapChainImages;
 	createInfo.swapChainImageFormat = swapChainImageFormat;
 
-	imageView.InitializeImageView(createInfo);
+	ImageView::InitializeImageView(createInfo, &imageView);
 }
 
 SwapChainSupportDetails SwapChain::QuerySwapChainSupport(const VkPhysicalDevice& _device, const Surface& _surface)
@@ -151,7 +151,7 @@ VkExtent2D SwapChain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& _capabili
 
 void SwapChain::Cleanup()
 {
-	//imageView.Cleanup();
+	imageView.Cleanup();
 	vkDestroySwapchainKHR(logicalDevice, vkSwapChain, nullptr);
 }
 

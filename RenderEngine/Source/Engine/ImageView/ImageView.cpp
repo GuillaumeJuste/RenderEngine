@@ -6,11 +6,11 @@
 
 using namespace RenderEngine;
 
-void ImageView::InitializeImageView(ImageViewCreateInfo _imageViewCreateInfo)
+void ImageView::InitializeImageView(ImageViewCreateInfo _imageViewCreateInfo, ImageView* _output)
 {
-	logicalDevice = _imageViewCreateInfo.logicalDevice;
+	_output->logicalDevice = _imageViewCreateInfo.logicalDevice;
 
-	swapChainImageViews.resize(_imageViewCreateInfo.swapChainImageCount);
+	_output->swapChainImageViews.resize(_imageViewCreateInfo.swapChainImageCount);
 	for (size_t i = 0; i < _imageViewCreateInfo.swapChainImageCount; i++) {
 		VkImageViewCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -27,7 +27,7 @@ void ImageView::InitializeImageView(ImageViewCreateInfo _imageViewCreateInfo)
 		createInfo.subresourceRange.baseArrayLayer = 0;
 		createInfo.subresourceRange.layerCount = 1;
 
-		if (vkCreateImageView(_imageViewCreateInfo.logicalDevice, &createInfo, nullptr, &swapChainImageViews[i]) != VK_SUCCESS) {
+		if (vkCreateImageView(_imageViewCreateInfo.logicalDevice, &createInfo, nullptr, &(_output->swapChainImageViews[i])) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create image views!");
 		}
 	}

@@ -4,14 +4,14 @@
 
 using namespace RenderEngine;
 
-void DebugMessenger::InitializeDebugMessenger(const VkInstance& _instance)
+void DebugMessenger::InitializeDebugMessenger(const VkInstance& _instance, DebugMessenger* _output)
 {
-    instance = _instance;
+    _output->instance = _instance;
 
     VkDebugUtilsMessengerCreateInfoEXT createInfo{};
     PopulateDebugMessengerCreateInfo(createInfo);
 
-    if (CreateDebugUtilsMessengerEXT(&createInfo, nullptr, &debugMessenger) != VK_SUCCESS) {
+    if (_output->CreateDebugUtilsMessengerEXT(&createInfo, nullptr) != VK_SUCCESS) {
         throw std::runtime_error("failed to set up debug messenger!");
     }
 }
@@ -35,11 +35,11 @@ VKAPI_ATTR VkBool32 VKAPI_CALL DebugMessenger::DebugCallback(
     return VK_FALSE;
 }
 
-VkResult DebugMessenger::CreateDebugUtilsMessengerEXT(const VkDebugUtilsMessengerCreateInfoEXT* _pCreateInfo, const VkAllocationCallbacks* _pAllocator, VkDebugUtilsMessengerEXT* _pDebugMessenger) 
+VkResult DebugMessenger::CreateDebugUtilsMessengerEXT(const VkDebugUtilsMessengerCreateInfoEXT* _pCreateInfo, const VkAllocationCallbacks* _pAllocator) 
 {
     auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
     if (func != nullptr) {
-        return func(instance, _pCreateInfo, _pAllocator, _pDebugMessenger);
+        return func(instance, _pCreateInfo, _pAllocator, &debugMessenger);
     }
     else {
         return VK_ERROR_EXTENSION_NOT_PRESENT;

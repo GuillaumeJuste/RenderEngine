@@ -17,7 +17,7 @@ namespace RenderEngine
 		GraphicsPipeline() = default;
 		~GraphicsPipeline() = default;
 
-		void InitalizeGraphicsPipeline(GraphicsPipelineCreateInfo _createInfo);
+		static void InitalizeGraphicsPipeline(GraphicsPipelineCreateInfo _createInfo, GraphicsPipeline* _output);
 		void Cleanup();
 	};
 

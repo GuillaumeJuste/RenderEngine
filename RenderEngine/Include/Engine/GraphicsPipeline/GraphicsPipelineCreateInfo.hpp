@@ -13,7 +13,7 @@ namespace RenderEngine
 		Shader fragmentShader;
 
 		GraphicsPipelineCreateInfo() = default;
-		GraphicsPipelineCreateInfo(Shader _vertexShader, Shader _fragmentShader);
+		GraphicsPipelineCreateInfo(const Shader& _vertexShader,const Shader& _fragmentShader);
 	};
 }
 

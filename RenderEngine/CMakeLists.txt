@@ -9,6 +9,7 @@ file(GLOB_RECURSE SOURCES "Source/*")
 # Add source to this project's executable.
 add_executable (RenderEngine ${SOURCES})
 target_include_directories(RenderEngine PUBLIC Include)
+target_include_directories(RenderEngine PUBLIC Resources)
 target_compile_definitions(RenderEngine PRIVATE GLFW_INCLUDE_VULKAN)
 target_compile_definitions(RenderEngine PRIVATE VK_USE_PLATFORM_WIN32_KHR)
 target_compile_definitions(RenderEngine PRIVATE GLFW_EXPOSE_NATIVE_WIN32)
@@ -57,4 +58,8 @@ if(WIN32)
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/RenderEngine/Resources/Shaders
         COMMAND cmd /C ${CMAKE_SOURCE_DIR}/RenderEngine/Resources/Shaders/CompileShader.bat)
 
+    add_custom_command(TARGET RenderEngine POST_BUILD        
+    COMMAND ${CMAKE_COMMAND} -E copy_directory  
+        ${CMAKE_SOURCE_DIR}/RenderEngine/Resources      
+        $<TARGET_FILE_DIR:RenderEngine>/Resources) 
 endif()

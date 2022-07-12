@@ -3,11 +3,11 @@
 #ifndef RENDERENGINE_DEVICE
 #define RENDERENGINE_DEVICE
 
-#include "Vulkan/VulkanBaseInclude.hpp"
 
 #include "Engine/Window/Surface.hpp"
 #include "Engine/SwapChain/SwapChain.hpp"
 #include "Engine/GraphicsPipeline/GraphicsPipeline.hpp"
+#include "Engine/Device/DeviceCreateInfo.hpp"
 
 namespace RenderEngine
 {
@@ -48,7 +48,7 @@ namespace RenderEngine
 		Device() = default;
 		~Device() = default;
 
-		void InitalizeDevice(const VkInstance& _instance, const Surface& _surface, Window* _window);
+		static void InitalizeDevice(const DeviceCreateInfo& _createInfo, Device* _output);
 
 		const VkPhysicalDevice& GetPhysicalDevice() const;
 		const uint32_t& GetGraphicsQueueIndex() const;

@@ -10,8 +10,8 @@ namespace RenderEngine
 	class DebugMessenger
 	{
 	private:
-		VkDebugUtilsMessengerEXT debugMessenger;
-		VkInstance instance;
+		VkDebugUtilsMessengerEXT debugMessenger = VK_NULL_HANDLE;
+		VkInstance instance = VK_NULL_HANDLE;
 
 
 		static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(
@@ -22,8 +22,7 @@ namespace RenderEngine
 		
 		VkResult CreateDebugUtilsMessengerEXT(
 			const VkDebugUtilsMessengerCreateInfoEXT* _pCreateInfo,
-			const VkAllocationCallbacks* _pAllocator,
-			VkDebugUtilsMessengerEXT* _pDebugMessenger);
+			const VkAllocationCallbacks* _pAllocator);
 
 		void DestroyDebugUtilsMessengerEXT(
 			VkDebugUtilsMessengerEXT _debugMessenger,
@@ -32,7 +31,7 @@ namespace RenderEngine
 		DebugMessenger() = default;
 		~DebugMessenger() = default;
 
-		void InitializeDebugMessenger(const VkInstance& _instance);
+		static void InitializeDebugMessenger(const VkInstance& _instance, DebugMessenger* _output);
 
 		static void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& _createInfo);
 		void Cleanup();

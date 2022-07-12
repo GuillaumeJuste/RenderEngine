@@ -19,7 +19,7 @@ namespace RenderEngine
 	private:
 		Surface surface;
 		Window* window;
-		VkDevice logicalDevice;
+		VkDevice logicalDevice = VK_NULL_HANDLE;
 
 		VkSwapchainKHR vkSwapChain = VK_NULL_HANDLE;
 		size_t swapChainImageCount;
@@ -41,7 +41,7 @@ namespace RenderEngine
 		SwapChain() = default;
 		~SwapChain() = default;
 
-		void InitializeSwapChain(const SwapChainCreateInfo& _swapChainCreateInfo);
+		static void InitializeSwapChain(const SwapChainCreateInfo& _swapChainCreateInfo, SwapChain* _output);
 		void Cleanup();
 
 		const VkSwapchainKHR& GetVKSwapChain() const;

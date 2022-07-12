@@ -3,6 +3,7 @@
 #include <stdexcept>
 
 #include "Engine/Debugger/DebugMessenger.hpp"
+#include "Engine/Device/DeviceCreateInfo.hpp"
 
 using namespace RenderEngine;
 
@@ -70,17 +71,19 @@ void DeviceContext::SetupDebugMessenger()
     if (!enableValidationLayers)
         return;
 
-    debugMessenger.InitializeDebugMessenger(instance);
+    DebugMessenger::InitializeDebugMessenger(instance, &debugMessenger);
 }
 
 void DeviceContext::CreateDevice()
 {
-    device.InitalizeDevice(instance, surface, window);
+    DeviceCreateInfo createInfo(instance, surface, window);
+
+    Device::InitalizeDevice(createInfo, &device);
 }
 
 void DeviceContext::CreateSurface()
 {
-    surface.InitializeSurface(instance, window);
+    Surface::InitializeSurface(instance, window, &surface);
 }
 
 bool DeviceContext::CheckValidationLayerSupport() 
