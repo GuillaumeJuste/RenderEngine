@@ -11,6 +11,8 @@ namespace RenderEngine
 	{
 		Shader vertexShader;
 		Shader fragmentShader;
+		VkExtent2D swapChainExtent;
+		VkDevice* logicalDevice;
 
 		GraphicsPipelineCreateInfo() = default;
 		GraphicsPipelineCreateInfo(const Shader& _vertexShader,const Shader& _fragmentShader);

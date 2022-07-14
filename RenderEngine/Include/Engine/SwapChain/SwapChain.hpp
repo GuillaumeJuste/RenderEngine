@@ -45,7 +45,8 @@ namespace RenderEngine
 		void Cleanup();
 
 		const VkSwapchainKHR& GetVKSwapChain() const;
-		
+		const VkExtent2D& GetSwapChainExtent() const;
+
 		static SwapChainSupportDetails QuerySwapChainSupport(const VkPhysicalDevice& _device, const Surface& _surface);
 	};
 

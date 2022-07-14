@@ -161,7 +161,11 @@ void Device::CreateGraphicsPipeline()
 	ShaderCreateInfo vertexShaderCreateInfo(ShaderType::VERTEX_SHADER, "Resources/Shaders/VertexShader.spv", logicalDevice);
 	ShaderCreateInfo fragmentShaderCreateInfo(ShaderType::FRAGMENT_SHADER, "Resources/Shaders/FragmentShader.spv", logicalDevice);
 
-	GraphicsPipelineCreateInfo pipelineInfo(Shader::CreateShader(vertexShaderCreateInfo), Shader::CreateShader(fragmentShaderCreateInfo));
+	GraphicsPipelineCreateInfo pipelineInfo;
+	Shader::CreateShader(vertexShaderCreateInfo, &pipelineInfo.vertexShader);
+	Shader::CreateShader(fragmentShaderCreateInfo, &pipelineInfo.fragmentShader);
+	pipelineInfo.swapChainExtent = swapChain.GetSwapChainExtent();
+	pipelineInfo.logicalDevice = &logicalDevice;
 	GraphicsPipeline::InitalizeGraphicsPipeline(pipelineInfo, &graphicsPipeline);
 }
 

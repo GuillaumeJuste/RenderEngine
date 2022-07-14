@@ -22,7 +22,7 @@ namespace RenderEngine
 		Shader() = default;
 		~Shader() = default;
 
-		static Shader CreateShader(ShaderCreateInfo _createInfo);
+		static void CreateShader(ShaderCreateInfo _createInfo, Shader* _output);
 		void Cleanup();
 
 		const VkShaderModule& GetShaderModule() const;

@@ -159,3 +159,8 @@ const VkSwapchainKHR& SwapChain::GetVKSwapChain() const
 {
 	return vkSwapChain;
 }
+
+const VkExtent2D& SwapChain::GetSwapChainExtent() const
+{
+	return swapChainExtent;
+}
