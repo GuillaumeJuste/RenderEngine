@@ -40,3 +40,8 @@ void RenderPass::Cleanup()
 {
     vkDestroyRenderPass(*logicalDevice, renderPass, nullptr);
 }
+
+const VkRenderPass& RenderPass::GetRenderPass() const
+{
+    return renderPass;
+}

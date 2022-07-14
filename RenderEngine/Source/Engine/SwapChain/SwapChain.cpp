@@ -164,3 +164,8 @@ const VkExtent2D& SwapChain::GetSwapChainExtent() const
 {
 	return swapChainExtent;
 }
+
+const VkFormat& SwapChain::GetSwapChainImageFormat() const
+{
+	return swapChainImageFormat;
+}

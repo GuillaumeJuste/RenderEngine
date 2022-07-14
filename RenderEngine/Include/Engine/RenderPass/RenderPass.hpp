@@ -20,6 +20,8 @@ namespace RenderEngine
 
 		static void InitializeRenderPass(RenderPassCreateInfo _createInfo, RenderPass* _output);
 		void Cleanup();
+
+		const VkRenderPass& GetRenderPass() const;
 	};
 
 }

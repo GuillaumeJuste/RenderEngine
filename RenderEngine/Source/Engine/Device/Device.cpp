@@ -165,6 +165,7 @@ void Device::CreateGraphicsPipeline()
 	Shader::CreateShader(vertexShaderCreateInfo, &pipelineInfo.vertexShader);
 	Shader::CreateShader(fragmentShaderCreateInfo, &pipelineInfo.fragmentShader);
 	pipelineInfo.swapChainExtent = swapChain.GetSwapChainExtent();
+	pipelineInfo.swapChainImageFormat = swapChain.GetSwapChainImageFormat();
 	pipelineInfo.logicalDevice = &logicalDevice;
 	GraphicsPipeline::InitalizeGraphicsPipeline(pipelineInfo, &graphicsPipeline);
 }
