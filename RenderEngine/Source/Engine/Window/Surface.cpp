@@ -1,6 +1,7 @@
 #include "Engine/Window/Surface.hpp"
 
 #include <stdexcept>
+#include <iostream>
 
 #include "Engine/Window/Window.hpp"
 
@@ -24,7 +25,11 @@ void Surface::InitializeSurface(VkInstance* _instance, Window* _window, Surface*
 
 void Surface::Cleanup()
 {
+	std::cout << "[Cleaning] Surface" << std::endl;
+
 	vkDestroySurfaceKHR(*instance, vkSurface, nullptr);
+	
+	std::cout << "[Cleaned] Surface" << std::endl;
 }
 
 const VkSurfaceKHR& Surface::GetVkSurface() const

@@ -4,7 +4,6 @@
 #define RENDERENGINE_GRAPHICSPIPELINE
 
 #include "Engine/GraphicsPipeline/GraphicsPipelineCreateInfo.hpp"
-#include "Engine/RenderPass/RenderPass.hpp"
 
 namespace RenderEngine
 {
@@ -16,14 +15,10 @@ namespace RenderEngine
 		Shader fragmentShader;
 		VkExtent2D swapChainExtent;
 		VkFormat swapChainImageFormat;
-
-		RenderPass renderPass;
+		RenderPass* renderPass;
 
 		VkPipelineLayout pipelineLayout;
 		VkPipeline graphicsPipeline =VK_NULL_HANDLE;
-
-		void CreateRenderPass();
-		void CreateGraphicsPipeline();
 
 	public:
 		GraphicsPipeline() = default;

@@ -1,5 +1,7 @@
 #include "Engine/GraphicsPipeline/GraphicsPipeline.hpp"
 
+#include <iostream>
+
 using namespace RenderEngine;
 
 void GraphicsPipeline::InitalizeGraphicsPipeline(GraphicsPipelineCreateInfo _createInfo, GraphicsPipeline* _output)
@@ -9,32 +11,8 @@ void GraphicsPipeline::InitalizeGraphicsPipeline(GraphicsPipelineCreateInfo _cre
 	_output->logicalDevice = _createInfo.logicalDevice;
 	_output->swapChainImageFormat = _createInfo.swapChainImageFormat;
 	_output->swapChainExtent = _createInfo.swapChainExtent;
+	_output->renderPass = _createInfo.renderPass;
 	
-	_output->CreateRenderPass();
-	_output->CreateGraphicsPipeline();
-	
-}
-
-void GraphicsPipeline::Cleanup()
-{
-	vkDestroyPipeline(*logicalDevice, graphicsPipeline, nullptr);
-	vkDestroyPipelineLayout(*logicalDevice, pipelineLayout, nullptr);
-	vertexShader.Cleanup();
-	fragmentShader.Cleanup(); 
-	renderPass.Cleanup();
-}
-
-void GraphicsPipeline::CreateRenderPass()
-{
-	RenderPassCreateInfo createInfo;
-	createInfo.logicalDevice = logicalDevice;
-	createInfo.swapChainImageFormat = swapChainImageFormat;
-
-	RenderPass::InitializeRenderPass(createInfo, &renderPass);
-}
-
-void GraphicsPipeline::CreateGraphicsPipeline()
-{
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 	pipelineLayoutInfo.setLayoutCount = 0;
@@ -42,7 +20,7 @@ void GraphicsPipeline::CreateGraphicsPipeline()
 	pipelineLayoutInfo.pushConstantRangeCount = 0;
 	pipelineLayoutInfo.pPushConstantRanges = nullptr;
 
-	if (vkCreatePipelineLayout(*logicalDevice, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
+	if (vkCreatePipelineLayout(*_createInfo.logicalDevice, &pipelineLayoutInfo, nullptr, &_output->pipelineLayout) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create pipeline layout!");
 	}
 
@@ -66,14 +44,14 @@ void GraphicsPipeline::CreateGraphicsPipeline()
 	VkViewport viewport{};
 	viewport.x = 0.0f;
 	viewport.y = 0.0f;
-	viewport.width = (float)swapChainExtent.width;
-	viewport.height = (float)swapChainExtent.height;
+	viewport.width = (float)_createInfo.swapChainExtent.width;
+	viewport.height = (float)_createInfo.swapChainExtent.height;
 	viewport.minDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
 
 	VkRect2D scissor{};
 	scissor.offset = { 0, 0 };
-	scissor.extent = swapChainExtent;
+	scissor.extent = _createInfo.swapChainExtent;
 
 	VkPipelineViewportStateCreateInfo viewportState{};
 	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
@@ -123,13 +101,13 @@ void GraphicsPipeline::CreateGraphicsPipeline()
 	colorBlending.blendConstants[2] = 0.0f;
 	colorBlending.blendConstants[3] = 0.0f;
 
-	VkPipelineShaderStageCreateInfo shaderStages[] = { vertexShader.GetShaderStageInfo(), fragmentShader.GetShaderStageInfo() };
-	
+	VkPipelineShaderStageCreateInfo shaderStages[] = { _createInfo.vertexShader.GetShaderStageInfo(), _createInfo.fragmentShader.GetShaderStageInfo() };
+
 	VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 	inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 	inputAssembly.primitiveRestartEnable = VK_FALSE;
-	
+
 	VkGraphicsPipelineCreateInfo pipelineInfo{};
 	pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 	pipelineInfo.stageCount = 1;
@@ -141,12 +119,23 @@ void GraphicsPipeline::CreateGraphicsPipeline()
 	pipelineInfo.pMultisampleState = &multisampling;
 	pipelineInfo.pColorBlendState = &colorBlending;
 	pipelineInfo.pDynamicState = &dynamicState;
-	pipelineInfo.layout = pipelineLayout;
-	pipelineInfo.renderPass = renderPass.GetRenderPass();
+	pipelineInfo.layout = _output->pipelineLayout;
+	pipelineInfo.renderPass = _createInfo.renderPass->GetRenderPass();
 	pipelineInfo.subpass = 0;
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-	if (vkCreateGraphicsPipelines(*logicalDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
+	if (vkCreateGraphicsPipelines(*_createInfo.logicalDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &_output->graphicsPipeline) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create graphics pipeline!");
 	}
+	
+}
+
+void GraphicsPipeline::Cleanup()
+{
+	std::cout << "[Cleaning] Graphics Pipeline" << std::endl;
+	vkDestroyPipeline(*logicalDevice, graphicsPipeline, nullptr);
+	vkDestroyPipelineLayout(*logicalDevice, pipelineLayout, nullptr);
+	vertexShader.Cleanup();
+	fragmentShader.Cleanup(); 
+	std::cout << "[Cleaned] Graphics Pipeline" << std::endl;
 }

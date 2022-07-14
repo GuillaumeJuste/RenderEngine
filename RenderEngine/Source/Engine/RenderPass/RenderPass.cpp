@@ -1,5 +1,7 @@
 #include "Engine/RenderPass/RenderPass.hpp"
 
+#include <iostream>
+
 using namespace RenderEngine;
 
 void RenderPass::InitializeRenderPass(RenderPassCreateInfo _createInfo, RenderPass* _output)
@@ -38,7 +40,9 @@ void RenderPass::InitializeRenderPass(RenderPassCreateInfo _createInfo, RenderPa
 
 void RenderPass::Cleanup()
 {
+    std::cout << "[Cleaning] Render Pass" << std::endl;
     vkDestroyRenderPass(*logicalDevice, renderPass, nullptr);
+    std::cout << "[Cleaned] Render Pass" << std::endl;
 }
 
 const VkRenderPass& RenderPass::GetRenderPass() const

@@ -5,6 +5,7 @@
 
 #include "Vulkan/VulkanBaseInclude.hpp"
 #include "Engine/Window/Surface.hpp"
+#include "Engine/RenderPass/RenderPass.hpp"
 
 namespace RenderEngine
 {
@@ -14,8 +15,9 @@ namespace RenderEngine
 	{
 		VkPhysicalDevice* physicalDevice = VK_NULL_HANDLE;
 		VkDevice* logicalDevice = VK_NULL_HANDLE;
-		Surface* surface;
+		Surface* surface = nullptr;
 		Window* window = nullptr;
+		RenderPass* renderPass = nullptr;
 
 		SwapChainCreateInfo() = default;
 	};

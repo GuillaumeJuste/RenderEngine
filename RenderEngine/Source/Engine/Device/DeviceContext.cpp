@@ -1,6 +1,7 @@
 #include "Engine/Device/DeviceContext.hpp"
 
 #include <stdexcept>
+#include <iostream>
 
 #include "Engine/Debugger/DebugMessenger.hpp"
 #include "Engine/Device/DeviceCreateInfo.hpp"
@@ -129,6 +130,7 @@ std::vector<const char*> DeviceContext::GetRequiredExtensions()
 
 void DeviceContext::Cleanup()
 {
+    std::cout << "[Cleaning] Device Context" << std::endl;
     device.Cleanup();
 
     if (enableValidationLayers) 
@@ -139,4 +141,5 @@ void DeviceContext::Cleanup()
     surface.Cleanup();
 
     vkDestroyInstance(instance, nullptr);
+    std::cout << "[Cleaned] Device Context" << std::endl;
 }

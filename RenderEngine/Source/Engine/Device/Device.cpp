@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include <set>
+#include <iostream>
 
 #include "Engine/Window/Window.hpp"
 #include "Engine/SwapChain/SwapChainCreateInfo.hpp"
@@ -19,7 +20,9 @@ void Device::InitalizeDevice(const DeviceCreateInfo& _createInfo, Device* _outpu
 	_output->PickPhysicalDevice();
 	_output->CreateLogicalDevice();
 	_output->CreateSwapChain();
+	_output->CreateRenderPass();
 	_output->CreateGraphicsPipeline();
+	_output->CreateFrameBuffer();
 }
 
 
@@ -156,6 +159,15 @@ void Device::CreateSwapChain()
 	SwapChain::InitializeSwapChain(createInfo, &swapChain);
 }
 
+void Device::CreateRenderPass()
+{
+	RenderPassCreateInfo createInfo;
+	createInfo.logicalDevice = &logicalDevice;
+	createInfo.swapChainImageFormat = swapChain.GetSwapChainImageFormat();
+
+	RenderPass::InitializeRenderPass(createInfo, &renderPass);
+}
+
 void Device::CreateGraphicsPipeline()
 {
 	ShaderCreateInfo vertexShaderCreateInfo(ShaderType::VERTEX_SHADER, "Resources/Shaders/VertexShader.spv", &logicalDevice);
@@ -167,7 +179,20 @@ void Device::CreateGraphicsPipeline()
 	pipelineInfo.swapChainExtent = swapChain.GetSwapChainExtent();
 	pipelineInfo.swapChainImageFormat = swapChain.GetSwapChainImageFormat();
 	pipelineInfo.logicalDevice = &logicalDevice;
+	pipelineInfo.renderPass = &renderPass;
 	GraphicsPipeline::InitalizeGraphicsPipeline(pipelineInfo, &graphicsPipeline);
+}
+
+void Device::CreateFrameBuffer()
+{
+	FrameBufferCreateInfo createInfo;
+	createInfo.logicalDevice = &logicalDevice;
+	createInfo.renderPass = &renderPass;
+	createInfo.imageView = &(swapChain.GetImageView());
+	createInfo.swapChainImageCount = swapChain.GetImageImageCount();
+	createInfo.swapChainExtent = swapChain.GetSwapChainExtent();
+
+	FrameBuffer::InitializeFrameBuffer(createInfo, &frameBuffer);
 }
 
 const VkPhysicalDevice& Device::GetPhysicalDevice() const
@@ -192,7 +217,11 @@ const VkQueue& Device::GetGraphicsQueue() const
 
 void Device::Cleanup()
 {
+	std::cout << "[Cleaning] Device" << std::endl;
+	frameBuffer.Cleanup();
 	graphicsPipeline.Cleanup();
+	renderPass.Cleanup();
 	swapChain.Cleanup();
 	vkDestroyDevice(logicalDevice, nullptr);
+	std::cout << "[Cleaned] Device" << std::endl;
 }

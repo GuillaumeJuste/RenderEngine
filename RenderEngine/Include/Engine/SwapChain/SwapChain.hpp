@@ -30,6 +30,7 @@ namespace RenderEngine
 
 		ImageView imageView;
 
+
 		void CreateVkSwapChain(const SwapChainCreateInfo& _swapChainCreateInfo);
 		void CreateImageView();
 
@@ -47,6 +48,8 @@ namespace RenderEngine
 		const VkSwapchainKHR& GetVKSwapChain() const;
 		const VkExtent2D& GetSwapChainExtent() const;
 		const VkFormat& GetSwapChainImageFormat() const;
+		const ImageView& GetImageView() const;
+		const size_t& GetImageImageCount() const;
 
 		static SwapChainSupportDetails QuerySwapChainSupport(const VkPhysicalDevice& _device, const Surface& _surface);
 	};

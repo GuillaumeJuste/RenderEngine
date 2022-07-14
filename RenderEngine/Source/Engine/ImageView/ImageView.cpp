@@ -1,6 +1,7 @@
 #include "Engine/ImageView/ImageView.hpp"
 
 #include <stdexcept>
+#include <iostream>
 
 #include "Engine/ImageView/ImageViewCreateInfo.hpp"
 
@@ -35,12 +36,14 @@ void ImageView::InitializeImageView(ImageViewCreateInfo _imageViewCreateInfo, Im
 
 void ImageView::Cleanup()
 {
+	std::cout << "[Cleaning] Image View" << std::endl;
 	for (auto imageView : swapChainImageViews) {
 		vkDestroyImageView(*logicalDevice, imageView, nullptr);
 	}
+	std::cout << "[Cleaned] Image View" << std::endl;
 }
 
-const std::vector<VkImageView>& ImageView::GetSwapChainImageViews()
+const std::vector<VkImageView>& ImageView::GetSwapChainImageViews() const
 {
 	return swapChainImageViews;
 }

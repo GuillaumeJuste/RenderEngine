@@ -34,10 +34,13 @@ void GraphicsApplication::MainLoop()
 
 void GraphicsApplication::Cleanup()
 {
+    std::cout << "[Cleaning] Vulkan context" << std::endl;
     deviceContext->Cleanup();
     delete deviceContext;
-    std::cout << "[Deleted] Vulkan context" << std::endl;
+    std::cout << "[Cleaned] Vulkan context" << std::endl;
 
+    std::cout << "[Cleaning] Window" << std::endl;
+    window->Cleanup();
     delete window;
-    std::cout << "[Deleted] Window" << std::endl;
+    std::cout << "[Cleaned] Window" << std::endl;
 }

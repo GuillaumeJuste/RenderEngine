@@ -8,6 +8,7 @@
 #include "Engine/SwapChain/SwapChain.hpp"
 #include "Engine/GraphicsPipeline/GraphicsPipeline.hpp"
 #include "Engine/Device/DeviceCreateInfo.hpp"
+#include "Engine/FrameBuffer/FrameBuffer.hpp"
 
 namespace RenderEngine
 {
@@ -31,7 +32,11 @@ namespace RenderEngine
 
 		SwapChain swapChain;
 
+		RenderPass renderPass;
+
 		GraphicsPipeline graphicsPipeline;
+
+		FrameBuffer frameBuffer;
 
 		bool IsDeviceSuitable(const VkPhysicalDevice& _device);
 		bool checkDeviceExtensionSupport(const VkPhysicalDevice& _device);
@@ -42,7 +47,11 @@ namespace RenderEngine
 
 		void CreateSwapChain();
 
+		void CreateRenderPass();
+
 		void CreateGraphicsPipeline();
+
+		void CreateFrameBuffer();
 
 	public:
 		Device() = default;

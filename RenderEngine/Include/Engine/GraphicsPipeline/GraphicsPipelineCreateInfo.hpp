@@ -4,6 +4,7 @@
 #define RENDERENGINE_GRAPHICSPIPELINECREATEINFO
 
 #include "Engine/Shader/Shader.hpp"
+#include "Engine/RenderPass/RenderPass.hpp"
 
 namespace RenderEngine
 {
@@ -11,12 +12,13 @@ namespace RenderEngine
 	{
 		VkDevice* logicalDevice;
 		
-		
 		VkExtent2D swapChainExtent;
 		VkFormat swapChainImageFormat;
 
 		Shader vertexShader;
 		Shader fragmentShader;
+
+		RenderPass* renderPass;
 
 		GraphicsPipelineCreateInfo() = default;
 	};

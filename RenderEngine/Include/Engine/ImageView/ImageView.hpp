@@ -22,7 +22,7 @@ namespace RenderEngine
 		static void InitializeImageView(ImageViewCreateInfo _imageViewCreateInfo, ImageView* _output);
 		void Cleanup();
 
-		const std::vector<VkImageView>& GetSwapChainImageViews();
+		const std::vector<VkImageView>& GetSwapChainImageViews() const;
 	};
 
 }

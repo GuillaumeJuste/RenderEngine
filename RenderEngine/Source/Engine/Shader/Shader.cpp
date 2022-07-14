@@ -1,5 +1,7 @@
 #include "Engine/Shader/Shader.hpp"
 
+#include <iostream>
+
 using namespace RenderEngine;
 
 void Shader::CreateShader(ShaderCreateInfo _createInfo, Shader* _output)
@@ -51,7 +53,9 @@ std::vector<char> Shader::ReadShaderFile(const std::string& _shaderFilePath)
 
 void Shader::Cleanup()
 {
+    std::cout << "[Cleaning] Shader" << std::endl;
     vkDestroyShaderModule(*logicalDevice, shaderModule, nullptr);
+    std::cout << "[Cleaned] Shader" << std::endl;
 }
 
 const VkShaderModule& Shader::GetShaderModule() const

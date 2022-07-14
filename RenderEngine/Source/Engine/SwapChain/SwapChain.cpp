@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <limits> 
 #include <stdexcept>
+#include <iostream>
 
 #include "Engine/SwapChain/SwapChainSupportDetails.hpp"
 #include "Engine/SwapChain/SwapChainCreateInfo.hpp"
@@ -151,8 +152,10 @@ VkExtent2D SwapChain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& _capabili
 
 void SwapChain::Cleanup()
 {
+	std::cout << "[Cleaning] Swap Chain" << std::endl;
 	imageView.Cleanup();
 	vkDestroySwapchainKHR(*logicalDevice, vkSwapChain, nullptr);
+	std::cout << "[Cleaned] Swap Chain" << std::endl;
 }
 
 const VkSwapchainKHR& SwapChain::GetVKSwapChain() const
@@ -168,4 +171,14 @@ const VkExtent2D& SwapChain::GetSwapChainExtent() const
 const VkFormat& SwapChain::GetSwapChainImageFormat() const
 {
 	return swapChainImageFormat;
+}
+
+const ImageView& SwapChain::GetImageView() const
+{
+	return imageView;
+}
+
+const size_t& SwapChain::GetImageImageCount() const
+{
+	return swapChainImageCount;
 }
