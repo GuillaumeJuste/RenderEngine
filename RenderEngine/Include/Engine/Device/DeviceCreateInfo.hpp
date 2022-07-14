@@ -12,12 +12,12 @@ namespace RenderEngine
 
 	struct DeviceCreateInfo
 	{
-		VkInstance instance = VK_NULL_HANDLE;
-		Surface surface;
+		VkInstance* instance = VK_NULL_HANDLE;
+		Surface* surface;
 		Window* window;
 
 		DeviceCreateInfo() = default;
-		DeviceCreateInfo(const VkInstance& _instance, const Surface& _surface, Window* _window);
+		DeviceCreateInfo(VkInstance* _instance, Surface* _surface, Window* _window);
 	};
 }
 

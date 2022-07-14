@@ -35,7 +35,7 @@ bool Device::IsDeviceSuitable(const VkPhysicalDevice& _device)
 	bool swapChainAdequate = false;
 	if (extensionsSupported) 
 	{
-		SwapChainSupportDetails swapChainSupport = SwapChain::QuerySwapChainSupport(_device, surface);
+		SwapChainSupportDetails swapChainSupport = SwapChain::QuerySwapChainSupport(_device, *surface);
 		swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
 	}
 
@@ -65,7 +65,7 @@ bool Device::checkDeviceExtensionSupport(const VkPhysicalDevice& device)
 void Device::PickPhysicalDevice()
 {
 	uint32_t deviceCount = 0;
-	vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
+	vkEnumeratePhysicalDevices(*instance, &deviceCount, nullptr);
 
 	if (deviceCount == 0)
 	{
@@ -73,7 +73,7 @@ void Device::PickPhysicalDevice()
 	}
 
 	std::vector<VkPhysicalDevice> devices(deviceCount);
-	vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
+	vkEnumeratePhysicalDevices(*instance, &deviceCount, devices.data());
 
 	for (const auto& device : devices)
 	{
@@ -103,7 +103,7 @@ void Device::PickPhysicalDevice()
 		if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
 		{
 			VkBool32 canPresentSurface;
-			vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface.GetVkSurface(), &canPresentSurface);
+			vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface->GetVkSurface(), &canPresentSurface);
 			if (canPresentSurface)
 			{
 				graphicsQueueIndex = i;
@@ -148,8 +148,8 @@ void Device::CreateLogicalDevice()
 void Device::CreateSwapChain()
 {
 	SwapChainCreateInfo createInfo;
-	createInfo.physicalDevice = physicalDevice;
-	createInfo.logicalDevice = logicalDevice;
+	createInfo.physicalDevice = &physicalDevice;
+	createInfo.logicalDevice = &logicalDevice;
 	createInfo.surface = surface;
 	createInfo.window = window;
 
@@ -158,8 +158,8 @@ void Device::CreateSwapChain()
 
 void Device::CreateGraphicsPipeline()
 {
-	ShaderCreateInfo vertexShaderCreateInfo(ShaderType::VERTEX_SHADER, "Resources/Shaders/VertexShader.spv", logicalDevice);
-	ShaderCreateInfo fragmentShaderCreateInfo(ShaderType::FRAGMENT_SHADER, "Resources/Shaders/FragmentShader.spv", logicalDevice);
+	ShaderCreateInfo vertexShaderCreateInfo(ShaderType::VERTEX_SHADER, "Resources/Shaders/VertexShader.spv", &logicalDevice);
+	ShaderCreateInfo fragmentShaderCreateInfo(ShaderType::FRAGMENT_SHADER, "Resources/Shaders/FragmentShader.spv", &logicalDevice);
 
 	GraphicsPipelineCreateInfo pipelineInfo;
 	Shader::CreateShader(vertexShaderCreateInfo, &pipelineInfo.vertexShader);

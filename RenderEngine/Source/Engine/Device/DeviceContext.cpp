@@ -71,19 +71,19 @@ void DeviceContext::SetupDebugMessenger()
     if (!enableValidationLayers)
         return;
 
-    DebugMessenger::InitializeDebugMessenger(instance, &debugMessenger);
+    DebugMessenger::InitializeDebugMessenger(&instance, &debugMessenger);
 }
 
 void DeviceContext::CreateDevice()
 {
-    DeviceCreateInfo createInfo(instance, surface, window);
+    DeviceCreateInfo createInfo(&instance, &surface, window);
 
     Device::InitalizeDevice(createInfo, &device);
 }
 
 void DeviceContext::CreateSurface()
 {
-    Surface::InitializeSurface(instance, window, &surface);
+    Surface::InitializeSurface(&instance, window, &surface);
 }
 
 bool DeviceContext::CheckValidationLayerSupport() 

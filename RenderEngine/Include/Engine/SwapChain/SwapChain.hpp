@@ -17,9 +17,9 @@ namespace RenderEngine
 	class SwapChain
 	{
 	private:
-		Surface surface;
+		Surface* surface;
 		Window* window;
-		VkDevice logicalDevice = VK_NULL_HANDLE;
+		VkDevice* logicalDevice = VK_NULL_HANDLE;
 
 		VkSwapchainKHR vkSwapChain = VK_NULL_HANDLE;
 		size_t swapChainImageCount;

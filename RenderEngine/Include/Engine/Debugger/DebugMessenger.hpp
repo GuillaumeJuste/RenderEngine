@@ -11,7 +11,7 @@ namespace RenderEngine
 	{
 	private:
 		VkDebugUtilsMessengerEXT debugMessenger = VK_NULL_HANDLE;
-		VkInstance instance = VK_NULL_HANDLE;
+		VkInstance* instance = VK_NULL_HANDLE;
 
 
 		static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(
@@ -31,7 +31,7 @@ namespace RenderEngine
 		DebugMessenger() = default;
 		~DebugMessenger() = default;
 
-		static void InitializeDebugMessenger(const VkInstance& _instance, DebugMessenger* _output);
+		static void InitializeDebugMessenger(VkInstance* _instance, DebugMessenger* _output);
 
 		static void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& _createInfo);
 		void Cleanup();

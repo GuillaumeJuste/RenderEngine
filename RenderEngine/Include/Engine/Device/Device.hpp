@@ -17,8 +17,8 @@ namespace RenderEngine
 	class Device
 	{
 	private:
-		VkInstance instance;
-		Surface surface;
+		VkInstance* instance;
+		Surface* surface;
 		Window* window;
 
 		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;

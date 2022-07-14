@@ -11,7 +11,7 @@ namespace RenderEngine
 	class Shader
 	{
 	private:
-		VkDevice logicalDevice;
+		VkDevice* logicalDevice;
 		VkShaderModule shaderModule;
 		ShaderType shaderType;
 		VkPipelineShaderStageCreateInfo shaderStageInfo;

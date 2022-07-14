@@ -25,7 +25,7 @@ void SwapChain::InitializeSwapChain(const SwapChainCreateInfo& _swapChainCreateI
 
 void SwapChain::CreateVkSwapChain(const SwapChainCreateInfo& _swapChainCreateInfo)
 {
-	SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(_swapChainCreateInfo.physicalDevice, surface);
+	SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(*_swapChainCreateInfo.physicalDevice, *surface);
 
 	VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(swapChainSupport.formats);
 	VkPresentModeKHR presentMode = ChooseSwapPresentMode(swapChainSupport.presentModes);
@@ -39,7 +39,7 @@ void SwapChain::CreateVkSwapChain(const SwapChainCreateInfo& _swapChainCreateInf
 
 	VkSwapchainCreateInfoKHR createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-	createInfo.surface = surface.GetVkSurface();
+	createInfo.surface = surface->GetVkSurface();
 
 	createInfo.minImageCount = imageCount;
 	createInfo.imageFormat = surfaceFormat.format;
@@ -56,13 +56,13 @@ void SwapChain::CreateVkSwapChain(const SwapChainCreateInfo& _swapChainCreateInf
 	createInfo.clipped = VK_TRUE;
 	createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-	if (vkCreateSwapchainKHR(_swapChainCreateInfo.logicalDevice, &createInfo, nullptr, &vkSwapChain) != VK_SUCCESS) {
+	if (vkCreateSwapchainKHR(*_swapChainCreateInfo.logicalDevice, &createInfo, nullptr, &vkSwapChain) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create swap chain!");
 	}
 
-	vkGetSwapchainImagesKHR(logicalDevice, vkSwapChain, &imageCount, nullptr);
+	vkGetSwapchainImagesKHR(*logicalDevice, vkSwapChain, &imageCount, nullptr);
 	swapChainImages.resize(imageCount);
-	vkGetSwapchainImagesKHR(logicalDevice, vkSwapChain, &imageCount, swapChainImages.data());
+	vkGetSwapchainImagesKHR(*logicalDevice, vkSwapChain, &imageCount, swapChainImages.data());
 
 	swapChainImageCount = imageCount;
 	swapChainImageFormat = surfaceFormat.format;
@@ -152,7 +152,7 @@ VkExtent2D SwapChain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& _capabili
 void SwapChain::Cleanup()
 {
 	imageView.Cleanup();
-	vkDestroySwapchainKHR(logicalDevice, vkSwapChain, nullptr);
+	vkDestroySwapchainKHR(*logicalDevice, vkSwapChain, nullptr);
 }
 
 const VkSwapchainKHR& SwapChain::GetVKSwapChain() const

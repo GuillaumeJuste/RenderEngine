@@ -12,7 +12,7 @@ namespace RenderEngine
 	class ImageView
 	{
 	private:
-		VkDevice logicalDevice = VK_NULL_HANDLE;
+		VkDevice* logicalDevice = VK_NULL_HANDLE;
 		std::vector<VkImageView> swapChainImageViews;
 
 	public:

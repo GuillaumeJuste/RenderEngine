@@ -4,7 +4,7 @@
 
 using namespace RenderEngine;
 
-void DebugMessenger::InitializeDebugMessenger(const VkInstance& _instance, DebugMessenger* _output)
+void DebugMessenger::InitializeDebugMessenger(VkInstance* _instance, DebugMessenger* _output)
 {
     _output->instance = _instance;
 
@@ -37,9 +37,9 @@ VKAPI_ATTR VkBool32 VKAPI_CALL DebugMessenger::DebugCallback(
 
 VkResult DebugMessenger::CreateDebugUtilsMessengerEXT(const VkDebugUtilsMessengerCreateInfoEXT* _pCreateInfo, const VkAllocationCallbacks* _pAllocator) 
 {
-    auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
+    auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(*instance, "vkCreateDebugUtilsMessengerEXT");
     if (func != nullptr) {
-        return func(instance, _pCreateInfo, _pAllocator, &debugMessenger);
+        return func(*instance, _pCreateInfo, _pAllocator, &debugMessenger);
     }
     else {
         return VK_ERROR_EXTENSION_NOT_PRESENT;
@@ -48,9 +48,9 @@ VkResult DebugMessenger::CreateDebugUtilsMessengerEXT(const VkDebugUtilsMessenge
 
 void DebugMessenger::DestroyDebugUtilsMessengerEXT(VkDebugUtilsMessengerEXT _debugMessenger, const VkAllocationCallbacks* _pAllocator)
 {
-    auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+    auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(*instance, "vkDestroyDebugUtilsMessengerEXT");
     if (func != nullptr) {
-        func(instance, _debugMessenger, _pAllocator);
+        func(*instance, _debugMessenger, _pAllocator);
     }
 }
 

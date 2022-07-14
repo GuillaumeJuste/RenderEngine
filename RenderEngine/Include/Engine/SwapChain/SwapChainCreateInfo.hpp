@@ -12,9 +12,9 @@ namespace RenderEngine
 
 	struct SwapChainCreateInfo
 	{
-		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-		VkDevice logicalDevice = VK_NULL_HANDLE;
-		Surface surface;
+		VkPhysicalDevice* physicalDevice = VK_NULL_HANDLE;
+		VkDevice* logicalDevice = VK_NULL_HANDLE;
+		Surface* surface;
 		Window* window = nullptr;
 
 		SwapChainCreateInfo() = default;
