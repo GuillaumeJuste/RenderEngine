@@ -26,6 +26,8 @@ namespace RenderEngine
 
 		static void InitalizeGraphicsPipeline(GraphicsPipelineCreateInfo _createInfo, GraphicsPipeline* _output);
 		void Cleanup();
+
+		const VkPipeline& GetGraphicsPipeline() const;
 	};
 
 }

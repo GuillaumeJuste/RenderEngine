@@ -139,3 +139,8 @@ void GraphicsPipeline::Cleanup()
 	fragmentShader.Cleanup(); 
 	std::cout << "[Cleaned] Graphics Pipeline" << std::endl;
 }
+
+const VkPipeline& GraphicsPipeline::GetGraphicsPipeline() const
+{
+	return graphicsPipeline;
+}

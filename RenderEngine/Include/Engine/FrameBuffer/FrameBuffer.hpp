@@ -18,7 +18,7 @@ namespace RenderEngine
 		size_t swapChainImageCount;
 		VkExtent2D swapChainExtent;
 
-		std::vector<VkFramebuffer> swapChainFramebuffers;
+		std::vector<VkFramebuffer> framebuffers;
 
 	public:
 		FrameBuffer() = default;
@@ -26,6 +26,8 @@ namespace RenderEngine
 
 		static void InitializeFrameBuffer(FrameBufferCreateInfo _frameBufferCreateInfo, FrameBuffer* _output);
 		void Cleanup();
+
+		const std::vector<VkFramebuffer>& GetFrameBuffers() const;
 	};
 
 }

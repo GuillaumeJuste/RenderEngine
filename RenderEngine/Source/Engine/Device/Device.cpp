@@ -7,6 +7,8 @@
 #include "Engine/Window/Window.hpp"
 #include "Engine/SwapChain/SwapChainCreateInfo.hpp"
 #include "Engine/SwapChain/SwapChainSupportDetails.hpp"
+#include "Engine/CommandPool/CommandPoolCreateInfo.hpp"
+#include "Engine/CommandBuffer/CommandBufferCreateInfo.hpp"
 #include "Engine/Shader/Shader.hpp"
 
 using namespace RenderEngine;
@@ -23,6 +25,8 @@ void Device::InitalizeDevice(const DeviceCreateInfo& _createInfo, Device* _outpu
 	_output->CreateRenderPass();
 	_output->CreateGraphicsPipeline();
 	_output->CreateFrameBuffer();
+	_output->CreateCommandPool();
+	_output->CreateCommandBuffer();
 }
 
 
@@ -195,6 +199,27 @@ void Device::CreateFrameBuffer()
 	FrameBuffer::InitializeFrameBuffer(createInfo, &frameBuffer);
 }
 
+void Device::CreateCommandPool()
+{
+	CommandPoolCreateInfo createInfo;
+	createInfo.logicalDevice = &logicalDevice;
+	createInfo.graphicsQueueIndex = graphicsQueueIndex;
+	CommandPool::InitializeCommandPool(createInfo, &commandPool);
+}
+
+void Device::CreateCommandBuffer()
+{
+	CommandBufferCreateInfo createInfo;
+	createInfo.logicalDevice = &logicalDevice;
+	createInfo.commandPool = &commandPool;
+	createInfo.renderPass = &renderPass;
+	createInfo.graphicsPipeline = &graphicsPipeline;
+	createInfo.frameBuffer = &frameBuffer;
+	createInfo.swapChainExtent = swapChain.GetSwapChainExtent();
+
+	CommandBuffer::InitializeCommandBuffer(createInfo, &commandBuffer);
+}
+
 const VkPhysicalDevice& Device::GetPhysicalDevice() const
 {
 	return physicalDevice;
@@ -218,6 +243,7 @@ const VkQueue& Device::GetGraphicsQueue() const
 void Device::Cleanup()
 {
 	std::cout << "[Cleaning] Device" << std::endl;
+	commandPool.Cleanup();
 	frameBuffer.Cleanup();
 	graphicsPipeline.Cleanup();
 	renderPass.Cleanup();

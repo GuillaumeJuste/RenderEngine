@@ -9,6 +9,8 @@
 #include "Engine/GraphicsPipeline/GraphicsPipeline.hpp"
 #include "Engine/Device/DeviceCreateInfo.hpp"
 #include "Engine/FrameBuffer/FrameBuffer.hpp"
+#include "Engine/CommandPool/CommandPool.hpp"
+#include "Engine/CommandBuffer/CommandBuffer.hpp"
 
 namespace RenderEngine
 {
@@ -38,6 +40,10 @@ namespace RenderEngine
 
 		FrameBuffer frameBuffer;
 
+		CommandPool commandPool;
+
+		CommandBuffer commandBuffer;
+
 		bool IsDeviceSuitable(const VkPhysicalDevice& _device);
 		bool checkDeviceExtensionSupport(const VkPhysicalDevice& _device);
 		
@@ -52,6 +58,10 @@ namespace RenderEngine
 		void CreateGraphicsPipeline();
 
 		void CreateFrameBuffer();
+
+		void CreateCommandPool();
+
+		void CreateCommandBuffer();
 
 	public:
 		Device() = default;
