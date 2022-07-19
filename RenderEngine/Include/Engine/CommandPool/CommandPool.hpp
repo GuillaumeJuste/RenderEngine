@@ -12,7 +12,7 @@ namespace RenderEngine
 	class CommandPool
 	{
 	private:
-		VkDevice* logicalDevice;
+		VkDevice logicalDevice;
 		uint32_t graphicsQueueIndex;
 
 		VkCommandPool commandPool;

@@ -34,6 +34,8 @@ namespace RenderEngine
 		DeviceContext(Window* _window);
 		~DeviceContext() = default;
 
+		Device* GetDevice();
+
 		void Cleanup();
 	};
 }

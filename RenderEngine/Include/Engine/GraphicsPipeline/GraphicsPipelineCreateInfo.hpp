@@ -10,7 +10,7 @@ namespace RenderEngine
 {
 	struct GraphicsPipelineCreateInfo
 	{
-		VkDevice* logicalDevice;
+		VkDevice logicalDevice;
 		
 		VkExtent2D swapChainExtent;
 		VkFormat swapChainImageFormat;

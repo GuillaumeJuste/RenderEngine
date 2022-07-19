@@ -28,7 +28,7 @@ void FrameBuffer::InitializeFrameBuffer(FrameBufferCreateInfo _frameBufferCreate
 		framebufferInfo.height = _frameBufferCreateInfo.swapChainExtent.height;
 		framebufferInfo.layers = 1;
 
-		if (vkCreateFramebuffer(*_frameBufferCreateInfo.logicalDevice, &framebufferInfo, nullptr, &_output->framebuffers[i]) != VK_SUCCESS) {
+		if (vkCreateFramebuffer(_frameBufferCreateInfo.logicalDevice, &framebufferInfo, nullptr, &_output->framebuffers[i]) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create framebuffer!");
 		}
 	}
@@ -38,7 +38,7 @@ void FrameBuffer::Cleanup()
 {
 	std::cout << "[Cleaning] Frame Buffer" << std::endl;
 	for (auto framebuffer : framebuffers) {
-		vkDestroyFramebuffer(*logicalDevice, framebuffer, nullptr);
+		vkDestroyFramebuffer(logicalDevice, framebuffer, nullptr);
 	}
 	std::cout << "[Cleaned] Frame Buffer" << std::endl;
 }

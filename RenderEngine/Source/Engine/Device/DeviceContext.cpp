@@ -19,6 +19,11 @@ DeviceContext::DeviceContext(Window* _window) :
 
 void DeviceContext::CreateInstance()
 {
+    if (enableValidationLayers && !CheckValidationLayerSupport()) 
+    {
+        throw std::runtime_error("validation layers requested, but not available!");
+    }
+
     VkApplicationInfo appInfo{};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pApplicationName = "Hello Triangle";
@@ -27,31 +32,21 @@ void DeviceContext::CreateInstance()
     appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
     appInfo.apiVersion = VK_API_VERSION_1_0;
 
-    if (enableValidationLayers && !CheckValidationLayerSupport()) {
-        throw std::runtime_error("validation layers requested, but not available!");
-    }
-
     VkInstanceCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     createInfo.pApplicationInfo = &appInfo;
-    uint32_t glfwExtensionCount = 0;
-    const char** glfwExtensions;
-
-    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
-    createInfo.enabledExtensionCount = glfwExtensionCount;
-    createInfo.ppEnabledExtensionNames = glfwExtensions;
-    createInfo.enabledLayerCount = 0;
 
     VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
-    if (enableValidationLayers) {
+    if (enableValidationLayers) 
+    {
         createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
         createInfo.ppEnabledLayerNames = validationLayers.data();
 
         DebugMessenger::PopulateDebugMessengerCreateInfo(debugCreateInfo);
         createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
     }
-    else {
+    else 
+    {
         createInfo.enabledLayerCount = 0;
 
         createInfo.pNext = nullptr;
@@ -72,19 +67,19 @@ void DeviceContext::SetupDebugMessenger()
     if (!enableValidationLayers)
         return;
 
-    DebugMessenger::InitializeDebugMessenger(&instance, &debugMessenger);
+    DebugMessenger::InitializeDebugMessenger(instance, &debugMessenger);
 }
 
 void DeviceContext::CreateDevice()
 {
-    DeviceCreateInfo createInfo(&instance, &surface, window);
+    DeviceCreateInfo createInfo(instance, &surface, window);
 
     Device::InitalizeDevice(createInfo, &device);
 }
 
 void DeviceContext::CreateSurface()
 {
-    Surface::InitializeSurface(&instance, window, &surface);
+    Surface::InitializeSurface(instance, window, &surface);
 }
 
 bool DeviceContext::CheckValidationLayerSupport() 
@@ -126,6 +121,11 @@ std::vector<const char*> DeviceContext::GetRequiredExtensions()
     }
 
     return extensions;
+}
+
+Device* DeviceContext::GetDevice()
+{
+    return &device;
 }
 
 void DeviceContext::Cleanup()

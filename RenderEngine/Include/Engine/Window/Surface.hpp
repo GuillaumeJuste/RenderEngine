@@ -13,7 +13,7 @@ namespace RenderEngine
 	class Surface
 	{
 	private:
-		VkInstance* instance = VK_NULL_HANDLE;
+		VkInstance instance = VK_NULL_HANDLE;
 		Window* window = nullptr;
 
 		VkSurfaceKHR vkSurface = VK_NULL_HANDLE;
@@ -22,7 +22,7 @@ namespace RenderEngine
 		Surface() = default;
 		~Surface() = default;
 
-		static void InitializeSurface(VkInstance* _instance, Window* _window, Surface* _output);
+		static void InitializeSurface(const VkInstance& _instance, Window* _window, Surface* _output);
 
 		void Cleanup();
 		const VkSurfaceKHR& GetVkSurface() const;

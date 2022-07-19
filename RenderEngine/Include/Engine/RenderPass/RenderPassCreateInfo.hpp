@@ -9,7 +9,7 @@ namespace RenderEngine
 {
 	struct RenderPassCreateInfo
 	{
-		VkDevice* logicalDevice;
+		VkDevice logicalDevice;
 		VkFormat swapChainImageFormat;
 
 		RenderPassCreateInfo() = default;

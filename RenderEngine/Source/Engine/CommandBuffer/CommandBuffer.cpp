@@ -25,12 +25,17 @@ void CommandBuffer::InitializeCommandBuffer(CommandBufferCreateInfo _createInfo,
 	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 	allocInfo.commandBufferCount = 1;
 
-	if (vkAllocateCommandBuffers(*_createInfo.logicalDevice, &allocInfo, &_output->commandBuffer) != VK_SUCCESS) {
+	if (vkAllocateCommandBuffers(_createInfo.logicalDevice, &allocInfo, &_output->commandBuffer) != VK_SUCCESS) {
 		throw std::runtime_error("failed to allocate command buffers!");
 	}
 }
 
-void CommandBuffer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex)
+const VkCommandBuffer& CommandBuffer::GetVKCommandBuffer() const
+{
+	return commandBuffer;
+}
+
+void CommandBuffer::recordCommandBuffer(uint32_t imageIndex)
 {
 	VkCommandBufferBeginInfo beginInfo{};
 	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;

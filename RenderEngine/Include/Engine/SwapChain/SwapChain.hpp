@@ -7,6 +7,7 @@
 
 #include "Engine/Window/Surface.hpp"
 #include "Engine/ImageView/ImageView.hpp"
+#include "Engine/SwapChain/SwapChainCreateInfo.hpp"
 
 namespace RenderEngine
 {
@@ -19,7 +20,8 @@ namespace RenderEngine
 	private:
 		Surface* surface;
 		Window* window;
-		VkDevice* logicalDevice = VK_NULL_HANDLE;
+		VkDevice logicalDevice = VK_NULL_HANDLE;
+		QueueFamilyIndices queueFamilyIndices;
 
 		VkSwapchainKHR vkSwapChain = VK_NULL_HANDLE;
 		size_t swapChainImageCount;

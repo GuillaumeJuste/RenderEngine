@@ -29,7 +29,9 @@ void GraphicsApplication::MainLoop()
 {
     while (!glfwWindowShouldClose(window->GetGLFWWindow())) {
         glfwPollEvents();
+        deviceContext->GetDevice()->DrawFrame();
     }
+    vkDeviceWaitIdle(deviceContext->GetDevice()->GetLogicalDevice());
 }
 
 void GraphicsApplication::Cleanup()

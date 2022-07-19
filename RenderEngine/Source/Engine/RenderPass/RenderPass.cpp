@@ -7,6 +7,7 @@ using namespace RenderEngine;
 void RenderPass::InitializeRenderPass(RenderPassCreateInfo _createInfo, RenderPass* _output)
 {
     _output->logicalDevice = _createInfo.logicalDevice;
+
     VkAttachmentDescription colorAttachment{};
     colorAttachment.format = _createInfo.swapChainImageFormat;
     colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -26,14 +27,24 @@ void RenderPass::InitializeRenderPass(RenderPassCreateInfo _createInfo, RenderPa
     subpass.colorAttachmentCount = 1;
     subpass.pColorAttachments = &colorAttachmentRef;
 
+    VkSubpassDependency dependency{};
+    dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+    dependency.dstSubpass = 0;
+    dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+    dependency.srcAccessMask = 0;
+
     VkRenderPassCreateInfo renderPassInfo{};
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
     renderPassInfo.attachmentCount = 1;
     renderPassInfo.pAttachments = &colorAttachment;
     renderPassInfo.subpassCount = 1;
     renderPassInfo.pSubpasses = &subpass;
+    renderPassInfo.dependencyCount = 1;
+    renderPassInfo.pDependencies = &dependency;
 
-    if (vkCreateRenderPass(*_createInfo.logicalDevice, &renderPassInfo, nullptr, &(_output->renderPass)) != VK_SUCCESS) {
+    if (vkCreateRenderPass(_createInfo.logicalDevice, &renderPassInfo, nullptr, &(_output->renderPass)) != VK_SUCCESS) {
         throw std::runtime_error("failed to create render pass!");
     }
 }
@@ -41,7 +52,7 @@ void RenderPass::InitializeRenderPass(RenderPassCreateInfo _createInfo, RenderPa
 void RenderPass::Cleanup()
 {
     std::cout << "[Cleaning] Render Pass" << std::endl;
-    vkDestroyRenderPass(*logicalDevice, renderPass, nullptr);
+    vkDestroyRenderPass(logicalDevice, renderPass, nullptr);
     std::cout << "[Cleaned] Render Pass" << std::endl;
 }
 

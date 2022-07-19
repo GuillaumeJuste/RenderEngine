@@ -11,7 +11,7 @@ namespace RenderEngine
 	class RenderPass
 	{
 	private:
-		VkDevice* logicalDevice = VK_NULL_HANDLE;
+		VkDevice logicalDevice = VK_NULL_HANDLE;
 		VkRenderPass renderPass;
 
 	public:

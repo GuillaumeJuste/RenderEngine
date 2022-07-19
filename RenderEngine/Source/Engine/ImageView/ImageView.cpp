@@ -28,7 +28,8 @@ void ImageView::InitializeImageView(ImageViewCreateInfo _imageViewCreateInfo, Im
 		createInfo.subresourceRange.baseArrayLayer = 0;
 		createInfo.subresourceRange.layerCount = 1;
 
-		if (vkCreateImageView(*_imageViewCreateInfo.logicalDevice, &createInfo, nullptr, &(_output->swapChainImageViews[i])) != VK_SUCCESS) {
+		if (vkCreateImageView(_imageViewCreateInfo.logicalDevice, &createInfo, nullptr, &_output->swapChainImageViews[i]) != VK_SUCCESS) 
+		{
 			throw std::runtime_error("failed to create image views!");
 		}
 	}
@@ -38,7 +39,7 @@ void ImageView::Cleanup()
 {
 	std::cout << "[Cleaning] Image View" << std::endl;
 	for (auto imageView : swapChainImageViews) {
-		vkDestroyImageView(*logicalDevice, imageView, nullptr);
+		vkDestroyImageView(logicalDevice, imageView, nullptr);
 	}
 	std::cout << "[Cleaned] Image View" << std::endl;
 }

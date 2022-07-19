@@ -20,10 +20,10 @@ namespace RenderEngine
 	{
 		ShaderType shaderType = ShaderType::VERTEX_SHADER;
 		std::string shaderFilePath;
-		VkDevice* device = VK_NULL_HANDLE;
+		VkDevice device = VK_NULL_HANDLE;
 
 		ShaderCreateInfo() = default;
-		ShaderCreateInfo(ShaderType _shaderType, std::string _shaderFilePath,VkDevice* _device);
+		ShaderCreateInfo(ShaderType _shaderType, std::string _shaderFilePath,const VkDevice& _device);
 	};
 }
 

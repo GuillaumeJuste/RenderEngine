@@ -14,7 +14,7 @@ namespace RenderEngine
 
 	struct CommandBufferCreateInfo
 	{
-		VkDevice* logicalDevice;
+		VkDevice logicalDevice;
 
 		CommandPool* commandPool;
 		RenderPass* renderPass;

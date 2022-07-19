@@ -12,7 +12,7 @@ namespace RenderEngine
 	class CommandBuffer
 	{
 	private:
-		VkDevice* logicalDevice;
+		VkDevice logicalDevice;
 
 		CommandPool* commandPool;
 		RenderPass* renderPass;
@@ -27,7 +27,9 @@ namespace RenderEngine
 
 		static void InitializeCommandBuffer(CommandBufferCreateInfo _createInfo, CommandBuffer* _output);
 
-		void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+		const VkCommandBuffer& GetVKCommandBuffer() const;
+
+		void recordCommandBuffer(uint32_t imageIndex);
 	};
 }
 

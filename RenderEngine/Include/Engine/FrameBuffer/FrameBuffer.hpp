@@ -12,7 +12,7 @@ namespace RenderEngine
 	class FrameBuffer
 	{
 	private:
-		VkDevice* logicalDevice;
+		VkDevice logicalDevice;
 		RenderPass* renderPass;
 		const ImageView* imageView;
 		size_t swapChainImageCount;

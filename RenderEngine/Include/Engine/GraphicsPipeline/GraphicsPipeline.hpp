@@ -10,7 +10,7 @@ namespace RenderEngine
 	class GraphicsPipeline
 	{
 	private:
-		VkDevice* logicalDevice;
+		VkDevice logicalDevice;
 		Shader vertexShader;
 		Shader fragmentShader;
 		VkExtent2D swapChainExtent;

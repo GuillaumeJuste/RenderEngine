@@ -9,7 +9,7 @@ namespace RenderEngine
 {
 	struct CommandPoolCreateInfo
 	{
-		VkDevice* logicalDevice;
+		VkDevice logicalDevice;
 		uint32_t graphicsQueueIndex;
 
 		CommandPoolCreateInfo() = default;
