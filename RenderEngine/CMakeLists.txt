@@ -16,17 +16,19 @@ target_compile_definitions(RenderEngine PRIVATE GLFW_EXPOSE_NATIVE_WIN32)
 target_compile_definitions(RenderEngine PRIVATE NOMINMAX)
 
 # Add Mathlib library
-target_link_libraries(RenderEngine INTERFACE Mathlib) 
+target_link_libraries(RenderEngine Mathlib) 
+target_include_directories(RenderEngine PUBLIC ${CMAKE_SOURCE_DIR}/ThirdParty/Gitmodules/Mathlib/Mathlib/Include)
 
 # Add glfw library
-target_link_libraries(RenderEngine INTERFACE glfw) 
+target_link_libraries(RenderEngine glfw) 
+target_include_directories(RenderEngine PUBLIC ${CMAKE_SOURCE_DIR}/ThirdParty/Gitmodules/Glfw/include)
 
 
 find_package(Vulkan REQUIRED)
 if(Vulkan_FOUND)
 	message(STATUS "Successfully located the Vulkan SDK: ${Vulkan_INCLUDE_DIRS}")	
 	include_directories(${Vulkan_INCLUDE_DIRS})
-	target_link_libraries(RenderEngine INTERFACE ${Vulkan_LIBRARIES} )
+	target_link_libraries(RenderEngine ${Vulkan_LIBRARIES} )
 else()
 	message(STATUS "Failed to locate Vulkan SDK")
 endif()
