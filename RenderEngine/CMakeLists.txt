@@ -16,41 +16,20 @@ target_compile_definitions(RenderEngine PRIVATE GLFW_EXPOSE_NATIVE_WIN32)
 target_compile_definitions(RenderEngine PRIVATE NOMINMAX)
 
 # Add Mathlib library
-add_library(Mathlib SHARED IMPORTED)
-set_target_properties(Mathlib PROPERTIES
-IMPORTED_IMPLIB ${CMAKE_SOURCE_DIR}/ThirdParty/Mathlib/Lib/Mathlib.lib
-IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/ThirdParty/Mathlib/Bin/Mathlib.dll
-INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/ThirdParty/Mathlib/Include)
-target_link_libraries(RenderEngine Mathlib) 
+target_link_libraries(RenderEngine INTERFACE Mathlib) 
 
 # Add glfw library
-add_library(glfw SHARED IMPORTED)
-set_target_properties(glfw PROPERTIES
-IMPORTED_IMPLIB ${CMAKE_SOURCE_DIR}/ThirdParty/glfw-3.3.7/lib-vc2019/glfw3.lib
-IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/ThirdParty/glfw-3.3.7/lib-vc2019/glfw3.dll
-INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/ThirdParty/glfw-3.3.7/include)
-target_link_libraries(RenderEngine glfw) 
+target_link_libraries(RenderEngine INTERFACE glfw) 
 
 
 find_package(Vulkan REQUIRED)
 if(Vulkan_FOUND)
 	message(STATUS "Successfully located the Vulkan SDK: ${Vulkan_INCLUDE_DIRS}")	
 	include_directories(${Vulkan_INCLUDE_DIRS})
-	target_link_libraries(RenderEngine ${Vulkan_LIBRARIES} )
+	target_link_libraries(RenderEngine INTERFACE ${Vulkan_LIBRARIES} )
 else()
 	message(STATUS "Failed to locate Vulkan SDK")
 endif()
-
-# Copy .dll to executable folder
-add_custom_command(TARGET RenderEngine POST_BUILD        
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different  
-        ${CMAKE_SOURCE_DIR}/ThirdParty/Mathlib/Bin/Mathlib.dll      
-        $<TARGET_FILE_DIR:RenderEngine>)
-
-add_custom_command(TARGET RenderEngine POST_BUILD        
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different  
-        ${CMAKE_SOURCE_DIR}/ThirdParty/glfw-3.3.7/lib-vc2019/glfw3.dll      
-        $<TARGET_FILE_DIR:RenderEngine>)    
 
 #compile shaders
 if(WIN32)

@@ -14,4 +14,5 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Bin)    # .exe
 set (CMAKE_CXX_STANDARD 17)
 
 # Include sub-projects.
-add_subdirectory ("RenderEngine")
+add_subdirectory (RenderEngine)
+add_subdirectory(ThirdParty)
