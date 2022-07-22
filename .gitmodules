@@ -1,6 +1,6 @@
-[submodule "ThirdParty/glfw"]
+[submodule "ThirdParty/Gitmodules/Glfw"]
 	path = ThirdParty/Gitmodules/Glfw
 	url = https://github.com/glfw/glfw.git
-[submodule "ThirdParty/Mathlib"]
+[submodule "ThirdParty/Gitmodules/Mathlib"]
 	path = ThirdParty/Gitmodules/Mathlib
 	url = https://github.com/GuillaumeJuste/Mathlib.git
