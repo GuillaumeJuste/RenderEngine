@@ -238,7 +238,7 @@ void Device::CreateCommandBuffer()
 	createInfo.frameBuffer = &frameBuffer;
 	createInfo.swapChainExtent = swapChain.GetSwapChainExtent();
 
-	CommandBuffer::InitializeCommandBuffer(createInfo, &commandBuffer);
+	SwapChainCommandBuffer::InitializeCommandBuffer(createInfo, &commandBuffer);
 }
 
 void Device::CreateSyncObjects()
@@ -258,7 +258,7 @@ void Device::DrawFrame()
 	vkAcquireNextImageKHR(logicalDevice, swapChain.GetVKSwapChain(), UINT64_MAX, syncObjects.GetImageAvailableSemaphore(), VK_NULL_HANDLE, &imageIndex);
 	
 	vkResetCommandBuffer(commandBuffer.GetVKCommandBuffer(), 0);
- 	commandBuffer.recordCommandBuffer(imageIndex);
+ 	commandBuffer.RecordCommandBuffer(imageIndex);
 
 	VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;

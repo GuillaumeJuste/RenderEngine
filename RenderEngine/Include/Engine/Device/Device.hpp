@@ -10,7 +10,7 @@
 #include "Engine/Device/DeviceCreateInfo.hpp"
 #include "Engine/FrameBuffer/FrameBuffer.hpp"
 #include "Engine/CommandPool/CommandPool.hpp"
-#include "Engine/CommandBuffer/CommandBuffer.hpp"
+#include "Engine/CommandBuffer/SwapChainCommandBuffer.hpp"
 #include "Engine/SyncObjects/SyncObjects.hpp"
 
 namespace RenderEngine
@@ -44,7 +44,7 @@ namespace RenderEngine
 
 		CommandPool commandPool;
 
-		CommandBuffer commandBuffer;
+		SwapChainCommandBuffer commandBuffer;
 
 		SyncObjects syncObjects;
 

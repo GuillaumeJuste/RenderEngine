@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef RENDERENGINE_COMMANDBUFFER
-#define RENDERENGINE_COMMANDBUFFER
+#ifndef RENDERENGINE_COMMANDBUFFERBASE
+#define RENDERENGINE_COMMANDBUFFERBASE
 
 #include "Vulkan/VulkanBaseInclude.hpp"
 #include "Engine/CommandBuffer/CommandBufferCreateInfo.hpp"
@@ -9,9 +9,9 @@
 namespace RenderEngine
 {
 
-	class CommandBuffer
+	class CommandBufferBase
 	{
-	private:
+	protected:
 		VkDevice logicalDevice;
 
 		CommandPool* commandPool;
@@ -21,15 +21,13 @@ namespace RenderEngine
 		VkExtent2D swapChainExtent;
 
 		VkCommandBuffer commandBuffer;
-	public:
-		CommandBuffer() = default;
-		~CommandBuffer() = default;
 
-		static void InitializeCommandBuffer(CommandBufferCreateInfo _createInfo, CommandBuffer* _output);
+	public:
+		static void InitializeCommandBuffer(CommandBufferCreateInfo _createInfo, CommandBufferBase* _output);
+
+		virtual void RecordCommandBuffer(uint32_t imageIndex) = 0;
 
 		const VkCommandBuffer& GetVKCommandBuffer() const;
-
-		void recordCommandBuffer(uint32_t imageIndex);
 	};
 }
 
