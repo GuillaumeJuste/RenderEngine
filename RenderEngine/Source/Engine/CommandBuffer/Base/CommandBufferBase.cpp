@@ -15,7 +15,7 @@ void CommandBufferBase::InitializeCommandBuffer(CommandBufferCreateInfo _createI
 	_output->renderPass = _createInfo.renderPass;
 	_output->graphicsPipeline = _createInfo.graphicsPipeline;
 	_output->frameBuffer = _createInfo.frameBuffer;
-	_output->swapChainExtent = _createInfo.swapChainExtent;
+	_output->window = _createInfo.window;
 
 	VkCommandBufferAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;

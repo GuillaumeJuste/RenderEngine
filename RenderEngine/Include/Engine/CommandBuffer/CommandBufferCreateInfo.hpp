@@ -11,6 +11,7 @@ namespace RenderEngine
 	class RenderPass;
 	class GraphicsPipeline;
 	class FrameBuffer;
+	class Window;
 
 	struct CommandBufferCreateInfo
 	{
@@ -20,7 +21,7 @@ namespace RenderEngine
 		RenderPass* renderPass;
 		GraphicsPipeline* graphicsPipeline;
 		FrameBuffer* frameBuffer;
-		VkExtent2D swapChainExtent;
+		Window* window;
 
 		CommandBufferCreateInfo() = default;
 	};

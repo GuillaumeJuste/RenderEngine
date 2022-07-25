@@ -32,7 +32,6 @@ void SwapChain::CreateVkSwapChain(const SwapChainCreateInfo& _swapChainCreateInf
 	VkExtent2D extent = ChooseSwapExtent(swapChainSupport.capabilities);
 
 	uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
-
 	if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) 
 	{
 		imageCount = swapChainSupport.capabilities.maxImageCount;
@@ -49,7 +48,7 @@ void SwapChain::CreateVkSwapChain(const SwapChainCreateInfo& _swapChainCreateInf
 	createInfo.imageArrayLayers = 1;
 	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-	QueueFamilyIndices indices = _swapChainCreateInfo.queueFamilyIndices;
+	QueueFamilyIndices indices =  queueFamilyIndices;
 	uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
 
 	if (indices.graphicsFamily != indices.presentFamily) 
@@ -58,7 +57,8 @@ void SwapChain::CreateVkSwapChain(const SwapChainCreateInfo& _swapChainCreateInf
 		createInfo.queueFamilyIndexCount = 2;
 		createInfo.pQueueFamilyIndices = queueFamilyIndices;
 	}
-	else {
+	else 
+	{
 		createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
 	}
 
@@ -66,9 +66,9 @@ void SwapChain::CreateVkSwapChain(const SwapChainCreateInfo& _swapChainCreateInf
 	createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
 	createInfo.presentMode = presentMode;
 	createInfo.clipped = VK_TRUE;
-	createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-	if (vkCreateSwapchainKHR(_swapChainCreateInfo.logicalDevice, &createInfo, nullptr, &vkSwapChain) != VK_SUCCESS) {
+	if (vkCreateSwapchainKHR(logicalDevice, &createInfo, nullptr, &vkSwapChain) != VK_SUCCESS) 
+	{
 		throw std::runtime_error("failed to create swap chain!");
 	}
 

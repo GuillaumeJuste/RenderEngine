@@ -3,6 +3,7 @@
 #include "Engine/GraphicsPipeline/GraphicsPipeline.hpp"
 #include "Engine/RenderPass/RenderPass.hpp"
 #include "Engine/FrameBuffer/FrameBuffer.hpp"
+#include "Engine/Window/Window.hpp"
 
 #include <iostream>
 
@@ -25,7 +26,8 @@ void SwapChainCommandBuffer::InitializeSyncObjects()
 
 	if (vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphore) != VK_SUCCESS ||
 		vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphore) != VK_SUCCESS ||
-		vkCreateFence(logicalDevice, &fenceInfo, nullptr, &inFlightFence) != VK_SUCCESS) {
+		vkCreateFence(logicalDevice, &fenceInfo, nullptr, &inFlightFence) != VK_SUCCESS) 
+	{
 		throw std::runtime_error("failed to create synchronization objects for a frame!");
 	}
 }
@@ -41,12 +43,14 @@ void SwapChainCommandBuffer::RecordCommandBuffer(uint32_t imageIndex)
 		throw std::runtime_error("failed to begin recording command buffer!");
 	}
 
+	VkExtent2D windowExtent = window->GetWindowExtent();
+
 	VkRenderPassBeginInfo renderPassInfo{};
 	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 	renderPassInfo.renderPass = renderPass->GetRenderPass();
 	renderPassInfo.framebuffer = frameBuffer->GetFrameBuffers()[imageIndex];
 	renderPassInfo.renderArea.offset = { 0, 0 };
-	renderPassInfo.renderArea.extent = swapChainExtent;
+	renderPassInfo.renderArea.extent = windowExtent;
 	VkClearValue clearColor = { {{0.0f, 0.0f, 0.0f, 1.0f}} };
 	renderPassInfo.clearValueCount = 1;
 	renderPassInfo.pClearValues = &clearColor;
@@ -57,15 +61,15 @@ void SwapChainCommandBuffer::RecordCommandBuffer(uint32_t imageIndex)
 	VkViewport viewport{};
 	viewport.x = 0.0f;
 	viewport.y = 0.0f;
-	viewport.width = static_cast<float>(swapChainExtent.width);
-	viewport.height = static_cast<float>(swapChainExtent.height);
+	viewport.width = static_cast<float>(windowExtent.width);
+	viewport.height = static_cast<float>(windowExtent.height);
 	viewport.minDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
 	vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
 	VkRect2D scissor{};
 	scissor.offset = { 0, 0 };
-	scissor.extent = swapChainExtent;
+	scissor.extent = windowExtent;
 	vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
 	vkCmdDraw(commandBuffer, 3, 1, 0, 0);

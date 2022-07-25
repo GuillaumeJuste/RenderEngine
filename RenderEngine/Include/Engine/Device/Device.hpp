@@ -43,7 +43,9 @@ namespace RenderEngine
 
 		CommandPool commandPool;
 
-		SwapChainCommandBuffer commandBuffer;
+		std::vector<SwapChainCommandBuffer> commandBuffers;
+
+		uint32_t currentFrame = 0;
 
 		bool IsDeviceSuitable(const VkPhysicalDevice& _device);
 		bool checkDeviceExtensionSupport(const VkPhysicalDevice& _device);
@@ -59,6 +61,9 @@ namespace RenderEngine
 		void CreateCommandPool();
 		void CreateCommandBuffer();
 		void CreateSyncObjects();
+
+		void CleanUpSwapChain();
+		void RecreateSwapChain();
 
 	public:
 		Device() = default;

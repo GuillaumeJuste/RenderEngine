@@ -18,7 +18,7 @@ namespace RenderEngine
 		RenderPass* renderPass;
 		GraphicsPipeline* graphicsPipeline;
 		FrameBuffer* frameBuffer;
-		VkExtent2D swapChainExtent;
+		Window* window;
 
 		VkCommandBuffer commandBuffer;
 

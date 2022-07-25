@@ -234,39 +234,78 @@ void Device::CreateCommandBuffer()
 	createInfo.renderPass = &renderPass;
 	createInfo.graphicsPipeline = &graphicsPipeline;
 	createInfo.frameBuffer = &frameBuffer;
-	createInfo.swapChainExtent = swapChain.GetSwapChainExtent();
+	createInfo.window = window;
 
-	SwapChainCommandBuffer::InitializeCommandBuffer(createInfo, &commandBuffer);
+	commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+
+	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+	{
+		SwapChainCommandBuffer::InitializeCommandBuffer(createInfo, &commandBuffers[i]);
+	}
+}
+
+void Device::CleanUpSwapChain()
+{
+	frameBuffer.Cleanup();
+	swapChain.Cleanup();
+}
+
+void Device::RecreateSwapChain()
+{
+	int width = 0, height = 0;
+	glfwGetFramebufferSize(window->GetGLFWWindow(), &width, &height);
+	while (width == 0 || height == 0) 
+	{
+		glfwGetFramebufferSize(window->GetGLFWWindow(), &width, &height);
+		glfwWaitEvents();
+	}
+
+	vkDeviceWaitIdle(logicalDevice);
+
+	CleanUpSwapChain();
+
+	CreateSwapChain();
+	CreateFrameBuffer();
 }
 
 void Device::DrawFrame()
 {
-	vkWaitForFences(logicalDevice, 1, &commandBuffer.GetInFlightFence(), VK_TRUE, UINT64_MAX);
-	vkResetFences(logicalDevice, 1, &commandBuffer.GetInFlightFence());
+	vkWaitForFences(logicalDevice, 1, &commandBuffers[currentFrame].GetInFlightFence(), VK_TRUE, UINT64_MAX);
 
 	uint32_t imageIndex;
-	vkAcquireNextImageKHR(logicalDevice, swapChain.GetVKSwapChain(), UINT64_MAX, commandBuffer.GetImageAvailableSemaphore(), VK_NULL_HANDLE, &imageIndex);
-	
-	vkResetCommandBuffer(commandBuffer.GetVKCommandBuffer(), 0);
- 	commandBuffer.RecordCommandBuffer(imageIndex);
+	VkResult result = vkAcquireNextImageKHR(logicalDevice, swapChain.GetVKSwapChain(), UINT64_MAX, commandBuffers[currentFrame].GetImageAvailableSemaphore(), VK_NULL_HANDLE, &imageIndex);
+
+	if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+		RecreateSwapChain();
+		return;
+	}
+	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+		throw std::runtime_error("failed to acquire swap chain image!");
+	}
+
+	vkResetFences(logicalDevice, 1, &commandBuffers[currentFrame].GetInFlightFence());
+
+	vkResetCommandBuffer(commandBuffers[currentFrame].GetVKCommandBuffer(), /*VkCommandBufferResetFlagBits*/ 0);
+	commandBuffers[currentFrame].RecordCommandBuffer(imageIndex);
 
 	VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-	VkSemaphore waitSemaphores[] = { commandBuffer.GetImageAvailableSemaphore() };
+	VkSemaphore waitSemaphores[] = { commandBuffers[currentFrame].GetImageAvailableSemaphore() };
 	VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 	submitInfo.waitSemaphoreCount = 1;
 	submitInfo.pWaitSemaphores = waitSemaphores;
 	submitInfo.pWaitDstStageMask = waitStages;
 
 	submitInfo.commandBufferCount = 1;
-	submitInfo.pCommandBuffers = &commandBuffer.GetVKCommandBuffer();
+	submitInfo.pCommandBuffers = &commandBuffers[currentFrame].GetVKCommandBuffer();
 
-	VkSemaphore signalSemaphores[] = { commandBuffer.GetRenderFinishedSemaphore() };
+	VkSemaphore signalSemaphores[] = { commandBuffers[currentFrame].GetRenderFinishedSemaphore()};
 	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pSignalSemaphores = signalSemaphores;
 
-	if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, commandBuffer.GetInFlightFence()) != VK_SUCCESS) {
+	if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, commandBuffers[currentFrame].GetInFlightFence()) != VK_SUCCESS) 
+	{
 		throw std::runtime_error("failed to submit draw command buffer!");
 	}
 
@@ -276,12 +315,24 @@ void Device::DrawFrame()
 	presentInfo.waitSemaphoreCount = 1;
 	presentInfo.pWaitSemaphores = signalSemaphores;
 
-	VkSwapchainKHR swapChains[] = { swapChain.GetVKSwapChain() };
+	VkSwapchainKHR swapChains[] = { swapChain.GetVKSwapChain()};
 	presentInfo.swapchainCount = 1;
 	presentInfo.pSwapchains = swapChains;
+
 	presentInfo.pImageIndices = &imageIndex;
 
-	vkQueuePresentKHR(presentQueue, &presentInfo);
+	result = vkQueuePresentKHR(presentQueue, &presentInfo);
+
+	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || window->GetFrameBufferResized()) 
+	{
+		window->SetFrameBufferResized(false);
+		RecreateSwapChain();
+	}
+	else if (result != VK_SUCCESS) {
+		throw std::runtime_error("failed to present swap chain image!");
+	}
+
+	currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
 
 const VkPhysicalDevice& Device::GetPhysicalDevice() const
@@ -307,7 +358,10 @@ const VkQueue& Device::GetGraphicsQueue() const
 void Device::Cleanup()
 {
 	std::cout << "[Cleaning] Device" << std::endl;
-	commandBuffer.Cleanup();
+	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+	{
+		commandBuffers[i].Cleanup();
+	}
 	commandPool.Cleanup();
 	frameBuffer.Cleanup();
 	graphicsPipeline.Cleanup();

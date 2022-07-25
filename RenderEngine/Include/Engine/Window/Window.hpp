@@ -15,7 +15,12 @@ namespace RenderEngine
 		unsigned int width;
 		unsigned int height;
 		const char* name;
+		
+		bool frameBufferResized = false;
+
+		static void FramebufferResizeCallback(GLFWwindow* _window, int _width, int _height);
 	public:
+
 		Window(unsigned int _width, unsigned int _height, const char* _name);
 		~Window() = default;
 
@@ -23,6 +28,10 @@ namespace RenderEngine
 		void Cleanup();
 
 		GLFWwindow* GetGLFWWindow();
+		const bool& GetFrameBufferResized() const;
+		void SetFrameBufferResized(bool _val);
+
+		VkExtent2D GetWindowExtent();
 	};
 }
 
