@@ -4,7 +4,31 @@
 #include "Engine/RenderPass/RenderPass.hpp"
 #include "Engine/FrameBuffer/FrameBuffer.hpp"
 
+#include <iostream>
+
 using namespace RenderEngine;
+
+void SwapChainCommandBuffer::InitializeCommandBuffer(CommandBufferCreateInfo _createInfo, SwapChainCommandBuffer* _output)
+{
+	CommandBufferBase::InitializeCommandBuffer(_createInfo, _output);
+	_output->InitializeSyncObjects();
+}
+
+void SwapChainCommandBuffer::InitializeSyncObjects()
+{
+	VkSemaphoreCreateInfo semaphoreInfo{};
+	semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+	VkFenceCreateInfo fenceInfo{};
+	fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+	fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+	if (vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphore) != VK_SUCCESS ||
+		vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphore) != VK_SUCCESS ||
+		vkCreateFence(logicalDevice, &fenceInfo, nullptr, &inFlightFence) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create synchronization objects for a frame!");
+	}
+}
 
 void SwapChainCommandBuffer::RecordCommandBuffer(uint32_t imageIndex)
 {
@@ -51,4 +75,30 @@ void SwapChainCommandBuffer::RecordCommandBuffer(uint32_t imageIndex)
 	if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
 		throw std::runtime_error("failed to record command buffer!");
 	}
+}
+
+void SwapChainCommandBuffer::Cleanup()
+{
+	std::cout << "[Cleaning] SwapChainCommandBuffer" << std::endl;
+
+	vkDestroySemaphore(logicalDevice, imageAvailableSemaphore, nullptr);
+	vkDestroySemaphore(logicalDevice, renderFinishedSemaphore, nullptr);
+	vkDestroyFence(logicalDevice, inFlightFence, nullptr);
+
+	std::cout << "[Cleaned] SwapChainCommandBuffer" << std::endl;
+}
+
+const VkSemaphore& SwapChainCommandBuffer::GetImageAvailableSemaphore() const
+{
+	return imageAvailableSemaphore;
+}
+
+const VkSemaphore& SwapChainCommandBuffer::GetRenderFinishedSemaphore() const
+{
+	return renderFinishedSemaphore;
+}
+
+const VkFence& SwapChainCommandBuffer::GetInFlightFence() const
+{
+	return inFlightFence;
 }

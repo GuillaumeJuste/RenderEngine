@@ -9,12 +9,26 @@
 namespace RenderEngine
 {
 
-	struct SwapChainCommandBuffer : public CommandBufferBase
+	class SwapChainCommandBuffer : public CommandBufferBase
 	{
+	private:
+		VkSemaphore imageAvailableSemaphore;
+		VkSemaphore renderFinishedSemaphore;
+		VkFence inFlightFence;
+
+		void InitializeSyncObjects();
+	public:
 		SwapChainCommandBuffer() = default;
 		~SwapChainCommandBuffer() = default;
 
-		virtual void RecordCommandBuffer(uint32_t imageIndex);
+		static void InitializeCommandBuffer(CommandBufferCreateInfo _createInfo, SwapChainCommandBuffer* _output);
+
+		void RecordCommandBuffer(uint32_t imageIndex);
+		void Cleanup();
+
+		const VkSemaphore& GetImageAvailableSemaphore() const;
+		const VkSemaphore& GetRenderFinishedSemaphore() const;
+		const VkFence& GetInFlightFence() const;
 	};
 }
 

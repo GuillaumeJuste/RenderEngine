@@ -9,7 +9,6 @@
 #include "Engine/SwapChain/SwapChainSupportDetails.hpp"
 #include "Engine/CommandPool/CommandPoolCreateInfo.hpp"
 #include "Engine/CommandBuffer/CommandBufferCreateInfo.hpp"
-#include "Engine/SyncObjects/SyncObjects.hpp"
 #include "Engine/Shader/Shader.hpp"
 
 using namespace RenderEngine;
@@ -28,7 +27,6 @@ void Device::InitalizeDevice(const DeviceCreateInfo& _createInfo, Device* _outpu
 	_output->CreateFrameBuffer();
 	_output->CreateCommandPool();
 	_output->CreateCommandBuffer();
-	_output->CreateSyncObjects();
 }
 
 
@@ -241,21 +239,13 @@ void Device::CreateCommandBuffer()
 	SwapChainCommandBuffer::InitializeCommandBuffer(createInfo, &commandBuffer);
 }
 
-void Device::CreateSyncObjects()
-{
-	SyncObjectsCreateInfo createInfo;
-	createInfo.logicalDevice = logicalDevice;
-
-	SyncObjects::InitializeSyncObjects(createInfo, &syncObjects);
-}
-
 void Device::DrawFrame()
 {
-	vkWaitForFences(logicalDevice, 1, &syncObjects.GetInFlightFence(), VK_TRUE, UINT64_MAX);
-	vkResetFences(logicalDevice, 1, &syncObjects.GetInFlightFence());
+	vkWaitForFences(logicalDevice, 1, &commandBuffer.GetInFlightFence(), VK_TRUE, UINT64_MAX);
+	vkResetFences(logicalDevice, 1, &commandBuffer.GetInFlightFence());
 
 	uint32_t imageIndex;
-	vkAcquireNextImageKHR(logicalDevice, swapChain.GetVKSwapChain(), UINT64_MAX, syncObjects.GetImageAvailableSemaphore(), VK_NULL_HANDLE, &imageIndex);
+	vkAcquireNextImageKHR(logicalDevice, swapChain.GetVKSwapChain(), UINT64_MAX, commandBuffer.GetImageAvailableSemaphore(), VK_NULL_HANDLE, &imageIndex);
 	
 	vkResetCommandBuffer(commandBuffer.GetVKCommandBuffer(), 0);
  	commandBuffer.RecordCommandBuffer(imageIndex);
@@ -263,7 +253,7 @@ void Device::DrawFrame()
 	VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-	VkSemaphore waitSemaphores[] = { syncObjects.GetImageAvailableSemaphore() };
+	VkSemaphore waitSemaphores[] = { commandBuffer.GetImageAvailableSemaphore() };
 	VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 	submitInfo.waitSemaphoreCount = 1;
 	submitInfo.pWaitSemaphores = waitSemaphores;
@@ -272,11 +262,11 @@ void Device::DrawFrame()
 	submitInfo.commandBufferCount = 1;
 	submitInfo.pCommandBuffers = &commandBuffer.GetVKCommandBuffer();
 
-	VkSemaphore signalSemaphores[] = { syncObjects.GetRenderFinishedSemaphore() };
+	VkSemaphore signalSemaphores[] = { commandBuffer.GetRenderFinishedSemaphore() };
 	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pSignalSemaphores = signalSemaphores;
 
-	if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, syncObjects.GetInFlightFence()) != VK_SUCCESS) {
+	if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, commandBuffer.GetInFlightFence()) != VK_SUCCESS) {
 		throw std::runtime_error("failed to submit draw command buffer!");
 	}
 
@@ -317,7 +307,7 @@ const VkQueue& Device::GetGraphicsQueue() const
 void Device::Cleanup()
 {
 	std::cout << "[Cleaning] Device" << std::endl;
-	syncObjects.Cleanup();
+	commandBuffer.Cleanup();
 	commandPool.Cleanup();
 	frameBuffer.Cleanup();
 	graphicsPipeline.Cleanup();

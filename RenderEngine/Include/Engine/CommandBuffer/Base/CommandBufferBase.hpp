@@ -26,6 +26,7 @@ namespace RenderEngine
 		static void InitializeCommandBuffer(CommandBufferCreateInfo _createInfo, CommandBufferBase* _output);
 
 		virtual void RecordCommandBuffer(uint32_t imageIndex) = 0;
+		virtual void Cleanup() = 0;
 
 		const VkCommandBuffer& GetVKCommandBuffer() const;
 	};

@@ -11,7 +11,6 @@
 #include "Engine/FrameBuffer/FrameBuffer.hpp"
 #include "Engine/CommandPool/CommandPool.hpp"
 #include "Engine/CommandBuffer/SwapChainCommandBuffer.hpp"
-#include "Engine/SyncObjects/SyncObjects.hpp"
 
 namespace RenderEngine
 {
@@ -45,8 +44,6 @@ namespace RenderEngine
 		CommandPool commandPool;
 
 		SwapChainCommandBuffer commandBuffer;
-
-		SyncObjects syncObjects;
 
 		bool IsDeviceSuitable(const VkPhysicalDevice& _device);
 		bool checkDeviceExtensionSupport(const VkPhysicalDevice& _device);
