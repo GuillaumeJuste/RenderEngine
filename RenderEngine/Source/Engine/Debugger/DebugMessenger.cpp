@@ -61,8 +61,6 @@ void DebugMessenger::DestroyDebugUtilsMessengerEXT(VkDebugUtilsMessengerEXT _deb
 
 void DebugMessenger::Cleanup()
 {
-    std::cout << "[Cleaning] Device Debug Messenger" << std::endl;
-
     DestroyDebugUtilsMessengerEXT(debugMessenger, nullptr);
 
     std::cout << "[Cleaned] Device Debug Messenger" << std::endl;

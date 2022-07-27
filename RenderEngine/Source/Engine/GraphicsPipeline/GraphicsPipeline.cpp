@@ -101,7 +101,6 @@ void GraphicsPipeline::InitalizeGraphicsPipeline(GraphicsPipelineCreateInfo _cre
 
 void GraphicsPipeline::Cleanup()
 {
-	std::cout << "[Cleaning] Graphics Pipeline" << std::endl;
 	vkDestroyPipeline(logicalDevice, graphicsPipeline, nullptr);
 	vkDestroyPipelineLayout(logicalDevice, pipelineLayout, nullptr);
 	vertexShader.Cleanup();

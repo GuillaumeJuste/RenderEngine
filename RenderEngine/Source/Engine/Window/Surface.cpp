@@ -20,8 +20,6 @@ void Surface::InitializeSurface(const VkInstance& _instance, Window* _window, Su
 
 void Surface::Cleanup()
 {
-	std::cout << "[Cleaning] Surface" << std::endl;
-
 	vkDestroySurfaceKHR(instance, vkSurface, nullptr);
 	
 	std::cout << "[Cleaned] Surface" << std::endl;

@@ -252,6 +252,8 @@ void Device::CleanUpSwapChain()
 
 void Device::RecreateSwapChain()
 {
+	vkDeviceWaitIdle(logicalDevice);
+
 	int width = 0, height = 0;
 	glfwGetFramebufferSize(window->GetGLFWWindow(), &width, &height);
 	while (width == 0 || height == 0) 
@@ -275,15 +277,17 @@ void Device::DrawFrame()
 	uint32_t imageIndex;
 	VkResult result = vkAcquireNextImageKHR(logicalDevice, swapChain.GetVKSwapChain(), UINT64_MAX, commandBuffers[currentFrame].GetImageAvailableSemaphore(), VK_NULL_HANDLE, &imageIndex);
 
-	if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+	/*TODO: Fix window resize fence error*/
+	/*if (result == VK_ERROR_OUT_OF_DATE_KHR) {
 		RecreateSwapChain();
-		return;
+		vkAcquireNextImageKHR(logicalDevice, swapChain.GetVKSwapChain(), UINT64_MAX, commandBuffers[currentFrame].GetImageAvailableSemaphore(), VK_NULL_HANDLE, &imageIndex);
 	}
 	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
 		throw std::runtime_error("failed to acquire swap chain image!");
-	}
+	}*/
 
 	vkResetFences(logicalDevice, 1, &commandBuffers[currentFrame].GetInFlightFence());
+
 
 	vkResetCommandBuffer(commandBuffers[currentFrame].GetVKCommandBuffer(), /*VkCommandBufferResetFlagBits*/ 0);
 	commandBuffers[currentFrame].RecordCommandBuffer(imageIndex);
@@ -296,7 +300,6 @@ void Device::DrawFrame()
 	submitInfo.waitSemaphoreCount = 1;
 	submitInfo.pWaitSemaphores = waitSemaphores;
 	submitInfo.pWaitDstStageMask = waitStages;
-
 	submitInfo.commandBufferCount = 1;
 	submitInfo.pCommandBuffers = &commandBuffers[currentFrame].GetVKCommandBuffer();
 
@@ -323,14 +326,15 @@ void Device::DrawFrame()
 
 	result = vkQueuePresentKHR(presentQueue, &presentInfo);
 
-	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || window->GetFrameBufferResized()) 
+	/*TODO: Fix window resize fence error*/
+	/*if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || window->GetFrameBufferResized()) 
 	{
 		window->SetFrameBufferResized(false);
 		RecreateSwapChain();
 	}
 	else if (result != VK_SUCCESS) {
 		throw std::runtime_error("failed to present swap chain image!");
-	}
+	}*/
 
 	currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
@@ -357,7 +361,6 @@ const VkQueue& Device::GetGraphicsQueue() const
 
 void Device::Cleanup()
 {
-	std::cout << "[Cleaning] Device" << std::endl;
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 	{
 		commandBuffers[i].Cleanup();

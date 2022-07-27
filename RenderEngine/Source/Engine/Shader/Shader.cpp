@@ -53,7 +53,6 @@ std::vector<char> Shader::ReadShaderFile(const std::string& _shaderFilePath)
 
 void Shader::Cleanup()
 {
-    std::cout << "[Cleaning] Shader" << std::endl;
     vkDestroyShaderModule(logicalDevice, shaderModule, nullptr);
     std::cout << "[Cleaned] Shader" << std::endl;
 }

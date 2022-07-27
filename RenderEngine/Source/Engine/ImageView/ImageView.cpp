@@ -39,7 +39,6 @@ void ImageView::InitializeImageView(ImageViewCreateInfo _imageViewCreateInfo, Im
 
 void ImageView::Cleanup()
 {
-	std::cout << "[Cleaning] Image View" << std::endl;
 	for (auto imageView : swapChainImageViews) {
 		vkDestroyImageView(logicalDevice, imageView, nullptr);
 	}

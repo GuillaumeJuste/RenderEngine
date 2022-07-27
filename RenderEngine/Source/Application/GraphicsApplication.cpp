@@ -1,4 +1,4 @@
-#include "Engine/Application/GraphicsApplication.hpp"
+#include "Application/GraphicsApplication.hpp"
 #include "Engine/Device/DeviceContext.hpp"
 #include "Engine/Window/Window.hpp"
 #include <iostream>
@@ -36,13 +36,9 @@ void GraphicsApplication::MainLoop()
 
 void GraphicsApplication::Cleanup()
 {
-    std::cout << "[Cleaning] Vulkan context" << std::endl;
     deviceContext->Cleanup();
     delete deviceContext;
-    std::cout << "[Cleaned] Vulkan context" << std::endl;
 
-    std::cout << "[Cleaning] Window" << std::endl;
     window->Cleanup();
     delete window;
-    std::cout << "[Cleaned] Window" << std::endl;
 }

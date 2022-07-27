@@ -83,8 +83,6 @@ void SwapChainCommandBuffer::RecordCommandBuffer(uint32_t imageIndex)
 
 void SwapChainCommandBuffer::Cleanup()
 {
-	std::cout << "[Cleaning] SwapChainCommandBuffer" << std::endl;
-
 	vkDestroySemaphore(logicalDevice, imageAvailableSemaphore, nullptr);
 	vkDestroySemaphore(logicalDevice, renderFinishedSemaphore, nullptr);
 	vkDestroyFence(logicalDevice, inFlightFence, nullptr);

@@ -163,7 +163,6 @@ VkExtent2D SwapChain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& _capabili
 
 void SwapChain::Cleanup()
 {
-	std::cout << "[Cleaning] Swap Chain" << std::endl;
 	imageView.Cleanup();
 	vkDestroySwapchainKHR(logicalDevice, vkSwapChain, nullptr);
 	std::cout << "[Cleaned] Swap Chain" << std::endl;

@@ -1,5 +1,7 @@
 #include "Engine/Window/Window.hpp"
-#include "Engine/Application/GraphicsApplication.hpp"
+#include "Application/GraphicsApplication.hpp"
+
+#include <iostream>
 
 using namespace RenderEngine;
 
@@ -9,7 +11,7 @@ Window::Window(unsigned int _width, unsigned int _height, const char* _name) :
     glfwInit();
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
     glfw_window = glfwCreateWindow(_width, _height, _name, nullptr, nullptr);
     glfwSetWindowUserPointer(glfw_window, this);
@@ -26,6 +28,7 @@ void Window::Cleanup()
     glfwDestroyWindow(glfw_window);
 
     glfwTerminate();
+    std::cout << "[Cleaned] Window" << std::endl;
 }
 
 GLFWwindow* Window::GetGLFWWindow()

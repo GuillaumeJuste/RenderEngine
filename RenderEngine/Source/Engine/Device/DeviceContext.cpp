@@ -130,7 +130,6 @@ Device* DeviceContext::GetDevice()
 
 void DeviceContext::Cleanup()
 {
-    std::cout << "[Cleaning] Device Context" << std::endl;
     device.Cleanup();
 
     if (enableValidationLayers) 
