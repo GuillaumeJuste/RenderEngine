@@ -4,13 +4,20 @@
 #include "Engine/RenderPass/RenderPass.hpp"
 #include "Engine/FrameBuffer/FrameBuffer.hpp"
 #include "Engine/Window/Window.hpp"
+#include "Engine/BufferObject/BufferObject.hpp"
 
 #include <iostream>
 
 using namespace RenderEngine;
 
+const std::vector<uint16_t> indices = {
+	0, 1, 2, 2, 3, 0
+};
+
 void SwapChainCommandBuffer::InitializeCommandBuffer(CommandBufferCreateInfo _createInfo, SwapChainCommandBuffer* _output)
 {
+	_output->vertexBufferObject = _createInfo.vertexBufferObject;
+	_output->indexBufferObject = _createInfo.indexBufferObject;
 	CommandBufferBase::InitializeCommandBuffer(_createInfo, _output);
 	_output->InitializeSyncObjects();
 }
@@ -54,6 +61,7 @@ void SwapChainCommandBuffer::RecordCommandBuffer(uint32_t imageIndex)
 	VkClearValue clearColor = { {{0.0f, 0.0f, 0.0f, 1.0f}} };
 	renderPassInfo.clearValueCount = 1;
 	renderPassInfo.pClearValues = &clearColor;
+
 	vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->GetGraphicsPipeline());
@@ -72,7 +80,13 @@ void SwapChainCommandBuffer::RecordCommandBuffer(uint32_t imageIndex)
 	scissor.extent = windowExtent;
 	vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-	vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+	VkBuffer vertexBuffers[] = { vertexBufferObject->GetVkBuffer()};
+	VkDeviceSize offsets[] = { 0 };
+	vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+	vkCmdBindIndexBuffer(commandBuffer, indexBufferObject->GetVkBuffer(), 0, VK_INDEX_TYPE_UINT16);
+
+	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 
 	vkCmdEndRenderPass(commandBuffer);
 

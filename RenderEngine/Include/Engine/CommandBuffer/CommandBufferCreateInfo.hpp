@@ -12,6 +12,7 @@ namespace RenderEngine
 	class GraphicsPipeline;
 	class FrameBuffer;
 	class Window;
+	class BufferObject;
 
 	struct CommandBufferCreateInfo
 	{
@@ -22,6 +23,9 @@ namespace RenderEngine
 		GraphicsPipeline* graphicsPipeline;
 		FrameBuffer* frameBuffer;
 		Window* window;
+		BufferObject* vertexBufferObject;
+		BufferObject* indexBufferObject;
+
 
 		CommandBufferCreateInfo() = default;
 	};

@@ -10,8 +10,21 @@
 #include "Engine/CommandPool/CommandPoolCreateInfo.hpp"
 #include "Engine/CommandBuffer/CommandBufferCreateInfo.hpp"
 #include "Engine/Shader/Shader.hpp"
+#include "Engine/BufferObject/BufferObjectCreateInfo.hpp"
+#include "Engine/Vertrex/Vertex.hpp"
 
 using namespace RenderEngine;
+
+const std::vector<Vertex> vertices = {
+	{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+	{{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+	{{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+	{{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
+};
+
+const std::vector<uint16_t> indices = {
+	0, 1, 2, 2, 3, 0
+};
 
 void Device::InitalizeDevice(const DeviceCreateInfo& _createInfo, Device* _output)
 {
@@ -26,6 +39,8 @@ void Device::InitalizeDevice(const DeviceCreateInfo& _createInfo, Device* _outpu
 	_output->CreateGraphicsPipeline();
 	_output->CreateFrameBuffer();
 	_output->CreateCommandPool();
+	_output->CreateVertexBufferObject();
+	_output->CreateIndexBufferObject();
 	_output->CreateCommandBuffer();
 }
 
@@ -235,6 +250,8 @@ void Device::CreateCommandBuffer()
 	createInfo.graphicsPipeline = &graphicsPipeline;
 	createInfo.frameBuffer = &frameBuffer;
 	createInfo.window = window;
+	createInfo.vertexBufferObject = &vertexBufferObject;
+	createInfo.indexBufferObject = &indexBufferObject;
 
 	commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
@@ -268,6 +285,64 @@ void Device::RecreateSwapChain()
 
 	CreateSwapChain();
 	CreateFrameBuffer();
+}
+
+void Device::CreateVertexBufferObject()
+{
+	BufferObjectCreateInfo stagingBufferCreateInfo;
+	stagingBufferCreateInfo.physicalDevice = physicalDevice;
+	stagingBufferCreateInfo.logicalDevice = logicalDevice;
+	stagingBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+	stagingBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+	stagingBufferCreateInfo.bufferSize = sizeof(vertices[0]) * vertices.size();
+
+	BufferObject::InitializeBufferObject(stagingBufferCreateInfo, &stagingBufferObject);
+
+	void* data;
+	vkMapMemory(logicalDevice, stagingBufferObject.GetVkBufferMemory(), 0, stagingBufferCreateInfo.bufferSize, 0, &data);
+	memcpy(data, vertices.data(), (size_t)stagingBufferCreateInfo.bufferSize);
+	vkUnmapMemory(logicalDevice, stagingBufferObject.GetVkBufferMemory());
+
+	BufferObjectCreateInfo vertexBuffeCreateInfo;
+	vertexBuffeCreateInfo.physicalDevice = physicalDevice;
+	vertexBuffeCreateInfo.logicalDevice = logicalDevice;
+	vertexBuffeCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+	vertexBuffeCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+	vertexBuffeCreateInfo.bufferSize = stagingBufferCreateInfo.bufferSize;
+
+	BufferObject::InitializeBufferObject(vertexBuffeCreateInfo, &vertexBufferObject);
+
+	stagingBufferObject.CopyBuffer(&vertexBufferObject, &commandPool, graphicsQueue, stagingBufferCreateInfo.bufferSize);
+	stagingBufferObject.Cleanup();
+}
+
+void Device::CreateIndexBufferObject()
+{
+	BufferObjectCreateInfo stagingBufferCreateInfo;
+	stagingBufferCreateInfo.physicalDevice = physicalDevice;
+	stagingBufferCreateInfo.logicalDevice = logicalDevice;
+	stagingBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+	stagingBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+	stagingBufferCreateInfo.bufferSize = sizeof(indices[0]) * indices.size();
+
+	BufferObject::InitializeBufferObject(stagingBufferCreateInfo, &stagingBufferObject);
+
+	void* data;
+	vkMapMemory(logicalDevice, stagingBufferObject.GetVkBufferMemory(), 0, stagingBufferCreateInfo.bufferSize, 0, &data);
+	memcpy(data, indices.data(), (size_t)stagingBufferCreateInfo.bufferSize);
+	vkUnmapMemory(logicalDevice, stagingBufferObject.GetVkBufferMemory());
+
+	BufferObjectCreateInfo indexBufferCreateInfo;
+	indexBufferCreateInfo.physicalDevice = physicalDevice;
+	indexBufferCreateInfo.logicalDevice = logicalDevice;
+	indexBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
+	indexBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+	indexBufferCreateInfo.bufferSize = stagingBufferCreateInfo.bufferSize;
+
+	BufferObject::InitializeBufferObject(indexBufferCreateInfo, &indexBufferObject);
+
+	stagingBufferObject.CopyBuffer(&indexBufferObject, &commandPool, graphicsQueue, stagingBufferCreateInfo.bufferSize);
+	stagingBufferObject.Cleanup();
 }
 
 void Device::DrawFrame()
@@ -370,6 +445,8 @@ void Device::Cleanup()
 	graphicsPipeline.Cleanup();
 	renderPass.Cleanup();
 	swapChain.Cleanup();
+	indexBufferObject.Cleanup();
+	vertexBufferObject.Cleanup();
 	vkDestroyDevice(logicalDevice, nullptr);
 	std::cout << "[Cleaned] Device" << std::endl;
 }

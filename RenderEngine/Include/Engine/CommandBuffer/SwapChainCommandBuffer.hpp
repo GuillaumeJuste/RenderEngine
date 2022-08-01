@@ -16,6 +16,9 @@ namespace RenderEngine
 		VkSemaphore renderFinishedSemaphore;
 		VkFence inFlightFence;
 
+		BufferObject* vertexBufferObject;
+		BufferObject* indexBufferObject;
+
 		void InitializeSyncObjects();
 	public:
 		SwapChainCommandBuffer() = default;

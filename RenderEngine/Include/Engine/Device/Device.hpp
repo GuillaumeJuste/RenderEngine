@@ -11,6 +11,7 @@
 #include "Engine/FrameBuffer/FrameBuffer.hpp"
 #include "Engine/CommandPool/CommandPool.hpp"
 #include "Engine/CommandBuffer/SwapChainCommandBuffer.hpp"
+#include "Engine/BufferObject/BufferObject.hpp"
 
 namespace RenderEngine
 {
@@ -47,6 +48,10 @@ namespace RenderEngine
 
 		uint32_t currentFrame = 0;
 
+		BufferObject vertexBufferObject;
+		BufferObject indexBufferObject;
+		BufferObject stagingBufferObject;
+
 		bool IsDeviceSuitable(const VkPhysicalDevice& _device);
 		bool checkDeviceExtensionSupport(const VkPhysicalDevice& _device);
 		
@@ -60,7 +65,8 @@ namespace RenderEngine
 		void CreateFrameBuffer();
 		void CreateCommandPool();
 		void CreateCommandBuffer();
-		void CreateSyncObjects();
+		void CreateVertexBufferObject();
+		void CreateIndexBufferObject();
 
 		void CleanUpSwapChain();
 		void RecreateSwapChain();
