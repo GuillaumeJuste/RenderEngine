@@ -6,15 +6,17 @@
 #include "Vulkan/VulkanBaseInclude.hpp"
 
 namespace RenderEngine
-{
-	class DeviceContext;
-	class Window;
-
+{ 
+	namespace Vulkan
+	{
+		class DeviceContext;
+		class Window;
+	}
 	class GraphicsApplication
 	{
 	private:
-		Window* window;
-		DeviceContext* deviceContext;
+		Vulkan::Window* window;
+		Vulkan::DeviceContext* deviceContext;
 
 		void InitVulkan();
 		void InitWindow();

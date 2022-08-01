@@ -10,7 +10,7 @@
 #include "Engine/Window/Window.hpp"
 #include "Misc/Math.hpp"
 
-using namespace RenderEngine;
+using namespace RenderEngine::Vulkan;
 using namespace Mathlib;
 
 void SwapChain::InitializeSwapChain(const SwapChainCreateInfo& _swapChainCreateInfo, SwapChain* _output)

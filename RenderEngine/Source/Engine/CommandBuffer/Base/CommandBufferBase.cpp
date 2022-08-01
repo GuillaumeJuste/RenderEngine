@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-using namespace RenderEngine;
+using namespace RenderEngine::Vulkan;
 
 void CommandBufferBase::InitializeCommandBuffer(CommandBufferCreateInfo _createInfo, CommandBufferBase* _output)
 {

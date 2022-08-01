@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-using namespace RenderEngine;
+using namespace RenderEngine::Vulkan;
 
 void RenderPass::InitializeRenderPass(RenderPassCreateInfo _createInfo, RenderPass* _output)
 {

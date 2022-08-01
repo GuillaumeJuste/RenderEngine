@@ -5,7 +5,7 @@
 
 #include "Engine/GraphicsPipeline/GraphicsPipelineCreateInfo.hpp"
 
-namespace RenderEngine
+namespace RenderEngine::Vulkan
 {
 	class GraphicsPipeline
 	{

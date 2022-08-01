@@ -13,7 +13,7 @@
 #include "Engine/BufferObject/BufferObjectCreateInfo.hpp"
 #include "Engine/Vertrex/Vertex.hpp"
 
-using namespace RenderEngine;
+using namespace RenderEngine::Vulkan;
 
 const std::vector<Vertex> vertices = {
 	{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},

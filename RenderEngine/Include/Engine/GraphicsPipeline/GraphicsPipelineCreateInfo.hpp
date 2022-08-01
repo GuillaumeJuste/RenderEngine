@@ -6,7 +6,7 @@
 #include "Engine/Shader/Shader.hpp"
 #include "Engine/RenderPass/RenderPass.hpp"
 
-namespace RenderEngine
+namespace RenderEngine::Vulkan
 {
 	struct GraphicsPipelineCreateInfo
 	{

@@ -6,7 +6,7 @@
 #include "Vulkan/VulkanBaseInclude.hpp"
 #include "Engine/CommandPool/CommandPoolCreateInfo.hpp"
 
-namespace RenderEngine
+namespace RenderEngine::Vulkan
 {
 
 	class CommandPool

@@ -6,7 +6,7 @@
 #include "Vulkan/VulkanBaseInclude.hpp"
 #include <fstream>
 
-namespace RenderEngine
+namespace RenderEngine::Vulkan
 {
 	enum class ShaderType
 	{

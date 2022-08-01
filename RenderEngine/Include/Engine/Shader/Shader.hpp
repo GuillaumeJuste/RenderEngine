@@ -6,7 +6,7 @@
 #include "Vulkan/VulkanBaseInclude.hpp"
 #include "Engine/Shader/ShaderCreateInfo.hpp"
 
-namespace RenderEngine
+namespace RenderEngine::Vulkan
 {
 	class Shader
 	{

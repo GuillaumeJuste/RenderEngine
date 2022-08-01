@@ -13,7 +13,7 @@
 #include "Engine/CommandBuffer/SwapChainCommandBuffer.hpp"
 #include "Engine/BufferObject/BufferObject.hpp"
 
-namespace RenderEngine
+namespace RenderEngine::Vulkan
 {
 	struct SwapChainSupportDetails;
 	class Window;

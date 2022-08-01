@@ -6,7 +6,7 @@
 #include "Vulkan/VulkanBaseInclude.hpp"
 #include "Engine/FrameBuffer/FrameBufferCreateInfo.hpp"
 
-namespace RenderEngine
+namespace RenderEngine::Vulkan
 {
 
 	class FrameBuffer

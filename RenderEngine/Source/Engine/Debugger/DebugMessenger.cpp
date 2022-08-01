@@ -2,7 +2,7 @@
 
 #include "Engine/Debugger/DebugMessenger.hpp"
 
-using namespace RenderEngine;
+using namespace RenderEngine::Vulkan;
 
 void DebugMessenger::InitializeDebugMessenger(const VkInstance& _instance, DebugMessenger* _output)
 {

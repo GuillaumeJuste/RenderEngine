@@ -6,7 +6,7 @@
 #include "Vulkan/VulkanBaseInclude.hpp"
 #include "Engine/CommandBuffer/Base/CommandBufferBase.hpp"
 
-namespace RenderEngine
+namespace RenderEngine::Vulkan
 {
 
 	class SwapChainCommandBuffer : public CommandBufferBase

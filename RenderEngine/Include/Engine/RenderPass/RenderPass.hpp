@@ -6,7 +6,7 @@
 #include "Vulkan/VulkanBaseInclude.hpp"
 #include "Engine/RenderPass/RenderPassCreateInfo.hpp"
 
-namespace RenderEngine
+namespace RenderEngine::Vulkan
 {
 	class RenderPass
 	{

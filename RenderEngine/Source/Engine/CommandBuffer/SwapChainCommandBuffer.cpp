@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-using namespace RenderEngine;
+using namespace RenderEngine::Vulkan;
 
 const std::vector<uint16_t> indices = {
 	0, 1, 2, 2, 3, 0

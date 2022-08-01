@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-using namespace RenderEngine;
+using namespace RenderEngine::Vulkan;
 
 void FrameBuffer::InitializeFrameBuffer(FrameBufferCreateInfo _frameBufferCreateInfo, FrameBuffer* _output)
 {

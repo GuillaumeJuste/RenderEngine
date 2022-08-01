@@ -5,7 +5,7 @@
 
 #include "Engine/Shader/Shader.hpp"
 
-namespace RenderEngine
+namespace RenderEngine::Vulkan
 {
 	struct RenderPassCreateInfo
 	{

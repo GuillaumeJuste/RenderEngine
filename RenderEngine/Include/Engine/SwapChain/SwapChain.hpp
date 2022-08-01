@@ -9,7 +9,7 @@
 #include "Engine/ImageView/ImageView.hpp"
 #include "Engine/SwapChain/SwapChainCreateInfo.hpp"
 
-namespace RenderEngine
+namespace RenderEngine::Vulkan
 {
 	struct SwapChainSupportDetails;
 	struct SwapChainCreateInfo;

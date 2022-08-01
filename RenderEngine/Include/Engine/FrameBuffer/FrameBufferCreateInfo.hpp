@@ -6,7 +6,7 @@
 #include "Engine/RenderPass/RenderPass.hpp"
 #include "Engine/ImageView/ImageView.hpp"
 
-namespace RenderEngine
+namespace RenderEngine::Vulkan
 {
 	struct FrameBufferCreateInfo
 	{

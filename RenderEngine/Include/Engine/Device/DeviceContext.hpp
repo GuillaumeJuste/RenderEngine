@@ -8,7 +8,7 @@
 #include "Engine/Window/Surface.hpp"
 #include "Engine/Debugger/DebugMessenger.hpp"
 
-namespace RenderEngine
+namespace RenderEngine::Vulkan
 {
 	class DebugMessenger;
 	class Window;

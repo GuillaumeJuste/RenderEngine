@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-using namespace RenderEngine;
+using namespace RenderEngine::Vulkan;
 
 void CommandPool::InitializeCommandPool(CommandPoolCreateInfo _createInfo, CommandPool* _output)
 {

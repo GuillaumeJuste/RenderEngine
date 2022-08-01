@@ -6,7 +6,7 @@
 #include "Engine/Debugger/DebugMessenger.hpp"
 #include "Engine/Device/DeviceCreateInfo.hpp"
 
-using namespace RenderEngine;
+using namespace RenderEngine::Vulkan;
 
 DeviceContext::DeviceContext(Window* _window) :
     window{ _window }

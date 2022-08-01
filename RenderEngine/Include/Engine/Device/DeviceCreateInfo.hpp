@@ -6,7 +6,7 @@
 #include "Vulkan/VulkanBaseInclude.hpp"
 #include "Engine/Window/Surface.hpp"
 
-namespace RenderEngine
+namespace RenderEngine::Vulkan
 {
 	class Window;
 

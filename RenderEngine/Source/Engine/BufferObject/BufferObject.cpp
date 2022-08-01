@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-using namespace RenderEngine;
+using namespace RenderEngine::Vulkan;
 
 void BufferObject::InitializeBufferObject(BufferObjectCreateInfo _createInfo, BufferObject* _output)
 {

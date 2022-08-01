@@ -6,7 +6,7 @@
 #include "Vulkan/VulkanBaseInclude.hpp"
 #include <optional>
 
-namespace RenderEngine
+namespace RenderEngine::Vulkan
 {
 	struct QueueFamilyIndices
 	{

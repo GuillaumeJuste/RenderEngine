@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-using namespace RenderEngine;
+using namespace RenderEngine::Vulkan;
 
 void Shader::CreateShader(ShaderCreateInfo _createInfo, Shader* _output)
 {

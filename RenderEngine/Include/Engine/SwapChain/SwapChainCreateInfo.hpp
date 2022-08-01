@@ -8,7 +8,7 @@
 #include "Engine/RenderPass/RenderPass.hpp"
 #include "Engine/Device/QueueFamiliyIndices.hpp"
 
-namespace RenderEngine
+namespace RenderEngine::Vulkan
 {
 	class Window;
 

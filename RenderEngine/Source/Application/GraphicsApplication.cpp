@@ -4,6 +4,7 @@
 #include <iostream>
 
 using namespace RenderEngine;
+using namespace RenderEngine::Vulkan;
 
 void GraphicsApplication::Run()
 {

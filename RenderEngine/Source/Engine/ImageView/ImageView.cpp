@@ -5,7 +5,7 @@
 
 #include "Engine/ImageView/ImageViewCreateInfo.hpp"
 
-using namespace RenderEngine;
+using namespace RenderEngine::Vulkan;
 
 void ImageView::InitializeImageView(ImageViewCreateInfo _imageViewCreateInfo, ImageView* _output)
 {

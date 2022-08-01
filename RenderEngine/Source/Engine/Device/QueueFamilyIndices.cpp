@@ -1,6 +1,6 @@
 #include "Engine/Device/QueueFamiliyIndices.hpp"
 
-using namespace RenderEngine;
+using namespace RenderEngine::Vulkan;
 
 bool QueueFamilyIndices::isComplete()
 {

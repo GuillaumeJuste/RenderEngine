@@ -7,7 +7,7 @@
 #include "Engine/BufferObject/BufferObjectCreateInfo.hpp"
 #include "Engine/CommandPool/CommandPool.hpp"
 
-namespace RenderEngine
+namespace RenderEngine::Vulkan
 {
 
 	class BufferObject
