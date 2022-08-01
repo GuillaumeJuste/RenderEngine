@@ -7,11 +7,10 @@
 #include "Engine/Window/Surface.hpp"
 #include "Engine/RenderPass/RenderPass.hpp"
 #include "Engine/Device/QueueFamiliyIndices.hpp"
+#include "Engine/Window/Window.hpp"
 
 namespace RenderEngine::Vulkan
 {
-	class Window;
-
 	struct SwapChainCreateInfo
 	{
 		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;

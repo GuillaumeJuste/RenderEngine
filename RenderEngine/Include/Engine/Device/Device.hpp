@@ -12,12 +12,11 @@
 #include "Engine/CommandPool/CommandPool.hpp"
 #include "Engine/CommandBuffer/SwapChainCommandBuffer.hpp"
 #include "Engine/BufferObject/BufferObject.hpp"
+#include "Engine/SwapChain/SwapChainSupportDetails.hpp"
+#include "Engine/Window/Window.hpp"
 
 namespace RenderEngine::Vulkan
 {
-	struct SwapChainSupportDetails;
-	class Window;
-
 	class Device
 	{
 	private:

@@ -7,12 +7,10 @@
 #include "Engine/Device/Device.hpp"
 #include "Engine/Window/Surface.hpp"
 #include "Engine/Debugger/DebugMessenger.hpp"
+#include "Engine/Window/Window.hpp"
 
 namespace RenderEngine::Vulkan
 {
-	class DebugMessenger;
-	class Window;
-
 	class DeviceContext
 	{
 	private:

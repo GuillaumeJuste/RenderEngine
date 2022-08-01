@@ -4,11 +4,10 @@
 #define RENDERENGINE_IMAGEVIEW
 
 #include "Vulkan/VulkanBaseInclude.hpp"
+#include "Engine/ImageView/ImageViewCreateInfo.hpp"
 
 namespace RenderEngine::Vulkan
 {
-	struct ImageViewCreateInfo;
-
 	class ImageView
 	{
 	private:

@@ -5,11 +5,10 @@
 
 #include "Vulkan/VulkanBaseInclude.hpp"
 #include "Engine/Window/Surface.hpp"
+#include "Engine/Window/Window.hpp"
 
 namespace RenderEngine::Vulkan
 {
-	class Window;
-
 	struct ImageViewCreateInfo
 	{
 		VkDevice logicalDevice = VK_NULL_HANDLE;

@@ -8,22 +8,14 @@
 
 namespace RenderEngine::Vulkan
 {
-	enum class ShaderType
-	{
-		VERTEX_SHADER = 0x00000001,
-		FRAGMENT_SHADER = 0x00000010,
-		COMPUTE_SHADER = 0x00000020,
-		GEMOETRY_SHADER = 0x00000008,
-	};
-
 	struct ShaderCreateInfo
 	{
-		ShaderType shaderType = ShaderType::VERTEX_SHADER;
+		VkShaderStageFlagBits shaderType;
 		std::string shaderFilePath;
 		VkDevice device = VK_NULL_HANDLE;
 
 		ShaderCreateInfo() = default;
-		ShaderCreateInfo(ShaderType _shaderType, std::string _shaderFilePath,const VkDevice& _device);
+		ShaderCreateInfo(VkShaderStageFlagBits _shaderType, std::string _shaderFilePath,const VkDevice& _device);
 	};
 }
 

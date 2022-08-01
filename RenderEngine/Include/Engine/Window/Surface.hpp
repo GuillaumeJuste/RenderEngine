@@ -4,12 +4,10 @@
 #define RENDERENGINE_SURFACE
 
 #include "Vulkan/VulkanBaseInclude.hpp"
+#include "Engine/Window/Window.hpp"
 
 namespace RenderEngine::Vulkan
 {
-
-	class Window;
-
 	class Surface
 	{
 	private:

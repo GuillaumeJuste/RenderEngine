@@ -22,7 +22,7 @@ void Shader::CreateShader(ShaderCreateInfo _createInfo, Shader* _output)
     }
 
     _output->shaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-    _output->shaderStageInfo.stage = static_cast<VkShaderStageFlagBits>(_output->shaderType);
+    _output->shaderStageInfo.stage = _output->shaderType;
     _output->shaderStageInfo.module = _output->shaderModule;
     _output->shaderStageInfo.pName = "main";
     _output->shaderStageInfo.pNext = VK_NULL_HANDLE;

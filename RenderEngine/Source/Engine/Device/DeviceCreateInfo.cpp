@@ -1,5 +1,4 @@
 #include "Engine/Device/DeviceCreateInfo.hpp"
-#include "Engine/Window/Window.hpp"
 
 using namespace RenderEngine::Vulkan;
 

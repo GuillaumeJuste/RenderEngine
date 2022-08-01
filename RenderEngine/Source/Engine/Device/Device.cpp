@@ -4,9 +4,7 @@
 #include <set>
 #include <iostream>
 
-#include "Engine/Window/Window.hpp"
 #include "Engine/SwapChain/SwapChainCreateInfo.hpp"
-#include "Engine/SwapChain/SwapChainSupportDetails.hpp"
 #include "Engine/CommandPool/CommandPoolCreateInfo.hpp"
 #include "Engine/CommandBuffer/CommandBufferCreateInfo.hpp"
 #include "Engine/Shader/Shader.hpp"
@@ -208,8 +206,8 @@ void Device::CreateRenderPass()
 
 void Device::CreateGraphicsPipeline()
 {
-	ShaderCreateInfo vertexShaderCreateInfo(ShaderType::VERTEX_SHADER, "Resources/Shaders/VertexShader.spv", logicalDevice);
-	ShaderCreateInfo fragmentShaderCreateInfo(ShaderType::FRAGMENT_SHADER, "Resources/Shaders/FragmentShader.spv", logicalDevice);
+	ShaderCreateInfo vertexShaderCreateInfo(VK_SHADER_STAGE_VERTEX_BIT, "Resources/Shaders/VertexShader.spv", logicalDevice);
+	ShaderCreateInfo fragmentShaderCreateInfo(VK_SHADER_STAGE_FRAGMENT_BIT, "Resources/Shaders/FragmentShader.spv", logicalDevice);
 
 	GraphicsPipelineCreateInfo pipelineInfo;
 	Shader::CreateShader(vertexShaderCreateInfo, &pipelineInfo.vertexShader);

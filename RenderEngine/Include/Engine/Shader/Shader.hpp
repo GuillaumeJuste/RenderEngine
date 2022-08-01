@@ -13,7 +13,7 @@ namespace RenderEngine::Vulkan
 	private:
 		VkDevice logicalDevice;
 		VkShaderModule shaderModule;
-		ShaderType shaderType;
+		VkShaderStageFlagBits shaderType;
 		VkPipelineShaderStageCreateInfo shaderStageInfo;
 
 		static std::vector<char> ReadShaderFile(const std::string& _shaderFilePath);

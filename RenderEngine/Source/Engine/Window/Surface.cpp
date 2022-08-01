@@ -3,8 +3,6 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "Engine/Window/Window.hpp"
-
 using namespace RenderEngine::Vulkan;
 
 void Surface::InitializeSurface(const VkInstance& _instance, Window* _window, Surface* _output)

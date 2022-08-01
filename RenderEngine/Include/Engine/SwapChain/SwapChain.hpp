@@ -8,13 +8,11 @@
 #include "Engine/Window/Surface.hpp"
 #include "Engine/ImageView/ImageView.hpp"
 #include "Engine/SwapChain/SwapChainCreateInfo.hpp"
+#include "Engine/SwapChain/SwapChainSupportDetails.hpp"
+#include "Engine/Window/Window.hpp"
 
 namespace RenderEngine::Vulkan
 {
-	struct SwapChainSupportDetails;
-	struct SwapChainCreateInfo;
-	class Window;
-
 	class SwapChain
 	{
 	private:

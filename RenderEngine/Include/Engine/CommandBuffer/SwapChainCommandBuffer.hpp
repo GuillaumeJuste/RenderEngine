@@ -8,7 +8,6 @@
 
 namespace RenderEngine::Vulkan
 {
-
 	class SwapChainCommandBuffer : public CommandBufferBase
 	{
 	private:

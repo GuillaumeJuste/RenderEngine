@@ -5,9 +5,7 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "Engine/SwapChain/SwapChainSupportDetails.hpp"
 #include "Engine/ImageView/ImageViewCreateInfo.hpp"
-#include "Engine/Window/Window.hpp"
 #include "Misc/Math.hpp"
 
 using namespace RenderEngine::Vulkan;
