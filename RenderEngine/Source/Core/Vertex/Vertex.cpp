@@ -1,6 +1,6 @@
-#include "Engine/Vertrex/Vertex.hpp"
+#include "Core/Vertrex/Vertex.hpp"
 
-using namespace RenderEngine::Vulkan;
+using namespace RenderEngine::Core;
 
 VkVertexInputBindingDescription Vertex::GetBindingDescription() 
 {

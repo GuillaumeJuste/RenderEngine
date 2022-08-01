@@ -7,7 +7,7 @@
 #include "Vulkan/VulkanBaseInclude.hpp"
 #include <array>
 
-namespace RenderEngine::Vulkan
+namespace RenderEngine::Core
 {
     struct Vertex 
     {

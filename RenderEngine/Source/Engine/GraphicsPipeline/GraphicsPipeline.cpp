@@ -1,9 +1,10 @@
 #include "Engine/GraphicsPipeline/GraphicsPipeline.hpp"
-#include "Engine/Vertrex/Vertex.hpp"
+#include "Core/Vertrex/Vertex.hpp"
 
 #include <iostream>
 
 using namespace RenderEngine::Vulkan;
+using namespace RenderEngine::Core;
 
 void GraphicsPipeline::InitalizeGraphicsPipeline(GraphicsPipelineCreateInfo _createInfo, GraphicsPipeline* _output)
 {
