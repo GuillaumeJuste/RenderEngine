@@ -1,8 +1,12 @@
 #include "Application/GraphicsApplication.hpp"
+#include "Core/Object/GameObject/GameObject.hpp"
+
 #include <iostream>
+
 
 using namespace RenderEngine;
 using namespace RenderEngine::Vulkan;
+using namespace RenderEngine::Core;
 
 void GraphicsApplication::Run()
 {
@@ -26,6 +30,30 @@ void GraphicsApplication::InitVulkan()
 
 void GraphicsApplication::MainLoop()
 {
+    const std::vector<Vertex> vertices = {
+    {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+    {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+    {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+    {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
+    };
+
+    const std::vector<uint32_t> indices = {
+        0, 1, 2, 2, 3, 0
+    };
+    
+    Mesh mesh;
+    Mesh::InitializeMesh(vertices, indices, &mesh);
+
+    Mathlib::Transform transform;
+
+    GameObjectCreateInfo createinfo;
+    createinfo.mesh = &mesh;
+    createinfo.transform = transform;
+    createinfo.parent = nullptr;
+
+    GameObject gao;
+    GameObject::InitializeGameObject(createinfo, &gao);
+
     while (!glfwWindowShouldClose(window->GetGLFWWindow())) {
         glfwPollEvents();
         deviceContext->GetDevice()->DrawFrame();
