@@ -64,9 +64,9 @@ void GraphicsApplication::MainLoop()
 
     while (!glfwWindowShouldClose(window->GetGLFWWindow())) {
         glfwPollEvents();
-        vulkanContext->GetDevice()->DrawFrame();
+        vulkanContext->GetDeviceContext()->GetRenderContext()->DrawFrame();
     }
-    vkDeviceWaitIdle(vulkanContext->GetDevice()->GetLogicalDevice());
+    vkDeviceWaitIdle(vulkanContext->GetDeviceContext()->GetLogicalDevice());
 }
 
 void GraphicsApplication::Cleanup()

@@ -6,7 +6,7 @@
 #include "Vulkan/VulkanBaseInclude.hpp"
 #include "Engine/Surface/Surface.hpp"
 #include "Engine/RenderPass/RenderPass.hpp"
-#include "Engine/DeviceContext/QueueFamiliyIndices.hpp"
+#include "Engine/DeviceContext/QueueFamilyIndices.hpp"
 #include "Engine/Window/Window.hpp"
 
 namespace RenderEngine::Vulkan

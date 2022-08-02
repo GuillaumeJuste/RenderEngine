@@ -32,7 +32,7 @@ namespace RenderEngine::Vulkan
 		VulkanContext(Window* _window);
 		~VulkanContext() = default;
 
-		DeviceContext* GetDevice();
+		DeviceContext* GetDeviceContext();
 
 		void Cleanup();
 	};

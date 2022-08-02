@@ -122,7 +122,7 @@ std::vector<const char*> VulkanContext::GetRequiredExtensions()
     return extensions;
 }
 
-DeviceContext* VulkanContext::GetDevice()
+DeviceContext* VulkanContext::GetDeviceContext()
 {
     return &device;
 }

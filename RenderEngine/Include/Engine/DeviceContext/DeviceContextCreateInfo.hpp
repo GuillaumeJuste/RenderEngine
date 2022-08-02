@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef RENDERENGINE_DEVICECREATEINFO
-#define RENDERENGINE_DEVICECREATEINFO
+#ifndef RENDERENGINE_DEVICECONTEXTCREATEINFO
+#define RENDERENGINE_DEVICECONTEXTCREATEINFO
 
 #include "Vulkan/VulkanBaseInclude.hpp"
 #include "Engine/Surface/Surface.hpp"
