@@ -4,8 +4,6 @@
 #define RENDERENGINE_IMAGEVIEWCREATEINFO
 
 #include "Vulkan/VulkanBaseInclude.hpp"
-#include "Engine/Window/Surface.hpp"
-#include "Engine/Window/Window.hpp"
 
 namespace RenderEngine::Vulkan
 {

@@ -1,4 +1,4 @@
-#include "Engine/Device/Device.hpp"
+#include "Engine/DeviceContext/DeviceContext.hpp"
 
 #include <stdexcept>
 #include <set>
@@ -25,7 +25,7 @@ const std::vector<uint16_t> indices = {
 	0, 1, 2, 2, 3, 0
 };
 
-void Device::InitalizeDevice(const DeviceCreateInfo& _createInfo, Device* _output)
+void DeviceContext::InitalizeDevice(const DeviceContextCreateInfo& _createInfo, DeviceContext* _output)
 {
 	_output->instance = _createInfo.instance;
 	_output->surface = _createInfo.surface;
@@ -44,7 +44,7 @@ void Device::InitalizeDevice(const DeviceCreateInfo& _createInfo, Device* _outpu
 }
 
 
-bool Device::IsDeviceSuitable(const VkPhysicalDevice& _device)
+bool DeviceContext::IsDeviceSuitable(const VkPhysicalDevice& _device)
 {
 	QueueFamilyIndices indices = FindQueueFamilies(_device);
 
@@ -59,7 +59,7 @@ bool Device::IsDeviceSuitable(const VkPhysicalDevice& _device)
 	return indices.isComplete() && extensionsSupported && swapChainAdequate;
 }
 
-bool Device::checkDeviceExtensionSupport(const VkPhysicalDevice& device)
+bool DeviceContext::checkDeviceExtensionSupport(const VkPhysicalDevice& device)
 {
 	uint32_t extensionCount;
 	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
@@ -76,7 +76,7 @@ bool Device::checkDeviceExtensionSupport(const VkPhysicalDevice& device)
 	return requiredExtensions.empty();
 }
 
-QueueFamilyIndices Device::FindQueueFamilies(VkPhysicalDevice device)
+QueueFamilyIndices DeviceContext::FindQueueFamilies(VkPhysicalDevice device)
 {
 	QueueFamilyIndices indices;
 
@@ -109,7 +109,7 @@ QueueFamilyIndices Device::FindQueueFamilies(VkPhysicalDevice device)
 	return indices;
 }
 
-void Device::PickPhysicalDevice()
+void DeviceContext::PickPhysicalDevice()
 {
 	uint32_t deviceCount = 0;
 	vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
@@ -135,7 +135,7 @@ void Device::PickPhysicalDevice()
 	}
 }
 
-void Device::CreateLogicalDevice()
+void DeviceContext::CreateLogicalDevice()
 {
 	QueueFamilyIndices indices = FindQueueFamilies(physicalDevice);
 
@@ -184,7 +184,7 @@ void Device::CreateLogicalDevice()
 	vkGetDeviceQueue(logicalDevice, indices.presentFamily.value(), 0, &presentQueue);
 }
 
-void Device::CreateSwapChain()
+void DeviceContext::CreateSwapChain()
 {
 	SwapChainCreateInfo createInfo;
 	createInfo.physicalDevice = physicalDevice;
@@ -196,7 +196,7 @@ void Device::CreateSwapChain()
 	SwapChain::InitializeSwapChain(createInfo, &swapChain);
 }
 
-void Device::CreateRenderPass()
+void DeviceContext::CreateRenderPass()
 {
 	RenderPassCreateInfo createInfo;
 	createInfo.logicalDevice = logicalDevice;
@@ -205,7 +205,7 @@ void Device::CreateRenderPass()
 	RenderPass::InitializeRenderPass(createInfo, &renderPass);
 }
 
-void Device::CreateGraphicsPipeline()
+void DeviceContext::CreateGraphicsPipeline()
 {
 	ShaderCreateInfo vertexShaderCreateInfo(VK_SHADER_STAGE_VERTEX_BIT, "Resources/Shaders/VertexShader.spv", logicalDevice);
 	ShaderCreateInfo fragmentShaderCreateInfo(VK_SHADER_STAGE_FRAGMENT_BIT, "Resources/Shaders/FragmentShader.spv", logicalDevice);
@@ -220,7 +220,7 @@ void Device::CreateGraphicsPipeline()
 	GraphicsPipeline::InitalizeGraphicsPipeline(pipelineInfo, &graphicsPipeline);
 }
 
-void Device::CreateFrameBuffer()
+void DeviceContext::CreateFrameBuffer()
 {
 	FrameBufferCreateInfo createInfo;
 	createInfo.logicalDevice = logicalDevice;
@@ -232,7 +232,7 @@ void Device::CreateFrameBuffer()
 	FrameBuffer::InitializeFrameBuffer(createInfo, &frameBuffer);
 }
 
-void Device::CreateCommandPool()
+void DeviceContext::CreateCommandPool()
 {
 	CommandPoolCreateInfo createInfo;
 	createInfo.logicalDevice = logicalDevice;
@@ -240,7 +240,7 @@ void Device::CreateCommandPool()
 	CommandPool::InitializeCommandPool(createInfo, &commandPool);
 }
 
-void Device::CreateCommandBuffer()
+void DeviceContext::CreateCommandBuffer()
 {
 	CommandBufferCreateInfo createInfo;
 	createInfo.logicalDevice = logicalDevice;
@@ -260,13 +260,13 @@ void Device::CreateCommandBuffer()
 	}
 }
 
-void Device::CleanUpSwapChain()
+void DeviceContext::CleanUpSwapChain()
 {
 	frameBuffer.Cleanup();
 	swapChain.Cleanup();
 }
 
-void Device::RecreateSwapChain()
+void DeviceContext::RecreateSwapChain()
 {
 	vkDeviceWaitIdle(logicalDevice);
 
@@ -286,7 +286,7 @@ void Device::RecreateSwapChain()
 	CreateFrameBuffer();
 }
 
-void Device::CreateVertexBufferObject()
+void DeviceContext::CreateVertexBufferObject()
 {
 	BufferObjectCreateInfo stagingBufferCreateInfo;
 	stagingBufferCreateInfo.physicalDevice = physicalDevice;
@@ -315,7 +315,7 @@ void Device::CreateVertexBufferObject()
 	stagingBufferObject.Cleanup();
 }
 
-void Device::CreateIndexBufferObject()
+void DeviceContext::CreateIndexBufferObject()
 {
 	BufferObjectCreateInfo stagingBufferCreateInfo;
 	stagingBufferCreateInfo.physicalDevice = physicalDevice;
@@ -344,7 +344,7 @@ void Device::CreateIndexBufferObject()
 	stagingBufferObject.Cleanup();
 }
 
-void Device::DrawFrame()
+void DeviceContext::DrawFrame()
 {
 	vkWaitForFences(logicalDevice, 1, &commandBuffers[currentFrame].GetInFlightFence(), VK_TRUE, UINT64_MAX);
 
@@ -413,27 +413,27 @@ void Device::DrawFrame()
 	currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
 
-const VkPhysicalDevice& Device::GetPhysicalDevice() const
+const VkPhysicalDevice& DeviceContext::GetPhysicalDevice() const
 {
 	return physicalDevice;
 }
 
-const uint32_t& Device::GetGraphicsQueueIndex()const 
+const uint32_t& DeviceContext::GetGraphicsQueueIndex()const
 {
 	return queueFamilyIndices.graphicsFamily.value();
 }
 
-const VkDevice& Device::GetLogicalDevice() const 
+const VkDevice& DeviceContext::GetLogicalDevice() const
 {
 	return logicalDevice;
 }
 
-const VkQueue& Device::GetGraphicsQueue() const
+const VkQueue& DeviceContext::GetGraphicsQueue() const
 {
 	return graphicsQueue;
 }
 
-void Device::Cleanup()
+void DeviceContext::Cleanup()
 {
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 	{

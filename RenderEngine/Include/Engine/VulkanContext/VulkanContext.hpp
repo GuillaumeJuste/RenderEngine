@@ -1,24 +1,24 @@
 #pragma once
 
-#ifndef RENDERENGINE_DEVICECONTEXT
-#define RENDERENGINE_DEVICECONTEXT
+#ifndef RENDERENGINE_VULKANCONTEXT
+#define RENDERENGINE_VULKANCONTEXT
 
 #include "Vulkan/VulkanBaseInclude.hpp"
-#include "Engine/Device/Device.hpp"
-#include "Engine/Window/Surface.hpp"
+#include "Engine/DeviceContext/DeviceContext.hpp"
+#include "Engine/Surface/Surface.hpp"
 #include "Engine/Debugger/DebugMessenger.hpp"
 #include "Engine/Window/Window.hpp"
 
 namespace RenderEngine::Vulkan
 {
-	class DeviceContext
+	class VulkanContext
 	{
 	private:
 		VkInstance instance;
 		Window* window;
 
 		DebugMessenger debugMessenger;
-		Device device;
+		DeviceContext device;
 		Surface surface;
 
 		void CreateInstance();
@@ -29,10 +29,10 @@ namespace RenderEngine::Vulkan
 		bool CheckValidationLayerSupport();
 		std::vector<const char*> GetRequiredExtensions();
 	public:
-		DeviceContext(Window* _window);
-		~DeviceContext() = default;
+		VulkanContext(Window* _window);
+		~VulkanContext() = default;
 
-		Device* GetDevice();
+		DeviceContext* GetDevice();
 
 		void Cleanup();
 	};

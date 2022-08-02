@@ -5,7 +5,7 @@
 
 #include "Vulkan/VulkanBaseInclude.hpp"
 
-#include "Engine/Window/Surface.hpp"
+#include "Engine/Surface/Surface.hpp"
 #include "Engine/ImageView/ImageView.hpp"
 #include "Engine/SwapChain/SwapChainCreateInfo.hpp"
 #include "Engine/SwapChain/SwapChainSupportDetails.hpp"

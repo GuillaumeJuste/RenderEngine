@@ -4,19 +4,19 @@
 #define RENDERENGINE_DEVICECREATEINFO
 
 #include "Vulkan/VulkanBaseInclude.hpp"
-#include "Engine/Window/Surface.hpp"
+#include "Engine/Surface/Surface.hpp"
 #include "Engine/Window/Window.hpp"
 
 namespace RenderEngine::Vulkan
 {
-	struct DeviceCreateInfo
+	struct DeviceContextCreateInfo
 	{
 		VkInstance instance = VK_NULL_HANDLE;
 		Surface* surface;
 		Window* window;
 
-		DeviceCreateInfo() = default;
-		DeviceCreateInfo(const VkInstance& _instance, Surface* _surface, Window* _window);
+		DeviceContextCreateInfo() = default;
+		DeviceContextCreateInfo(const VkInstance& _instance, Surface* _surface, Window* _window);
 	};
 }
 

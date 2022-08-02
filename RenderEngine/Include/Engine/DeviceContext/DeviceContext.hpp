@@ -1,13 +1,13 @@
 #pragma once
 
-#ifndef RENDERENGINE_DEVICE
-#define RENDERENGINE_DEVICE
+#ifndef RENDERENGINE_DEVICECONTEXT
+#define RENDERENGINE_DEVICECONTEXT
 
-#include "Engine/Device/QueueFamiliyIndices.hpp"
-#include "Engine/Window/Surface.hpp"
+#include "Engine/DeviceContext/DeviceContextCreateInfo.hpp"
+#include "Engine/DeviceContext/QueueFamiliyIndices.hpp"
+#include "Engine/Surface/Surface.hpp"
 #include "Engine/SwapChain/SwapChain.hpp"
 #include "Engine/GraphicsPipeline/GraphicsPipeline.hpp"
-#include "Engine/Device/DeviceCreateInfo.hpp"
 #include "Engine/FrameBuffer/FrameBuffer.hpp"
 #include "Engine/CommandPool/CommandPool.hpp"
 #include "Engine/CommandBuffer/SwapChainCommandBuffer.hpp"
@@ -17,7 +17,7 @@
 
 namespace RenderEngine::Vulkan
 {
-	class Device
+	class DeviceContext
 	{
 	private:
 		VkInstance instance;
@@ -71,10 +71,10 @@ namespace RenderEngine::Vulkan
 		void RecreateSwapChain();
 
 	public:
-		Device() = default;
-		~Device() = default;
+		DeviceContext() = default;
+		~DeviceContext() = default;
 
-		static void InitalizeDevice(const DeviceCreateInfo& _createInfo, Device* _output);
+		static void InitalizeDevice(const DeviceContextCreateInfo& _createInfo, DeviceContext* _output);
 
 		void DrawFrame();
 

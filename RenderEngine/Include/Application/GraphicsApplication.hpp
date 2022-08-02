@@ -4,7 +4,7 @@
 #define RENDERENGINE_GRAPHICSAPPLICATION
 
 #include "Vulkan/VulkanBaseInclude.hpp"
-#include "Engine/Device/DeviceContext.hpp"
+#include "Engine/VulkanContext/VulkanContext.hpp"
 #include "Engine/Window/Window.hpp"
 
 namespace RenderEngine
@@ -15,7 +15,7 @@ namespace RenderEngine
 	{
 	private:
 		Window* window;
-		DeviceContext* deviceContext;
+		VulkanContext* vulkanContext;
 
 		void InitVulkan();
 		void InitWindow();

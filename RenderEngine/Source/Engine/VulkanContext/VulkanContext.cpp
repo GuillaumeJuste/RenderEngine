@@ -1,13 +1,13 @@
-#include "Engine/Device/DeviceContext.hpp"
+#include "Engine/VulkanContext/VulkanContext.hpp"
 
 #include <stdexcept>
 #include <iostream>
 
-#include "Engine/Device/DeviceCreateInfo.hpp"
+#include "Engine/DeviceContext/DeviceContextCreateInfo.hpp"
 
 using namespace RenderEngine::Vulkan;
 
-DeviceContext::DeviceContext(Window* _window) :
+VulkanContext::VulkanContext(Window* _window) :
     window{ _window }
 {
     CreateInstance();
@@ -16,7 +16,7 @@ DeviceContext::DeviceContext(Window* _window) :
     CreateDevice();
 }
 
-void DeviceContext::CreateInstance()
+void VulkanContext::CreateInstance()
 {
     if (enableValidationLayers && !CheckValidationLayerSupport()) 
     {
@@ -25,9 +25,9 @@ void DeviceContext::CreateInstance()
 
     VkApplicationInfo appInfo{};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-    appInfo.pApplicationName = "Hello Triangle";
+    appInfo.pApplicationName = "RenderEngine";
     appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-    appInfo.pEngineName = "No Engine";
+    appInfo.pEngineName = "RenderEngine";
     appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
     appInfo.apiVersion = VK_API_VERSION_1_0;
 
@@ -61,7 +61,7 @@ void DeviceContext::CreateInstance()
     }
 }
 
-void DeviceContext::SetupDebugMessenger()
+void VulkanContext::SetupDebugMessenger()
 {
     if (!enableValidationLayers)
         return;
@@ -69,19 +69,19 @@ void DeviceContext::SetupDebugMessenger()
     DebugMessenger::InitializeDebugMessenger(instance, &debugMessenger);
 }
 
-void DeviceContext::CreateDevice()
+void VulkanContext::CreateDevice()
 {
-    DeviceCreateInfo createInfo(instance, &surface, window);
+    DeviceContextCreateInfo createInfo(instance, &surface, window);
 
-    Device::InitalizeDevice(createInfo, &device);
+    DeviceContext::InitalizeDevice(createInfo, &device);
 }
 
-void DeviceContext::CreateSurface()
+void VulkanContext::CreateSurface()
 {
     Surface::InitializeSurface(instance, window, &surface);
 }
 
-bool DeviceContext::CheckValidationLayerSupport() 
+bool VulkanContext::CheckValidationLayerSupport()
 {
     uint32_t layerCount;
     vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
@@ -107,7 +107,7 @@ bool DeviceContext::CheckValidationLayerSupport()
     return true;
 }
 
-std::vector<const char*> DeviceContext::GetRequiredExtensions() 
+std::vector<const char*> VulkanContext::GetRequiredExtensions()
 {
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions;
@@ -122,12 +122,12 @@ std::vector<const char*> DeviceContext::GetRequiredExtensions()
     return extensions;
 }
 
-Device* DeviceContext::GetDevice()
+DeviceContext* VulkanContext::GetDevice()
 {
     return &device;
 }
 
-void DeviceContext::Cleanup()
+void VulkanContext::Cleanup()
 {
     device.Cleanup();
 
@@ -139,5 +139,5 @@ void DeviceContext::Cleanup()
     surface.Cleanup();
 
     vkDestroyInstance(instance, nullptr);
-    std::cout << "[Cleaned] Device Context" << std::endl;
+    std::cout << "[Cleaned] Vulkan Context" << std::endl;
 }

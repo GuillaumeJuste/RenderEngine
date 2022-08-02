@@ -37,7 +37,7 @@ bool Scene::RemoveGameObject(GameObject* _gao)
 
 				for (size_t j = 0; j < size; j++)
 				{
-					childrensList[j]->SetParent(&rootObject);
+					childrensList[j]->SetParent(_gao->GetParent());
 				}
 			}
 
