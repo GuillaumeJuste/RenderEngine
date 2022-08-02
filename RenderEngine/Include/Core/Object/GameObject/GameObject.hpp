@@ -16,9 +16,9 @@ namespace RenderEngine::Core
     private:
         Mesh* mesh = nullptr;
 
-        Object* parent = nullptr;
+        GameObject* parent = nullptr;
 
-        std::vector<Object*> childrens;
+        std::vector<GameObject*> childrens;
 
         Mathlib::Transform transform;
 
@@ -28,13 +28,17 @@ namespace RenderEngine::Core
 
         static void InitializeGameObject(const GameObjectCreateInfo& _createinfo, GameObject* _output);
 
-        void AddChild(Object* _newChild);
-        bool RemoveChild(Object* _child);
+        void AddChild(GameObject* _newChild);
+        bool RemoveChild(GameObject* _child);
 
-        Mesh* GetMesh();
-        Object* GetParent();
+        Mesh* GetMesh() const;
+        GameObject* GetParent() const;
         const Mathlib::Transform& GetTransform() const;
-        std::vector<Object*> GetChildrens();
+        Mathlib::Transform GetWorldTransform();
+
+        std::vector<GameObject*> GetChildrens() const;
+
+        void SetParent(GameObject* _newParent);
     };
 }
 

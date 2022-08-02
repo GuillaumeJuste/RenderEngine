@@ -1,5 +1,6 @@
 #include "Application/GraphicsApplication.hpp"
 #include "Core/Object/GameObject/GameObject.hpp"
+#include "Core/Scene/Scene.hpp"
 
 #include <iostream>
 
@@ -30,6 +31,12 @@ void GraphicsApplication::InitVulkan()
 
 void GraphicsApplication::MainLoop()
 {
+    SceneCreateInfo sceneInfo;
+    sceneInfo.name = "test_scene_1";
+
+    Scene scene;
+    Scene::InitializeScene(sceneInfo, &scene);
+
     const std::vector<Vertex> vertices = {
     {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
     {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
@@ -49,10 +56,11 @@ void GraphicsApplication::MainLoop()
     GameObjectCreateInfo createinfo;
     createinfo.mesh = &mesh;
     createinfo.transform = transform;
-    createinfo.parent = nullptr;
+    createinfo.parent = scene.GetSceneRoot();
+    createinfo.name = "first_object";
 
-    GameObject gao;
-    GameObject::InitializeGameObject(createinfo, &gao);
+    GameObject* obj = scene.AddGameObject(createinfo);
+
 
     while (!glfwWindowShouldClose(window->GetGLFWWindow())) {
         glfwPollEvents();

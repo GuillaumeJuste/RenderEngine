@@ -8,14 +8,15 @@ void GameObject::InitializeGameObject(const GameObjectCreateInfo& _createinfo, G
 	_output->mesh = _createinfo.mesh;
 	_output->parent = _createinfo.parent;
 	_output->transform = _createinfo.transform;
+	_output->name = _createinfo.name;
 }
 
-void GameObject::AddChild(Object* _newChild)
+void GameObject::AddChild(GameObject* _newChild)
 {
 	childrens.push_back(_newChild);
 }
 
-bool GameObject::RemoveChild(Object* _child)
+bool GameObject::RemoveChild(GameObject* _child)
 {
 	size_t size = childrens.size();
 
@@ -30,22 +31,39 @@ bool GameObject::RemoveChild(Object* _child)
 	return false;
 }
 
-Mesh* GameObject::GetMesh()
+Mesh* GameObject::GetMesh() const
 {
 	return mesh;
 }
 
-Object* GameObject::GetParent()
+GameObject* GameObject::GetParent() const
 {
 	return parent;
 }
 
-const Mathlib::Transform& GameObject::GetTransform() const
+const Transform& GameObject::GetTransform() const
 {
 	return transform;
 }
 
-std::vector<Object*> GameObject::GetChildrens()
+Transform GameObject::GetWorldTransform()
+{
+	if (parent == nullptr)
+	{
+		return transform;
+	}
+
+	Transform parentTransform = parent->GetWorldTransform();
+
+	return Transform::GetWorldTransfrom(parentTransform, transform);
+}
+
+std::vector<GameObject*> GameObject::GetChildrens() const
 {
 	return childrens;
+}
+
+void GameObject::SetParent(GameObject* _newParent)
+{
+	parent = _newParent;
 }

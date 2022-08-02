@@ -11,19 +11,29 @@ Object::Object()
 	nextId++;
 }
 
-unsigned int Object::GetUId()
+unsigned int Object::GetUId() const
 {
 	return uid;
 }
 
-std::string Object::GetName()
+std::string Object::GetName() const
 {
 	return name;
+}
+
+bool Object::GetIsHidden() const
+{
+	return isHidden;
 }
 
 void Object::SetName(std::string _name)
 {
 	name = _name;
+}
+
+void Object::SetIsHidden(bool _val)
+{
+	isHidden = _val;
 }
 
 bool Object::operator==(const Object& _rhs)

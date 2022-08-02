@@ -14,15 +14,17 @@ namespace RenderEngine::Core
     protected :
         unsigned int uid;
         std::string name;
-        
+        bool isHidden = false;
         
     public :
         Object();
         ~Object() = default;
 
-        unsigned int GetUId();
-        std::string GetName();
+        unsigned int GetUId() const;
+        std::string GetName() const;
+        bool GetIsHidden() const;
         void SetName(std::string _name);
+        void SetIsHidden(bool _val);
 
         bool operator==(const Object& _rhs);
     };
