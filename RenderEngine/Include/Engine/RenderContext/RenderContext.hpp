@@ -29,15 +29,10 @@ namespace RenderEngine::Vulkan
 		VkQueue presentQueue;
 
 		SwapChain swapChain;
-
 		RenderPass renderPass;
-
 		GraphicsPipeline graphicsPipeline;
-
 		FrameBuffer frameBuffer;
-
 		CommandPool commandPool;
-
 		std::vector<SwapChainCommandBuffer> commandBuffers;
 
 		uint32_t currentFrame = 0;

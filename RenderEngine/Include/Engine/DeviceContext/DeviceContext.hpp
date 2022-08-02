@@ -16,8 +16,9 @@ namespace RenderEngine::Vulkan
 	{
 	private:
 		VkInstance instance;
-		Surface* surface;
 		Window* window;
+
+		Surface surface;
 
 		QueueFamilyIndices queueFamilyIndices;
 
@@ -29,6 +30,7 @@ namespace RenderEngine::Vulkan
 
 		RenderContext renderContext;
 
+		void CreateSurface();
 		bool IsDeviceSuitable(const VkPhysicalDevice& _device);
 		bool checkDeviceExtensionSupport(const VkPhysicalDevice& _device);
 		

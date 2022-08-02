@@ -12,7 +12,6 @@ VulkanContext::VulkanContext(Window* _window) :
 {
     CreateInstance();
     SetupDebugMessenger();
-    CreateSurface();
     CreateDevice();
 }
 
@@ -71,15 +70,14 @@ void VulkanContext::SetupDebugMessenger()
 
 void VulkanContext::CreateDevice()
 {
-    DeviceContextCreateInfo createInfo(instance, &surface, window);
+    DeviceContextCreateInfo createInfo;
+    createInfo.instance = instance;
+    createInfo.window = window;
 
     DeviceContext::InitalizeDevice(createInfo, &device);
 }
 
-void VulkanContext::CreateSurface()
-{
-    Surface::InitializeSurface(instance, window, &surface);
-}
+
 
 bool VulkanContext::CheckValidationLayerSupport()
 {
@@ -135,8 +133,6 @@ void VulkanContext::Cleanup()
     {
         debugMessenger.Cleanup();
     }
-
-    surface.Cleanup();
 
     vkDestroyInstance(instance, nullptr);
     std::cout << "[Cleaned] Vulkan Context" << std::endl;

@@ -14,15 +14,15 @@ using namespace RenderEngine::Vulkan;
 void DeviceContext::InitalizeDevice(const DeviceContextCreateInfo& _createInfo, DeviceContext* _output)
 {
 	_output->instance = _createInfo.instance;
-	_output->surface = _createInfo.surface;
 	_output->window = _createInfo.window;
 
+	_output->CreateSurface();
 	_output->PickPhysicalDevice();
 	_output->CreateLogicalDevice();
 
 	RenderContextCreateInfo createInfo;
 	createInfo.instance = _output->instance;
-	createInfo.surface = _output->surface;
+	createInfo.surface = &_output->surface;
 	createInfo.window = _output->window;
 	createInfo.physicalDevice = _output->physicalDevice;
 	createInfo.logicalDevice = _output->logicalDevice;
@@ -33,6 +33,11 @@ void DeviceContext::InitalizeDevice(const DeviceContextCreateInfo& _createInfo, 
 	RenderContext::InitalizeRenderContext(createInfo, &_output->renderContext);
 }
 
+void DeviceContext::CreateSurface()
+{
+	Surface::InitializeSurface(instance, window, &surface);
+}
+
 bool DeviceContext::IsDeviceSuitable(const VkPhysicalDevice& _device)
 {
 	QueueFamilyIndices indices = FindQueueFamilies(_device);
@@ -41,7 +46,7 @@ bool DeviceContext::IsDeviceSuitable(const VkPhysicalDevice& _device)
 
 	bool swapChainAdequate = false;
 	if (extensionsSupported) {
-		SwapChainSupportDetails swapChainSupport = SwapChain::QuerySwapChainSupport(_device, *surface);
+		SwapChainSupportDetails swapChainSupport = SwapChain::QuerySwapChainSupport(_device, surface);
 		swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
 	}
 
@@ -82,7 +87,7 @@ QueueFamilyIndices DeviceContext::FindQueueFamilies(VkPhysicalDevice device)
 		}
 
 		VkBool32 presentSupport = false;
-		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface->GetVkSurface(), &presentSupport);
+		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface.GetVkSurface(), &presentSupport);
 
 		if (presentSupport) {
 			indices.presentFamily = i;
@@ -203,5 +208,6 @@ void DeviceContext::Cleanup()
 {
 	renderContext.Cleanup();
 	vkDestroyDevice(logicalDevice, nullptr);
+	surface.Cleanup();
 	std::cout << "[Cleaned] Device Context" << std::endl;
 }

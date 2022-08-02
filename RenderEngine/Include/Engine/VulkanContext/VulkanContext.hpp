@@ -19,12 +19,10 @@ namespace RenderEngine::Vulkan
 
 		DebugMessenger debugMessenger;
 		DeviceContext device;
-		Surface surface;
 
 		void CreateInstance();
 		void SetupDebugMessenger();
 		void CreateDevice();
-		void CreateSurface();
 
 		bool CheckValidationLayerSupport();
 		std::vector<const char*> GetRequiredExtensions();
