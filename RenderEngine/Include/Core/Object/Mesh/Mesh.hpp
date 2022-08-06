@@ -5,7 +5,7 @@
 
 #include "Core/Object/Object.hpp"
 #include "Core/Vertrex/Vertex.hpp"
-#include "Engine/BufferObject/BufferObject.hpp"
+#include "Vulkan/BufferObject/BufferObject.hpp"
 #include <vector>
 
 namespace RenderEngine::Core

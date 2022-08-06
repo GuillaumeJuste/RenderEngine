@@ -3,9 +3,9 @@
 #ifndef RENDERENGINE_GRAPHICSAPPLICATION
 #define RENDERENGINE_GRAPHICSAPPLICATION
 
-#include "Vulkan/VulkanBaseInclude.hpp"
-#include "Engine/VulkanContext/VulkanContext.hpp"
-#include "Engine/Window/Window.hpp"
+#include "Vulkan/Misc/VulkanBaseInclude.hpp"
+#include "Vulkan/VulkanContext/VulkanContext.hpp"
+#include "Glfw/Window/Window.hpp"
 
 namespace RenderEngine
 { 

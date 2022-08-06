@@ -4,7 +4,7 @@
 #define RENDERENGINE_VERTEX
 
 #include "Collections/Space.hpp"
-#include "Vulkan/VulkanBaseInclude.hpp"
+#include "Vulkan/Misc/VulkanBaseInclude.hpp"
 #include <array>
 
 namespace RenderEngine::Core
