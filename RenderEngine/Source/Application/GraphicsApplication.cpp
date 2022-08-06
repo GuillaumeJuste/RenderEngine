@@ -1,6 +1,5 @@
 #include "Application/GraphicsApplication.hpp"
 #include "Core/Object/GameObject/GameObject.hpp"
-#include "Core/Scene/Scene.hpp"
 
 #include <iostream>
 
@@ -34,7 +33,6 @@ void GraphicsApplication::MainLoop()
     SceneCreateInfo sceneInfo;
     sceneInfo.name = "test_scene_1";
 
-    Scene scene;
     Scene::InitializeScene(sceneInfo, &scene);
 
     const std::vector<Vertex> vertices = {
