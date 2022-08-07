@@ -23,8 +23,6 @@ namespace RenderEngine::Vulkan
 		GraphicsPipeline* graphicsPipeline;
 		FrameBuffer* frameBuffer;
 		Window* window;
-		BufferObject* vertexBufferObject;
-		BufferObject* indexBufferObject;
 
 
 		CommandBufferCreateInfo() = default;

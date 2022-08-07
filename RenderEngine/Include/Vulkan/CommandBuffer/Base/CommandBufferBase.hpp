@@ -4,7 +4,7 @@
 #define RENDERENGINE_COMMANDBUFFERBASE
 
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
-#include "Vulkan/CommandBuffer/CommandBufferCreateInfo.hpp"
+#include "Vulkan/CommandBuffer/Base/CommandBufferCreateInfo.hpp"
 
 namespace RenderEngine::Vulkan
 {

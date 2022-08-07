@@ -1,5 +1,5 @@
 #include "Vulkan/CommandBuffer/Base/CommandBufferBase.hpp"
-#include "Vulkan/CommandBuffer/CommandBufferCreateInfo.hpp"
+#include "Vulkan/CommandBuffer/Base/CommandBufferCreateInfo.hpp"
 
 #include "Vulkan/CommandPool/CommandPool.hpp"
 

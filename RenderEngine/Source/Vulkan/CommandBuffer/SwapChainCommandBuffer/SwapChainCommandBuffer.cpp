@@ -1,4 +1,4 @@
-#include "Vulkan/CommandBuffer/SwapChainCommandBuffer.hpp"
+#include "Vulkan/CommandBuffer/SwapChainCommandBuffer/SwapChainCommandBuffer.hpp"
 
 #include "Vulkan/GraphicsPipeline/GraphicsPipeline.hpp"
 #include "Vulkan/RenderPass/RenderPass.hpp"
@@ -14,7 +14,7 @@ const std::vector<uint16_t> indices = {
 	0, 1, 2, 2, 3, 0
 };
 
-void SwapChainCommandBuffer::InitializeCommandBuffer(CommandBufferCreateInfo _createInfo, SwapChainCommandBuffer* _output)
+void SwapChainCommandBuffer::InitializeCommandBuffer(SwapChainCommandBufferCreateInfo _createInfo, SwapChainCommandBuffer* _output)
 {
 	_output->vertexBufferObject = _createInfo.vertexBufferObject;
 	_output->indexBufferObject = _createInfo.indexBufferObject;

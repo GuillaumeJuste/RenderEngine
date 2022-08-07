@@ -5,6 +5,7 @@
 
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Vulkan/CommandBuffer/Base/CommandBufferBase.hpp"
+#include "Vulkan/CommandBuffer/SwapChainCommandBuffer/SwapChainCommandBufferCreateInfo.hpp"
 
 namespace RenderEngine::Vulkan
 {
@@ -23,7 +24,7 @@ namespace RenderEngine::Vulkan
 		SwapChainCommandBuffer() = default;
 		~SwapChainCommandBuffer() = default;
 
-		static void InitializeCommandBuffer(CommandBufferCreateInfo _createInfo, SwapChainCommandBuffer* _output);
+		static void InitializeCommandBuffer(SwapChainCommandBufferCreateInfo _createInfo, SwapChainCommandBuffer* _output);
 
 		void RecordCommandBuffer(uint32_t imageIndex);
 		void Cleanup();

@@ -11,7 +11,7 @@
 #include "Vulkan/GraphicsPipeline/GraphicsPipeline.hpp"
 #include "Vulkan/FrameBuffer/FrameBuffer.hpp"
 #include "Vulkan/CommandPool/CommandPool.hpp"
-#include "Vulkan/CommandBuffer/SwapChainCommandBuffer.hpp"
+#include "Vulkan/CommandBuffer/SwapChainCommandBuffer/SwapChainCommandBuffer.hpp"
 #include "Vulkan/BufferObject/BufferObject.hpp"
 
 namespace RenderEngine::Vulkan

@@ -96,7 +96,7 @@ void RenderContext::CreateCommandPool()
 
 void RenderContext::CreateCommandBuffer()
 {
-	CommandBufferCreateInfo createInfo;
+	SwapChainCommandBufferCreateInfo createInfo;
 	createInfo.logicalDevice = logicalDevice;
 	createInfo.commandPool = &commandPool;
 	createInfo.renderPass = &renderPass;
