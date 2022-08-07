@@ -7,12 +7,34 @@
 
 namespace RenderEngine::Vulkan
 {
+	/**
+	 * @brief struct holding data for BufferObject creation
+	*/
 	struct BufferObjectCreateInfo
 	{
+		/**
+		 * @brief vulkan physical device handle
+		*/
 		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+
+		/**
+		 * @brief vulkan logical device handle
+		*/
 		VkDevice logicalDevice;
+
+		/**
+		 * @brief Size of the buffer to be allocated
+		*/
 		VkDeviceSize bufferSize;
+
+		/**
+		 * @brief buffer usage flags
+		*/
 		VkBufferUsageFlags usage;
+
+		/**
+		 * @brief memoery property flags
+		*/
 		VkMemoryPropertyFlags memoryProperties;
 
 		BufferObjectCreateInfo() = default;
