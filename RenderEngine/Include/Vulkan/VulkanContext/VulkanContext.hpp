@@ -18,11 +18,10 @@ namespace RenderEngine::Vulkan
 		Window* window;
 
 		DebugMessenger debugMessenger;
-		DeviceContext device;
+		std::vector<DeviceContext> devices;
 
 		void CreateInstance();
 		void SetupDebugMessenger();
-		void CreateDevice();
 
 		bool CheckValidationLayerSupport();
 		std::vector<const char*> GetRequiredExtensions();
@@ -30,7 +29,7 @@ namespace RenderEngine::Vulkan
 		VulkanContext(Window* _window);
 		~VulkanContext() = default;
 
-		DeviceContext* GetDeviceContext();
+		DeviceContext* CreateDeviceContext();
 
 		void Cleanup();
 	};

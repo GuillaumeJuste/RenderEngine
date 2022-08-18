@@ -17,7 +17,6 @@ namespace RenderEngine::Vulkan
 		VkDevice logicalDevice = VK_NULL_HANDLE;
 		Surface* surface = nullptr;
 		Window* window = nullptr;
-		RenderPass* renderPass = nullptr;
 		QueueFamilyIndices queueFamilyIndices;
 
 		SwapChainCreateInfo() = default;

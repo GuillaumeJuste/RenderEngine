@@ -16,7 +16,7 @@ namespace RenderEngine::Vulkan
 		/**
 		 * @brief GLFW window handle
 		*/
-		GLFWwindow* glfw_window;
+		GLFWwindow* glfwWindow;
 
 		/**
 		 * @brief window width
@@ -33,11 +33,6 @@ namespace RenderEngine::Vulkan
 		*/
 		const char* name;
 		
-		/**
-		 * @brief set to true when window has been resized
-		*/
-		bool frameBufferResized = false;
-
 		/**
 		 * @brief Callback function called when GLFW window is resized
 		 * @param _window window handle
@@ -65,13 +60,6 @@ namespace RenderEngine::Vulkan
 		 * @return GLFW window handle
 		*/
 		GLFWwindow* GetGLFWWindow();
-
-		/**
-		 * @brief Get if window was resized
-		 * @return true if window has been resized
-		*/
-		const bool& GetFrameBufferResized() const;
-		void SetFrameBufferResized(bool _val);
 
 		/**
 		 * @brief Get window dimensions

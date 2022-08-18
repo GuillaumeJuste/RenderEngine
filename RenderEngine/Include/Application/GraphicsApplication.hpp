@@ -22,9 +22,14 @@ namespace RenderEngine
 		Window* window;
 
 		/**
-		 * @brief vulkan context used to render scene
+		 * @brief vulkan context
 		*/
 		VulkanContext* vulkanContext;
+
+		/**
+		 * @brief device used to render scene
+		*/
+		DeviceContext* deviceContext;
 
 		/**
 		 * @brief scene to render

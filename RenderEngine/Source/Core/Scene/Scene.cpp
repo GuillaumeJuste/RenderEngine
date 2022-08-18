@@ -18,7 +18,7 @@ GameObject* Scene::AddGameObject(GameObjectCreateInfo _createInfo)
 
 	_createInfo.parent->AddChild(&gao);
 
-	return &gameObjects[gameObjects.size()-1];
+	return &gameObjects.back();
 }
 
 bool Scene::RemoveGameObject(GameObject* _gao)

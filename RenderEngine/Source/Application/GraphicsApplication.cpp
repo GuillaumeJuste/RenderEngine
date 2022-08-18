@@ -26,6 +26,8 @@ void GraphicsApplication::InitVulkan()
 {
     std::cout << "[Initialize] Vulkan" << std::endl;
     vulkanContext = new VulkanContext(window);
+
+    deviceContext = vulkanContext->CreateDeviceContext();
 }
 
 void GraphicsApplication::MainLoop()
@@ -62,9 +64,9 @@ void GraphicsApplication::MainLoop()
 
     while (!glfwWindowShouldClose(window->GetGLFWWindow())) {
         glfwPollEvents();
-        vulkanContext->GetDeviceContext()->GetRenderContext()->DrawFrame();
+        deviceContext->GetRenderContext()->DrawFrame();
     }
-    vkDeviceWaitIdle(vulkanContext->GetDeviceContext()->GetLogicalDevice());
+    vkDeviceWaitIdle(deviceContext->GetLogicalDevice());
 }
 
 void GraphicsApplication::Cleanup()

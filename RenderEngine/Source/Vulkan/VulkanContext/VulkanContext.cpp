@@ -12,7 +12,6 @@ VulkanContext::VulkanContext(Window* _window) :
 {
     CreateInstance();
     SetupDebugMessenger();
-    CreateDevice();
 }
 
 void VulkanContext::CreateInstance()
@@ -68,17 +67,6 @@ void VulkanContext::SetupDebugMessenger()
     DebugMessenger::InitializeDebugMessenger(instance, &debugMessenger);
 }
 
-void VulkanContext::CreateDevice()
-{
-    DeviceContextCreateInfo createInfo;
-    createInfo.instance = instance;
-    createInfo.window = window;
-
-    DeviceContext::InitalizeDevice(createInfo, &device);
-}
-
-
-
 bool VulkanContext::CheckValidationLayerSupport()
 {
     uint32_t layerCount;
@@ -120,14 +108,29 @@ std::vector<const char*> VulkanContext::GetRequiredExtensions()
     return extensions;
 }
 
-DeviceContext* VulkanContext::GetDeviceContext()
+DeviceContext* VulkanContext::CreateDeviceContext()
 {
-    return &device;
+    DeviceContextCreateInfo createInfo;
+    createInfo.instance = instance;
+    createInfo.window = window;
+
+    DeviceContext newDevice;
+
+    DeviceContext::InitalizeDevice(createInfo, &newDevice);
+
+    devices.push_back(newDevice);
+
+    return &devices.back();
 }
 
 void VulkanContext::Cleanup()
 {
-    device.Cleanup();
+    int deviceSize = devices.size();
+
+    for (int i = 0; i < deviceSize; i++)
+    {
+        devices[i].Cleanup();
+    }
 
     if (enableValidationLayers) 
     {

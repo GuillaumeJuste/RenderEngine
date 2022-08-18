@@ -13,9 +13,9 @@ Window::Window(unsigned int _width, unsigned int _height, const char* _name) :
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-    glfw_window = glfwCreateWindow(_width, _height, _name, nullptr, nullptr);
-    glfwSetWindowUserPointer(glfw_window, this);
-    glfwSetFramebufferSizeCallback(glfw_window, FramebufferResizeCallback);
+    glfwWindow = glfwCreateWindow(_width, _height, _name, nullptr, nullptr);
+    glfwSetWindowUserPointer(glfwWindow, this);
+    glfwSetFramebufferSizeCallback(glfwWindow, FramebufferResizeCallback);
 }
 
 void Window::Update()
@@ -25,7 +25,7 @@ void Window::Update()
 
 void Window::Cleanup()
 {
-    glfwDestroyWindow(glfw_window);
+    glfwDestroyWindow(glfwWindow);
 
     glfwTerminate();
     std::cout << "[Cleaned] Window" << std::endl;
@@ -33,25 +33,14 @@ void Window::Cleanup()
 
 GLFWwindow* Window::GetGLFWWindow()
 {
-    return glfw_window;
+    return glfwWindow;
 }
 
 void Window::FramebufferResizeCallback(GLFWwindow* _window, int _width, int _height)
 {
     Window* window = reinterpret_cast<Window*>(glfwGetWindowUserPointer(_window));
-    window->frameBufferResized = true;
     window->height = _height;
     window->width = _width;
-}
-
-const bool& Window::GetFrameBufferResized() const
-{
-    return frameBufferResized;
-}
-
-void Window::SetFrameBufferResized(bool _val)
-{
-    frameBufferResized = _val;
 }
 
 VkExtent2D Window::GetWindowExtent()
