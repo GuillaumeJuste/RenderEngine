@@ -90,22 +90,22 @@ void DeviceContext::PickPhysicalDevice()
 bool DeviceContext::IsDeviceSuitable(PhysicalDeviceProperties* _properties)
 {
 	VkPhysicalDeviceProperties properties;
-	bool validProperties = false;
 
 	vkGetPhysicalDeviceProperties(_properties->physicalDevice, &properties);
-	if (properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
-	{
-		validProperties = true;
-	}
+	bool validProperties = properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;
 
 	QueueFamilyIndices queueFamilyIndices;
-	bool validQueueFamilyIndices = false;
-	if (FindQueueFamilies(_properties->physicalDevice, &queueFamilyIndices))
-	{
-		validQueueFamilyIndices = true;
+	bool validQueueFamilyIndices = FindQueueFamilies(_properties->physicalDevice, &queueFamilyIndices);
+
+	bool extensionsSupported = checkDeviceExtensionSupport(_properties->physicalDevice);
+
+	bool swapChainAdequate = false;
+	if (extensionsSupported) {
+		SwapChainSupportDetails swapChainSupport = SwapChain::QuerySwapChainSupport(_properties->physicalDevice, windowProperties->surface);
+		swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
 	}
 
-	if (validProperties && validQueueFamilyIndices)
+	if (validProperties && validQueueFamilyIndices && swapChainAdequate && extensionsSupported)
 	{
 		_properties->properties = properties;
 		_properties->queueFamilyIndices = queueFamilyIndices;
@@ -126,8 +126,6 @@ bool DeviceContext::FindQueueFamilies(VkPhysicalDevice _device, QueueFamilyIndic
 	vkGetPhysicalDeviceQueueFamilyProperties(_device, &queueFamilyCount, queueFamilies.data());
 
 	int i = 0;
-
-	/*TODO: present queue*/
 
 	for (const auto& queueFamily : queueFamilies) {
 		if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
