@@ -32,7 +32,6 @@ namespace RenderEngine::Vulkan
 
 		WindowProperties* AddWindow(Window* _window);
 		DeviceContext* CreateDeviceContext(WindowProperties* _windowProperties);
-		//RenderContext* CreateRenderContext();
 
 		void Cleanup();
 	};

@@ -45,7 +45,7 @@ namespace RenderEngine::Vulkan
 
 		static void InitalizeDevice(const DeviceContextCreateInfo& _createInfo, DeviceContext* _output);
 
-		RenderContext* AddRenderContext(RenderContextCreateInfo _renderContextCreateInfo);
+		RenderContext* AddRenderContext();
 
 		const VkPhysicalDevice& GetPhysicalDevice() const;
 		const uint32_t& GetGraphicsQueueIndex() const;

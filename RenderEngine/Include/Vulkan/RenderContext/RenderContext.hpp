@@ -20,10 +20,7 @@ namespace RenderEngine::Vulkan
 	{
 	private:
 		VkInstance instance;
-		
-		Window* window;
-		Surface surface;
-		
+		WindowProperties* windowProperties;
 		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 		VkDevice logicalDevice;
 		QueueFamilyIndices queueFamilyIndices;
@@ -60,9 +57,6 @@ namespace RenderEngine::Vulkan
 		~RenderContext() = default;
 
 		static void InitalizeRenderContext(const RenderContextCreateInfo& _createInfo, RenderContext* _output);
-		void InitializeGraphicPipeline();
-
-		const Surface& GetSurface() const;
 
 		void DrawFrame();
 

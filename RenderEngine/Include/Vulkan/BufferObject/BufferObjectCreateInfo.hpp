@@ -20,12 +20,12 @@ namespace RenderEngine::Vulkan
 		/**
 		 * @brief vulkan logical device handle
 		*/
-		VkDevice logicalDevice;
+		VkDevice logicalDevice = VK_NULL_HANDLE;
 
 		/**
 		 * @brief Size of the buffer to be allocated
 		*/
-		VkDeviceSize bufferSize;
+		VkDeviceSize bufferSize = 0;
 
 		/**
 		 * @brief buffer usage flags

@@ -20,21 +20,21 @@ const std::vector<uint16_t> indices = {
 void RenderContext::InitalizeRenderContext(const RenderContextCreateInfo& _createInfo, RenderContext* _output)
 {
 	_output->instance = _createInfo.instance;
-	_output->window = _createInfo.window;
+	_output->windowProperties = _createInfo.windowProperties;
+	_output->physicalDevice = _createInfo.physicalDevice;
+	_output->logicalDevice = _createInfo.logicalDevice;
+	_output->queueFamilyIndices = _createInfo.queueFamilyIndices;
+	_output->graphicsQueue = _createInfo.graphicsQueue;
+	_output->presentQueue = _createInfo.presentQueue;
 
-	Surface::InitializeSurface(_output->instance, _output->window, &_output->surface);
-}
-
-void RenderContext::InitializeGraphicPipeline()
-{
-	CreateSwapChain();
-	CreateRenderPass();
-	CreateGraphicsPipeline();
-	CreateFrameBuffer();
-	CreateCommandPool();
-	CreateVertexBufferObject();
-	CreateIndexBufferObject();
-	CreateCommandBuffer();
+	_output->CreateSwapChain();
+	_output->CreateRenderPass();
+	_output->CreateGraphicsPipeline();
+	_output->CreateFrameBuffer();
+	_output->CreateCommandPool();
+	_output->CreateVertexBufferObject();
+	_output->CreateIndexBufferObject();
+	_output->CreateCommandBuffer();
 }
 
 void RenderContext::CreateSwapChain()
@@ -42,8 +42,8 @@ void RenderContext::CreateSwapChain()
 	SwapChainCreateInfo createInfo;
 	createInfo.physicalDevice = physicalDevice;
 	createInfo.logicalDevice = logicalDevice;
-	createInfo.surface = &surface;
-	createInfo.window = window;
+	createInfo.surface = &windowProperties->surface;
+	createInfo.window = windowProperties->window;
 	createInfo.queueFamilyIndices = queueFamilyIndices;
 
 	SwapChain::InitializeSwapChain(createInfo, &swapChain);
@@ -51,7 +51,7 @@ void RenderContext::CreateSwapChain()
 
 void RenderContext::CreateRenderPass()
 {
-	RenderPassCreateInfo createInfo;
+	RenderPassCreateInfo createInfo{};
 	createInfo.logicalDevice = logicalDevice;
 	createInfo.swapChainImageFormat = swapChain.GetSwapChainImageFormat();
 
@@ -63,7 +63,7 @@ void RenderContext::CreateGraphicsPipeline()
 	ShaderCreateInfo vertexShaderCreateInfo(VK_SHADER_STAGE_VERTEX_BIT, "Resources/Shaders/VertexShader.spv", logicalDevice);
 	ShaderCreateInfo fragmentShaderCreateInfo(VK_SHADER_STAGE_FRAGMENT_BIT, "Resources/Shaders/FragmentShader.spv", logicalDevice);
 
-	GraphicsPipelineCreateInfo pipelineInfo;
+	GraphicsPipelineCreateInfo pipelineInfo{};
 	Shader::CreateShader(vertexShaderCreateInfo, &pipelineInfo.vertexShader);
 	Shader::CreateShader(fragmentShaderCreateInfo, &pipelineInfo.fragmentShader);
 	pipelineInfo.swapChainExtent = swapChain.GetSwapChainExtent();
@@ -75,7 +75,7 @@ void RenderContext::CreateGraphicsPipeline()
 
 void RenderContext::CreateFrameBuffer()
 {
-	FrameBufferCreateInfo createInfo;
+	FrameBufferCreateInfo createInfo{};
 	createInfo.logicalDevice = logicalDevice;
 	createInfo.renderPass = &renderPass;
 	createInfo.imageView = &swapChain.GetImageView();
@@ -87,7 +87,7 @@ void RenderContext::CreateFrameBuffer()
 
 void RenderContext::CreateCommandPool()
 {
-	CommandPoolCreateInfo createInfo;
+	CommandPoolCreateInfo createInfo{};
 	createInfo.logicalDevice = logicalDevice;
 	createInfo.graphicsQueueIndex = queueFamilyIndices.graphicsFamily.value();
 	CommandPool::InitializeCommandPool(createInfo, &commandPool);
@@ -95,13 +95,13 @@ void RenderContext::CreateCommandPool()
 
 void RenderContext::CreateCommandBuffer()
 {
-	SwapChainCommandBufferCreateInfo createInfo;
+	SwapChainCommandBufferCreateInfo createInfo{};
 	createInfo.logicalDevice = logicalDevice;
 	createInfo.commandPool = &commandPool;
 	createInfo.renderPass = &renderPass;
 	createInfo.graphicsPipeline = &graphicsPipeline;
 	createInfo.frameBuffer = &frameBuffer;
-	createInfo.window = window;
+	createInfo.window = windowProperties->window;
 	createInfo.vertexBufferObject = &vertexBufferObject;
 	createInfo.indexBufferObject = &indexBufferObject;
 
@@ -124,10 +124,10 @@ void RenderContext::RecreateSwapChain()
 	vkDeviceWaitIdle(logicalDevice);
 
 	int width = 0, height = 0;
-	glfwGetFramebufferSize(window->GetGLFWWindow(), &width, &height);
+	glfwGetFramebufferSize(windowProperties->window->GetGLFWWindow(), &width, &height);
 	while (width == 0 || height == 0)
 	{
-		glfwGetFramebufferSize(window->GetGLFWWindow(), &width, &height);
+		glfwGetFramebufferSize(windowProperties->window->GetGLFWWindow(), &width, &height);
 		glfwWaitEvents();
 	}
 
@@ -264,11 +264,6 @@ void RenderContext::DrawFrame()
 	}*/
 
 	currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
-}
-
-const Surface& RenderContext::GetSurface() const
-{
-	return surface;
 }
 
 void RenderContext::Cleanup()

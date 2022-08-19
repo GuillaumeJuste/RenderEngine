@@ -240,10 +240,19 @@ const VkQueue& DeviceContext::GetGraphicsQueue() const
 	return graphicsQueue;
 }
 
-RenderContext* DeviceContext::AddRenderContext(RenderContextCreateInfo _renderContextCreateInfo)
+RenderContext* DeviceContext::AddRenderContext()
 {
+	RenderContextCreateInfo createInfo;
+	createInfo.instance = instance;
+	createInfo.windowProperties = windowProperties;
+	createInfo.physicalDevice = physicalDevice;
+	createInfo.logicalDevice = logicalDevice;
+	createInfo.queueFamilyIndices = physicalDeviceProperties.queueFamilyIndices;
+	createInfo.graphicsQueue = graphicsQueue;
+	createInfo.presentQueue = presentQueue;
+
 	RenderContext renderContext;
-	RenderContext::InitalizeRenderContext(_renderContextCreateInfo, &renderContext);
+	RenderContext::InitalizeRenderContext(createInfo, &renderContext);
 
 	renderContexts.push_back(renderContext);
 
@@ -252,11 +261,9 @@ RenderContext* DeviceContext::AddRenderContext(RenderContextCreateInfo _renderCo
 
 void DeviceContext::Cleanup()
 {
-	int renderContextSize = renderContexts.size();
-
-	for (int i = 0; i < renderContextSize; i++)
+	for (std::vector<RenderContext>::iterator it = renderContexts.begin(); it != renderContexts.end(); ++it)
 	{
-		renderContexts[i].Cleanup();
+		it->Cleanup();
 	}
 
 	vkDestroyDevice(logicalDevice, nullptr);

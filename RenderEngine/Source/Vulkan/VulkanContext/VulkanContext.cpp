@@ -139,28 +139,11 @@ DeviceContext* VulkanContext::CreateDeviceContext(WindowProperties* _windowPrope
     return &deviceContexts.back();
 }
 
-//RenderContext* VulkanContext::CreateRenderContext()
-//{
-//    RenderContextCreateInfo createInfo;
-//    createInfo.instance = instance;
-//    createInfo.window = window;
-//
-//    DeviceContext deviceContext;
-//    deviceContexts.push_back(deviceContext);
-//    deviceContext = deviceContexts.back();
-//    RenderContext* rendercontext = deviceContext.AddRenderContext(createInfo);
-//
-//    std::vector<PhysicalDeviceProperties> deviceProperties = DeviceContext::QuerySuitableDevice(instance, rendercontext->GetSurface());
-//
-//}
-
 void VulkanContext::Cleanup()
 {
-    int deviceSize = deviceContexts.size();
-
-    for (int i = 0; i < deviceSize; i++)
+    for (std::vector<DeviceContext>::iterator it = deviceContexts.begin(); it != deviceContexts.end(); ++it)
     {
-        deviceContexts[i].Cleanup();
+        it->Cleanup();
     }
 
     for (std::vector<WindowProperties>::iterator it = windowProperties.begin(); it != windowProperties.end(); ++it)

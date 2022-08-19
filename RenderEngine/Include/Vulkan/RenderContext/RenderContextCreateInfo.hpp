@@ -5,7 +5,7 @@
 
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Vulkan/Surface/Surface.hpp"
-#include "Glfw/Window/Window.hpp"
+#include "Vulkan/WindowProperties/WindowProperties.hpp"
 #include "Vulkan/DeviceContext/QueueFamilyIndices.hpp"
 
 
@@ -14,7 +14,12 @@ namespace RenderEngine::Vulkan
 	struct RenderContextCreateInfo
 	{
 		VkInstance instance;
-		Window* window;
+		WindowProperties* windowProperties;
+		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+		VkDevice logicalDevice;
+		QueueFamilyIndices queueFamilyIndices;
+		VkQueue graphicsQueue;
+		VkQueue presentQueue;
 
 		RenderContextCreateInfo() = default;
 	};

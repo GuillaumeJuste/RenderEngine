@@ -32,6 +32,11 @@ namespace RenderEngine
 		DeviceContext* deviceContext;
 
 		/**
+		 * @brief render context to render scene
+		*/
+		RenderContext* renderContext;
+
+		/**
 		 * @brief scene to render
 		*/
 		Scene scene;
