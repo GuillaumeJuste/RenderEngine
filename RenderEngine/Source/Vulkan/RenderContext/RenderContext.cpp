@@ -20,22 +20,21 @@ const std::vector<uint16_t> indices = {
 void RenderContext::InitalizeRenderContext(const RenderContextCreateInfo& _createInfo, RenderContext* _output)
 {
 	_output->instance = _createInfo.instance;
-	_output->logicalDevice = _createInfo.logicalDevice;
-	_output->physicalDevice = _createInfo.physicalDevice;
-	_output->queueFamilyIndices = _createInfo.queueFamilyIndices;
-	_output->surface = _createInfo.surface;
 	_output->window = _createInfo.window;
-	_output->graphicsQueue = _createInfo.graphicsQueue;
-	_output->presentQueue = _createInfo.presentQueue;
 
-	_output->CreateSwapChain();
-	_output->CreateRenderPass();
-	_output->CreateGraphicsPipeline();
-	_output->CreateFrameBuffer();
-	_output->CreateCommandPool();
-	_output->CreateVertexBufferObject();
-	_output->CreateIndexBufferObject();
-	_output->CreateCommandBuffer();
+	Surface::InitializeSurface(_output->instance, _output->window, &_output->surface);
+}
+
+void RenderContext::InitializeGraphicPipeline()
+{
+	CreateSwapChain();
+	CreateRenderPass();
+	CreateGraphicsPipeline();
+	CreateFrameBuffer();
+	CreateCommandPool();
+	CreateVertexBufferObject();
+	CreateIndexBufferObject();
+	CreateCommandBuffer();
 }
 
 void RenderContext::CreateSwapChain()
@@ -43,7 +42,7 @@ void RenderContext::CreateSwapChain()
 	SwapChainCreateInfo createInfo;
 	createInfo.physicalDevice = physicalDevice;
 	createInfo.logicalDevice = logicalDevice;
-	createInfo.surface = surface;
+	createInfo.surface = &surface;
 	createInfo.window = window;
 	createInfo.queueFamilyIndices = queueFamilyIndices;
 
@@ -265,6 +264,11 @@ void RenderContext::DrawFrame()
 	}*/
 
 	currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
+}
+
+const Surface& RenderContext::GetSurface() const
+{
+	return surface;
 }
 
 void RenderContext::Cleanup()

@@ -9,6 +9,7 @@
 #include "Vulkan/Surface/Surface.hpp"
 #include "Glfw/Window/Window.hpp"
 #include "Vulkan/RenderContext/RenderContext.hpp"
+#include "Vulkan/DeviceContext/PhysicalDeviceProperties.hpp"
 
 namespace RenderEngine::Vulkan
 {
@@ -16,26 +17,26 @@ namespace RenderEngine::Vulkan
 	{
 	private:
 		VkInstance instance;
-		Window* window;
 
-		Surface surface;
-
-		QueueFamilyIndices queueFamilyIndices;
+		WindowProperties* windowProperties;
 
 		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-		VkDevice logicalDevice;
+		PhysicalDeviceProperties physicalDeviceProperties;
+
+		VkDevice logicalDevice = VK_NULL_HANDLE;
+
+		VkQueue graphicsQueue = VK_NULL_HANDLE;
+		VkQueue presentQueue = VK_NULL_HANDLE;
+
+		std::vector<RenderContext> renderContexts;
+
+		bool IsDeviceSuitable(PhysicalDeviceProperties* _properties);
+		bool FindQueueFamilies(VkPhysicalDevice _device, QueueFamilyIndices* _output);
 		
-		VkQueue graphicsQueue;
-		VkQueue presentQueue;
-
-		RenderContext renderContext;
-
-		void CreateSurface();
-		bool IsDeviceSuitable(const VkPhysicalDevice& _device);
 		bool checkDeviceExtensionSupport(const VkPhysicalDevice& _device);
 		
-		QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
 		void PickPhysicalDevice();
+		PhysicalDeviceProperties UserSelectPhysicalDevice(std::vector<PhysicalDeviceProperties> _physicalDevicesProperties);
 		void CreateLogicalDevice();
 
 	public:
@@ -44,12 +45,12 @@ namespace RenderEngine::Vulkan
 
 		static void InitalizeDevice(const DeviceContextCreateInfo& _createInfo, DeviceContext* _output);
 
+		RenderContext* AddRenderContext(RenderContextCreateInfo _renderContextCreateInfo);
+
 		const VkPhysicalDevice& GetPhysicalDevice() const;
 		const uint32_t& GetGraphicsQueueIndex() const;
 		const VkDevice& GetLogicalDevice() const;
 		const VkQueue& GetGraphicsQueue() const;
-
-		RenderContext* GetRenderContext();
 
 		void Cleanup();
 	};

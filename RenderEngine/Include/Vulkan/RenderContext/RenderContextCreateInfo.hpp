@@ -14,13 +14,7 @@ namespace RenderEngine::Vulkan
 	struct RenderContextCreateInfo
 	{
 		VkInstance instance;
-		Surface* surface;
 		Window* window;
-		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-		VkDevice logicalDevice;
-		QueueFamilyIndices queueFamilyIndices;
-		VkQueue graphicsQueue;
-		VkQueue presentQueue;
 
 		RenderContextCreateInfo() = default;
 	};

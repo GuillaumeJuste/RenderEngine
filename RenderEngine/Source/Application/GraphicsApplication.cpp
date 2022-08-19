@@ -12,7 +12,7 @@ void GraphicsApplication::Run()
 {
     InitWindow();
     InitVulkan();
-    MainLoop();
+    //MainLoop();
     Cleanup();
 }
 
@@ -25,9 +25,11 @@ void GraphicsApplication::InitWindow()
 void GraphicsApplication::InitVulkan()
 {
     std::cout << "[Initialize] Vulkan" << std::endl;
-    vulkanContext = new VulkanContext(window);
+    vulkanContext = new VulkanContext();
 
-    deviceContext = vulkanContext->CreateDeviceContext();
+    WindowProperties* windowProperties = vulkanContext->AddWindow(window);
+
+    deviceContext = vulkanContext->CreateDeviceContext(windowProperties);
 }
 
 void GraphicsApplication::MainLoop()
@@ -62,11 +64,11 @@ void GraphicsApplication::MainLoop()
     GameObject* obj = scene.AddGameObject(createinfo);
 
 
-    while (!glfwWindowShouldClose(window->GetGLFWWindow())) {
+    /*while (!glfwWindowShouldClose(window->GetGLFWWindow())) {
         glfwPollEvents();
         deviceContext->GetRenderContext()->DrawFrame();
     }
-    vkDeviceWaitIdle(deviceContext->GetLogicalDevice());
+    vkDeviceWaitIdle(deviceContext->GetLogicalDevice());*/
 }
 
 void GraphicsApplication::Cleanup()

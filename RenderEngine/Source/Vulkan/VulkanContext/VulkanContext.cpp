@@ -7,8 +7,7 @@
 
 using namespace RenderEngine::Vulkan;
 
-VulkanContext::VulkanContext(Window* _window) :
-    window{ _window }
+VulkanContext::VulkanContext() 
 {
     CreateInstance();
     SetupDebugMessenger();
@@ -108,28 +107,65 @@ std::vector<const char*> VulkanContext::GetRequiredExtensions()
     return extensions;
 }
 
-DeviceContext* VulkanContext::CreateDeviceContext()
+WindowProperties* VulkanContext::AddWindow(Window* _window)
+{
+    for (std::vector<WindowProperties>::iterator it = windowProperties.begin(); it != windowProperties.end(); ++it)
+    {
+        if (it->window == _window)
+            return &(*it);
+    }
+
+    WindowProperties properties;
+    properties.window = _window;
+    Surface::InitializeSurface(instance, _window, &properties.surface);
+
+    windowProperties.push_back(properties);
+
+    return &windowProperties.back();
+}
+
+DeviceContext* VulkanContext::CreateDeviceContext(WindowProperties* _windowProperties)
 {
     DeviceContextCreateInfo createInfo;
     createInfo.instance = instance;
-    createInfo.window = window;
+    createInfo.windowProperties = _windowProperties;
 
     DeviceContext newDevice;
 
     DeviceContext::InitalizeDevice(createInfo, &newDevice);
 
-    devices.push_back(newDevice);
+    deviceContexts.push_back(newDevice);
 
-    return &devices.back();
+    return &deviceContexts.back();
 }
+
+//RenderContext* VulkanContext::CreateRenderContext()
+//{
+//    RenderContextCreateInfo createInfo;
+//    createInfo.instance = instance;
+//    createInfo.window = window;
+//
+//    DeviceContext deviceContext;
+//    deviceContexts.push_back(deviceContext);
+//    deviceContext = deviceContexts.back();
+//    RenderContext* rendercontext = deviceContext.AddRenderContext(createInfo);
+//
+//    std::vector<PhysicalDeviceProperties> deviceProperties = DeviceContext::QuerySuitableDevice(instance, rendercontext->GetSurface());
+//
+//}
 
 void VulkanContext::Cleanup()
 {
-    int deviceSize = devices.size();
+    int deviceSize = deviceContexts.size();
 
     for (int i = 0; i < deviceSize; i++)
     {
-        devices[i].Cleanup();
+        deviceContexts[i].Cleanup();
+    }
+
+    for (std::vector<WindowProperties>::iterator it = windowProperties.begin(); it != windowProperties.end(); ++it)
+    {
+        it->surface.Cleanup();
     }
 
     if (enableValidationLayers) 

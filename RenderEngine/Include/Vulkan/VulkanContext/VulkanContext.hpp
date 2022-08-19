@@ -7,6 +7,7 @@
 #include "Vulkan/DeviceContext/DeviceContext.hpp"
 #include "Vulkan/Surface/Surface.hpp"
 #include "Vulkan/Debugger/DebugMessenger.hpp"
+#include "Vulkan/WindowProperties/WindowProperties.hpp"
 #include "Glfw/Window/Window.hpp"
 
 namespace RenderEngine::Vulkan
@@ -15,10 +16,10 @@ namespace RenderEngine::Vulkan
 	{
 	private:
 		VkInstance instance;
-		Window* window;
 
 		DebugMessenger debugMessenger;
-		std::vector<DeviceContext> devices;
+		std::vector<DeviceContext> deviceContexts;
+		std::vector<WindowProperties> windowProperties;
 
 		void CreateInstance();
 		void SetupDebugMessenger();
@@ -26,10 +27,12 @@ namespace RenderEngine::Vulkan
 		bool CheckValidationLayerSupport();
 		std::vector<const char*> GetRequiredExtensions();
 	public:
-		VulkanContext(Window* _window);
+		VulkanContext();
 		~VulkanContext() = default;
 
-		DeviceContext* CreateDeviceContext();
+		WindowProperties* AddWindow(Window* _window);
+		DeviceContext* CreateDeviceContext(WindowProperties* _windowProperties);
+		//RenderContext* CreateRenderContext();
 
 		void Cleanup();
 	};
