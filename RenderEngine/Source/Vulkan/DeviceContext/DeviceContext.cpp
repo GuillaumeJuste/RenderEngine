@@ -249,17 +249,16 @@ RenderContext* DeviceContext::AddRenderContext()
 	createInfo.graphicsQueue = graphicsQueue;
 	createInfo.presentQueue = presentQueue;
 
-	RenderContext renderContext;
-	RenderContext::InitalizeRenderContext(createInfo, &renderContext);
+	RenderContext* renderContext = &renderContexts.emplace_front();
 
-	renderContexts.push_back(renderContext);
+	RenderContext::InitalizeRenderContext(createInfo, renderContext);
 
-	return &renderContexts.back();
+	return renderContext;
 }
 
 void DeviceContext::Cleanup()
 {
-	for (std::vector<RenderContext>::iterator it = renderContexts.begin(); it != renderContexts.end(); ++it)
+	for (std::forward_list<RenderContext>::iterator it = renderContexts.begin(); it != renderContexts.end(); ++it)
 	{
 		it->Cleanup();
 	}

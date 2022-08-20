@@ -10,6 +10,8 @@
 #include "Vulkan/WindowProperties/WindowProperties.hpp"
 #include "Glfw/Window/Window.hpp"
 
+#include <forward_list>
+
 namespace RenderEngine::Vulkan
 {
 	class VulkanContext
@@ -18,8 +20,9 @@ namespace RenderEngine::Vulkan
 		VkInstance instance;
 
 		DebugMessenger debugMessenger;
-		std::vector<DeviceContext> deviceContexts;
-		std::vector<WindowProperties> windowProperties;
+		std::forward_list<DeviceContext> deviceContexts;
+		DeviceContext deviceContext;
+		std::forward_list<WindowProperties> windowProperties;
 
 		void CreateInstance();
 		void SetupDebugMessenger();

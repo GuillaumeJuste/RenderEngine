@@ -109,19 +109,17 @@ std::vector<const char*> VulkanContext::GetRequiredExtensions()
 
 WindowProperties* VulkanContext::AddWindow(Window* _window)
 {
-    for (std::vector<WindowProperties>::iterator it = windowProperties.begin(); it != windowProperties.end(); ++it)
+    for (std::forward_list<WindowProperties>::iterator it = windowProperties.begin(); it != windowProperties.end(); ++it)
     {
         if (it->window == _window)
             return &(*it);
     }
 
-    WindowProperties properties;
-    properties.window = _window;
-    Surface::InitializeSurface(instance, _window, &properties.surface);
+    WindowProperties* properties = &windowProperties.emplace_front();
+    properties->window = _window;
+    Surface::InitializeSurface(instance, _window, &properties->surface);
 
-    windowProperties.push_back(properties);
-
-    return &windowProperties.back();
+    return properties;
 }
 
 DeviceContext* VulkanContext::CreateDeviceContext(WindowProperties* _windowProperties)
@@ -130,23 +128,21 @@ DeviceContext* VulkanContext::CreateDeviceContext(WindowProperties* _windowPrope
     createInfo.instance = instance;
     createInfo.windowProperties = _windowProperties;
 
-    DeviceContext newDevice;
+    DeviceContext* newDevice = &deviceContexts.emplace_front();
 
-    DeviceContext::InitalizeDevice(createInfo, &newDevice);
+    DeviceContext::InitalizeDevice(createInfo, newDevice);
 
-    deviceContexts.push_back(newDevice);
-
-    return &deviceContexts.back();
+    return newDevice;
 }
 
 void VulkanContext::Cleanup()
 {
-    for (std::vector<DeviceContext>::iterator it = deviceContexts.begin(); it != deviceContexts.end(); ++it)
+    for (std::forward_list<DeviceContext>::iterator it = deviceContexts.begin(); it != deviceContexts.end(); ++it)
     {
         it->Cleanup();
     }
 
-    for (std::vector<WindowProperties>::iterator it = windowProperties.begin(); it != windowProperties.end(); ++it)
+    for (std::forward_list<WindowProperties>::iterator it = windowProperties.begin(); it != windowProperties.end(); ++it)
     {
         it->surface.Cleanup();
     }

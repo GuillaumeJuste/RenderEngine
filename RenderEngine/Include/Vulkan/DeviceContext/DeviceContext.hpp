@@ -11,6 +11,8 @@
 #include "Vulkan/RenderContext/RenderContext.hpp"
 #include "Vulkan/DeviceContext/PhysicalDeviceProperties.hpp"
 
+#include <forward_list>
+
 namespace RenderEngine::Vulkan
 {
 	class DeviceContext
@@ -28,7 +30,7 @@ namespace RenderEngine::Vulkan
 		VkQueue graphicsQueue = VK_NULL_HANDLE;
 		VkQueue presentQueue = VK_NULL_HANDLE;
 
-		std::vector<RenderContext> renderContexts;
+		std::forward_list<RenderContext> renderContexts;
 
 		bool IsDeviceSuitable(PhysicalDeviceProperties* _properties);
 		bool FindQueueFamilies(VkPhysicalDevice _device, QueueFamilyIndices* _output);
