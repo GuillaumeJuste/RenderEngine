@@ -36,7 +36,8 @@ void FrameBuffer::InitializeFrameBuffer(FrameBufferCreateInfo _frameBufferCreate
 
 void FrameBuffer::Cleanup()
 {
-	for (auto framebuffer : framebuffers) {
+	for (auto framebuffer : framebuffers) 
+	{
 		vkDestroyFramebuffer(logicalDevice, framebuffer, nullptr);
 	}
 	std::cout << "[Cleaned] Frame Buffer" << std::endl;

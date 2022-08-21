@@ -106,6 +106,7 @@ void RenderContext::CreateCommandBuffer()
 	createInfo.window = windowProperties->window;
 	createInfo.vertexBufferObject = &vertexBufferObject;
 	createInfo.indexBufferObject = &indexBufferObject;
+	createInfo.swapChain = &swapChain;
 
 	commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
@@ -123,12 +124,9 @@ void RenderContext::CleanUpSwapChain()
 
 void RenderContext::RecreateSwapChain()
 {
-	vkDeviceWaitIdle(logicalDevice);
-
 	int width = 0, height = 0;
 	glfwGetFramebufferSize(windowProperties->window->GetGLFWWindow(), &width, &height);
-	while (width == 0 || height == 0)
-	{
+	while (width == 0 || height == 0) {
 		glfwGetFramebufferSize(windowProperties->window->GetGLFWWindow(), &width, &height);
 		glfwWaitEvents();
 	}
@@ -139,6 +137,8 @@ void RenderContext::RecreateSwapChain()
 
 	CreateSwapChain();
 	CreateFrameBuffer();
+
+	frameBufferWasResized = false;
 }
 
 void RenderContext::CreateVertexBufferObject()
@@ -201,7 +201,7 @@ void RenderContext::CreateIndexBufferObject()
 
 void RenderContext::FrameBufferResizedCallback()
 {
-	windowWasResized = true;
+	frameBufferWasResized = true;
 }
 
 void RenderContext::DrawFrame()
@@ -212,18 +212,19 @@ void RenderContext::DrawFrame()
 	VkResult result = vkAcquireNextImageKHR(logicalDevice, swapChain.GetVKSwapChain(), UINT64_MAX, commandBuffers[currentFrame].GetImageAvailableSemaphore(), VK_NULL_HANDLE, &imageIndex);
 
 	/*TODO: Fix window resize fence error*/
-	/*if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+	if (result == VK_ERROR_OUT_OF_DATE_KHR) 
+	{
 		RecreateSwapChain();
-		vkAcquireNextImageKHR(logicalDevice, swapChain.GetVKSwapChain(), UINT64_MAX, commandBuffers[currentFrame].GetImageAvailableSemaphore(), VK_NULL_HANDLE, &imageIndex);
+		return;
 	}
 	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
 		throw std::runtime_error("failed to acquire swap chain image!");
-	}*/
+	}
 
 	vkResetFences(logicalDevice, 1, &commandBuffers[currentFrame].GetInFlightFence());
 
 
-	vkResetCommandBuffer(commandBuffers[currentFrame].GetVKCommandBuffer(), /*VkCommandBufferResetFlagBits*/ 0);
+	vkResetCommandBuffer(commandBuffers[currentFrame].GetVKCommandBuffer(), 0);
 	commandBuffers[currentFrame].RecordCommandBuffer(imageIndex);
 
 	VkSubmitInfo submitInfo{};
@@ -261,20 +262,20 @@ void RenderContext::DrawFrame()
 	result = vkQueuePresentKHR(presentQueue, &presentInfo);
 
 	/*TODO: Fix window resize fence error*/
-	/*if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || window->GetFrameBufferResized())
+	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || frameBufferWasResized)
 	{
-		window->SetFrameBufferResized(false);
 		RecreateSwapChain();
 	}
 	else if (result != VK_SUCCESS) {
 		throw std::runtime_error("failed to present swap chain image!");
-	}*/
+	}
 
 	currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
 
 void RenderContext::Cleanup()
 {
+	windowProperties->window->FramebufferResizeEvent.Remove(this, &RenderContext::FrameBufferResizedCallback);
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 	{
 		commandBuffers[i].Cleanup();

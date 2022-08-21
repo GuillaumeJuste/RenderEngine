@@ -22,7 +22,7 @@ namespace RenderEngine::Vulkan
 		VkInstance instance;
 
 		WindowProperties* windowProperties;
-		bool windowWasResized = false;
+		bool frameBufferWasResized = false;
 
 		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 		VkDevice logicalDevice;
@@ -38,6 +38,10 @@ namespace RenderEngine::Vulkan
 		std::vector<SwapChainCommandBuffer> commandBuffers;
 
 		uint32_t currentFrame = 0;
+
+		std::vector<VkSemaphore> imageAvailableSemaphores;
+		std::vector<VkSemaphore> renderFinishedSemaphores;
+		std::vector<VkFence> inFlightFences;
 
 		BufferObject vertexBufferObject;
 		BufferObject indexBufferObject;

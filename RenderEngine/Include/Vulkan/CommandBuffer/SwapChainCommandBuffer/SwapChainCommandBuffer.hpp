@@ -16,6 +16,8 @@ namespace RenderEngine::Vulkan
 		VkSemaphore renderFinishedSemaphore;
 		VkFence inFlightFence;
 
+		SwapChain* swapChain;
+
 		BufferObject* vertexBufferObject;
 		BufferObject* indexBufferObject;
 
