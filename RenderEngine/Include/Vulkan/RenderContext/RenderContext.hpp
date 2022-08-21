@@ -20,7 +20,10 @@ namespace RenderEngine::Vulkan
 	{
 	private:
 		VkInstance instance;
+
 		WindowProperties* windowProperties;
+		bool windowWasResized = false;
+
 		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 		VkDevice logicalDevice;
 		QueueFamilyIndices queueFamilyIndices;
@@ -51,6 +54,8 @@ namespace RenderEngine::Vulkan
 
 		void CleanUpSwapChain();
 		void RecreateSwapChain();
+
+		void FrameBufferResizedCallback();
 
 	public:
 		RenderContext() = default;

@@ -5,6 +5,8 @@
 
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
 
+#include "Utils/Event/Event.hpp"
+
 namespace RenderEngine::Vulkan
 {
 	/**
@@ -41,6 +43,8 @@ namespace RenderEngine::Vulkan
 		*/
 		static void FramebufferResizeCallback(GLFWwindow* _window, int _width, int _height);
 	public:
+
+		Utils::Event<> FramebufferResizeEvent;
 
 		Window(unsigned int _width, unsigned int _height, const char* _name);
 		~Window() = default;

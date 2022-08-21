@@ -27,6 +27,8 @@ void RenderContext::InitalizeRenderContext(const RenderContextCreateInfo& _creat
 	_output->graphicsQueue = _createInfo.graphicsQueue;
 	_output->presentQueue = _createInfo.presentQueue;
 
+	_output->windowProperties->window->FramebufferResizeEvent.Add(_output, &RenderContext::FrameBufferResizedCallback);
+
 	_output->CreateSwapChain();
 	_output->CreateRenderPass();
 	_output->CreateGraphicsPipeline();
@@ -195,6 +197,11 @@ void RenderContext::CreateIndexBufferObject()
 
 	stagingBufferObject.CopyBuffer(&indexBufferObject, &commandPool, graphicsQueue, stagingBufferCreateInfo.bufferSize);
 	stagingBufferObject.Cleanup();
+}
+
+void RenderContext::FrameBufferResizedCallback()
+{
+	windowWasResized = true;
 }
 
 void RenderContext::DrawFrame()
