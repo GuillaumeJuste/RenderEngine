@@ -64,7 +64,9 @@ void GraphicsApplication::MainLoop()
     createinfo.name = "first_object";
 
     GameObject* obj = scene.AddGameObject(createinfo);
+    scene.RemoveGameObject(obj);
 
+    if (obj == obj)
 
     while (!glfwWindowShouldClose(window->GetGLFWWindow())) {
         glfwPollEvents();

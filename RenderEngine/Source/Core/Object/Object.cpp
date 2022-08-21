@@ -36,7 +36,7 @@ void Object::SetIsHidden(bool _val)
 	isHidden = _val;
 }
 
-bool Object::operator==(const Object& _rhs)
+bool Object::operator==(const Object& _rhs) const
 {
 	return uid == _rhs.uid;
 }

@@ -72,7 +72,7 @@ namespace RenderEngine::Core
          * @param _rhs object to compare to this
          * @return true if objects are identical
         */
-        bool operator==(const Object& _rhs);
+        bool operator==(const Object& _rhs) const;
     };
 }
 

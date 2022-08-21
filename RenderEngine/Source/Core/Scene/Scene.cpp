@@ -11,67 +11,75 @@ void Scene::InitializeScene(const SceneCreateInfo& _createinfo, Scene* _output)
 
 GameObject* Scene::AddGameObject(GameObjectCreateInfo _createInfo)
 {
-	GameObject gao;
-	GameObject::InitializeGameObject(_createInfo, &gao);
+	GameObject* gao = &gameObjects.emplace_front();
 
-	gameObjects.push_back(gao);
+	if (_createInfo.parent != nullptr)
+	{
+		_createInfo.parent->AddChild(gao);
+	}	
+	else
+	{
+		_createInfo.parent = &rootObject;
+	}	
 
-	_createInfo.parent->AddChild(&gao);
+	GameObject::InitializeGameObject(_createInfo, gao);
 
-	return &gameObjects.back();
+	return gao;
 }
 
 bool Scene::RemoveGameObject(GameObject* _gao)
 {
-	size_t size = gameObjects.size();
-
-	for (size_t i = 0; i < size; i++)
+	bool gaoFound = false;
+	for (std::forward_list<GameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{
-		if (gameObjects[i].GetUId() == _gao->GetUId())
+		if (it->GetUId() == _gao->GetUId())
 		{
-			size_t childrenNumber = gameObjects[i].GetChildrens().size();
+			size_t childrenNumber = it->GetChildrens().size();
 
 			if (childrenNumber > 0)
 			{
-				std::vector<GameObject*> childrensList = gameObjects[i].GetChildrens();
+				std::vector<GameObject*> childrensList = it->GetChildrens();
 
+				size_t size = childrensList.size();
 				for (size_t j = 0; j < size; j++)
 				{
 					childrensList[j]->SetParent(_gao->GetParent());
 				}
 			}
+			gaoFound = true;
+			break;
 
-			gameObjects.erase(gameObjects.begin() + i);
-			return true;
 		}
 	}
+	if (gaoFound)
+	{
+		gameObjects.remove(*_gao);
+		return true;
+	}
+
 	return false;
 }
 
-const GameObject* Scene::GetGameObjectByName(std::string _name) const
+const GameObject* Scene::GetGameObjectByName(std::string _name)
 {
-	size_t size = gameObjects.size();
-
-	for (size_t i = 0; i < size; i++)
+	for (std::forward_list<GameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{
-		if (gameObjects[i].GetName() == _name)
+		if (it->GetName() == _name)
 		{
-			return &gameObjects[i];
+			return &(* it);
 		}
 	}
 
 	return nullptr;
 }
 
-const GameObject* Scene::GetGameObjectByID(unsigned int _id) const
+const GameObject* Scene::GetGameObjectByID(unsigned int _id)
 {
-	size_t size = gameObjects.size();
-
-	for (size_t i = 0; i < size; i++)
+	for (std::forward_list<GameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{
-		if (gameObjects[i].GetUId() == _id)
+		if (it->GetUId() == _id)
 		{
-			return &gameObjects[i];
+			return &(*it);
 		}
 	}
 

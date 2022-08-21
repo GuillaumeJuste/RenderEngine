@@ -8,7 +8,8 @@
 #include "Core/Scene/SceneCreateInfo.hpp"
 
 #include <string>
-#include <vector>
+#include <forward_list>
+
 
 namespace RenderEngine::Core
 {
@@ -27,7 +28,7 @@ namespace RenderEngine::Core
         /**
          * @brief list of objects present in the scene
         */
-        std::vector<GameObject> gameObjects;
+        std::forward_list<GameObject> gameObjects;
 
         /**
          * @brief root object in the scene
@@ -64,14 +65,14 @@ namespace RenderEngine::Core
          * @param _name name of the Game Object to get
          * @return pointer GameObject found or nullptr if no match
         */
-        const GameObject* GetGameObjectByName(std::string _name) const;
+        const GameObject* GetGameObjectByName(std::string _name);
 
         /**
          * @brief Get Game Object present in the scene by ID 
          * @param _id id of the Game Object to get
          * @return pointer GameObject found or nullptr if no match
         */
-        const GameObject* GetGameObjectByID(unsigned int _id) const;
+        const GameObject* GetGameObjectByID(unsigned int _id);
 
         /**
          * @brief Get scene root Game Object
