@@ -103,10 +103,10 @@ void RenderContext::CreateCommandBuffer()
 	createInfo.renderPass = &renderPass;
 	createInfo.graphicsPipeline = &graphicsPipeline;
 	createInfo.frameBuffer = &frameBuffer;
-	createInfo.window = windowProperties->window;
+	createInfo.swapChain = &swapChain;
+
 	createInfo.vertexBufferObject = &vertexBufferObject;
 	createInfo.indexBufferObject = &indexBufferObject;
-	createInfo.swapChain = &swapChain;
 
 	commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 

@@ -26,26 +26,6 @@ namespace RenderEngine::Vulkan
 		CommandPool* commandPool;
 
 		/**
-		 * @brief render pass
-		*/
-		RenderPass* renderPass;
-
-		/**
-		 * @brief rapghic pipline to use for render
-		*/
-		GraphicsPipeline* graphicsPipeline;
-
-		/**
-		 * @brief frame buffer
-		*/
-		FrameBuffer* frameBuffer;
-
-		/**
-		 * @brief engine window
-		*/
-		Window* window;
-
-		/**
 		 * @brief command buffer handle
 		*/
 		VkCommandBuffer commandBuffer;

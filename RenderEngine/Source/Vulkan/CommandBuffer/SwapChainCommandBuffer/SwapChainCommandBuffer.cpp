@@ -3,7 +3,6 @@
 #include "Vulkan/GraphicsPipeline/GraphicsPipeline.hpp"
 #include "Vulkan/RenderPass/RenderPass.hpp"
 #include "Vulkan/FrameBuffer/FrameBuffer.hpp"
-#include "Glfw/Window/Window.hpp"
 #include "Vulkan/BufferObject/BufferObject.hpp"
 
 #include <iostream>
@@ -18,6 +17,10 @@ void SwapChainCommandBuffer::InitializeCommandBuffer(SwapChainCommandBufferCreat
 {
 	_output->vertexBufferObject = _createInfo.vertexBufferObject;
 	_output->indexBufferObject = _createInfo.indexBufferObject;
+	_output->renderPass = _createInfo.renderPass;
+	_output->graphicsPipeline = _createInfo.graphicsPipeline;
+	_output->frameBuffer = _createInfo.frameBuffer;
+
 	_output->swapChain = _createInfo.swapChain;
 	CommandBufferBase::InitializeCommandBuffer(_createInfo, _output);
 	_output->InitializeSyncObjects();

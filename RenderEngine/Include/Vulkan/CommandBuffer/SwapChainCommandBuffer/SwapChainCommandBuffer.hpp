@@ -12,11 +12,27 @@ namespace RenderEngine::Vulkan
 	class SwapChainCommandBuffer : public CommandBufferBase
 	{
 	private:
+		/**
+		 * @brief render pass
+		*/
+		RenderPass* renderPass;
+
+		/**
+		 * @brief rapghic pipline to use for render
+		*/
+		GraphicsPipeline* graphicsPipeline;
+
+		/**
+		 * @brief frame buffer
+		*/
+		FrameBuffer* frameBuffer;
+
+		SwapChain* swapChain;
+
 		VkSemaphore imageAvailableSemaphore;
 		VkSemaphore renderFinishedSemaphore;
 		VkFence inFlightFence;
 
-		SwapChain* swapChain;
 
 		BufferObject* vertexBufferObject;
 		BufferObject* indexBufferObject;

@@ -10,12 +10,7 @@ using namespace RenderEngine::Vulkan;
 void CommandBufferBase::InitializeCommandBuffer(CommandBufferCreateInfo _createInfo, CommandBufferBase* _output)
 {
 	_output->logicalDevice = _createInfo.logicalDevice;
-
 	_output->commandPool = _createInfo.commandPool;
-	_output->renderPass = _createInfo.renderPass;
-	_output->graphicsPipeline = _createInfo.graphicsPipeline;
-	_output->frameBuffer = _createInfo.frameBuffer;
-	_output->window = _createInfo.window;
 
 	VkCommandBufferAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
