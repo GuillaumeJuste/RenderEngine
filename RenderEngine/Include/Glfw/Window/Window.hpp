@@ -44,9 +44,20 @@ namespace RenderEngine::Vulkan
 		static void FramebufferResizeCallback(GLFWwindow* _window, int _width, int _height);
 	public:
 
+		/**
+		 * @brief Event called when window is resized;
+		*/
 		Utils::Event<> FramebufferResizeEvent;
 
+		/**
+		 * @brief Window constructor
+		 * @param _width window width
+		 * @param _height window height
+		 * @param _name window name
+		*/
 		Window(unsigned int _width, unsigned int _height, const char* _name);
+
+		///default destructor
 		~Window() = default;
 
 		/**

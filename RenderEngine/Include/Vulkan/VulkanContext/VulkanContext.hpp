@@ -17,25 +17,72 @@ namespace RenderEngine::Vulkan
 	class VulkanContext
 	{
 	private:
+		/**
+		 * @brief Vulkan instance
+		*/
 		VkInstance instance;
-
+		
+		/**
+		 * @brief Debug messenger used to catch and display Vulkan errors
+		*/
 		DebugMessenger debugMessenger;
+		
+		/**
+		 * @brief list of devices created by the instance
+		*/
 		std::forward_list<DeviceContext> deviceContexts;
-		DeviceContext deviceContext;
+
+		/**
+		 * @brief List of pairs of Window and surface created via this vulkan instance
+		*/
 		std::forward_list<WindowProperties> windowProperties;
 
+		/**
+		 * @brief create the vulkan instance 
+		*/
 		void CreateInstance();
+
+		/**
+		 * @brief Setup debug messenger to catch vulakn errors
+		*/
 		void SetupDebugMessenger();
 
+
+		/**
+		 * @brief check support of validation layer in the list of supported layers
+		 * @return true if validation layer is supported
+		*/
 		bool CheckValidationLayerSupport();
+
+		/**
+		 * @brief Get a vector of all the requiered extentions to create the vulkan instance
+		*/
 		std::vector<const char*> GetRequiredExtensions();
 	public:
+
+		///default constructor
 		VulkanContext();
+
+		///default destructor
 		~VulkanContext() = default;
 
+		/**
+		 * @brief Add a window to the list of window supported by this vulkan instance 
+		 * @param _window window to add t othe list
+		 * @return 
+		*/
 		WindowProperties* AddWindow(Window* _window);
+
+		/**
+		 * @brief create a Device context from this instance
+		 * @param _windowProperties window to use for device context creation
+		 * @return pointer to the created device context
+		*/
 		DeviceContext* CreateDeviceContext(WindowProperties* _windowProperties);
 
+		/**
+		 * @brief clean the stored DeviceContexts and WindowProperties then clean the vulkan instance
+		*/
 		void Cleanup();
 	};
 }
