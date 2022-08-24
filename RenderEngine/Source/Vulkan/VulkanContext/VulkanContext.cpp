@@ -133,7 +133,7 @@ DeviceContext* VulkanContext::CreateDeviceContext(WindowProperties* _windowPrope
 
     DeviceContext* newDevice = &deviceContexts.emplace_front();
 
-    DeviceContext::InitalizeDevice(createInfo, newDevice);
+    DeviceContext::InitalizeDeviceContext(createInfo, newDevice);
 
     return newDevice;
 }

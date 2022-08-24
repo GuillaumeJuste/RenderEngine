@@ -12,7 +12,7 @@
 
 using namespace RenderEngine::Vulkan;
 
-void DeviceContext::InitalizeDevice(const DeviceContextCreateInfo& _createInfo, DeviceContext* _output)
+void DeviceContext::InitalizeDeviceContext(const DeviceContextCreateInfo& _createInfo, DeviceContext* _output)
 {
 	_output->instance = _createInfo.instance;
 	_output->windowProperties = _createInfo.windowProperties;
@@ -221,11 +221,6 @@ void DeviceContext::CreateLogicalDevice()
 const VkPhysicalDevice& DeviceContext::GetPhysicalDevice() const
 {
 	return physicalDevice;
-}
-
-const uint32_t& DeviceContext::GetGraphicsQueueIndex()const
-{
-	return physicalDeviceProperties.queueFamilyIndices.graphicsFamily.value();
 }
 
 const VkDevice& DeviceContext::GetLogicalDevice() const

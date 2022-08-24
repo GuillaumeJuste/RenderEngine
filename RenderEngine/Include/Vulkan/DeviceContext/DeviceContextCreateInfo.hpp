@@ -10,10 +10,15 @@ namespace RenderEngine::Vulkan
 {
 	struct DeviceContextCreateInfo
 	{
+		/**
+		 * @brief VkInstance initializing the logical device
+		*/
 		VkInstance instance = VK_NULL_HANDLE;
-		WindowProperties* windowProperties;
 
-		DeviceContextCreateInfo() = default;
+		/**
+		 * @brief window used for render
+		*/
+		WindowProperties* windowProperties;
 	};
 }
 

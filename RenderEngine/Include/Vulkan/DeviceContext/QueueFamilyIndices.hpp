@@ -10,9 +10,19 @@ namespace RenderEngine::Vulkan
 {
 	struct QueueFamilyIndices
 	{
+		/**
+		 * @brief Index of the graphics queue
+		*/
 		std::optional<uint32_t> graphicsFamily;
+
+		/**
+		 * @brief index of the present queue
+		*/
 		std::optional<uint32_t> presentFamily;
 
+		/**
+		 * @brief Check if both graphic and prensent queue have valid index
+		*/
 		bool isComplete();
 	};
 }
