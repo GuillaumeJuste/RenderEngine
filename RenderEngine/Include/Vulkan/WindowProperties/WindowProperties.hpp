@@ -12,9 +12,13 @@ namespace RenderEngine::Vulkan
 {
 	struct WindowProperties
 	{
+		/// window
 		Window* window;
+
+		/// surface
 		Surface surface;
 
+		/// default constructor
 		WindowProperties() = default;
 	};
 }
