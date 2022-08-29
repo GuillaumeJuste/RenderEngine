@@ -9,9 +9,13 @@ namespace RenderEngine::Vulkan
 {
 	struct CommandPoolCreateInfo
 	{
+		/// logical device
 		VkDevice logicalDevice;
+		
+		/// graphics queue index
 		uint32_t graphicsQueueIndex;
 
+		/// default constructor
 		CommandPoolCreateInfo() = default;
 	};
 }

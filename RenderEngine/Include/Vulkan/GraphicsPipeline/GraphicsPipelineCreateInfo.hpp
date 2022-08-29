@@ -10,16 +10,25 @@ namespace RenderEngine::Vulkan
 {
 	struct GraphicsPipelineCreateInfo
 	{
+		/// logical device
 		VkDevice logicalDevice;
 		
+		/// swapchain extent
 		VkExtent2D swapChainExtent;
+		
+		/// swapchain image format
 		VkFormat swapChainImageFormat;
 
+		/// vertex shader
 		Shader vertexShader;
+
+		/// fragment shader
 		Shader fragmentShader;
 
+		/// renderpass
 		RenderPass* renderPass;
 
+		/// default constructor
 		GraphicsPipelineCreateInfo() = default;
 	};
 }

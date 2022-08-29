@@ -10,7 +10,10 @@ namespace RenderEngine::Vulkan
 {
 	struct CommandBufferCreateInfo
 	{
+		/// VkDevice to initialize VkBuffer
 		VkDevice logicalDevice;
+
+		///Command Pol owning the command buffer
 		CommandPool* commandPool;
 
 
