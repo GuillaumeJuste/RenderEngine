@@ -9,7 +9,10 @@ namespace RenderEngine::Vulkan
 {
 	struct RenderPassCreateInfo
 	{
+		/// logical device
 		VkDevice logicalDevice;
+
+		/// swapchain image format
 		VkFormat swapChainImageFormat;
 
 		RenderPassCreateInfo() = default;

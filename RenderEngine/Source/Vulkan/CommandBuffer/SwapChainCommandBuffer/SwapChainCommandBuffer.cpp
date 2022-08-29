@@ -54,7 +54,7 @@ void SwapChainCommandBuffer::RecordCommandBuffer(uint32_t imageIndex)
 		throw std::runtime_error("failed to begin recording command buffer!");
 	}
 
-	VkExtent2D swapChainExtent = swapChain->GetSwapChainExtent();
+	VkExtent2D swapChainExtent = swapChain->GetExtent();
 
 	VkRenderPassBeginInfo renderPassInfo{};
 	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;

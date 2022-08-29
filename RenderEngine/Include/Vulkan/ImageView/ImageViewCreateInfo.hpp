@@ -9,11 +9,16 @@ namespace RenderEngine::Vulkan
 {
 	struct ImageViewCreateInfo
 	{
+		/// logical device
 		VkDevice logicalDevice = VK_NULL_HANDLE;
-		size_t swapChainImageCount = 2;
+		
+		/// swapchain images
 		std::vector<VkImage> swapChainImages;
+
+		/// swapchain images format 
 		VkFormat swapChainImageFormat = VK_FORMAT_UNDEFINED;
 
+		/// default constructor
 		ImageViewCreateInfo() = default;
 	};
 }

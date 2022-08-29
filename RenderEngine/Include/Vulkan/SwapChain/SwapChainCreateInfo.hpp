@@ -4,7 +4,7 @@
 #define RENDERENGINE_SWAPCHAINCREATEINFO
 
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
-#include "Vulkan/Surface/Surface.hpp"
+#include "Vulkan/WindowProperties/WindowProperties.hpp"
 #include "Vulkan/RenderPass/RenderPass.hpp"
 #include "Vulkan/DeviceContext/QueueFamilyIndices.hpp"
 #include "Glfw/Window/Window.hpp"
@@ -13,10 +13,16 @@ namespace RenderEngine::Vulkan
 {
 	struct SwapChainCreateInfo
 	{
+		/// physical device
 		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+		
+		/// logical device
 		VkDevice logicalDevice = VK_NULL_HANDLE;
-		Surface* surface = nullptr;
-		Window* window = nullptr;
+		
+		/// window properties
+		WindowProperties* windowProperties;
+		
+		/// Queue family indices
 		QueueFamilyIndices queueFamilyIndices;
 
 		SwapChainCreateInfo() = default;

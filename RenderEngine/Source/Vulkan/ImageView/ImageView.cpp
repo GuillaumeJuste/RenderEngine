@@ -9,11 +9,13 @@ using namespace RenderEngine::Vulkan;
 
 void ImageView::InitializeImageView(ImageViewCreateInfo _imageViewCreateInfo, ImageView* _output)
 {
+    size_t swapChainImageCount = _imageViewCreateInfo.swapChainImages.size();
+
 	_output->logicalDevice = _imageViewCreateInfo.logicalDevice;
 
-    _output->swapChainImageViews.resize(_imageViewCreateInfo.swapChainImageCount);
+    _output->swapChainImageViews.resize(swapChainImageCount);
 
-    for (size_t i = 0; i < _imageViewCreateInfo.swapChainImageCount; i++)
+    for (size_t i = 0; i < swapChainImageCount; i++)
     {
         VkImageViewCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;

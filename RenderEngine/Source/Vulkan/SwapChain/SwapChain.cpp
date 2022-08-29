@@ -13,8 +13,7 @@ using namespace Mathlib;
 
 void SwapChain::InitializeSwapChain(const SwapChainCreateInfo& _swapChainCreateInfo, SwapChain* _output)
 {
-	_output->surface = _swapChainCreateInfo.surface;
-	_output->window = _swapChainCreateInfo.window;
+	_output->windowProperties = _swapChainCreateInfo.windowProperties;
 	_output->logicalDevice = _swapChainCreateInfo.logicalDevice;
 	_output->queueFamilyIndices = _swapChainCreateInfo.queueFamilyIndices;
 	_output->CreateVkSwapChain(_swapChainCreateInfo);
@@ -23,11 +22,11 @@ void SwapChain::InitializeSwapChain(const SwapChainCreateInfo& _swapChainCreateI
 
 void SwapChain::CreateVkSwapChain(const SwapChainCreateInfo& _swapChainCreateInfo)
 {
-	SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(_swapChainCreateInfo.physicalDevice, *surface);
+	SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(_swapChainCreateInfo.physicalDevice, windowProperties->surface);
 
 	VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(swapChainSupport.formats);
 	VkPresentModeKHR presentMode = ChooseSwapPresentMode(swapChainSupport.presentModes);
-	VkExtent2D extent = ChooseSwapExtent(swapChainSupport.capabilities);
+	VkExtent2D swapchainExtent = ChooseSwapExtent(swapChainSupport.capabilities);
 
 	uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
 	if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) 
@@ -37,12 +36,12 @@ void SwapChain::CreateVkSwapChain(const SwapChainCreateInfo& _swapChainCreateInf
 
 	VkSwapchainCreateInfoKHR createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-	createInfo.surface = surface->GetVkSurface();
+	createInfo.surface = windowProperties->surface.GetVkSurface();
 
 	createInfo.minImageCount = imageCount;
 	createInfo.imageFormat = surfaceFormat.format;
 	createInfo.imageColorSpace = surfaceFormat.colorSpace;
-	createInfo.imageExtent = extent;
+	createInfo.imageExtent = swapchainExtent;
 	createInfo.imageArrayLayers = 1;
 	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
@@ -71,21 +70,19 @@ void SwapChain::CreateVkSwapChain(const SwapChainCreateInfo& _swapChainCreateInf
 	}
 
 	vkGetSwapchainImagesKHR(logicalDevice, vkSwapChain, &imageCount, nullptr);
-	swapChainImages.resize(imageCount);
-	vkGetSwapchainImagesKHR(logicalDevice, vkSwapChain, &imageCount, swapChainImages.data());
+	images.resize(imageCount);
+	vkGetSwapchainImagesKHR(logicalDevice, vkSwapChain, &imageCount, images.data());
 
-	swapChainImageCount = imageCount;
-	swapChainImageFormat = surfaceFormat.format;
-	swapChainExtent = extent;
+	imageFormat = surfaceFormat.format;
+	extent = swapchainExtent;
 }
 
 void SwapChain::CreateImageView()
 {
 	ImageViewCreateInfo createInfo;
 	createInfo.logicalDevice = logicalDevice;
-	createInfo.swapChainImageCount = swapChainImageCount;
-	createInfo.swapChainImages = swapChainImages;
-	createInfo.swapChainImageFormat = swapChainImageFormat;
+	createInfo.swapChainImages = images;
+	createInfo.swapChainImageFormat = imageFormat;
 
 	ImageView::InitializeImageView(createInfo, &imageView);
 }
@@ -145,7 +142,7 @@ VkExtent2D SwapChain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& _capabili
 	else
 	{
 		int width, height;
-		glfwGetFramebufferSize(window->GetGLFWWindow(), &width, &height);
+		glfwGetFramebufferSize(windowProperties->window->GetGLFWWindow(), &width, &height);
 
 		width = Math::Clamp(width, _capabilities.minImageExtent.width, _capabilities.maxImageExtent.width);
 		height = Math::Clamp(height, _capabilities.minImageExtent.height, _capabilities.maxImageExtent.height);
@@ -171,14 +168,14 @@ const VkSwapchainKHR& SwapChain::GetVKSwapChain() const
 	return vkSwapChain;
 }
 
-const VkExtent2D& SwapChain::GetSwapChainExtent() const
+const VkExtent2D& SwapChain::GetExtent() const
 {
-	return swapChainExtent;
+	return extent;
 }
 
-const VkFormat& SwapChain::GetSwapChainImageFormat() const
+const VkFormat& SwapChain::GetImageFormat() const
 {
-	return swapChainImageFormat;
+	return imageFormat;
 }
 
 const ImageView& SwapChain::GetImageView() const
@@ -186,7 +183,7 @@ const ImageView& SwapChain::GetImageView() const
 	return imageView;
 }
 
-const size_t& SwapChain::GetImageImageCount() const
+const size_t& SwapChain::GetImageCount() const
 {
-	return swapChainImageCount;
+	return images.size();
 }

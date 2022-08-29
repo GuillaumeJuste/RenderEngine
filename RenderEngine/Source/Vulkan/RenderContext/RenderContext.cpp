@@ -44,8 +44,7 @@ void RenderContext::CreateSwapChain()
 	SwapChainCreateInfo createInfo;
 	createInfo.physicalDevice = physicalDevice;
 	createInfo.logicalDevice = logicalDevice;
-	createInfo.surface = &windowProperties->surface;
-	createInfo.window = windowProperties->window;
+	createInfo.windowProperties = windowProperties;
 	createInfo.queueFamilyIndices = queueFamilyIndices;
 
 	SwapChain::InitializeSwapChain(createInfo, &swapChain);
@@ -55,7 +54,7 @@ void RenderContext::CreateRenderPass()
 {
 	RenderPassCreateInfo createInfo{};
 	createInfo.logicalDevice = logicalDevice;
-	createInfo.swapChainImageFormat = swapChain.GetSwapChainImageFormat();
+	createInfo.swapChainImageFormat = swapChain.GetImageFormat();
 
 	RenderPass::InitializeRenderPass(createInfo, &renderPass);
 }
@@ -68,8 +67,8 @@ void RenderContext::CreateGraphicsPipeline()
 	GraphicsPipelineCreateInfo pipelineInfo{};
 	Shader::CreateShader(vertexShaderCreateInfo, &pipelineInfo.vertexShader);
 	Shader::CreateShader(fragmentShaderCreateInfo, &pipelineInfo.fragmentShader);
-	pipelineInfo.swapChainExtent = swapChain.GetSwapChainExtent();
-	pipelineInfo.swapChainImageFormat = swapChain.GetSwapChainImageFormat();
+	pipelineInfo.swapChainExtent = swapChain.GetExtent();
+	pipelineInfo.swapChainImageFormat = swapChain.GetImageFormat();
 	pipelineInfo.logicalDevice = logicalDevice;
 	pipelineInfo.renderPass = &renderPass;
 	GraphicsPipeline::InitalizeGraphicsPipeline(pipelineInfo, &graphicsPipeline);
@@ -81,8 +80,8 @@ void RenderContext::CreateFrameBuffer()
 	createInfo.logicalDevice = logicalDevice;
 	createInfo.renderPass = &renderPass;
 	createInfo.imageView = &swapChain.GetImageView();
-	createInfo.swapChainImageCount = swapChain.GetImageImageCount();
-	createInfo.swapChainExtent = swapChain.GetSwapChainExtent();
+	createInfo.swapChainImageCount = swapChain.GetImageCount();
+	createInfo.swapChainExtent = swapChain.GetExtent();
 
 	FrameBuffer::InitializeFrameBuffer(createInfo, &frameBuffer);
 }
