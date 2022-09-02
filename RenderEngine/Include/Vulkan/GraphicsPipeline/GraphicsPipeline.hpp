@@ -7,6 +7,9 @@
 
 namespace RenderEngine::Vulkan
 {
+	/**
+	 * @brief Class to manage creation and usage of Vulkan VkPipeline as a graphic pipeline
+	*/
 	class GraphicsPipeline
 	{
 	private:

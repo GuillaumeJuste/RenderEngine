@@ -8,6 +8,9 @@
 
 namespace RenderEngine::Vulkan
 {
+	/**
+	* @brief struct holding data for FrameBuffer Initialization
+	*/
 	struct FrameBufferCreateInfo
 	{
 		/// logical device

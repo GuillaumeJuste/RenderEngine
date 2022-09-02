@@ -9,6 +9,9 @@
 
 namespace RenderEngine::Vulkan
 {
+	/**
+	 * @brief Class to manage creation and usage of swapchain command buffer
+	*/
 	class SwapChainCommandBuffer : public CommandBufferBase
 	{
 	private:

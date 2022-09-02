@@ -9,6 +9,9 @@
 
 namespace RenderEngine::Vulkan
 {
+	/**
+	 * @brief struct holding informations about a physical device
+	*/
 	struct PhysicalDeviceProperties
 	{
 		/**

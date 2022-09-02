@@ -7,6 +7,9 @@
 
 namespace RenderEngine::Vulkan
 {
+	/**
+	* @brief struct holding data for CommandPool Initialization
+	*/
 	struct CommandPoolCreateInfo
 	{
 		/// logical device

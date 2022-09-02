@@ -7,6 +7,9 @@
 
 namespace RenderEngine::Vulkan
 {
+	/**
+	 * @brief struct holding a supported swapchain features
+	*/
 	struct SwapChainSupportDetails
 	{
 		VkSurfaceCapabilitiesKHR capabilities;

@@ -8,6 +8,9 @@
 
 namespace RenderEngine::Vulkan
 {
+	/**
+	 * @brief Class to manage creation and usage of a shader
+	*/
 	class Shader
 	{
 	private:

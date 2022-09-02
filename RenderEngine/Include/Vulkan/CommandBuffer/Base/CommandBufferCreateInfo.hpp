@@ -8,6 +8,9 @@
 
 namespace RenderEngine::Vulkan
 {
+	/**
+	* @brief struct holding data for CommandBuffer Initialization
+	*/
 	struct CommandBufferCreateInfo
 	{
 		/// VkDevice to initialize VkBuffer

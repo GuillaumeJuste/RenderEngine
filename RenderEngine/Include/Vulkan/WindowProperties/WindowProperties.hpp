@@ -10,6 +10,9 @@
 
 namespace RenderEngine::Vulkan
 {
+	/**
+	 * @brief struct holding a pair of window and vulkan surface representing it
+	*/
 	struct WindowProperties
 	{
 		/// window

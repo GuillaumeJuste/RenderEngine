@@ -15,6 +15,9 @@
 
 namespace RenderEngine::Vulkan
 {
+	/**
+	 * @brief Class to manage creation and usage of Vulkan logical device(VkDevice)
+	*/
 	class DeviceContext
 	{
 	private:

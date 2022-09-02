@@ -8,6 +8,9 @@
 
 namespace RenderEngine::Vulkan
 {
+	/**
+	 * @brief struct holding indices of the graphics and present queue for a physical device
+	*/
 	struct QueueFamilyIndices
 	{
 		/**

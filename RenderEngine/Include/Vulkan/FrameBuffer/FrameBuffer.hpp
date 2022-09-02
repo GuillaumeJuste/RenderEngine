@@ -8,7 +8,9 @@
 
 namespace RenderEngine::Vulkan
 {
-
+	/**
+	 * @brief Class to manage creation and usage of Vulkan FrameBuffer
+	*/
 	class FrameBuffer
 	{
 	private:

@@ -8,7 +8,7 @@
 namespace RenderEngine::Vulkan
 {
 	/**
-	 * @brief struct holding data for BufferObject creation
+	 * @brief struct holding data for BufferObject Initialization
 	*/
 	struct BufferObjectCreateInfo
 	{

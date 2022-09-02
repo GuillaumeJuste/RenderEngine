@@ -8,6 +8,9 @@
 
 namespace RenderEngine::Vulkan
 {
+	/**
+	 * @brief Class to manage creation and usage of a surface matching a glfw window
+	*/
 	class Surface
 	{
 	private:

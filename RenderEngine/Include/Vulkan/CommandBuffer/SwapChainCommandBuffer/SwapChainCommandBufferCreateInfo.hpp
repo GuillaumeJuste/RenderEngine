@@ -13,7 +13,9 @@
 
 namespace RenderEngine::Vulkan
 {
-
+	/**
+	* @brief struct holding data for SwapChainCommandBufferObject Initialization
+	*/
 	struct SwapChainCommandBufferCreateInfo : public CommandBufferCreateInfo
 	{
 		/// render pass

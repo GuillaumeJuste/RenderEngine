@@ -8,6 +8,9 @@
 
 namespace RenderEngine::Vulkan
 {
+	/**
+	* @brief struct holding data for Shader Initialization
+	*/
 	struct ShaderCreateInfo
 	{
 		/// shader type

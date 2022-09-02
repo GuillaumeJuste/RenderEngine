@@ -7,6 +7,9 @@
 
 namespace RenderEngine::Vulkan
 {
+	/**
+	* @brief struct holding data for ImageView Initialization
+	*/
 	struct ImageViewCreateInfo
 	{
 		/// logical device

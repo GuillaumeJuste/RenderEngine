@@ -11,6 +11,9 @@
 
 namespace RenderEngine::Vulkan
 {
+	/**
+	* @brief struct holding data for RenderContext Initialization
+	*/
 	struct RenderContextCreateInfo
 	{
 		/// vulkan instance

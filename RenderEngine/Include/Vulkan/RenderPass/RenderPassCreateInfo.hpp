@@ -7,6 +7,9 @@
 
 namespace RenderEngine::Vulkan
 {
+	/**
+	* @brief struct holding data for RenderPass Initialization
+	*/
 	struct RenderPassCreateInfo
 	{
 		/// logical device

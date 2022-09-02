@@ -8,6 +8,9 @@
 
 namespace RenderEngine::Vulkan
 {
+	/**
+	* @brief struct holding data for GraphicsPipeline Initialization
+	*/
 	struct GraphicsPipelineCreateInfo
 	{
 		/// logical device

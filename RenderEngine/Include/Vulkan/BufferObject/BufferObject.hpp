@@ -11,6 +11,7 @@ namespace RenderEngine::Vulkan
 {
 	/**
 	 * @brief Buffer Object class
+	 * Hold data that will be sent to the GPU for computation and/or render
 	*/
 	class BufferObject
 	{

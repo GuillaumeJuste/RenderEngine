@@ -16,6 +16,9 @@
 
 namespace RenderEngine::Vulkan
 {
+	/**
+	 * @brief Class to handle a pipeline to render in a window
+	*/
 	class RenderContext
 	{
 	private:

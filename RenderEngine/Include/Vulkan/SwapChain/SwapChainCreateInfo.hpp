@@ -11,6 +11,9 @@
 
 namespace RenderEngine::Vulkan
 {
+	/**
+	* @brief struct holding data for SwapChain Initialization
+	*/
 	struct SwapChainCreateInfo
 	{
 		/// physical device

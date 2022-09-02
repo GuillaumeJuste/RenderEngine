@@ -14,6 +14,9 @@
 
 namespace RenderEngine::Vulkan
 {
+	/**
+	 * @brief Class to manage creation and usage of a Vulkan instance
+	*/
 	class VulkanContext
 	{
 	private:
