@@ -4,7 +4,7 @@
 
 using namespace RenderEngine::Vulkan;
 
-void CommandPool::InitializeCommandPool(CommandPoolCreateInfo _createInfo, CommandPool* _output)
+void CommandPool::InitializeCommandPool(const CommandPoolCreateInfo& _createInfo, CommandPool* _output)
 {
 	_output->logicalDevice = _createInfo.logicalDevice;
 	_output->graphicsQueueIndex = _createInfo.graphicsQueueIndex;

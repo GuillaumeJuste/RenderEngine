@@ -64,7 +64,7 @@ namespace RenderEngine::Vulkan
 		 * @param _createInfo buffer creation info
 		 * @param _output command buffer to initialize 
 		*/
-		static void InitializeCommandBuffer(SwapChainCommandBufferCreateInfo _createInfo, SwapChainCommandBuffer* _output);
+		static void InitializeCommandBuffer(const SwapChainCommandBufferCreateInfo& _createInfo, SwapChainCommandBuffer* _output);
 
 		/**
 		 * @brief record command buffer to render a frame

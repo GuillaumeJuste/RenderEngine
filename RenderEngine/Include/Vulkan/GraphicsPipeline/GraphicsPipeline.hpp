@@ -50,7 +50,7 @@ namespace RenderEngine::Vulkan
 		 * @param _createInfo graphic piepline create info
 		 * @param _output graphic pipeline to initialize
 		*/
-		static void InitalizeGraphicsPipeline(GraphicsPipelineCreateInfo _createInfo, GraphicsPipeline* _output);
+		static void InitalizeGraphicsPipeline(const GraphicsPipelineCreateInfo& _createInfo, GraphicsPipeline* _output);
 
 		/**
 		 * @brief clean up vulkan classes

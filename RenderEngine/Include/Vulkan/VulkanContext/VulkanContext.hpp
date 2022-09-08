@@ -38,7 +38,7 @@ namespace RenderEngine::Vulkan
 		/**
 		 * @brief List of pairs of Window and surface created via this vulkan instance
 		*/
-		std::forward_list<WindowProperties> windowProperties;
+		std::forward_list<WindowProperties> windowsProperties;
 
 		/**
 		 * @brief create the vulkan instance 

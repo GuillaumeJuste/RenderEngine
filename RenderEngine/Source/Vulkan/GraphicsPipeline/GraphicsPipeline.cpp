@@ -6,7 +6,7 @@
 using namespace RenderEngine::Vulkan;
 using namespace RenderEngine::Core;
 
-void GraphicsPipeline::InitalizeGraphicsPipeline(GraphicsPipelineCreateInfo _createInfo, GraphicsPipeline* _output)
+void GraphicsPipeline::InitalizeGraphicsPipeline(const GraphicsPipelineCreateInfo& _createInfo, GraphicsPipeline* _output)
 {
 	_output->vertexShader = _createInfo.vertexShader ;
 	_output->fragmentShader = _createInfo.fragmentShader;

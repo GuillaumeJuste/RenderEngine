@@ -37,7 +37,7 @@ namespace RenderEngine::Vulkan
 		 * @param _createInfo information to use to initialize command buffer
 		 * @param _output command buffer to initialize
 		*/
-		static void InitializeCommandBuffer(CommandBufferCreateInfo _createInfo, CommandBufferBase* _output);
+		static void InitializeCommandBuffer(const CommandBufferCreateInfo& _createInfo, CommandBufferBase* _output);
 
 		/**
 		 * @brief record command buffer command

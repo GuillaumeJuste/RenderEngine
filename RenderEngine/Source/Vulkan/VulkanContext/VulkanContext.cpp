@@ -112,13 +112,13 @@ std::vector<const char*> VulkanContext::GetRequiredExtensions()
 
 WindowProperties* VulkanContext::AddWindow(Window* _window)
 {
-    for (std::forward_list<WindowProperties>::iterator it = windowProperties.begin(); it != windowProperties.end(); ++it)
+    for (std::forward_list<WindowProperties>::iterator it = windowsProperties.begin(); it != windowsProperties.end(); ++it)
     {
         if (it->window == _window)
             return &(*it);
     }
 
-    WindowProperties* properties = &windowProperties.emplace_front();
+    WindowProperties* properties = &windowsProperties.emplace_front();
     properties->window = _window;
     Surface::InitializeSurface(instance, _window, &properties->surface);
 
@@ -145,7 +145,7 @@ void VulkanContext::Cleanup()
         it->Cleanup();
     }
 
-    for (std::forward_list<WindowProperties>::iterator it = windowProperties.begin(); it != windowProperties.end(); ++it)
+    for (std::forward_list<WindowProperties>::iterator it = windowsProperties.begin(); it != windowsProperties.end(); ++it)
     {
         it->surface.Cleanup();
     }

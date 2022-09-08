@@ -27,7 +27,7 @@ namespace RenderEngine::Vulkan
 		/// number of image in the swapchain
 		size_t swapChainImageCount;
 		
-		/// swapchaine xtent
+		/// swapchaine extent
 		VkExtent2D swapChainExtent;
 
 		///Framebuffers
@@ -42,7 +42,7 @@ namespace RenderEngine::Vulkan
 		 * @param _frameBufferCreateInfo framebuffer creation info
 		 * @param _output framebuffer to initiliaze
 		*/
-		static void InitializeFrameBuffer(FrameBufferCreateInfo _frameBufferCreateInfo, FrameBuffer* _output);
+		static void InitializeFrameBuffer(const FrameBufferCreateInfo& _frameBufferCreateInfo, FrameBuffer* _output);
 		
 		/**
 		 * @brief clean up vulkan classes

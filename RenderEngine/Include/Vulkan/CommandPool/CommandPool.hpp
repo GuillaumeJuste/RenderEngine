@@ -36,7 +36,7 @@ namespace RenderEngine::Vulkan
 		 * @param _createInfo command pool creation info
 		 * @param _output command pool to initilaize
 		*/
-		static void InitializeCommandPool(CommandPoolCreateInfo _createInfo, CommandPool* _output);
+		static void InitializeCommandPool(const CommandPoolCreateInfo& _createInfo, CommandPool* _output);
 
 		/// Get VkCommandPool
 		const VkCommandPool& GetCommandPool() const;

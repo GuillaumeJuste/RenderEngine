@@ -33,7 +33,7 @@ namespace RenderEngine::Vulkan
 		 * @param _createInfo render pass create info
 		 * @param _output render pass to initilize
 		*/
-		static void InitializeRenderPass(RenderPassCreateInfo _createInfo, RenderPass* _output);
+		static void InitializeRenderPass(const RenderPassCreateInfo& _createInfo, RenderPass* _output);
 		
 		/**
 		 * @brief clean up vulkan classes

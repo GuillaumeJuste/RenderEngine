@@ -27,9 +27,9 @@ void GraphicsApplication::InitVulkan()
     std::cout << "[Initialize] Vulkan" << std::endl;
     vulkanContext = new VulkanContext();
 
-    WindowProperties* windowProperties = vulkanContext->AddWindow(window);
+    WindowProperties* windowsProperties = vulkanContext->AddWindow(window);
 
-    deviceContext = vulkanContext->CreateDeviceContext(windowProperties);
+    deviceContext = vulkanContext->CreateDeviceContext(windowsProperties);
 
     renderContext = deviceContext->AddRenderContext();
 }
