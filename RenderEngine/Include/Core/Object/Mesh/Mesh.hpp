@@ -5,7 +5,6 @@
 
 #include "Core/Object/Object.hpp"
 #include "Core/Vertrex/Vertex.hpp"
-#include "Vulkan/BufferObject/BufferObject.hpp"
 #include <vector>
 
 namespace RenderEngine::Core
@@ -26,9 +25,6 @@ namespace RenderEngine::Core
         */
         std::vector<uint32_t> indices;
 
-        RenderEngine::Vulkan::BufferObject vertexBufferObject;
-        RenderEngine::Vulkan::BufferObject indexBufferObject;
-
     public:
         Mesh() = default;
         ~Mesh() = default;
@@ -40,9 +36,6 @@ namespace RenderEngine::Core
          * @param _output Mesh to fill with vertices and indices
         */
         static void InitializeMesh(std::vector<Vertex> _vertices, std::vector<uint32_t> _indices, Mesh* _output);
-
-        const RenderEngine::Vulkan::BufferObject* GetVertexBufferObject() const;
-        const RenderEngine::Vulkan::BufferObject* GetIndexBufferObject() const;
     };
 }
 

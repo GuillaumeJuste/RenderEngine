@@ -5,7 +5,7 @@
 
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Vulkan/CommandBuffer/Base/CommandBufferBase.hpp"
-#include "Vulkan/CommandBuffer/SwapChainCommandBuffer/SwapChainCommandBufferCreateInfo.hpp"
+#include "Vulkan/CommandBuffer/SwapChainCommandBuffer/SwapChainCommandBufferVkCreateInfo.hpp"
 
 namespace RenderEngine::Vulkan
 {
@@ -64,7 +64,7 @@ namespace RenderEngine::Vulkan
 		 * @param _createInfo buffer creation info
 		 * @param _output command buffer to initialize 
 		*/
-		static void InitializeCommandBuffer(const SwapChainCommandBufferCreateInfo& _createInfo, SwapChainCommandBuffer* _output);
+		static void InitializeCommandBuffer(const SwapChainCommandBufferVkCreateInfo& _createInfo, SwapChainCommandBuffer* _output);
 
 		/**
 		 * @brief record command buffer to render a frame

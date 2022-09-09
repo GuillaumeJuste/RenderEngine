@@ -13,7 +13,7 @@ const std::vector<uint16_t> indices = {
 	0, 1, 2, 2, 3, 0
 };
 
-void SwapChainCommandBuffer::InitializeCommandBuffer(const SwapChainCommandBufferCreateInfo& _createInfo, SwapChainCommandBuffer* _output)
+void SwapChainCommandBuffer::InitializeCommandBuffer(const SwapChainCommandBufferVkCreateInfo& _createInfo, SwapChainCommandBuffer* _output)
 {
 	_output->vertexBufferObject = _createInfo.vertexBufferObject;
 	_output->indexBufferObject = _createInfo.indexBufferObject;

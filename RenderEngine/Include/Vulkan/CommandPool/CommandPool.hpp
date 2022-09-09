@@ -4,7 +4,7 @@
 #define RENDERENGINE_COMMANDPOOL
 
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
-#include "Vulkan/CommandPool/CommandPoolCreateInfo.hpp"
+#include "Vulkan/CommandPool/CommandPoolVkCreateInfo.hpp"
 
 namespace RenderEngine::Vulkan
 {
@@ -36,7 +36,7 @@ namespace RenderEngine::Vulkan
 		 * @param _createInfo command pool creation info
 		 * @param _output command pool to initilaize
 		*/
-		static void InitializeCommandPool(const CommandPoolCreateInfo& _createInfo, CommandPool* _output);
+		static void InitializeCommandPool(const CommandPoolVkCreateInfo& _createInfo, CommandPool* _output);
 
 		/// Get VkCommandPool
 		const VkCommandPool& GetCommandPool() const;

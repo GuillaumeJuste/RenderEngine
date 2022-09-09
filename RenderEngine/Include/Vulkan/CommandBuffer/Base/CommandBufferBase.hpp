@@ -4,7 +4,7 @@
 #define RENDERENGINE_COMMANDBUFFERBASE
 
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
-#include "Vulkan/CommandBuffer/Base/CommandBufferCreateInfo.hpp"
+#include "Vulkan/CommandBuffer/Base/CommandBufferVkCreateInfo.hpp"
 
 namespace RenderEngine::Vulkan
 {
@@ -37,7 +37,7 @@ namespace RenderEngine::Vulkan
 		 * @param _createInfo information to use to initialize command buffer
 		 * @param _output command buffer to initialize
 		*/
-		static void InitializeCommandBuffer(const CommandBufferCreateInfo& _createInfo, CommandBufferBase* _output);
+		static void InitializeCommandBuffer(const CommandBufferVkCreateInfo& _createInfo, CommandBufferBase* _output);
 
 		/**
 		 * @brief record command buffer command

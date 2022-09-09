@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef RENDERENGINE_COMMANDBUFFERCREATEINFO
-#define RENDERENGINE_COMMANDBUFFERCREATEINFO
+#ifndef RENDERENGINE_COMMANDBUFFERVKCREATEINFO
+#define RENDERENGINE_COMMANDBUFFERVKCREATEINFO
 
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Vulkan/CommandPool/CommandPool.hpp"
@@ -11,7 +11,7 @@ namespace RenderEngine::Vulkan
 	/**
 	* @brief struct holding data for CommandBuffer Initialization
 	*/
-	struct CommandBufferCreateInfo
+	struct CommandBufferVkCreateInfo
 	{
 		/// VkDevice to initialize VkBuffer
 		VkDevice logicalDevice;
@@ -20,7 +20,7 @@ namespace RenderEngine::Vulkan
 		CommandPool* commandPool;
 
 
-		CommandBufferCreateInfo() = default;
+		CommandBufferVkCreateInfo() = default;
 	};
 }
 

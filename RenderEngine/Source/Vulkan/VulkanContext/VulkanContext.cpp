@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "Vulkan/DeviceContext/DeviceContextCreateInfo.hpp"
+#include "Vulkan/DeviceContext/DeviceContextVkCreateInfo.hpp"
 
 using namespace RenderEngine::Vulkan;
 
@@ -127,7 +127,7 @@ WindowProperties* VulkanContext::AddWindow(Window* _window)
 
 DeviceContext* VulkanContext::CreateDeviceContext(WindowProperties* _windowProperties)
 {
-    DeviceContextCreateInfo createInfo;
+    DeviceContextVkCreateInfo createInfo;
     createInfo.instance = instance;
     createInfo.windowProperties = _windowProperties;
 

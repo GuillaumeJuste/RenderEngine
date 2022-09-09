@@ -4,7 +4,7 @@
 #define RENDERENGINE_BUFFEROBJECT
 
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
-#include "Vulkan/BufferObject/BufferObjectCreateInfo.hpp"
+#include "Vulkan/BufferObject/BufferObjectVkCreateInfo.hpp"
 #include "Vulkan/CommandPool/CommandPool.hpp"
 
 namespace RenderEngine::Vulkan
@@ -67,7 +67,7 @@ namespace RenderEngine::Vulkan
 		 * @param _createInfo information to create BufferObject from.
 		 * @param _output BufferObject to initialize
 		*/
-		static void InitializeBufferObject(BufferObjectCreateInfo _createInfo, BufferObject* _output);
+		static void InitializeBufferObject(BufferObjectVkCreateInfo _createInfo, BufferObject* _output);
 
 		/**
 		 * @brief copy this buffer into destination buffer; 

@@ -1,5 +1,5 @@
 #include "Vulkan/CommandBuffer/Base/CommandBufferBase.hpp"
-#include "Vulkan/CommandBuffer/Base/CommandBufferCreateInfo.hpp"
+#include "Vulkan/CommandBuffer/Base/CommandBufferVkCreateInfo.hpp"
 
 #include "Vulkan/CommandPool/CommandPool.hpp"
 
@@ -7,7 +7,7 @@
 
 using namespace RenderEngine::Vulkan;
 
-void CommandBufferBase::InitializeCommandBuffer(const CommandBufferCreateInfo& _createInfo, CommandBufferBase* _output)
+void CommandBufferBase::InitializeCommandBuffer(const CommandBufferVkCreateInfo& _createInfo, CommandBufferBase* _output)
 {
 	_output->logicalDevice = _createInfo.logicalDevice;
 	_output->commandPool = _createInfo.commandPool;

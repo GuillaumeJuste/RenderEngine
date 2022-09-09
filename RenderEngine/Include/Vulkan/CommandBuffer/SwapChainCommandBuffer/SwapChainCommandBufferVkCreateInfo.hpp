@@ -4,7 +4,7 @@
 #define RENDERENGINE_SWAPCHAINCOMMANDBUFFERCREATEINFO
 
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
-#include "Vulkan/CommandBuffer/Base/CommandBufferCreateInfo.hpp"
+#include "Vulkan/CommandBuffer/Base/CommandBufferVkCreateInfo.hpp"
 #include "Vulkan/SwapChain/SwapChain.hpp"
 #include "Vulkan/RenderPass/RenderPass.hpp"
 #include "Vulkan/GraphicsPipeline/GraphicsPipeline.hpp"
@@ -16,7 +16,7 @@ namespace RenderEngine::Vulkan
 	/**
 	* @brief struct holding data for SwapChainCommandBufferObject Initialization
 	*/
-	struct SwapChainCommandBufferCreateInfo : public CommandBufferCreateInfo
+	struct SwapChainCommandBufferVkCreateInfo : public CommandBufferVkCreateInfo
 	{
 		/// render pass
 		RenderPass* renderPass;
@@ -35,7 +35,7 @@ namespace RenderEngine::Vulkan
 		BufferObject* indexBufferObject;
 
 		/// default constructor
-		SwapChainCommandBufferCreateInfo() = default;
+		SwapChainCommandBufferVkCreateInfo() = default;
 	};
 }
 

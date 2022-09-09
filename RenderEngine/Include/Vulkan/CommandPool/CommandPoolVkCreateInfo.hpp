@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef RENDERENGINE_COMMANDPOOLCREATEINFO
-#define RENDERENGINE_COMMANDPOOLCREATEINFO
+#ifndef RENDERENGINE_COMMANDPOOLVKCREATEINFO
+#define RENDERENGINE_COMMANDPOOLVKCREATEINFO
 
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
 
@@ -10,7 +10,7 @@ namespace RenderEngine::Vulkan
 	/**
 	* @brief struct holding data for CommandPool Initialization
 	*/
-	struct CommandPoolCreateInfo
+	struct CommandPoolVkCreateInfo
 	{
 		/// logical device
 		VkDevice logicalDevice;
@@ -19,7 +19,7 @@ namespace RenderEngine::Vulkan
 		uint32_t graphicsQueueIndex;
 
 		/// default constructor
-		CommandPoolCreateInfo() = default;
+		CommandPoolVkCreateInfo() = default;
 	};
 }
 

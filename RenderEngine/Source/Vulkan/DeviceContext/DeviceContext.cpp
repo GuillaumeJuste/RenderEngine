@@ -12,7 +12,7 @@
 
 using namespace RenderEngine::Vulkan;
 
-void DeviceContext::InitalizeDeviceContext(const DeviceContextCreateInfo& _createInfo, DeviceContext* _output)
+void DeviceContext::InitalizeDeviceContext(const DeviceContextVkCreateInfo& _createInfo, DeviceContext* _output)
 {
 	_output->instance = _createInfo.instance;
 	_output->windowProperties = _createInfo.windowProperties;

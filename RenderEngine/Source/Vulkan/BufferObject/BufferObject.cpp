@@ -4,7 +4,7 @@
 
 using namespace RenderEngine::Vulkan;
 
-void BufferObject::InitializeBufferObject(BufferObjectCreateInfo _createInfo, BufferObject* _output)
+void BufferObject::InitializeBufferObject(BufferObjectVkCreateInfo _createInfo, BufferObject* _output)
 {
 	_output->physicalDevice = _createInfo.physicalDevice;
 	_output->logicalDevice = _createInfo.logicalDevice;

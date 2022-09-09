@@ -88,7 +88,7 @@ void RenderContext::CreateFrameBuffer()
 
 void RenderContext::CreateCommandPool()
 {
-	CommandPoolCreateInfo createInfo{};
+	CommandPoolVkCreateInfo createInfo{};
 	createInfo.logicalDevice = logicalDevice;
 	createInfo.graphicsQueueIndex = queueFamilyIndices.graphicsFamily.value();
 	CommandPool::InitializeCommandPool(createInfo, &commandPool);
@@ -96,7 +96,7 @@ void RenderContext::CreateCommandPool()
 
 void RenderContext::CreateCommandBuffer()
 {
-	SwapChainCommandBufferCreateInfo createInfo{};
+	SwapChainCommandBufferVkCreateInfo createInfo{};
 	createInfo.logicalDevice = logicalDevice;
 	createInfo.commandPool = &commandPool;
 	createInfo.renderPass = &renderPass;
@@ -142,7 +142,7 @@ void RenderContext::RecreateSwapChain()
 
 void RenderContext::CreateVertexBufferObject()
 {
-	BufferObjectCreateInfo stagingBufferCreateInfo;
+	BufferObjectVkCreateInfo stagingBufferCreateInfo;
 	stagingBufferCreateInfo.physicalDevice = physicalDevice;
 	stagingBufferCreateInfo.logicalDevice = logicalDevice;
 	stagingBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
@@ -156,7 +156,7 @@ void RenderContext::CreateVertexBufferObject()
 	memcpy(data, vertices.data(), (size_t)stagingBufferCreateInfo.bufferSize);
 	vkUnmapMemory(logicalDevice, stagingBufferObject.GetVkBufferMemory());
 
-	BufferObjectCreateInfo vertexBuffeCreateInfo;
+	BufferObjectVkCreateInfo vertexBuffeCreateInfo;
 	vertexBuffeCreateInfo.physicalDevice = physicalDevice;
 	vertexBuffeCreateInfo.logicalDevice = logicalDevice;
 	vertexBuffeCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
@@ -171,7 +171,7 @@ void RenderContext::CreateVertexBufferObject()
 
 void RenderContext::CreateIndexBufferObject()
 {
-	BufferObjectCreateInfo stagingBufferCreateInfo;
+	BufferObjectVkCreateInfo stagingBufferCreateInfo;
 	stagingBufferCreateInfo.physicalDevice = physicalDevice;
 	stagingBufferCreateInfo.logicalDevice = logicalDevice;
 	stagingBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
@@ -185,7 +185,7 @@ void RenderContext::CreateIndexBufferObject()
 	memcpy(data, indices.data(), (size_t)stagingBufferCreateInfo.bufferSize);
 	vkUnmapMemory(logicalDevice, stagingBufferObject.GetVkBufferMemory());
 
-	BufferObjectCreateInfo indexBufferCreateInfo;
+	BufferObjectVkCreateInfo indexBufferCreateInfo;
 	indexBufferCreateInfo.physicalDevice = physicalDevice;
 	indexBufferCreateInfo.logicalDevice = logicalDevice;
 	indexBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT;

@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef RENDERENGINE_DEVICECONTEXTCREATEINFO
-#define RENDERENGINE_DEVICECONTEXTCREATEINFO
+#ifndef RENDERENGINE_DEVICECONTEXTVKCREATEINFO
+#define RENDERENGINE_DEVICECONTEXTVkCREATEINFO
 
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Vulkan/WindowProperties/WindowProperties.hpp"
@@ -11,7 +11,7 @@ namespace RenderEngine::Vulkan
 	/**
 	* @brief struct holding data for DeviceContext Initialization
 	*/
-	struct DeviceContextCreateInfo
+	struct DeviceContextVkCreateInfo
 	{
 		/**
 		 * @brief VkInstance initializing the logical device

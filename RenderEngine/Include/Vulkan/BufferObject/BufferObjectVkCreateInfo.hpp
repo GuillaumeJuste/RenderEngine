@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef RENDERENGINE_BUFFEROBJECTCREATEINFO
-#define RENDERENGINE_BUFFEROBJECTCREATEINFO
+#ifndef RENDERENGINE_BUFFEROBJECTVKCREATEINFO
+#define RENDERENGINE_BUFFEROBJECTVKCREATEINFO
 
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
 
@@ -10,7 +10,7 @@ namespace RenderEngine::Vulkan
 	/**
 	 * @brief struct holding data for BufferObject Initialization
 	*/
-	struct BufferObjectCreateInfo
+	struct BufferObjectVkCreateInfo
 	{
 		/**
 		 * @brief vulkan physical device handle
@@ -37,7 +37,7 @@ namespace RenderEngine::Vulkan
 		*/
 		VkMemoryPropertyFlags memoryProperties;
 
-		BufferObjectCreateInfo() = default;
+		BufferObjectVkCreateInfo() = default;
 	};
 }
 

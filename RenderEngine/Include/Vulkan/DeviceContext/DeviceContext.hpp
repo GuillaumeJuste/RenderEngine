@@ -3,7 +3,7 @@
 #ifndef RENDERENGINE_DEVICECONTEXT
 #define RENDERENGINE_DEVICECONTEXT
 
-#include "Vulkan/DeviceContext/DeviceContextCreateInfo.hpp"
+#include "Vulkan/DeviceContext/DeviceContextVkCreateInfo.hpp"
 #include "Vulkan/DeviceContext/QueueFamilyIndices.hpp"
 #include "Vulkan/SwapChain/SwapChainSupportDetails.hpp"
 #include "Vulkan/Surface/Surface.hpp"
@@ -112,7 +112,7 @@ namespace RenderEngine::Vulkan
 		 * @param _createInfo Information used to intitalize the device
 		 * @param _output 
 		*/
-		static void InitalizeDeviceContext(const DeviceContextCreateInfo& _createInfo, DeviceContext* _output);
+		static void InitalizeDeviceContext(const DeviceContextVkCreateInfo& _createInfo, DeviceContext* _output);
 
 		/**
 		 * @brief Create a Render context and add it to the list of owned render context
