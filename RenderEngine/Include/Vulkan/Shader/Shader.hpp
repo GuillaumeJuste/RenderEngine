@@ -4,7 +4,7 @@
 #define RENDERENGINE_SHADER
 
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
-#include "Vulkan/Shader/ShaderCreateInfo.hpp"
+#include "Vulkan/Shader/ShaderVkCreateInfo.hpp"
 
 namespace RenderEngine::Vulkan
 {
@@ -46,7 +46,7 @@ namespace RenderEngine::Vulkan
 		 * @param _createInfo shader create info
 		 * @param _output shader to initilize
 		*/
-		static void CreateShader(ShaderCreateInfo _createInfo, Shader* _output);
+		static void CreateShader(ShaderVkCreateInfo _createInfo, Shader* _output);
 		
 		/**
 		 * @brief Clean up vulkan classes

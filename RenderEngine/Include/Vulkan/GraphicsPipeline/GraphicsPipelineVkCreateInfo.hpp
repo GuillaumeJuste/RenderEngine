@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef RENDERENGINE_GRAPHICSPIPELINECREATEINFO
-#define RENDERENGINE_GRAPHICSPIPELINECREATEINFO
+#ifndef RENDERENGINE_GRAPHICSPIPELINEVKCREATEINFO
+#define RENDERENGINE_GRAPHICSPIPELINEVKCREATEINFO
 
 #include "Vulkan/Shader/Shader.hpp"
 #include "Vulkan/RenderPass/RenderPass.hpp"
@@ -11,7 +11,7 @@ namespace RenderEngine::Vulkan
 	/**
 	* @brief struct holding data for GraphicsPipeline Initialization
 	*/
-	struct GraphicsPipelineCreateInfo
+	struct GraphicsPipelineVkCreateInfo
 	{
 		/// logical device
 		VkDevice logicalDevice;
@@ -32,7 +32,7 @@ namespace RenderEngine::Vulkan
 		RenderPass* renderPass;
 
 		/// default constructor
-		GraphicsPipelineCreateInfo() = default;
+		GraphicsPipelineVkCreateInfo() = default;
 	};
 }
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef RENDERENGINE_FRAMEBUFFERCREATEINFO
-#define RENDERENGINE_FRAMEBUFFERCREATEINFO
+#ifndef RENDERENGINE_FRAMEBUFFERVKCREATEINFO
+#define RENDERENGINE_FRAMEBUFFERVKCREATEINFO
 
 #include "Vulkan/RenderPass/RenderPass.hpp"
 #include "Vulkan/ImageView/ImageView.hpp"
@@ -11,7 +11,7 @@ namespace RenderEngine::Vulkan
 	/**
 	* @brief struct holding data for FrameBuffer Initialization
 	*/
-	struct FrameBufferCreateInfo
+	struct FrameBufferVkCreateInfo
 	{
 		/// logical device
 		VkDevice logicalDevice;
@@ -29,7 +29,7 @@ namespace RenderEngine::Vulkan
 		VkExtent2D swapChainExtent;
 
 		/// default constructor
-		FrameBufferCreateInfo() = default;
+		FrameBufferVkCreateInfo() = default;
 	};
 }
 

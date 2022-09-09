@@ -4,7 +4,7 @@
 
 using namespace RenderEngine::Vulkan;
 
-void Shader::CreateShader(ShaderCreateInfo _createInfo, Shader* _output)
+void Shader::CreateShader(ShaderVkCreateInfo _createInfo, Shader* _output)
 {
     auto shaderCode = ReadShaderFile(_createInfo.shaderFilePath);
 

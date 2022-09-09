@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef RENDERENGINE_SWAPCHAINCREATEINFO
-#define RENDERENGINE_SWAPCHAINCREATEINFO
+#ifndef RENDERENGINE_SWAPCHAINVKCREATEINFO
+#define RENDERENGINE_SWAPCHAINVKCREATEINFO
 
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Vulkan/WindowProperties/WindowProperties.hpp"
@@ -14,7 +14,7 @@ namespace RenderEngine::Vulkan
 	/**
 	* @brief struct holding data for SwapChain Initialization
 	*/
-	struct SwapChainCreateInfo
+	struct SwapChainVkCreateInfo
 	{
 		/// physical device
 		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
@@ -28,7 +28,7 @@ namespace RenderEngine::Vulkan
 		/// Queue family indices
 		QueueFamilyIndices queueFamilyIndices;
 
-		SwapChainCreateInfo() = default;
+		SwapChainVkCreateInfo() = default;
 	};
 }
 

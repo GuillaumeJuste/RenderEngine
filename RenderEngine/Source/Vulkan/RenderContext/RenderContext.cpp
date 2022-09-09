@@ -17,7 +17,7 @@ const std::vector<uint16_t> indices = {
 	0, 1, 2, 2, 3, 0
 };
 
-void RenderContext::InitalizeRenderContext(const RenderContextCreateInfo& _createInfo, RenderContext* _output)
+void RenderContext::InitalizeRenderContext(const RenderContextVkCreateInfo& _createInfo, RenderContext* _output)
 {
 	_output->instance = _createInfo.instance;
 	_output->windowProperties = _createInfo.windowProperties;
@@ -41,7 +41,7 @@ void RenderContext::InitalizeRenderContext(const RenderContextCreateInfo& _creat
 
 void RenderContext::CreateSwapChain()
 {
-	SwapChainCreateInfo createInfo;
+	SwapChainVkCreateInfo createInfo;
 	createInfo.physicalDevice = physicalDevice;
 	createInfo.logicalDevice = logicalDevice;
 	createInfo.windowProperties = windowProperties;
@@ -52,7 +52,7 @@ void RenderContext::CreateSwapChain()
 
 void RenderContext::CreateRenderPass()
 {
-	RenderPassCreateInfo createInfo{};
+	RenderPassVkCreateInfo createInfo{};
 	createInfo.logicalDevice = logicalDevice;
 	createInfo.swapChainImageFormat = swapChain.GetImageFormat();
 
@@ -61,10 +61,10 @@ void RenderContext::CreateRenderPass()
 
 void RenderContext::CreateGraphicsPipeline()
 {
-	ShaderCreateInfo vertexShaderCreateInfo(VK_SHADER_STAGE_VERTEX_BIT, "Resources/Shaders/VertexShader.spv", logicalDevice);
-	ShaderCreateInfo fragmentShaderCreateInfo(VK_SHADER_STAGE_FRAGMENT_BIT, "Resources/Shaders/FragmentShader.spv", logicalDevice);
+	ShaderVkCreateInfo vertexShaderCreateInfo(VK_SHADER_STAGE_VERTEX_BIT, "Resources/Shaders/VertexShader.spv", logicalDevice);
+	ShaderVkCreateInfo fragmentShaderCreateInfo(VK_SHADER_STAGE_FRAGMENT_BIT, "Resources/Shaders/FragmentShader.spv", logicalDevice);
 
-	GraphicsPipelineCreateInfo pipelineInfo{};
+	GraphicsPipelineVkCreateInfo pipelineInfo{};
 	Shader::CreateShader(vertexShaderCreateInfo, &pipelineInfo.vertexShader);
 	Shader::CreateShader(fragmentShaderCreateInfo, &pipelineInfo.fragmentShader);
 	pipelineInfo.swapChainExtent = swapChain.GetExtent();
@@ -76,7 +76,7 @@ void RenderContext::CreateGraphicsPipeline()
 
 void RenderContext::CreateFrameBuffer()
 {
-	FrameBufferCreateInfo createInfo{};
+	FrameBufferVkCreateInfo createInfo{};
 	createInfo.logicalDevice = logicalDevice;
 	createInfo.renderPass = &renderPass;
 	createInfo.imageView = &swapChain.GetImageView();

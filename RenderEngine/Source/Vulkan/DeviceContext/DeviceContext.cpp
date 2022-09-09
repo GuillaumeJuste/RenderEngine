@@ -4,10 +4,10 @@
 #include <set>
 #include <iostream>
 
-#include "Vulkan/SwapChain/SwapChainCreateInfo.hpp"
+#include "Vulkan/SwapChain/SwapChainVkCreateInfo.hpp"
 #include "Vulkan/Shader/Shader.hpp"
 #include "Vulkan/SwapChain/SwapChain.hpp"
-#include "Vulkan/RenderContext/RenderContextCreateInfo.hpp"
+#include "Vulkan/RenderContext/RenderContextVkCreateInfo.hpp"
 
 
 using namespace RenderEngine::Vulkan;
@@ -235,7 +235,7 @@ const VkQueue& DeviceContext::GetGraphicsQueue() const
 
 RenderContext* DeviceContext::AddRenderContext()
 {
-	RenderContextCreateInfo createInfo;
+	RenderContextVkCreateInfo createInfo;
 	createInfo.instance = instance;
 	createInfo.windowProperties = windowProperties;
 	createInfo.physicalDevice = physicalDevice;

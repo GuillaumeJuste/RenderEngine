@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef RENDERENGINE_IMAGEVIEWCREATEINFO
-#define RENDERENGINE_IMAGEVIEWCREATEINFO
+#ifndef RENDERENGINE_IMAGEVIEWVKCREATEINFO
+#define RENDERENGINE_IMAGEVIEWVKCREATEINFO
 
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
 
@@ -10,7 +10,7 @@ namespace RenderEngine::Vulkan
 	/**
 	* @brief struct holding data for ImageView Initialization
 	*/
-	struct ImageViewCreateInfo
+	struct ImageViewVkCreateInfo
 	{
 		/// logical device
 		VkDevice logicalDevice = VK_NULL_HANDLE;
@@ -22,7 +22,7 @@ namespace RenderEngine::Vulkan
 		VkFormat swapChainImageFormat = VK_FORMAT_UNDEFINED;
 
 		/// default constructor
-		ImageViewCreateInfo() = default;
+		ImageViewVkCreateInfo() = default;
 	};
 }
 

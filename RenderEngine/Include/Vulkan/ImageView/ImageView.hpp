@@ -4,7 +4,7 @@
 #define RENDERENGINE_IMAGEVIEW
 
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
-#include "Vulkan/ImageView/ImageViewCreateInfo.hpp"
+#include "Vulkan/ImageView/ImageViewVkCreateInfo.hpp"
 
 namespace RenderEngine::Vulkan
 {
@@ -33,7 +33,7 @@ namespace RenderEngine::Vulkan
 		 * @param _imageViewCreateInfo image view create info 
 		 * @param _output ImageView to initialize
 		*/
-		static void InitializeImageView(ImageViewCreateInfo _imageViewCreateInfo, ImageView* _output);
+		static void InitializeImageView(ImageViewVkCreateInfo _imageViewCreateInfo, ImageView* _output);
 		
 		/**
 		 * @brief clean up vulkan classes

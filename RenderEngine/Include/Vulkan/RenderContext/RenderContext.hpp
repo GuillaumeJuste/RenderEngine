@@ -3,7 +3,7 @@
 #ifndef RENDERENGINE_RENDERCONTEXT
 #define RENDERENGINE_RENDERCONTEXT
 
-#include "Vulkan/RenderContext/RenderContextCreateInfo.hpp"
+#include "Vulkan/RenderContext/RenderContextVkCreateInfo.hpp"
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Glfw/Window/Window.hpp"
 #include "Vulkan/Surface/Surface.hpp"
@@ -133,7 +133,7 @@ namespace RenderEngine::Vulkan
 		 * @param _createInfo 
 		 * @param _output 
 		*/
-		static void InitalizeRenderContext(const RenderContextCreateInfo& _createInfo, RenderContext* _output);
+		static void InitalizeRenderContext(const RenderContextVkCreateInfo& _createInfo, RenderContext* _output);
 
 		/**
 		 * @brief Draw current frame

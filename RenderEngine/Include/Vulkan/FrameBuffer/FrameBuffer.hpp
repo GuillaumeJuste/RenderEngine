@@ -4,7 +4,7 @@
 #define RENDERENGINE_FRAMEBUFFER
 
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
-#include "Vulkan/FrameBuffer/FrameBufferCreateInfo.hpp"
+#include "Vulkan/FrameBuffer/FrameBufferVkCreateInfo.hpp"
 
 namespace RenderEngine::Vulkan
 {
@@ -42,7 +42,7 @@ namespace RenderEngine::Vulkan
 		 * @param _frameBufferCreateInfo framebuffer creation info
 		 * @param _output framebuffer to initiliaze
 		*/
-		static void InitializeFrameBuffer(const FrameBufferCreateInfo& _frameBufferCreateInfo, FrameBuffer* _output);
+		static void InitializeFrameBuffer(const FrameBufferVkCreateInfo& _frameBufferCreateInfo, FrameBuffer* _output);
 		
 		/**
 		 * @brief clean up vulkan classes

@@ -3,11 +3,11 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "Vulkan/ImageView/ImageViewCreateInfo.hpp"
+#include "Vulkan/ImageView/ImageViewVkCreateInfo.hpp"
 
 using namespace RenderEngine::Vulkan;
 
-void ImageView::InitializeImageView(ImageViewCreateInfo _imageViewCreateInfo, ImageView* _output)
+void ImageView::InitializeImageView(ImageViewVkCreateInfo _imageViewCreateInfo, ImageView* _output)
 {
     size_t swapChainImageCount = _imageViewCreateInfo.swapChainImages.size();
 

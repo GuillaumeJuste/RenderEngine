@@ -7,7 +7,7 @@
 
 #include "Vulkan/Surface/Surface.hpp"
 #include "Vulkan/ImageView/ImageView.hpp"
-#include "Vulkan/SwapChain/SwapChainCreateInfo.hpp"
+#include "Vulkan/SwapChain/SwapChainVkCreateInfo.hpp"
 #include "Vulkan/SwapChain/SwapChainSupportDetails.hpp"
 #include "Glfw/Window/Window.hpp"
 
@@ -47,7 +47,7 @@ namespace RenderEngine::Vulkan
 		 * @brief Create Swapchain
 		 * @param _swapChainCreateInfo swap chain create info
 		*/
-		void CreateVkSwapChain(const SwapChainCreateInfo& _swapChainCreateInfo);
+		void CreateVkSwapChain(const SwapChainVkCreateInfo& _swapChainCreateInfo);
 		
 		/**
 		 * @brief Create ImageView
@@ -87,7 +87,7 @@ namespace RenderEngine::Vulkan
 		 * @param _swapChainCreateInfo  swapchain createinfo
 		 * @param _output swapchain to initilize
 		*/
-		static void InitializeSwapChain(const SwapChainCreateInfo& _swapChainCreateInfo, SwapChain* _output);
+		static void InitializeSwapChain(const SwapChainVkCreateInfo& _swapChainCreateInfo, SwapChain* _output);
 		
 		/**
 		 * @brief Cleanup vulkan classes

@@ -5,13 +5,13 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "Vulkan/ImageView/ImageViewCreateInfo.hpp"
+#include "Vulkan/ImageView/ImageViewVkCreateInfo.hpp"
 #include "Misc/Math.hpp"
 
 using namespace RenderEngine::Vulkan;
 using namespace Mathlib;
 
-void SwapChain::InitializeSwapChain(const SwapChainCreateInfo& _swapChainCreateInfo, SwapChain* _output)
+void SwapChain::InitializeSwapChain(const SwapChainVkCreateInfo& _swapChainCreateInfo, SwapChain* _output)
 {
 	_output->windowProperties = _swapChainCreateInfo.windowProperties;
 	_output->logicalDevice = _swapChainCreateInfo.logicalDevice;
@@ -20,7 +20,7 @@ void SwapChain::InitializeSwapChain(const SwapChainCreateInfo& _swapChainCreateI
 	_output->CreateImageView();
 }
 
-void SwapChain::CreateVkSwapChain(const SwapChainCreateInfo& _swapChainCreateInfo)
+void SwapChain::CreateVkSwapChain(const SwapChainVkCreateInfo& _swapChainCreateInfo)
 {
 	SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(_swapChainCreateInfo.physicalDevice, windowProperties->surface);
 
@@ -79,7 +79,7 @@ void SwapChain::CreateVkSwapChain(const SwapChainCreateInfo& _swapChainCreateInf
 
 void SwapChain::CreateImageView()
 {
-	ImageViewCreateInfo createInfo;
+	ImageViewVkCreateInfo createInfo;
 	createInfo.logicalDevice = logicalDevice;
 	createInfo.swapChainImages = images;
 	createInfo.swapChainImageFormat = imageFormat;

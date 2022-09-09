@@ -4,7 +4,7 @@
 
 using namespace RenderEngine::Vulkan;
 
-void FrameBuffer::InitializeFrameBuffer(const FrameBufferCreateInfo& _frameBufferCreateInfo, FrameBuffer* _output)
+void FrameBuffer::InitializeFrameBuffer(const FrameBufferVkCreateInfo& _frameBufferCreateInfo, FrameBuffer* _output)
 {
 	_output->logicalDevice = _frameBufferCreateInfo.logicalDevice;
 	_output->renderPass = _frameBufferCreateInfo.renderPass;

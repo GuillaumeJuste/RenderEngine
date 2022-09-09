@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef RENDERENGINE_RENDERCONTEXTCREATEINFO
-#define RENDERENGINE_RENDERCONTEXTCREATEINFO
+#ifndef RENDERENGINE_RENDERCONTEXTVKCREATEINFO
+#define RENDERENGINE_RENDERCONTEXTVKCREATEINFO
 
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Vulkan/Surface/Surface.hpp"
@@ -14,7 +14,7 @@ namespace RenderEngine::Vulkan
 	/**
 	* @brief struct holding data for RenderContext Initialization
 	*/
-	struct RenderContextCreateInfo
+	struct RenderContextVkCreateInfo
 	{
 		/// vulkan instance
 		VkInstance instance;
@@ -38,7 +38,7 @@ namespace RenderEngine::Vulkan
 		VkQueue presentQueue;
 
 		/// default constructor
-		RenderContextCreateInfo() = default;
+		RenderContextVkCreateInfo() = default;
 	};
 }
 

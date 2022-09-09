@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef RENDERENGINE_RENDERPASSCREATEINFO
-#define RENDERENGINE_RENDERPASSCREATEINFO
+#ifndef RENDERENGINE_RENDERPASSVKCREATEINFO
+#define RENDERENGINE_RENDERPASSVKCREATEINFO
 
 #include "Vulkan/Shader/Shader.hpp"
 
@@ -10,7 +10,7 @@ namespace RenderEngine::Vulkan
 	/**
 	* @brief struct holding data for RenderPass Initialization
 	*/
-	struct RenderPassCreateInfo
+	struct RenderPassVkCreateInfo
 	{
 		/// logical device
 		VkDevice logicalDevice;
@@ -18,7 +18,7 @@ namespace RenderEngine::Vulkan
 		/// swapchain image format
 		VkFormat swapChainImageFormat;
 
-		RenderPassCreateInfo() = default;
+		RenderPassVkCreateInfo() = default;
 	};
 }
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef RENDERENGINE_SHADERCREATEINFO
-#define RENDERENGINE_SHADERCREATEINFO
+#ifndef RENDERENGINE_SHADERVKCREATEINFO
+#define RENDERENGINE_SHADERVKCREATEINFO
 
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
 #include <fstream>
@@ -11,7 +11,7 @@ namespace RenderEngine::Vulkan
 	/**
 	* @brief struct holding data for Shader Initialization
 	*/
-	struct ShaderCreateInfo
+	struct ShaderVkCreateInfo
 	{
 		/// shader type
 		VkShaderStageFlagBits shaderType;
@@ -23,7 +23,7 @@ namespace RenderEngine::Vulkan
 		VkDevice device = VK_NULL_HANDLE;
 
 		/// default constructor 
-		ShaderCreateInfo() = default;
+		ShaderVkCreateInfo() = default;
 
 		/**
 		 * @brief Parameter constructor
@@ -31,7 +31,7 @@ namespace RenderEngine::Vulkan
 		 * @param _shaderFilePath shader file path
 		 * @param _device logical device
 		*/
-		ShaderCreateInfo(VkShaderStageFlagBits _shaderType, std::string _shaderFilePath,const VkDevice& _device);
+		ShaderVkCreateInfo(VkShaderStageFlagBits _shaderType, std::string _shaderFilePath,const VkDevice& _device);
 	};
 }
 

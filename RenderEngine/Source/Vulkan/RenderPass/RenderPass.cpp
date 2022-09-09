@@ -4,7 +4,7 @@
 
 using namespace RenderEngine::Vulkan;
 
-void RenderPass::InitializeRenderPass(const RenderPassCreateInfo& _createInfo, RenderPass* _output)
+void RenderPass::InitializeRenderPass(const RenderPassVkCreateInfo& _createInfo, RenderPass* _output)
 {
     _output->logicalDevice = _createInfo.logicalDevice;
 
