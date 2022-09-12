@@ -7,7 +7,6 @@
 #include "Vulkan/DeviceContext/QueueFamilyIndices.hpp"
 #include "Vulkan/SwapChain/SwapChainSupportDetails.hpp"
 #include "Vulkan/Surface/Surface.hpp"
-#include "Glfw/Window/Window.hpp"
 #include "Vulkan/RenderContext/RenderContext.hpp"
 #include "Vulkan/DeviceContext/PhysicalDeviceProperties.hpp"
 

@@ -7,7 +7,6 @@
 #include "Vulkan/WindowProperties/WindowProperties.hpp"
 #include "Vulkan/RenderPass/RenderPass.hpp"
 #include "Vulkan/DeviceContext/QueueFamilyIndices.hpp"
-#include "Glfw/Window/Window.hpp"
 
 namespace RenderEngine::Vulkan
 {

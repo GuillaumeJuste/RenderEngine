@@ -4,9 +4,10 @@
 #define RENDERENGINE_WINDOWPROPERTIES
 
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
-#include "Glfw/Window/Window.hpp"
+#include "Window/Glfw/Window.hpp"
 #include "Vulkan/Surface/Surface.hpp"
 
+using namespace RenderEngine::Window;
 
 namespace RenderEngine::Vulkan
 {
@@ -16,7 +17,7 @@ namespace RenderEngine::Vulkan
 	struct WindowProperties
 	{
 		/// window
-		Window* window;
+		GLFW::Window* window;
 
 		/// surface
 		Surface surface;

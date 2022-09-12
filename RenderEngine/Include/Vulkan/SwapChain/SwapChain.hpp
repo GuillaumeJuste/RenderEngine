@@ -9,7 +9,6 @@
 #include "Vulkan/ImageView/ImageView.hpp"
 #include "Vulkan/SwapChain/SwapChainVkCreateInfo.hpp"
 #include "Vulkan/SwapChain/SwapChainSupportDetails.hpp"
-#include "Glfw/Window/Window.hpp"
 
 namespace RenderEngine::Vulkan
 {

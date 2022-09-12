@@ -3,9 +3,11 @@
 #include <stdexcept>
 #include <iostream>
 
+
+using namespace RenderEngine::Window;
 using namespace RenderEngine::Vulkan;
 
-void Surface::InitializeSurface(const VkInstance& _instance, Window* _window, Surface* _output)
+void Surface::InitializeSurface(const VkInstance& _instance, GLFW::Window* _window, Surface* _output)
 {
 	_output->instance = _instance;
 	_output->window = _window;

@@ -5,8 +5,10 @@
 
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Vulkan/VulkanContext/VulkanContext.hpp"
-#include "Glfw/Window/Window.hpp"
+#include "Window/Glfw/Window.hpp"
 #include "Core/Scene/Scene.hpp"
+
+using namespace RenderEngine::Window;
 
 namespace RenderEngine
 { 
@@ -19,7 +21,7 @@ namespace RenderEngine
 		/**
 		 * @brief Window for engine rendering
 		*/
-		Window* window;
+		GLFW::Window* window;
 
 		/**
 		 * @brief vulkan context

@@ -8,9 +8,11 @@
 #include "Vulkan/Surface/Surface.hpp"
 #include "Vulkan/Debugger/DebugMessenger.hpp"
 #include "Vulkan/WindowProperties/WindowProperties.hpp"
-#include "Glfw/Window/Window.hpp"
+#include "Window/Glfw/Window.hpp"
 
 #include <forward_list>
+
+using namespace RenderEngine::Window;
 
 namespace RenderEngine::Vulkan
 {
@@ -74,7 +76,7 @@ namespace RenderEngine::Vulkan
 		 * @param _window window to add t othe list
 		 * @return 
 		*/
-		WindowProperties* AddWindow(Window* _window);
+		WindowProperties* AddWindow(GLFW::Window* _window);
 
 		/**
 		 * @brief create a Device context from this instance

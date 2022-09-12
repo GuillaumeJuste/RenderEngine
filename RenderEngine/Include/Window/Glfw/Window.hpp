@@ -7,7 +7,7 @@
 
 #include "Utils/Event/Event.hpp"
 
-namespace RenderEngine::Vulkan
+namespace RenderEngine::Window::GLFW
 {
 	/**
 	 * @brief Class managing GLFW window creation and destruction

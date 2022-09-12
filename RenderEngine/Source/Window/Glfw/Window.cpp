@@ -1,9 +1,9 @@
-#include "Glfw/Window/Window.hpp"
+#include "Window/Glfw/Window.hpp"
 #include "Application/GraphicsApplication.hpp"
 
 #include <iostream>
 
-using namespace RenderEngine::Vulkan;
+using namespace RenderEngine::Window::GLFW;
 
 Window::Window(unsigned int _width, unsigned int _height, const char* _name) :
     width{ _width }, height{ _height }, name{ _name }

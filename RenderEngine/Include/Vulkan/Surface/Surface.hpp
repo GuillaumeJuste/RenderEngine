@@ -4,7 +4,9 @@
 #define RENDERENGINE_SURFACE
 
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
-#include "Glfw/Window/Window.hpp"
+#include "Window/Glfw/Window.hpp"
+
+using namespace RenderEngine::Window;
 
 namespace RenderEngine::Vulkan
 {
@@ -22,7 +24,7 @@ namespace RenderEngine::Vulkan
 		/**
 		 * @brief window from which the surface was created
 		*/
-		Window* window = nullptr;
+		GLFW::Window* window = nullptr;
 
 		/**
 		 * @brief Surface
@@ -43,7 +45,7 @@ namespace RenderEngine::Vulkan
 		 * @param _window glfw window
 		 * @param _output surface to initialize
 		*/
-		static void InitializeSurface(const VkInstance& _instance, Window* _window, Surface* _output);
+		static void InitializeSurface(const VkInstance& _instance, GLFW::Window* _window, Surface* _output);
 
 		/**
 		 * @brief clean surface

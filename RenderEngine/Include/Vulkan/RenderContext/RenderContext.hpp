@@ -5,7 +5,6 @@
 
 #include "Vulkan/RenderContext/RenderContextVkCreateInfo.hpp"
 #include "Vulkan/Misc/VulkanBaseInclude.hpp"
-#include "Glfw/Window/Window.hpp"
 #include "Vulkan/Surface/Surface.hpp"
 #include "Vulkan/SwapChain/SwapChain.hpp"
 #include "Vulkan/GraphicsPipeline/GraphicsPipeline.hpp"

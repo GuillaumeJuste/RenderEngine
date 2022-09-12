@@ -5,6 +5,7 @@
 
 #include "Vulkan/DeviceContext/DeviceContextVkCreateInfo.hpp"
 
+using namespace RenderEngine::Window;
 using namespace RenderEngine::Vulkan;
 
 VulkanContext::VulkanContext() 
@@ -110,7 +111,7 @@ std::vector<const char*> VulkanContext::GetRequiredExtensions()
     return extensions;
 }
 
-WindowProperties* VulkanContext::AddWindow(Window* _window)
+WindowProperties* VulkanContext::AddWindow(GLFW::Window* _window)
 {
     for (std::forward_list<WindowProperties>::iterator it = windowsProperties.begin(); it != windowsProperties.end(); ++it)
     {

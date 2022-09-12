@@ -7,6 +7,7 @@
 using namespace RenderEngine;
 using namespace RenderEngine::Vulkan;
 using namespace RenderEngine::Core;
+using namespace RenderEngine::Window;
 
 void GraphicsApplication::Run()
 {
@@ -19,7 +20,7 @@ void GraphicsApplication::Run()
 void GraphicsApplication::InitWindow()
 {
     std::cout << "[Initialize] Window" << std::endl;
-    window = new Window(1024, 720, "Render Engine");
+    window = new GLFW::Window(1024, 720, "Render Engine");
 }
 
 void GraphicsApplication::InitVulkan()
