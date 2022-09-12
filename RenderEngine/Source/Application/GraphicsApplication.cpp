@@ -5,7 +5,7 @@
 
 
 using namespace RenderEngine;
-using namespace RenderEngine::Vulkan;
+using namespace RenderEngine::Engine::Vulkan;
 using namespace RenderEngine::Core;
 using namespace RenderEngine::Window;
 

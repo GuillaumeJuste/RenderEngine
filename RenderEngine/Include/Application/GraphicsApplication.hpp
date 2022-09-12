@@ -3,8 +3,8 @@
 #ifndef RENDERENGINE_GRAPHICSAPPLICATION
 #define RENDERENGINE_GRAPHICSAPPLICATION
 
-#include "Vulkan/Misc/VulkanBaseInclude.hpp"
-#include "Vulkan/VulkanContext/VulkanContext.hpp"
+#include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
+#include "Engine/Vulkan/VulkanContext/VulkanContext.hpp"
 #include "Window/Glfw/Window.hpp"
 #include "Core/Scene/Scene.hpp"
 
@@ -12,7 +12,7 @@ using namespace RenderEngine::Window;
 
 namespace RenderEngine
 { 
-	using namespace Vulkan;
+	using namespace Engine::Vulkan;
 	using namespace Core;
 
 	class GraphicsApplication
