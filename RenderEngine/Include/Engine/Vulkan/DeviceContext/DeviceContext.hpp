@@ -3,6 +3,10 @@
 #ifndef RENDERENGINE_DEVICECONTEXT
 #define RENDERENGINE_DEVICECONTEXT
 
+#include "Engine/Base/Interface/IDeviceContext.hpp"
+#include "Engine/Base/Interface/IRenderContext.hpp"
+using namespace RenderEngine::Engine::Base;
+
 #include "Engine/Vulkan/DeviceContext/DeviceContextVkCreateInfo.hpp"
 #include "Engine/Vulkan/DeviceContext/QueueFamilyIndices.hpp"
 #include "Engine/Vulkan/SwapChain/SwapChainSupportDetails.hpp"
@@ -17,7 +21,7 @@ namespace RenderEngine::Engine::Vulkan
 	/**
 	 * @brief Class to manage creation and usage of Vulkan logical device(VkDevice)
 	*/
-	class DeviceContext
+	class DeviceContext : public IDeviceContext
 	{
 	private:
 		/**
@@ -119,6 +123,8 @@ namespace RenderEngine::Engine::Vulkan
 		*/
 		RenderContext* AddRenderContext();
 
+		IRenderContext* CreateRenderContext(const IRenderContextCreateInfo& _createInfo);
+
 		/**
 		 * @brief get a reference on the physical device
 		*/
@@ -133,6 +139,8 @@ namespace RenderEngine::Engine::Vulkan
 		 * @brief get a reference on the graphics queue
 		*/
 		const VkQueue& GetGraphicsQueue() const;
+
+		void WaitDeviceIdle();
 
 		/**
 		 * @brief Clean used vulkan class and list of owned render contexts

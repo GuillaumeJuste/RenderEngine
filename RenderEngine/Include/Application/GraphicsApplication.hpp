@@ -26,17 +26,17 @@ namespace RenderEngine
 		/**
 		 * @brief vulkan context
 		*/
-		VulkanContext* vulkanContext;
+		VulkanContext vulkanContext;
 
 		/**
 		 * @brief device used to render scene
 		*/
-		DeviceContext* deviceContext;
+		IDeviceContext* deviceContext;
 
 		/**
 		 * @brief render context to render scene
 		*/
-		RenderContext* renderContext;
+		IRenderContext* renderContext;
 
 		/**
 		 * @brief scene to render

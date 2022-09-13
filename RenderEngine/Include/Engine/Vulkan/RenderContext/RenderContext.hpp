@@ -3,6 +3,9 @@
 #ifndef RENDERENGINE_RENDERCONTEXT
 #define RENDERENGINE_RENDERCONTEXT
 
+#include "Engine/Base/Interface/IRenderContext.hpp"
+using namespace RenderEngine::Engine::Base;
+
 #include "Engine/Vulkan/RenderContext/RenderContextVkCreateInfo.hpp"
 #include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Engine/Vulkan/Surface/Surface.hpp"
@@ -18,7 +21,7 @@ namespace RenderEngine::Engine::Vulkan
 	/**
 	 * @brief Class to handle a pipeline to render in a window
 	*/
-	class RenderContext
+	class RenderContext : public IRenderContext
 	{
 	private:
 		///instance

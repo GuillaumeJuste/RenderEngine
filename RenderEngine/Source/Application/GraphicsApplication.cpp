@@ -26,13 +26,17 @@ void GraphicsApplication::InitWindow()
 void GraphicsApplication::InitVulkan()
 {
     std::cout << "[Initialize] Vulkan" << std::endl;
-    vulkanContext = new VulkanContext();
+    IEngineInstanceCreateInfo instanceCreateInfo;
 
-    WindowProperties* windowsProperties = vulkanContext->AddWindow(window);
+    vulkanContext.InitializeInstance(instanceCreateInfo);
 
-    deviceContext = vulkanContext->CreateDeviceContext(windowsProperties);
+    IDeviceContextCreateInfo deviceCreateInfo;
+    deviceCreateInfo.window = window;
 
-    renderContext = deviceContext->AddRenderContext();
+    deviceContext = vulkanContext.CreateDeviceContext(deviceCreateInfo);
+
+    IRenderContextCreateInfo renderContextCreateInfo;
+    renderContext = deviceContext->CreateRenderContext(renderContextCreateInfo);
 }
 
 void GraphicsApplication::MainLoop()
@@ -73,13 +77,12 @@ void GraphicsApplication::MainLoop()
         glfwPollEvents();
         renderContext->DrawFrame();
     }
-    vkDeviceWaitIdle(deviceContext->GetLogicalDevice());
+    deviceContext->WaitDeviceIdle();
 }
 
 void GraphicsApplication::Cleanup()
 {
-    vulkanContext->Cleanup();
-    delete vulkanContext;
+    vulkanContext.Cleanup();
 
     window->Cleanup();
     delete window;

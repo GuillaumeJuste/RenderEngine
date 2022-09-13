@@ -8,11 +8,12 @@
 using namespace RenderEngine::Window;
 using namespace RenderEngine::Engine::Vulkan;
 
-VulkanContext::VulkanContext() 
+void VulkanContext::InitializeInstance(const IEngineInstanceCreateInfo& _createinfo)
 {
     CreateInstance();
     SetupDebugMessenger();
 }
+
 
 void VulkanContext::CreateInstance()
 {
@@ -126,11 +127,11 @@ WindowProperties* VulkanContext::AddWindow(GLFW::Window* _window)
     return properties;
 }
 
-DeviceContext* VulkanContext::CreateDeviceContext(WindowProperties* _windowProperties)
+IDeviceContext* VulkanContext::CreateDeviceContext(const IDeviceContextCreateInfo& _createinfo)
 {
     DeviceContextVkCreateInfo createInfo;
     createInfo.instance = instance;
-    createInfo.windowProperties = _windowProperties;
+    createInfo.windowProperties = AddWindow(_createinfo.window);
 
     DeviceContext* newDevice = &deviceContexts.emplace_front();
 

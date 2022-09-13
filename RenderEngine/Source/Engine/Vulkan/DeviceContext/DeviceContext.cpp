@@ -217,7 +217,6 @@ void DeviceContext::CreateLogicalDevice()
 	vkGetDeviceQueue(logicalDevice, indices.presentFamily.value(), 0, &presentQueue);
 }
 
-
 const VkPhysicalDevice& DeviceContext::GetPhysicalDevice() const
 {
 	return physicalDevice;
@@ -233,7 +232,7 @@ const VkQueue& DeviceContext::GetGraphicsQueue() const
 	return graphicsQueue;
 }
 
-RenderContext* DeviceContext::AddRenderContext()
+IRenderContext* DeviceContext::CreateRenderContext(const IRenderContextCreateInfo& _createInfo)
 {
 	RenderContextVkCreateInfo createInfo;
 	createInfo.instance = instance;
@@ -249,6 +248,11 @@ RenderContext* DeviceContext::AddRenderContext()
 	RenderContext::InitalizeRenderContext(createInfo, renderContext);
 
 	return renderContext;
+}
+
+void DeviceContext::WaitDeviceIdle()
+{
+	vkDeviceWaitIdle(logicalDevice);
 }
 
 void DeviceContext::Cleanup()
