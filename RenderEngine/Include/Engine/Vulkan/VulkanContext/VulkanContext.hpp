@@ -46,8 +46,9 @@ namespace RenderEngine::Engine::Vulkan
 
 		/**
 		 * @brief create the vulkan instance 
+		 * @param _createinfo instance initialisation parameters
 		*/
-		void CreateInstance();
+		void CreateInstance(const IEngineInstanceCreateInfo& _createinfo);
 
 		/**
 		 * @brief Setup debug messenger to catch vulakn errors
@@ -81,16 +82,18 @@ namespace RenderEngine::Engine::Vulkan
 		///default destructor
 		~VulkanContext() = default;
 
+		/**
+		 * @brief Initialize vulkan instance
+		 * @param _createinfo instance initialisation parameters
+		*/
 		void InitializeInstance(const IEngineInstanceCreateInfo& _createinfo);
 
+		/**
+		 * @brief create a Device context from this instance
+		 * @param _createinfo device context initialisation parameters
+		 * @return pointer to the created device context
+		*/
 		IDeviceContext* CreateDeviceContext(const IDeviceContextCreateInfo& _createinfo);
-
-		///**
-		// * @brief create a Device context from this instance
-		// * @param _windowProperties window to use for device context creation
-		// * @return pointer to the created device context
-		//*/
-		//DeviceContext* CreateDeviceContext(WindowProperties* _windowProperties);
 
 		/**
 		 * @brief clean the stored DeviceContexts and WindowProperties then clean the vulkan instance

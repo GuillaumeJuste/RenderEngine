@@ -44,9 +44,9 @@ namespace RenderEngine
 		Scene scene;
 
 		/**
-		 * @brief Initialize Vulkan context
+		 * @brief Initialize engine context
 		*/
-		void InitVulkan();
+		void InitEngine();
 
 		/**
 		 * @brief Initialize Window
@@ -63,6 +63,13 @@ namespace RenderEngine
 		*/
 		void Cleanup();
 
+
+		/**
+		 * @brief Console print for user selection of the physical device if multiple are eligible
+		 * @param _physicalDevicesNames List of the physical devices usable
+		 * @return selected physical device
+		*/
+		std::string UserSelectPhysicalDevice(std::vector<std::string> _physicalDevicesNames);
 
 	public:
 		/**

@@ -10,12 +10,11 @@ using namespace RenderEngine::Engine::Vulkan;
 
 void VulkanContext::InitializeInstance(const IEngineInstanceCreateInfo& _createinfo)
 {
-    CreateInstance();
+    CreateInstance(_createinfo);
     SetupDebugMessenger();
 }
 
-
-void VulkanContext::CreateInstance()
+void VulkanContext::CreateInstance(const IEngineInstanceCreateInfo& _createinfo)
 {
     if (enableValidationLayers && !CheckValidationLayerSupport()) 
     {
@@ -24,10 +23,10 @@ void VulkanContext::CreateInstance()
 
     VkApplicationInfo appInfo{};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-    appInfo.pApplicationName = "RenderEngine";
-    appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-    appInfo.pEngineName = "RenderEngine";
-    appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
+    appInfo.pApplicationName = _createinfo.applicationName.c_str();
+    appInfo.applicationVersion = VK_MAKE_VERSION(_createinfo.applicationVersion.X, _createinfo.applicationVersion.Y, _createinfo.applicationVersion.Z);
+    appInfo.pEngineName = _createinfo.engineName.c_str();
+    appInfo.engineVersion = VK_MAKE_VERSION(_createinfo.engineVersion.X, _createinfo.engineVersion.Y, _createinfo.engineVersion.Z);
     appInfo.apiVersion = VK_API_VERSION_1_0;
 
     VkInstanceCreateInfo createInfo{};
@@ -135,7 +134,7 @@ IDeviceContext* VulkanContext::CreateDeviceContext(const IDeviceContextCreateInf
 
     DeviceContext* newDevice = &deviceContexts.emplace_front();
 
-    DeviceContext::InitalizeDeviceContext(createInfo, newDevice);
+    DeviceContext::CreateDeviceContext(createInfo, newDevice);
 
     return newDevice;
 }

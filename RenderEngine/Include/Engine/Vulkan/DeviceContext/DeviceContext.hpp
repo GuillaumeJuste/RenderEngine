@@ -35,6 +35,11 @@ namespace RenderEngine::Engine::Vulkan
 		WindowProperties* windowProperties;
 
 		/**
+		 * @brief vector of all the devices available for initialization
+		*/
+		std::vector<PhysicalDeviceProperties> physicalDevicesProperties;
+
+		/**
 		 * @brief physical device (GPU)
 		*/
 		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
@@ -89,14 +94,7 @@ namespace RenderEngine::Engine::Vulkan
 		/**
 		 * @brief Selection a physical device
 		*/
-		void PickPhysicalDevice();
-
-		/**
-		 * @brief Console print for user selection of the physical device if multiple are eligible
-		 * @param _physicalDevicesProperties List of the physical devices eligible
-		 * @return selected physical device
-		*/
-		PhysicalDeviceProperties UserSelectPhysicalDevice(std::vector<PhysicalDeviceProperties> _physicalDevicesProperties);
+		void PickPhysicalDevice(std::string _physicalDeviceName);
 
 		/**
 		 * @brief create logical device
@@ -111,11 +109,15 @@ namespace RenderEngine::Engine::Vulkan
 		~DeviceContext() = default;
 
 		/**
-		 * @brief Initalize a device
+		 * @brief create a device context
 		 * @param _createInfo Information used to intitalize the device
 		 * @param _output 
 		*/
-		static void InitalizeDeviceContext(const DeviceContextVkCreateInfo& _createInfo, DeviceContext* _output);
+		static void CreateDeviceContext(const DeviceContextVkCreateInfo& _createInfo, DeviceContext* _output);
+
+		void InitializeDeviceContext(std::string _physicalDeviceName);
+
+		std::vector<std::string> QueryAvailblePhysicalDevices();
 
 		/**
 		 * @brief Create a Render context and add it to the list of owned render context

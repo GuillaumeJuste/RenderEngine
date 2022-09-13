@@ -12,13 +12,54 @@
 
 using namespace RenderEngine::Engine::Vulkan;
 
-void DeviceContext::InitalizeDeviceContext(const DeviceContextVkCreateInfo& _createInfo, DeviceContext* _output)
+void DeviceContext::CreateDeviceContext(const DeviceContextVkCreateInfo& _createInfo, DeviceContext* _output)
 {
 	_output->instance = _createInfo.instance;
 	_output->windowProperties = _createInfo.windowProperties;
+}
 
-	_output->PickPhysicalDevice();
-	_output->CreateLogicalDevice();
+std::vector<std::string> DeviceContext::QueryAvailblePhysicalDevices()
+{
+	std::vector<std::string> physicalDeviceList;
+
+	uint32_t deviceCount = 0;
+	vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
+
+	if (deviceCount == 0)
+	{
+		throw std::runtime_error("failed to find GPUs with Vulkan support!");
+	}
+
+	std::vector<VkPhysicalDevice> deviceContexts(deviceCount);
+	vkEnumeratePhysicalDevices(instance, &deviceCount, deviceContexts.data());
+
+	for (const auto& device : deviceContexts)
+	{
+		PhysicalDeviceProperties properties(device);
+		if (IsDeviceSuitable(&properties))
+		{
+			physicalDevicesProperties.push_back(properties);
+			physicalDeviceList.push_back(properties.properties.deviceName);
+		}
+	}
+
+	if (physicalDeviceList.size() == 0)
+	{
+		throw std::runtime_error("failed to find a suitable GPU!");
+	}
+
+	return physicalDeviceList;
+}
+
+void DeviceContext::InitializeDeviceContext(std::string _physicalDeviceName)
+{
+	if(physicalDevice != VK_NULL_HANDLE)
+	{
+		throw std::runtime_error("Device already initialized");
+	}
+
+	PickPhysicalDevice(_physicalDeviceName);
+	CreateLogicalDevice();
 }
 
 bool DeviceContext::checkDeviceExtensionSupport(const VkPhysicalDevice& device)
@@ -38,48 +79,26 @@ bool DeviceContext::checkDeviceExtensionSupport(const VkPhysicalDevice& device)
 	return requiredExtensions.empty();
 }
 
-void DeviceContext::PickPhysicalDevice()
+void DeviceContext::PickPhysicalDevice(std::string _physicalDeviceName)
 {
-	uint32_t deviceCount = 0;
-	vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
-
-	if (deviceCount == 0)
-	{
-		throw std::runtime_error("failed to find GPUs with Vulkan support!");
-	}
-
-	std::vector<VkPhysicalDevice> deviceContexts(deviceCount);
-	vkEnumeratePhysicalDevices(instance, &deviceCount, deviceContexts.data());
-
-	std::vector<PhysicalDeviceProperties> physicalDevicesProperties;
-
-	for (const auto& device : deviceContexts)
-	{
-		PhysicalDeviceProperties properties(device);
-		if (IsDeviceSuitable(&properties))
-		{
-			physicalDevicesProperties.push_back(properties);
-		}
-	}
-
-	if (physicalDevicesProperties.size() < 1)
+	if (physicalDevicesProperties.size() == 0)
 	{
 		throw std::runtime_error("failed to find a suitable GPU!");
 	}
-
-	else if (physicalDevicesProperties.size() == 1)
+	else 
 	{
-		physicalDeviceProperties = physicalDevicesProperties[0];
-		physicalDevice = physicalDeviceProperties.physicalDevice;
-		std::cout << "selected GPU is : " << physicalDeviceProperties.properties.deviceName << std::endl;
-	}
-	else
-	{
-		physicalDeviceProperties = UserSelectPhysicalDevice(physicalDevicesProperties);
-		physicalDevice = physicalDeviceProperties.physicalDevice;
-		std::cout << "selected GPU is : " << physicalDeviceProperties.properties.deviceName << std::endl;
+		for (std::vector<PhysicalDeviceProperties>::iterator it = physicalDevicesProperties.begin(); it != physicalDevicesProperties.end(); ++it)
+		{
+			if (it->properties.deviceName == _physicalDeviceName)
+			{
+				physicalDeviceProperties = *it;
+				physicalDevice = physicalDeviceProperties.physicalDevice;
+				break;
+			}
+		}
 	}
 
+	physicalDevicesProperties.clear();
 
 	if (physicalDevice == VK_NULL_HANDLE) 
 	{
@@ -148,24 +167,6 @@ bool DeviceContext::FindQueueFamilies(VkPhysicalDevice _device, QueueFamilyIndic
 	}
 
 	return false;
-}
-
-PhysicalDeviceProperties DeviceContext::UserSelectPhysicalDevice(std::vector<PhysicalDeviceProperties> _physicalDevicesProperties)
-{
-	std::cout << "Pick GPU for rendering :" << std::endl;
-	int size = _physicalDevicesProperties.size();
-
-	for (int i = 0; i < size; i++)
-	{
-		std::cout << "[" << i << "] : " << _physicalDevicesProperties[i].properties.deviceName << std::endl;
-	}
-	int gpuIndex = -1;
-	while (gpuIndex < 0 || gpuIndex >= size)
-	{
-		std::cin >> gpuIndex;
-	}
-
-	return _physicalDevicesProperties[gpuIndex];
 }
 
 void DeviceContext::CreateLogicalDevice()
