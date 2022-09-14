@@ -31,12 +31,12 @@ void RenderContext::InitalizeRenderContext(const RenderContextVkCreateInfo& _cre
 
 	_output->CreateSwapChain();
 	_output->CreateRenderPass();
-	_output->CreateGraphicsPipeline();
+	_output->CreateGraphicsPipeline(*_createInfo.renderContextCreateInfo.graphicsPipelineCreateInfo);
 	_output->CreateFrameBuffer();
 	_output->CreateCommandPool();
 	_output->CreateVertexBufferObject();
 	_output->CreateIndexBufferObject();
-	_output->CreateCommandBuffer();
+	_output->CreateCommandBuffer(*_createInfo.renderContextCreateInfo.swapChainCommandBufferCreateInfo);
 }
 
 void RenderContext::CreateSwapChain()
@@ -59,18 +59,14 @@ void RenderContext::CreateRenderPass()
 	RenderPass::InitializeRenderPass(createInfo, &renderPass);
 }
 
-void RenderContext::CreateGraphicsPipeline()
+void RenderContext::CreateGraphicsPipeline(const GraphicsPipelineCreateInfo& _createInfo)
 {
-	ShaderVkCreateInfo vertexShaderCreateInfo(VK_SHADER_STAGE_VERTEX_BIT, "Resources/Shaders/VertexShader.spv", logicalDevice);
-	ShaderVkCreateInfo fragmentShaderCreateInfo(VK_SHADER_STAGE_FRAGMENT_BIT, "Resources/Shaders/FragmentShader.spv", logicalDevice);
-
 	GraphicsPipelineVkCreateInfo pipelineInfo{};
-	Shader::CreateShader(vertexShaderCreateInfo, &pipelineInfo.vertexShader);
-	Shader::CreateShader(fragmentShaderCreateInfo, &pipelineInfo.fragmentShader);
 	pipelineInfo.swapChainExtent = swapChain.GetExtent();
 	pipelineInfo.swapChainImageFormat = swapChain.GetImageFormat();
 	pipelineInfo.logicalDevice = logicalDevice;
 	pipelineInfo.renderPass = &renderPass;
+	pipelineInfo.graphicsPipelineCreateInfo = _createInfo;
 	GraphicsPipeline::InitalizeGraphicsPipeline(pipelineInfo, &graphicsPipeline);
 }
 
@@ -94,9 +90,10 @@ void RenderContext::CreateCommandPool()
 	CommandPool::InitializeCommandPool(createInfo, &commandPool);
 }
 
-void RenderContext::CreateCommandBuffer()
+void RenderContext::CreateCommandBuffer(const SwapChainCommandBufferCreateInfo& _createInfo)
 {
 	SwapChainCommandBufferVkCreateInfo createInfo{};
+	createInfo.commandBufferCreateInfo = _createInfo;
 	createInfo.logicalDevice = logicalDevice;
 	createInfo.commandPool = &commandPool;
 	createInfo.renderPass = &renderPass;

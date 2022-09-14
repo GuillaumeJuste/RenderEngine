@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef RENDERENGINE_SWAPCHAINCOMMANDBUFFERCREATEINFO
-#define RENDERENGINE_SWAPCHAINCOMMANDBUFFERCREATEINFO
+#ifndef RENDERENGINE_SWAPCHAINCOMMANDBUFFERVKCREATEINFO
+#define RENDERENGINE_SWAPCHAINCOMMANDBUFFERVKCREATEINFO
 
 #include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Engine/Vulkan/CommandBuffer/Base/CommandBufferVkCreateInfo.hpp"
@@ -11,6 +11,9 @@
 #include "Engine/Vulkan/FrameBuffer/FrameBuffer.hpp"
 #include "Engine/Vulkan/BufferObject/BufferObject.hpp"
 
+#include "Engine/Base/CreateInfo/SwapChainCommandBufferCreateInfo.hpp"
+using namespace RenderEngine::Engine::Base;
+
 namespace RenderEngine::Engine::Vulkan
 {
 	/**
@@ -18,6 +21,9 @@ namespace RenderEngine::Engine::Vulkan
 	*/
 	struct SwapChainCommandBufferVkCreateInfo : public CommandBufferVkCreateInfo
 	{
+
+		SwapChainCommandBufferCreateInfo commandBufferCreateInfo;
+		
 		/// render pass
 		RenderPass* renderPass;
 

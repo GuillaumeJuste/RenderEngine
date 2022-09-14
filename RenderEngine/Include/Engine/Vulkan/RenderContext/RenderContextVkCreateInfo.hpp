@@ -7,7 +7,9 @@
 #include "Engine/Vulkan/Surface/Surface.hpp"
 #include "Engine/Vulkan/WindowProperties/WindowProperties.hpp"
 #include "Engine/Vulkan/DeviceContext/QueueFamilyIndices.hpp"
+#include "Engine/Base/CreateInfo/IRenderContextCreateInfo.hpp"
 
+using namespace RenderEngine::Engine::Base;
 
 namespace RenderEngine::Engine::Vulkan
 {
@@ -18,6 +20,8 @@ namespace RenderEngine::Engine::Vulkan
 	{
 		/// vulkan instance
 		VkInstance instance;
+
+		IRenderContextCreateInfo renderContextCreateInfo;
 
 		/// window properties
 		WindowProperties* windowProperties;

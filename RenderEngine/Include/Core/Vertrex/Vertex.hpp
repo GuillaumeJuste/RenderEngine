@@ -23,18 +23,6 @@ namespace RenderEngine::Core
          * @brief vertex color
         */
         Mathlib::Vec3 color;
-
-        /**
-         * @brief Get Vertex struct binding description
-         * @return Vertex struct binding description
-        */
-        static VkVertexInputBindingDescription GetBindingDescription();
-
-        /**
-         * @brief Get Vertex struct attribute description
-         * @return Vertex struct attribute description
-        */
-        static std::array<VkVertexInputAttributeDescription, 2> GetAttributeDescriptions();
     };
 }
 

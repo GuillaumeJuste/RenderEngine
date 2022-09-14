@@ -20,6 +20,8 @@ namespace RenderEngine::Engine::Vulkan
 		*/
 		RenderPass* renderPass;
 
+		SwapChainCommandBufferCreateInfo commandBufferCreateInfo;
+
 		/**
 		 * @brief graphic pipline to use for render
 		*/
@@ -42,6 +44,10 @@ namespace RenderEngine::Engine::Vulkan
 		/// Command buffer in flight fence
 		VkFence inFlightFence;
 		
+		VkViewport viewport{};
+
+		VkRect2D scissor{};
+
 		/**
 		 * @brief tmp variables
 		*/
@@ -52,6 +58,8 @@ namespace RenderEngine::Engine::Vulkan
 		 * @brief initialize semaphores and fence 
 		*/
 		void InitializeSyncObjects();
+
+		void SwapChainExtentResizedCallback();
 	public:
 		/// default constructor
 		SwapChainCommandBuffer() = default;

@@ -9,6 +9,7 @@
 #include "Engine/Vulkan/ImageView/ImageView.hpp"
 #include "Engine/Vulkan/SwapChain/SwapChainVkCreateInfo.hpp"
 #include "Engine/Vulkan/SwapChain/SwapChainSupportDetails.hpp"
+#include "Utils/Event/Event.hpp"
 
 namespace RenderEngine::Engine::Vulkan
 {
@@ -75,6 +76,8 @@ namespace RenderEngine::Engine::Vulkan
 		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& _capabilities);
 
 	public:
+		Utils::Event<> SwapchainExtentResized;
+
 		/// default constructor
 		SwapChain() = default;
 

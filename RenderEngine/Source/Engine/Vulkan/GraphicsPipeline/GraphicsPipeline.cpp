@@ -8,19 +8,19 @@ using namespace RenderEngine::Core;
 
 void GraphicsPipeline::InitalizeGraphicsPipeline(const GraphicsPipelineVkCreateInfo& _createInfo, GraphicsPipeline* _output)
 {
-	_output->vertexShader = _createInfo.vertexShader ;
-	_output->fragmentShader = _createInfo.fragmentShader;
 	_output->logicalDevice = _createInfo.logicalDevice;
 	_output->swapChainImageFormat = _createInfo.swapChainImageFormat;
 	_output->swapChainExtent = _createInfo.swapChainExtent;
 	_output->renderPass = _createInfo.renderPass;
 	
-    VkPipelineShaderStageCreateInfo shaderStages[] = { _createInfo.vertexShader.GetShaderStageInfo(), _createInfo.fragmentShader.GetShaderStageInfo() };
+    _output->CreateShaders(_createInfo.graphicsPipelineCreateInfo.vertexShaderFilePath, _createInfo.graphicsPipelineCreateInfo.fragmentShaderFilePath);
+
+    VkPipelineShaderStageCreateInfo shaderStages[] = { _output->vertexShader.GetShaderStageInfo(), _output->fragmentShader.GetShaderStageInfo() };
 
     VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
     vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-    auto bindingDescription = Vertex::GetBindingDescription();
-    auto attributeDescriptions = Vertex::GetAttributeDescriptions();
+    auto bindingDescription = GetVertexBindingDescription();
+    auto attributeDescriptions = GetVertexAttributeDescriptions();
 
     vertexInputInfo.vertexBindingDescriptionCount = 1;
     vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
@@ -41,10 +41,10 @@ void GraphicsPipeline::InitalizeGraphicsPipeline(const GraphicsPipelineVkCreateI
     rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
     rasterizer.depthClampEnable = VK_FALSE;
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
-    rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+    rasterizer.polygonMode = (VkPolygonMode)_createInfo.graphicsPipelineCreateInfo.drawMode;
     rasterizer.lineWidth = 1.0f;
     rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
-    rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
+    rasterizer.frontFace = (VkFrontFace)_createInfo.graphicsPipelineCreateInfo.frontFace;
     rasterizer.depthBiasEnable = VK_FALSE;
 
     VkPipelineMultisampleStateCreateInfo multisampling{};
@@ -104,6 +104,41 @@ void GraphicsPipeline::InitalizeGraphicsPipeline(const GraphicsPipelineVkCreateI
     if (vkCreateGraphicsPipelines(_output->logicalDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &_output->graphicsPipeline) != VK_SUCCESS) {
         throw std::runtime_error("failed to create graphics pipeline!");
     }
+}
+
+VkVertexInputBindingDescription GraphicsPipeline::GetVertexBindingDescription()
+{
+    VkVertexInputBindingDescription bindingDescription{};
+    bindingDescription.binding = 0;
+    bindingDescription.stride = sizeof(Vertex);
+    bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+    return bindingDescription;
+}
+
+std::array<VkVertexInputAttributeDescription, 2> GraphicsPipeline::GetVertexAttributeDescriptions()
+{
+    std::array<VkVertexInputAttributeDescription, 2> attributeDescriptions{};
+    attributeDescriptions[0].binding = 0;
+    attributeDescriptions[0].location = 0;
+    attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+    attributeDescriptions[0].offset = offsetof(Vertex, position);
+
+    attributeDescriptions[1].binding = 0;
+    attributeDescriptions[1].location = 1;
+    attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+    attributeDescriptions[1].offset = offsetof(Vertex, color);
+
+    return attributeDescriptions;
+}
+
+void GraphicsPipeline::CreateShaders(const std::string& _vertexShaderFilePath, const std::string& _fragmentShaderFilePath)
+{
+    ShaderVkCreateInfo vertexShaderCreateInfo(VK_SHADER_STAGE_VERTEX_BIT, _vertexShaderFilePath, logicalDevice);
+    ShaderVkCreateInfo fragmentShaderCreateInfo(VK_SHADER_STAGE_FRAGMENT_BIT, _fragmentShaderFilePath, logicalDevice);
+
+    Shader::CreateShader(vertexShaderCreateInfo, &vertexShader);
+    Shader::CreateShader(fragmentShaderCreateInfo, &fragmentShader);
 }
 
 void GraphicsPipeline::Cleanup()

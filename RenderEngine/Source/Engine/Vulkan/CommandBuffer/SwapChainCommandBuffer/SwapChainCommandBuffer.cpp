@@ -20,9 +20,13 @@ void SwapChainCommandBuffer::InitializeCommandBuffer(const SwapChainCommandBuffe
 	_output->renderPass = _createInfo.renderPass;
 	_output->graphicsPipeline = _createInfo.graphicsPipeline;
 	_output->frameBuffer = _createInfo.frameBuffer;
-
+	_output->commandBufferCreateInfo = _createInfo.commandBufferCreateInfo;
 	_output->swapChain = _createInfo.swapChain;
+	
 	CommandBufferBase::InitializeCommandBuffer(_createInfo, _output);
+	_output->SwapChainExtentResizedCallback();
+	_output->swapChain->SwapchainExtentResized.Add(_output, &SwapChainCommandBuffer::SwapChainExtentResizedCallback);
+
 	_output->InitializeSyncObjects();
 }
 
@@ -70,18 +74,8 @@ void SwapChainCommandBuffer::RecordCommandBuffer(uint32_t imageIndex)
 
 	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->GetGraphicsPipeline());
 
-	VkViewport viewport{};
-	viewport.x = 0.0f;
-	viewport.y = 0.0f;
-	viewport.width = static_cast<float>(swapChainExtent.width);
-	viewport.height = static_cast<float>(swapChainExtent.height);
-	viewport.minDepth = 0.0f;
-	viewport.maxDepth = 1.0f;
 	vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
-	VkRect2D scissor{};
-	scissor.offset = { 0, 0 };
-	scissor.extent = swapChainExtent;
 	vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
 	VkBuffer vertexBuffers[] = { vertexBufferObject->GetVkBuffer()};
@@ -99,8 +93,44 @@ void SwapChainCommandBuffer::RecordCommandBuffer(uint32_t imageIndex)
 	}
 }
 
+void SwapChainCommandBuffer::SwapChainExtentResizedCallback()
+{
+	VkExtent2D swapChainExtent = swapChain->GetExtent(); 
+	
+	if (commandBufferCreateInfo.customViewport == false)
+	{
+		viewport.x = 0.0f;
+		viewport.y = 0.0f;
+		viewport.width = static_cast<float>(swapChainExtent.width);
+		viewport.height = static_cast<float>(swapChainExtent.height);
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
+	}
+	else
+	{
+		viewport.x = commandBufferCreateInfo.viewportData.X;
+		viewport.y = commandBufferCreateInfo.viewportData.Y;
+		viewport.width = commandBufferCreateInfo.viewportData.width;
+		viewport.height = commandBufferCreateInfo.viewportData.height;
+		viewport.minDepth = commandBufferCreateInfo.viewportData.minDepth;
+		viewport.maxDepth = commandBufferCreateInfo.viewportData.maxDepth;
+	}
+	
+	if (commandBufferCreateInfo.customScissor == false)
+	{
+		scissor.offset = { 0, 0 };
+		scissor.extent = swapChainExtent;
+	}
+	else
+	{
+		scissor.offset = { (int)commandBufferCreateInfo.scissorData.offset.X, (int)commandBufferCreateInfo.scissorData.offset.Y };
+		scissor.extent = { (unsigned int)commandBufferCreateInfo.scissorData.extent.X, (unsigned int)commandBufferCreateInfo.scissorData.extent.Y };
+	}
+}
+
 void SwapChainCommandBuffer::Cleanup()
 {
+	swapChain->SwapchainExtentResized.Remove(this, &SwapChainCommandBuffer::SwapChainExtentResizedCallback);
 	vkDestroySemaphore(logicalDevice, imageAvailableSemaphore, nullptr);
 	vkDestroySemaphore(logicalDevice, renderFinishedSemaphore, nullptr);
 	vkDestroyFence(logicalDevice, inFlightFence, nullptr);

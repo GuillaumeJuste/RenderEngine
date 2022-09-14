@@ -236,6 +236,7 @@ const VkQueue& DeviceContext::GetGraphicsQueue() const
 IRenderContext* DeviceContext::CreateRenderContext(const IRenderContextCreateInfo& _createInfo)
 {
 	RenderContextVkCreateInfo createInfo;
+	createInfo.renderContextCreateInfo = _createInfo;
 	createInfo.instance = instance;
 	createInfo.windowProperties = windowProperties;
 	createInfo.physicalDevice = physicalDevice;

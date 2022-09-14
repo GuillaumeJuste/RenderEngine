@@ -39,13 +39,34 @@ void GraphicsApplication::InitEngine()
     std::vector<std::string> deviceNames = deviceContext->QueryAvailblePhysicalDevices();
     deviceContext->InitializeDeviceContext(UserSelectPhysicalDevice(deviceNames));
 
+    GraphicsPipelineCreateInfo gPCreateInfo{};
+    gPCreateInfo.vertexShaderFilePath = "Resources/Shaders/VertexShader.spv";
+    gPCreateInfo.fragmentShaderFilePath = "Resources/Shaders/FragmentShader.spv";
+    gPCreateInfo.drawMode = PolygonDrawMode::FILL;
+    gPCreateInfo.frontFace = FrontFace::CLOCKWISE;
+
+    SwapChainCommandBufferCreateInfo CBCreateInfo{};
+    CBCreateInfo.customViewport = false;
+    CBCreateInfo.viewportData.X = 0.f;
+    CBCreateInfo.viewportData.Y = 0.f;
+    CBCreateInfo.viewportData.height = 720.f;
+    CBCreateInfo.viewportData.width = 512.f;
+    CBCreateInfo.viewportData.minDepth = 0.f;
+    CBCreateInfo.viewportData.maxDepth = 1.f;
+
+    CBCreateInfo.customScissor = false;
+    CBCreateInfo.scissorData.offset = Mathlib::Vec2(0.f, 0.f);
+    CBCreateInfo.scissorData.extent = Mathlib::Vec2(512.f, 720.f);
+
     IRenderContextCreateInfo renderContextCreateInfo {};
+    renderContextCreateInfo.graphicsPipelineCreateInfo = &gPCreateInfo;
+    renderContextCreateInfo.swapChainCommandBufferCreateInfo = &CBCreateInfo;
     renderContext = deviceContext->CreateRenderContext(renderContextCreateInfo);
 }
 
 std::string GraphicsApplication::UserSelectPhysicalDevice(std::vector<std::string> _physicalDevicesNames)
 {
-    int size = _physicalDevicesNames.size();
+    size_t size = _physicalDevicesNames.size();
     
 
     if(size == 0)

@@ -38,6 +38,20 @@ namespace RenderEngine::Engine::Vulkan
 		/// pipeline
 		VkPipeline graphicsPipeline =VK_NULL_HANDLE;
 
+		/**
+		* @brief Get Vertex struct binding description
+		* @return Vertex struct binding description
+	   */
+		static VkVertexInputBindingDescription GetVertexBindingDescription();
+
+		/**
+		 * @brief Get Vertex struct attribute description
+		 * @return Vertex struct attribute description
+		*/
+		static std::array<VkVertexInputAttributeDescription, 2> GetVertexAttributeDescriptions();
+
+		void CreateShaders(const std::string& _vertexShaderFilePath, const std::string& _fragmentShaderFilePath);
+
 	public:
 		/// default constructor
 		GraphicsPipeline() = default;

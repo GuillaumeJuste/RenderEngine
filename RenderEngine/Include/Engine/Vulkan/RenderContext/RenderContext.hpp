@@ -87,7 +87,7 @@ namespace RenderEngine::Engine::Vulkan
 		/**
 		 * @brief Create Graphics Pipeline
 		*/
-		void CreateGraphicsPipeline();
+		void CreateGraphicsPipeline(const GraphicsPipelineCreateInfo& _createInfo);
 		
 		/**
 		 * @brief Create Framebuffer
@@ -102,7 +102,7 @@ namespace RenderEngine::Engine::Vulkan
 		/**
 		 * @brief Create Command Buffer
 		*/
-		void CreateCommandBuffer();
+		void CreateCommandBuffer(const SwapChainCommandBufferCreateInfo& _createInfo);
 
 		/// TMP classes
 		void CreateVertexBufferObject();

@@ -75,6 +75,7 @@ void SwapChain::CreateVkSwapChain(const SwapChainVkCreateInfo& _swapChainCreateI
 
 	imageFormat = surfaceFormat.format;
 	extent = swapchainExtent;
+	SwapchainExtentResized();
 }
 
 void SwapChain::CreateImageView()
