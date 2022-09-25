@@ -3,7 +3,6 @@
 #ifndef RENDERENGINE_GAMEOBJECTCREATEINFO
 #define RENDERENGINE_GAMEOBJECTCREATEINFO
 
-#include "Core/Object/Mesh/Mesh.hpp"
 #include "Transform/Transform.hpp"
 
 
@@ -20,11 +19,6 @@ namespace RenderEngine::Core
 		 * @brief GameObject name
 		*/
 		std::string name;
-
-		/**
-		 * @brief GameObject mesh
-		*/
-		Mesh* mesh = nullptr;
 
 		/**
 		 * @brief GameObject parent

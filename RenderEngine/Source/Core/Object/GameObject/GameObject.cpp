@@ -1,13 +1,20 @@
 #include "Core/Object/GameObject/GameObject.hpp"
 
 using namespace RenderEngine::Core;
-using namespace Mathlib;
+
+GameObject::~GameObject()
+{
+	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+	{
+		delete *it;
+	}
+	components.clear();
+}
 
 void GameObject::InitializeGameObject(const GameObjectCreateInfo& _createinfo, GameObject* _output)
 {
-	_output->mesh = _createinfo.mesh;
 	_output->parent = _createinfo.parent;
-	_output->transform = _createinfo.transform;
+	_output->transform = Transform(_createinfo.transform);
 	_output->name = _createinfo.name;
 }
 
@@ -31,31 +38,22 @@ bool GameObject::RemoveChild(GameObject* _child)
 	return false;
 }
 
-Mesh* GameObject::GetMesh() const
-{
-	return mesh;
-}
-
 GameObject* GameObject::GetParent() const
 {
 	return parent;
 }
 
-const Transform& GameObject::GetTransform() const
-{
-	return transform;
-}
 
-Transform GameObject::GetWorldTransform()
+Mathlib::Transform GameObject::GetWorldTransform()
 {
 	if (parent == nullptr)
 	{
-		return transform;
+		return transform.GetLocalTransform();
 	}
 
-	Transform parentTransform = parent->GetWorldTransform();
+	Mathlib::Transform parentTransform = parent->GetWorldTransform();
 
-	return Transform::GetWorldTransfrom(parentTransform, transform);
+	return Mathlib::Transform::GetWorldTransfrom(parentTransform, transform.GetLocalTransform());
 }
 
 std::vector<GameObject*> GameObject::GetChildrens() const

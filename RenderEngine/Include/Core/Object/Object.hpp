@@ -31,7 +31,7 @@ namespace RenderEngine::Core
         /**
          * @brief should the object be displayed
         */
-        bool isHidden = false;
+        bool enable = true;
         
     public :
         Object();
@@ -53,7 +53,7 @@ namespace RenderEngine::Core
          * @brief Get if object is hidden
          * @return true if object is hidden
         */
-        bool GetIsHidden() const;
+        bool GetIsEnabled() const;
 
         /**
          * @brief set object name
@@ -65,7 +65,7 @@ namespace RenderEngine::Core
          * @brief set if object should be visible
          * @param _val object new visibility value
         */
-        void SetIsHidden(bool _val);
+        void SetIsEnabled(bool _val);
 
         /**
          * @brief compare two objects

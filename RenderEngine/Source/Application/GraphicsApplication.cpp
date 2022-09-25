@@ -1,6 +1,6 @@
 #include "Application/GraphicsApplication.hpp"
 #include "Core/Object/GameObject/GameObject.hpp"
-
+#include "Core/Object/Components/MeshRenderer/MershRenderer.hpp"
 #include <iostream>
 
 
@@ -47,16 +47,7 @@ void GraphicsApplication::InitEngine()
 
     SwapChainCommandBufferCreateInfo CBCreateInfo{};
     CBCreateInfo.customViewport = false;
-    CBCreateInfo.viewportData.X = 0.f;
-    CBCreateInfo.viewportData.Y = 0.f;
-    CBCreateInfo.viewportData.height = 720.f;
-    CBCreateInfo.viewportData.width = 512.f;
-    CBCreateInfo.viewportData.minDepth = 0.f;
-    CBCreateInfo.viewportData.maxDepth = 1.f;
-
     CBCreateInfo.customScissor = false;
-    CBCreateInfo.scissorData.offset = Mathlib::Vec2(0.f, 0.f);
-    CBCreateInfo.scissorData.extent = Mathlib::Vec2(512.f, 720.f);
 
     IRenderContextCreateInfo renderContextCreateInfo {};
     renderContextCreateInfo.graphicsPipelineCreateInfo = &gPCreateInfo;
@@ -114,15 +105,13 @@ void GraphicsApplication::MainLoop()
     Mathlib::Transform transform;
 
     GameObjectCreateInfo createinfo;
-    createinfo.mesh = &mesh;
     createinfo.transform = transform;
     createinfo.parent = scene.GetSceneRoot();
     createinfo.name = "first_object";
 
     GameObject* obj = scene.AddGameObject(createinfo);
-    scene.RemoveGameObject(obj);
-
-    if (obj == obj)
+    MeshRenderer* meshRenderer = obj->AddComponent<MeshRenderer>();
+    meshRenderer->SetMesh(mesh);
 
     while (!glfwWindowShouldClose(window->GetGLFWWindow())) {
         glfwPollEvents();

@@ -10,9 +10,9 @@
 namespace RenderEngine::Core
 {
     /**
-     * @brief class storing Mesh data
+     * @brief Mesh class implementation
     */
-    class Mesh : public Object
+    class Mesh
     {
     private:
         /**

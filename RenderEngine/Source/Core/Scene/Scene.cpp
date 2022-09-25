@@ -5,7 +5,7 @@ using namespace RenderEngine::Core;
 void Scene::InitializeScene(const SceneCreateInfo& _createinfo, Scene* _output)
 {
 	_output->name = _createinfo.name;
-	_output->rootObject.SetIsHidden(true);
+	_output->rootObject.SetIsEnabled(false);
 	_output->rootObject.SetName("root");
 }
 

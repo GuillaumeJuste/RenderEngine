@@ -21,9 +21,9 @@ std::string Object::GetName() const
 	return name;
 }
 
-bool Object::GetIsHidden() const
+bool Object::GetIsEnabled() const
 {
-	return isHidden;
+	return enable;
 }
 
 void Object::SetName(std::string _name)
@@ -31,9 +31,9 @@ void Object::SetName(std::string _name)
 	name = _name;
 }
 
-void Object::SetIsHidden(bool _val)
+void Object::SetIsEnabled(bool _val)
 {
-	isHidden = _val;
+	enable = _val;
 }
 
 bool Object::operator==(const Object& _rhs) const

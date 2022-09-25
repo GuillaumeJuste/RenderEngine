@@ -4,9 +4,10 @@
 #define RENDERENGINE_GAMEOBJECT
 
 #include "Core/Object/Object.hpp"
-#include "Core/Object/Mesh/Mesh.hpp"
+#include "Core/Object/Components/Component.hpp"
+#include "Core/Object/Components/Transfom/Transform.hpp"
 #include "Core/Object/GameObject/GameObjectCreateInfo.hpp"
-#include "Transform/Transform.hpp"
+
 #include <vector>
 
 namespace RenderEngine::Core
@@ -17,29 +18,24 @@ namespace RenderEngine::Core
     class GameObject : public Object
     {
     private:
-        /**
-         * @brief GameObject Mesh
-        */
-        Mesh* mesh = nullptr;
 
         /**
          * @brief GameObject Parent
         */
         GameObject* parent = nullptr;
 
+        Transform transform;
+
         /**
          * @brief GameObject childrens
         */
         std::vector<GameObject*> childrens;
 
-        /**
-         * @brief GameObject transform
-        */
-        Mathlib::Transform transform;
+        std::vector<Component*> components;
 
     public:
         GameObject() = default;
-        ~GameObject() = default;
+        ~GameObject();
 
         /**
          * @brief Function to initialize GameObject
@@ -61,11 +57,11 @@ namespace RenderEngine::Core
         */
         bool RemoveChild(GameObject* _child);
 
-        /**
-         * @brief Get GameObject Mesh
-         * @return GameObject Mesh
-        */
-        Mesh* GetMesh() const;
+        template<typename T>
+        T* AddComponent();
+
+        template<typename T>
+        T* GetComponent();
 
         /**
          * @brief Get GameObject parent
@@ -73,12 +69,6 @@ namespace RenderEngine::Core
         */
         GameObject* GetParent() const;
 
-        /**
-         * @brief Get GameObject transform
-         * @return GameObject transfom
-        */
-        const Mathlib::Transform& GetTransform() const;
-        
         /**
          * @brief Get GameObject world transform
          * @return GameObject world transform
@@ -98,5 +88,7 @@ namespace RenderEngine::Core
         void SetParent(GameObject* _newParent);
     };
 }
+
+#include "Core/Object/GameObject/GameObject.inl"
 
 #endif
