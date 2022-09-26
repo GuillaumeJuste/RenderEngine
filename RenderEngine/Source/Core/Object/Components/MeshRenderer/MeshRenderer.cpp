@@ -1,4 +1,4 @@
-#include "Core/Object/Components/MeshRenderer/MershRenderer.hpp"
+#include "Core/Object/Components/MeshRenderer/MeshRenderer.hpp"
 
 using namespace RenderEngine::Core;
 

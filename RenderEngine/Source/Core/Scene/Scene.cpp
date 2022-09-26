@@ -114,3 +114,8 @@ GameObject* Scene::GetSceneRoot()
 {
 	return &rootObject;
 }
+
+std::forward_list<GameObject> Scene::GetGameObjects() const
+{
+	return gameObjects;
+}

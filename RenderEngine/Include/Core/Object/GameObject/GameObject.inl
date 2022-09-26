@@ -11,6 +11,7 @@ namespace RenderEngine::Core
 
 			return newComponent;
 		}
+		delete newComponent;
 		return nullptr;
 	}
 
@@ -20,7 +21,7 @@ namespace RenderEngine::Core
 		for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 		{
 			if (dynamic_cast<T*>(*it) != nullptr)
-				return &(*it);
+				return dynamic_cast<T*>(*it);
 		}
 	}
 }

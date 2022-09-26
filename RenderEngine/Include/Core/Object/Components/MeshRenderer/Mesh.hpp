@@ -36,6 +36,9 @@ namespace RenderEngine::Core
          * @param _output Mesh to fill with vertices and indices
         */
         static void InitializeMesh(std::vector<Vertex> _vertices, std::vector<uint32_t> _indices, Mesh* _output);
+
+        std::vector<Vertex> GetVertices() const;
+        std::vector<uint32_t> GetIndices() const;
     };
 }
 

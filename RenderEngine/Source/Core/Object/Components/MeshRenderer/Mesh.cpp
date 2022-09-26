@@ -7,3 +7,13 @@ void Mesh::InitializeMesh(std::vector<Vertex> _vertices, std::vector<uint32_t> _
 	_output->indices = _indices;
 	_output->vertices = _vertices;
 }
+
+std::vector<Vertex> Mesh::GetVertices() const
+{
+	return vertices;
+}
+
+std::vector<uint32_t> Mesh::GetIndices() const
+{
+	return indices;
+}

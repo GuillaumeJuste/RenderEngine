@@ -1,6 +1,6 @@
 #include "Application/GraphicsApplication.hpp"
 #include "Core/Object/GameObject/GameObject.hpp"
-#include "Core/Object/Components/MeshRenderer/MershRenderer.hpp"
+#include "Core/Object/Components/MeshRenderer/MeshRenderer.hpp"
 #include <iostream>
 
 
