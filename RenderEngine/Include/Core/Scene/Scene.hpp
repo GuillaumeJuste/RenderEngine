@@ -46,6 +46,10 @@ namespace RenderEngine::Core
         */
         static void InitializeScene(const SceneCreateInfo& _createinfo, Scene* _output);
 
+        void Initilize();
+        void Start();
+        void Update();
+
         /**
          * @brief Add gameobject  to the scene
          * @param _createInfo creation information of the object to add to the scene

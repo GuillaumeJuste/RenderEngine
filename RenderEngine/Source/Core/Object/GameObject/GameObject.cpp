@@ -18,6 +18,31 @@ void GameObject::InitializeGameObject(const GameObjectCreateInfo& _createinfo, G
 	_output->name = _createinfo.name;
 }
 
+void GameObject::Initialize()
+{
+	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+	{
+		(*it)->Initialize();
+	}
+}
+
+void GameObject::Start()
+{
+	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+	{
+		(*it)->Start();
+	}
+}
+
+void GameObject::Update()
+{
+	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+	{
+		(*it)->Update();
+	}
+}
+
+
 void GameObject::AddChild(GameObject* _newChild)
 {
 	childrens.push_back(_newChild);

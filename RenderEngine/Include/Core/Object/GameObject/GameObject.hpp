@@ -44,6 +44,10 @@ namespace RenderEngine::Core
         */
         static void InitializeGameObject(const GameObjectCreateInfo& _createinfo, GameObject* _output);
 
+        void Initialize();
+        void Start();
+        void Update();
+
         /**
          * @brief Add child to GAmeObject
          * @param _newChild child to add to this GameObject

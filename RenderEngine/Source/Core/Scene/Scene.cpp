@@ -9,6 +9,30 @@ void Scene::InitializeScene(const SceneCreateInfo& _createinfo, Scene* _output)
 	_output->rootObject.SetName("root");
 }
 
+void Scene::Initilize()
+{
+	for (std::forward_list<GameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
+	{
+		it->Initialize();
+	}
+}
+
+void Scene::Start()
+{
+	for (std::forward_list<GameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
+	{
+		it->Start();
+	}
+}
+
+void Scene::Update()
+{
+	for (std::forward_list<GameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
+	{
+		it->Update();
+	}
+}
+
 GameObject* Scene::AddGameObject(GameObjectCreateInfo _createInfo)
 {
 	GameObject* gao = &gameObjects.emplace_front();

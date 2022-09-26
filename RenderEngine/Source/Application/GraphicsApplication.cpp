@@ -113,9 +113,13 @@ void GraphicsApplication::MainLoop()
     MeshRenderer* meshRenderer = obj->AddComponent<MeshRenderer>();
     meshRenderer->SetMesh(mesh);
 
+    scene.Initilize();
+    scene.Start();
+
     while (!glfwWindowShouldClose(window->GetGLFWWindow())) {
         glfwPollEvents();
         renderContext->DrawFrame();
+        scene.Update();
     }
     deviceContext->WaitDeviceIdle();
 }
