@@ -41,7 +41,7 @@ namespace RenderEngine
 		/**
 		 * @brief scene to render
 		*/
-		Scene scene;
+		std::forward_list<Scene> scenes;
 
 		/**
 		 * @brief Initialize engine context
@@ -72,6 +72,9 @@ namespace RenderEngine
 		std::string UserSelectPhysicalDevice(std::vector<std::string> _physicalDevicesNames);
 
 	public:
+
+		Scene* AddScene();
+
 		/**
 		 * @brief default constructor
 		*/

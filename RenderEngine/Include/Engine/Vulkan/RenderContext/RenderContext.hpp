@@ -15,6 +15,7 @@ using namespace RenderEngine::Engine::Base;
 #include "Engine/Vulkan/CommandPool/CommandPool.hpp"
 #include "Engine/Vulkan/CommandBuffer/SwapChainCommandBuffer/SwapChainCommandBuffer.hpp"
 #include "Engine/Vulkan/BufferObject/BufferObject.hpp"
+#include "Engine/Vulkan/RenderContext/SceneData.hpp"
 
 namespace RenderEngine::Engine::Vulkan
 {
@@ -65,6 +66,8 @@ namespace RenderEngine::Engine::Vulkan
 		
 		///command buffers
 		std::vector<SwapChainCommandBuffer> commandBuffers;
+
+		std::forward_list <SceneData> scenesData;
 
 		/// current frame
 		uint32_t currentFrame = 0;
@@ -123,6 +126,8 @@ namespace RenderEngine::Engine::Vulkan
 		*/
 		void FrameBufferResizedCallback();
 
+		bool WasSceneLoaded(RenderEngine::Core::Scene* _scene, SceneData* _output);
+
 	public:
 		/// default constructor
 		RenderContext() = default;
@@ -141,6 +146,10 @@ namespace RenderEngine::Engine::Vulkan
 		 * @brief Draw current frame
 		*/
 		void DrawFrame();
+
+		void DrawScene(RenderEngine::Core::Scene* _scene);
+
+		SceneData* LoadScene(RenderEngine::Core::Scene* _scene);
 
 		/**
 		 * @brief clean up vulkan classes

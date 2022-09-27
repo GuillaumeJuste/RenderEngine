@@ -19,8 +19,6 @@ namespace RenderEngine::Engine::Vulkan
 
 		MeshRenderer* meshRenderer = nullptr;
 
-		VkDevice logicalDevice;
-
 		BufferObject vertexBufferObject;
 		BufferObject indexBufferObject;
 		

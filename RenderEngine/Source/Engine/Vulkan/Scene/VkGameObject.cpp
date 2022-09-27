@@ -20,7 +20,7 @@ void VkGameObject::CreateVertexBufferObject()
 	BufferObject stagingBufferObject;
 	BufferObjectVkCreateInfo stagingBufferCreateInfo;
 	stagingBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
-	stagingBufferCreateInfo.logicalDevice = logicalDevice;
+	stagingBufferCreateInfo.logicalDevice = createInfo.logicalDevice;
 	stagingBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 	stagingBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 	stagingBufferCreateInfo.bufferSize = sizeof(vertices[0]) * vertices.size();
@@ -28,13 +28,13 @@ void VkGameObject::CreateVertexBufferObject()
 	BufferObject::InitializeBufferObject(stagingBufferCreateInfo, &stagingBufferObject);
 
 	void* data;
-	vkMapMemory(logicalDevice, stagingBufferObject.GetVkBufferMemory(), 0, stagingBufferCreateInfo.bufferSize, 0, &data);
+	vkMapMemory(createInfo.logicalDevice, stagingBufferObject.GetVkBufferMemory(), 0, stagingBufferCreateInfo.bufferSize, 0, &data);
 	memcpy(data, vertices.data(), (size_t)stagingBufferCreateInfo.bufferSize);
-	vkUnmapMemory(logicalDevice, stagingBufferObject.GetVkBufferMemory());
+	vkUnmapMemory(createInfo.logicalDevice, stagingBufferObject.GetVkBufferMemory());
 
 	BufferObjectVkCreateInfo vertexBuffeCreateInfo;
 	vertexBuffeCreateInfo.physicalDevice = createInfo.physicalDevice;
-	vertexBuffeCreateInfo.logicalDevice = logicalDevice;
+	vertexBuffeCreateInfo.logicalDevice = createInfo.logicalDevice;
 	vertexBuffeCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 	vertexBuffeCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 	vertexBuffeCreateInfo.bufferSize = stagingBufferCreateInfo.bufferSize;
@@ -52,7 +52,7 @@ void VkGameObject::CreateIndexBufferObject()
 	BufferObject stagingBufferObject;
 	BufferObjectVkCreateInfo stagingBufferCreateInfo;
 	stagingBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
-	stagingBufferCreateInfo.logicalDevice = logicalDevice;
+	stagingBufferCreateInfo.logicalDevice = createInfo.logicalDevice;
 	stagingBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 	stagingBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 	stagingBufferCreateInfo.bufferSize = sizeof(indices[0]) * indices.size();
@@ -60,13 +60,13 @@ void VkGameObject::CreateIndexBufferObject()
 	BufferObject::InitializeBufferObject(stagingBufferCreateInfo, &stagingBufferObject);
 
 	void* data;
-	vkMapMemory(logicalDevice, stagingBufferObject.GetVkBufferMemory(), 0, stagingBufferCreateInfo.bufferSize, 0, &data);
+	vkMapMemory(createInfo.logicalDevice, stagingBufferObject.GetVkBufferMemory(), 0, stagingBufferCreateInfo.bufferSize, 0, &data);
 	memcpy(data, indices.data(), (size_t)stagingBufferCreateInfo.bufferSize);
-	vkUnmapMemory(logicalDevice, stagingBufferObject.GetVkBufferMemory());
+	vkUnmapMemory(createInfo.logicalDevice, stagingBufferObject.GetVkBufferMemory());
 
 	BufferObjectVkCreateInfo indexBufferCreateInfo;
 	indexBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
-	indexBufferCreateInfo.logicalDevice = logicalDevice;
+	indexBufferCreateInfo.logicalDevice = createInfo.logicalDevice;
 	indexBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
 	indexBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 	indexBufferCreateInfo.bufferSize = stagingBufferCreateInfo.bufferSize;

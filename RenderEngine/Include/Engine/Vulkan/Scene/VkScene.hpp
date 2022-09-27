@@ -17,6 +17,7 @@ namespace RenderEngine::Engine::Vulkan
 		std::forward_list<VkGameObject> gameObjects;
 
 	public:
+		VkScene() = default;
 		VkScene(const VkSceneCreateInfo& _createInfo);
 		~VkScene() = default;
 

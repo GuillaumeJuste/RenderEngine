@@ -86,7 +86,9 @@ void GraphicsApplication::MainLoop()
     SceneCreateInfo sceneInfo;
     sceneInfo.name = "test_scene_1";
 
-    Scene::InitializeScene(sceneInfo, &scene);
+    Scene* scene = AddScene();
+
+    Scene::InitializeScene(sceneInfo, scene);
 
     const std::vector<Vertex> vertices = {
     {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
@@ -106,27 +108,38 @@ void GraphicsApplication::MainLoop()
 
     GameObjectCreateInfo createinfo;
     createinfo.transform = transform;
-    createinfo.parent = scene.GetSceneRoot();
+    createinfo.parent = scene->GetSceneRoot();
     createinfo.name = "first_object";
 
-    GameObject* obj = scene.AddGameObject(createinfo);
+    GameObject* obj = scene->AddGameObject(createinfo);
     MeshRenderer* meshRenderer = obj->AddComponent<MeshRenderer>();
     meshRenderer->SetMesh(mesh);
 
-    scene.Initilize();
-    scene.Start();
+    scene->Initilize();
+    scene->Start();
 
     while (!glfwWindowShouldClose(window->GetGLFWWindow())) {
         glfwPollEvents();
         renderContext->DrawFrame();
-        scene.Update();
+        renderContext->DrawScene(scene);
+        //scene.Update();
     }
     deviceContext->WaitDeviceIdle();
+}
+
+Scene* GraphicsApplication::AddScene()
+{
+    return &scenes.emplace_front();
 }
 
 void GraphicsApplication::Cleanup()
 {
     vulkanContext.Cleanup();
+
+    for (std::forward_list<Scene>::iterator it = scenes.begin(); it != scenes.end(); ++it)
+    {
+        (*it).Cleanup();
+    }
 
     window->Cleanup();
     delete window;

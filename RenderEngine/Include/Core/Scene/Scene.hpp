@@ -85,6 +85,8 @@ namespace RenderEngine::Core
         GameObject* GetSceneRoot();
 
         std::forward_list<GameObject> GetGameObjects() const;
+
+        void Cleanup();
     };
 }
 

@@ -119,3 +119,11 @@ std::forward_list<GameObject> Scene::GetGameObjects() const
 {
 	return gameObjects;
 }
+
+void Scene::Cleanup()
+{
+	for (std::forward_list<GameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
+	{
+		(*it).Cleanup();
+	}
+}

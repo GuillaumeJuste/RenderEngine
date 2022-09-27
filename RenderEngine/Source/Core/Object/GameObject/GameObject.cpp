@@ -2,15 +2,6 @@
 
 using namespace RenderEngine::Core;
 
-GameObject::~GameObject()
-{
-	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
-	{
-		delete *it;
-	}
-	components.clear();
-}
-
 void GameObject::InitializeGameObject(const GameObjectCreateInfo& _createinfo, GameObject* _output)
 {
 	_output->parent = _createinfo.parent;
@@ -89,4 +80,14 @@ std::vector<GameObject*> GameObject::GetChildrens() const
 void GameObject::SetParent(GameObject* _newParent)
 {
 	parent = _newParent;
+}
+
+void GameObject::Cleanup()
+{
+	size_t size = components.size();
+	for (size_t i = 0; i < size; i++)
+	{
+		delete components[i];
+	}
+	components.clear();
 }

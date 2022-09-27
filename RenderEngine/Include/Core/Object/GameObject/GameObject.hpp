@@ -35,7 +35,7 @@ namespace RenderEngine::Core
 
     public:
         GameObject() = default;
-        ~GameObject();
+        ~GameObject() = default;
 
         /**
          * @brief Function to initialize GameObject
@@ -90,6 +90,8 @@ namespace RenderEngine::Core
          * @param _newParent new game object parent of this game object
         */
         void SetParent(GameObject* _newParent);
+
+        void Cleanup();
     };
 }
 

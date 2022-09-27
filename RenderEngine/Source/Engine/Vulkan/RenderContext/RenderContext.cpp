@@ -269,6 +269,46 @@ void RenderContext::DrawFrame()
 	currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
 
+void RenderContext::DrawScene(RenderEngine::Core::Scene* _scene)
+{
+	SceneData* sceneData = nullptr;
+
+	if (!WasSceneLoaded(_scene, sceneData))
+	{
+		sceneData = LoadScene(_scene);
+	}
+}
+
+SceneData* RenderContext::LoadScene(RenderEngine::Core::Scene* _scene)
+{
+	SceneData* data = &scenesData.emplace_front();
+	data->scene = _scene;
+
+	VkSceneCreateInfo createInfo{};
+	createInfo.commandPool = &commandPool;
+	createInfo.graphicsQueue = graphicsQueue;
+	createInfo.logicalDevice = logicalDevice;
+	createInfo.physicalDevice = physicalDevice;
+	createInfo.scene = _scene;
+
+	data->vkScene = VkScene(createInfo);
+
+	return data;
+}
+
+bool RenderContext::WasSceneLoaded(RenderEngine::Core::Scene* _scene, SceneData* _output)
+{
+	for (std::forward_list<SceneData>::iterator it = scenesData.begin(); it != scenesData.end(); ++it)
+	{
+		if ((*it) == _scene)
+		{
+			_output = &(*it);
+			return true;
+		}
+	}
+	return false;
+}
+
 void RenderContext::Cleanup()
 {
 	windowProperties->window->FramebufferResizeEvent.Remove(this, &RenderContext::FrameBufferResizedCallback);
