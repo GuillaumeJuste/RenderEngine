@@ -7,6 +7,8 @@
 #include "Engine/Vulkan/Scene/VkSceneCreateInfo.hpp"
 #include "Engine/Vulkan/Scene/VkGameObject.hpp"
 
+#include <forward_list>
+
 namespace RenderEngine::Engine::Vulkan
 {
 	class VkScene

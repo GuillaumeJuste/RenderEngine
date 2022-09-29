@@ -12,11 +12,11 @@ VkScene::VkScene(const VkSceneCreateInfo& _createInfo) :
 	gaoCreateInfo.graphicsQueue = _createInfo.graphicsQueue;
 	gaoCreateInfo.commandPool = _createInfo.commandPool;
 
-	std::forward_list<GameObject> _gameObjects = _createInfo.scene->GetGameObjects();
+	std::vector<GameObject*> _gameObjects = _createInfo.scene->GetGameObjects();
 
-	for (std::forward_list<GameObject>::iterator it = _gameObjects.begin(); it != _gameObjects.end(); ++it)
+	for (std::vector<GameObject*>::iterator it = _gameObjects.begin(); it != _gameObjects.end(); ++it)
 	{
-		gaoCreateInfo.gameObject = &(*it);
+		gaoCreateInfo.gameObject = (*it);
 		gameObjects.push_front(VkGameObject(gaoCreateInfo));
 	}
 }

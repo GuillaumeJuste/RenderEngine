@@ -7,7 +7,7 @@
 #include "Core/Object/GameObject/GameObjectCreateInfo.hpp"
 
 #include <string>
-#include <forward_list>
+#include <vector>
 
 
 namespace RenderEngine::Core
@@ -21,7 +21,7 @@ namespace RenderEngine::Core
         /**
          * @brief list of objects present in the scene
         */
-        std::forward_list<GameObject> gameObjects;
+        std::vector<GameObject*> gameObjects;
 
         /**
          * @brief root object in the scene
@@ -76,7 +76,7 @@ namespace RenderEngine::Core
         */
         GameObject* GetSceneRoot();
 
-        std::forward_list<GameObject> GetGameObjects() const;
+        const std::vector<GameObject*>& GetGameObjects() const;
 
         void Cleanup();
 

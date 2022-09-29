@@ -3,7 +3,7 @@
 using namespace RenderEngine::Engine::Vulkan;
 
 VkGameObject::VkGameObject(const VkGameObjectCreateInfo& _createInfo) :
-	createInfo { _createInfo }
+	createInfo{ _createInfo }
 {
 	meshRenderer = createInfo.gameObject->GetComponent<MeshRenderer>();
 	if (meshRenderer != nullptr)
