@@ -6,6 +6,8 @@
 #include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Engine/Vulkan/CommandBuffer/Base/CommandBufferBase.hpp"
 #include "Engine/Vulkan/CommandBuffer/SwapChainCommandBuffer/SwapChainCommandBufferVkCreateInfo.hpp"
+#include "Engine/Vulkan/Scene/VkScene.hpp"
+
 
 namespace RenderEngine::Engine::Vulkan
 {
@@ -49,12 +51,6 @@ namespace RenderEngine::Engine::Vulkan
 		VkRect2D scissor{};
 
 		/**
-		 * @brief tmp variables
-		*/
-		BufferObject* vertexBufferObject;
-		BufferObject* indexBufferObject;
-
-		/**
 		 * @brief initialize semaphores and fence 
 		*/
 		void InitializeSyncObjects();
@@ -75,10 +71,12 @@ namespace RenderEngine::Engine::Vulkan
 		static void InitializeCommandBuffer(const SwapChainCommandBufferVkCreateInfo& _createInfo, SwapChainCommandBuffer* _output);
 
 		/**
-		 * @brief record command buffer to render a frame
-		 * @param imageIndex index of the frame to render
+		 * @brief record command buffer to render a scene
+		 * @param _imageIndex index of the frame to render
+		 * @param _scene scene to render
 		*/
-		void RecordCommandBuffer(uint32_t imageIndex);
+		void RecordCommandBuffer(uint32_t _imageIndex, VkScene* _scene);
+
 
 		/**
 		 * @brief clean vulkan classes

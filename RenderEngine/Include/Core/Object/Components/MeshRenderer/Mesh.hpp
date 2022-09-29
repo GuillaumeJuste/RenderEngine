@@ -23,7 +23,7 @@ namespace RenderEngine::Core
         /**
          * @brief mesh list of indices
         */
-        std::vector<uint32_t> indices;
+        std::vector<uint16_t> indices;
 
     public:
         Mesh() = default;
@@ -35,10 +35,10 @@ namespace RenderEngine::Core
          * @param _indices Mesh list of indices
          * @param _output Mesh to fill with vertices and indices
         */
-        static void InitializeMesh(std::vector<Vertex> _vertices, std::vector<uint32_t> _indices, Mesh* _output);
+        static void InitializeMesh(std::vector<Vertex> _vertices, std::vector<uint16_t> _indices, Mesh* _output);
 
         std::vector<Vertex> GetVertices() const;
-        std::vector<uint32_t> GetIndices() const;
+        std::vector<uint16_t> GetIndices() const;
     };
 }
 

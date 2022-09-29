@@ -29,7 +29,7 @@ namespace RenderEngine::Engine::Vulkan
 		VkGameObject(const VkGameObjectCreateInfo& _createInfo);
 		~VkGameObject() = default;
 
-		void Draw(VkCommandBuffer _commandBuffer);
+		void Draw(VkCommandBuffer _commandBuffer) const;
 
 		MeshRenderer* GetMeshRenderer() const;
 

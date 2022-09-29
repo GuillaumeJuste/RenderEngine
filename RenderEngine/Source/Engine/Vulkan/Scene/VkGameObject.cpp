@@ -47,7 +47,7 @@ void VkGameObject::CreateVertexBufferObject()
 
 void VkGameObject::CreateIndexBufferObject()
 {
-	std::vector<uint32_t> indices = meshRenderer->GetMesh()->GetIndices();
+	std::vector<uint16_t> indices = meshRenderer->GetMesh()->GetIndices();
 
 	BufferObject stagingBufferObject;
 	BufferObjectVkCreateInfo stagingBufferCreateInfo;
@@ -77,7 +77,7 @@ void VkGameObject::CreateIndexBufferObject()
 	stagingBufferObject.Cleanup();
 }
 
-void VkGameObject::Draw(VkCommandBuffer _commandBuffer)
+void VkGameObject::Draw(VkCommandBuffer _commandBuffer) const
 {
 	if (HasMeshRenderer())
 	{

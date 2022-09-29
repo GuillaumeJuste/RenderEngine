@@ -72,11 +72,6 @@ namespace RenderEngine::Engine::Vulkan
 		/// current frame
 		uint32_t currentFrame = 0;
 
-		/// tmp variables
-		BufferObject vertexBufferObject;
-		BufferObject indexBufferObject;
-		BufferObject stagingBufferObject;
-
 		/**
 		 * @brief Create swapchain
 		*/
@@ -106,10 +101,6 @@ namespace RenderEngine::Engine::Vulkan
 		 * @brief Create Command Buffer
 		*/
 		void CreateCommandBuffer(const SwapChainCommandBufferCreateInfo& _createInfo);
-
-		/// TMP classes
-		void CreateVertexBufferObject();
-		void CreateIndexBufferObject();
 
 		/**
 		 * @brief Clean swapchain
@@ -141,11 +132,6 @@ namespace RenderEngine::Engine::Vulkan
 		 * @param _output 
 		*/
 		static void InitalizeRenderContext(const RenderContextVkCreateInfo& _createInfo, RenderContext* _output);
-
-		/**
-		 * @brief Draw current frame
-		*/
-		void DrawFrame();
 
 		void DrawScene(RenderEngine::Core::Scene* _scene);
 

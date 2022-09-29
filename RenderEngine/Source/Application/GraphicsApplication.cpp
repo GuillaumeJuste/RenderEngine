@@ -87,18 +87,28 @@ void GraphicsApplication::MainLoop()
     scene->name = "test_scene_1";
 
     const std::vector<Vertex> vertices = {
-    {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-    {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
-    {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
-    {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
+    {{-0.75f, -0.75f}, {1.0f, 0.0f, 0.0f}},
+    {{-0.25f, -0.75f}, {0.0f, 1.0f, 0.0f}},
+    {{-0.25f, -0.25f}, {0.0f, 0.0f, 1.0f}},
+    {{-0.75f, -0.25f}, {1.0f, 1.0f, 1.0f}}
     };
 
-    const std::vector<uint32_t> indices = {
+    const std::vector<Vertex> vertices2 = {
+    {{0.25f, 0.25f}, {1.0f, 0.0f, 0.0f}},
+    {{0.75f, 0.25f}, {0.0f, 1.0f, 0.0f}},
+    {{0.75f, 0.75f}, {0.0f, 0.0f, 1.0f}},
+    {{0.25f, 0.75f}, {1.0f, 1.0f, 1.0f}}
+    };
+
+    const std::vector<uint16_t> indices = {
         0, 1, 2, 2, 3, 0
     };
     
     Mesh mesh;
     Mesh::InitializeMesh(vertices, indices, &mesh);
+
+    Mesh mesh2;
+    Mesh::InitializeMesh(vertices, indices, &mesh2);
 
     Mathlib::Transform transform;
 
@@ -111,12 +121,21 @@ void GraphicsApplication::MainLoop()
     MeshRenderer* meshRenderer = obj->AddComponent<MeshRenderer>();
     meshRenderer->SetMesh(mesh);
 
+    GameObjectCreateInfo createinfo2;
+    createinfo2.transform = transform;
+    createinfo2.parent = scene->GetSceneRoot();
+    createinfo2.name = "second_object";
+
+    GameObject* obj2 = scene->AddGameObject(createinfo2);
+    MeshRenderer* meshRenderer2 = obj2->AddComponent<MeshRenderer>();
+    meshRenderer2->SetMesh(mesh2);
+
     scene->Initialize();
     scene->Start();
 
     while (!glfwWindowShouldClose(window->GetGLFWWindow())) {
         glfwPollEvents();
-        renderContext->DrawFrame();
+        //renderContext->DrawFrame();
         renderContext->DrawScene(scene);
         //scene.Update();
     }

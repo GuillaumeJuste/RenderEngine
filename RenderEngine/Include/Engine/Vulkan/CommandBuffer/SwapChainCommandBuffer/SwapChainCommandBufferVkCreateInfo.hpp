@@ -36,10 +36,6 @@ namespace RenderEngine::Engine::Vulkan
 		/// swapchain
 		SwapChain* swapChain;
 
-		///TMP variables
-		BufferObject* vertexBufferObject;
-		BufferObject* indexBufferObject;
-
 		/// default constructor
 		SwapChainCommandBufferVkCreateInfo() = default;
 	};

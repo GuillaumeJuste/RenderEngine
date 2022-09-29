@@ -10,7 +10,6 @@ namespace RenderEngine::Engine::Base
 	class IRenderContext
 	{
 	public:
-		virtual void DrawFrame() = 0;
 		virtual void DrawScene(RenderEngine::Core::Scene* _scene) = 0;
 	};
 }

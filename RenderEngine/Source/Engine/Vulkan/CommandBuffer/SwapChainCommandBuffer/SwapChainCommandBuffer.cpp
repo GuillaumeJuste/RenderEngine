@@ -9,14 +9,8 @@
 
 using namespace RenderEngine::Engine::Vulkan;
 
-const std::vector<uint16_t> indices = {
-	0, 1, 2, 2, 3, 0
-};
-
 void SwapChainCommandBuffer::InitializeCommandBuffer(const SwapChainCommandBufferVkCreateInfo& _createInfo, SwapChainCommandBuffer* _output)
 {
-	_output->vertexBufferObject = _createInfo.vertexBufferObject;
-	_output->indexBufferObject = _createInfo.indexBufferObject;
 	_output->renderPass = _createInfo.renderPass;
 	_output->graphicsPipeline = _createInfo.graphicsPipeline;
 	_output->frameBuffer = _createInfo.frameBuffer;
@@ -47,7 +41,8 @@ void SwapChainCommandBuffer::InitializeSyncObjects()
 	}
 }
 
-void SwapChainCommandBuffer::RecordCommandBuffer(uint32_t imageIndex)
+
+void SwapChainCommandBuffer::RecordCommandBuffer(uint32_t _imageIndex, VkScene* _scene)
 {
 	VkCommandBufferBeginInfo beginInfo{};
 	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -63,7 +58,7 @@ void SwapChainCommandBuffer::RecordCommandBuffer(uint32_t imageIndex)
 	VkRenderPassBeginInfo renderPassInfo{};
 	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 	renderPassInfo.renderPass = renderPass->GetRenderPass();
-	renderPassInfo.framebuffer = frameBuffer->GetFrameBuffers()[imageIndex];
+	renderPassInfo.framebuffer = frameBuffer->GetFrameBuffers()[_imageIndex];
 	renderPassInfo.renderArea.offset = { 0, 0 };
 	renderPassInfo.renderArea.extent = swapChainExtent;
 	VkClearValue clearColor = { {{0.0f, 0.0f, 0.0f, 1.0f}} };
@@ -78,13 +73,11 @@ void SwapChainCommandBuffer::RecordCommandBuffer(uint32_t imageIndex)
 
 	vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-	VkBuffer vertexBuffers[] = { vertexBufferObject->GetVkBuffer()};
-	VkDeviceSize offsets[] = { 0 };
-	vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-
-	vkCmdBindIndexBuffer(commandBuffer, indexBufferObject->GetVkBuffer(), 0, VK_INDEX_TYPE_UINT16);
-
-	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
+	std::forward_list<VkGameObject> sceneObjects = _scene->GetSceneObjects();
+	for (std::forward_list<VkGameObject>::iterator it = sceneObjects.begin(); it != sceneObjects.end(); ++it)
+	{
+		it->Draw(commandBuffer);
+	}
 
 	vkCmdEndRenderPass(commandBuffer);
 

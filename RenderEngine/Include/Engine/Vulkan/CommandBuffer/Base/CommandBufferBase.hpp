@@ -40,12 +40,6 @@ namespace RenderEngine::Engine::Vulkan
 		static void InitializeCommandBuffer(const CommandBufferVkCreateInfo& _createInfo, CommandBufferBase* _output);
 
 		/**
-		 * @brief record command buffer command
-		 * @param imageIndex index of the frame buffer index;
-		*/
-		virtual void RecordCommandBuffer(uint32_t imageIndex) = 0;
-
-		/**
 		 * @brief cleanup function
 		*/
 		virtual void Cleanup() = 0;

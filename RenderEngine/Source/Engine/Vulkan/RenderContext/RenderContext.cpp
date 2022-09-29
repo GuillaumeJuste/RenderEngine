@@ -6,17 +6,6 @@
 using namespace RenderEngine::Engine::Vulkan;
 using namespace RenderEngine::Core;
 
-const std::vector<Vertex> vertices = {
-	{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-	{{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
-	{{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
-	{{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
-};
-
-const std::vector<uint16_t> indices = {
-	0, 1, 2, 2, 3, 0
-};
-
 void RenderContext::InitalizeRenderContext(const RenderContextVkCreateInfo& _createInfo, RenderContext* _output)
 {
 	_output->instance = _createInfo.instance;
@@ -34,8 +23,6 @@ void RenderContext::InitalizeRenderContext(const RenderContextVkCreateInfo& _cre
 	_output->CreateGraphicsPipeline(*_createInfo.renderContextCreateInfo.graphicsPipelineCreateInfo);
 	_output->CreateFrameBuffer();
 	_output->CreateCommandPool();
-	_output->CreateVertexBufferObject();
-	_output->CreateIndexBufferObject();
 	_output->CreateCommandBuffer(*_createInfo.renderContextCreateInfo.swapChainCommandBufferCreateInfo);
 }
 
@@ -101,9 +88,6 @@ void RenderContext::CreateCommandBuffer(const SwapChainCommandBufferCreateInfo& 
 	createInfo.frameBuffer = &frameBuffer;
 	createInfo.swapChain = &swapChain;
 
-	createInfo.vertexBufferObject = &vertexBufferObject;
-	createInfo.indexBufferObject = &indexBufferObject;
-
 	commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
@@ -137,77 +121,26 @@ void RenderContext::RecreateSwapChain()
 	frameBufferWasResized = false;
 }
 
-void RenderContext::CreateVertexBufferObject()
-{
-	BufferObjectVkCreateInfo stagingBufferCreateInfo;
-	stagingBufferCreateInfo.physicalDevice = physicalDevice;
-	stagingBufferCreateInfo.logicalDevice = logicalDevice;
-	stagingBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-	stagingBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-	stagingBufferCreateInfo.bufferSize = sizeof(vertices[0]) * vertices.size();
-
-	BufferObject::InitializeBufferObject(stagingBufferCreateInfo, &stagingBufferObject);
-
-	void* data;
-	vkMapMemory(logicalDevice, stagingBufferObject.GetVkBufferMemory(), 0, stagingBufferCreateInfo.bufferSize, 0, &data);
-	memcpy(data, vertices.data(), (size_t)stagingBufferCreateInfo.bufferSize);
-	vkUnmapMemory(logicalDevice, stagingBufferObject.GetVkBufferMemory());
-
-	BufferObjectVkCreateInfo vertexBuffeCreateInfo;
-	vertexBuffeCreateInfo.physicalDevice = physicalDevice;
-	vertexBuffeCreateInfo.logicalDevice = logicalDevice;
-	vertexBuffeCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-	vertexBuffeCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-	vertexBuffeCreateInfo.bufferSize = stagingBufferCreateInfo.bufferSize;
-
-	BufferObject::InitializeBufferObject(vertexBuffeCreateInfo, &vertexBufferObject);
-
-	stagingBufferObject.CopyBuffer(&vertexBufferObject, &commandPool, graphicsQueue, stagingBufferCreateInfo.bufferSize);
-	stagingBufferObject.Cleanup();
-}
-
-void RenderContext::CreateIndexBufferObject()
-{
-	BufferObjectVkCreateInfo stagingBufferCreateInfo;
-	stagingBufferCreateInfo.physicalDevice = physicalDevice;
-	stagingBufferCreateInfo.logicalDevice = logicalDevice;
-	stagingBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-	stagingBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-	stagingBufferCreateInfo.bufferSize = sizeof(indices[0]) * indices.size();
-
-	BufferObject::InitializeBufferObject(stagingBufferCreateInfo, &stagingBufferObject);
-
-	void* data;
-	vkMapMemory(logicalDevice, stagingBufferObject.GetVkBufferMemory(), 0, stagingBufferCreateInfo.bufferSize, 0, &data);
-	memcpy(data, indices.data(), (size_t)stagingBufferCreateInfo.bufferSize);
-	vkUnmapMemory(logicalDevice, stagingBufferObject.GetVkBufferMemory());
-
-	BufferObjectVkCreateInfo indexBufferCreateInfo;
-	indexBufferCreateInfo.physicalDevice = physicalDevice;
-	indexBufferCreateInfo.logicalDevice = logicalDevice;
-	indexBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
-	indexBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-	indexBufferCreateInfo.bufferSize = stagingBufferCreateInfo.bufferSize;
-
-	BufferObject::InitializeBufferObject(indexBufferCreateInfo, &indexBufferObject);
-
-	stagingBufferObject.CopyBuffer(&indexBufferObject, &commandPool, graphicsQueue, stagingBufferCreateInfo.bufferSize);
-	stagingBufferObject.Cleanup();
-}
-
 void RenderContext::FrameBufferResizedCallback()
 {
 	frameBufferWasResized = true;
 }
 
-void RenderContext::DrawFrame()
+void RenderContext::DrawScene(RenderEngine::Core::Scene* _scene)
 {
+	VkScene* vkScene = WasSceneLoaded(_scene);
+
+	if (vkScene == nullptr)
+	{
+		vkScene = LoadScene(_scene);
+	}
+
 	vkWaitForFences(logicalDevice, 1, &commandBuffers[currentFrame].GetInFlightFence(), VK_TRUE, UINT64_MAX);
 
 	uint32_t imageIndex;
 	VkResult result = vkAcquireNextImageKHR(logicalDevice, swapChain.GetVKSwapChain(), UINT64_MAX, commandBuffers[currentFrame].GetImageAvailableSemaphore(), VK_NULL_HANDLE, &imageIndex);
 
-	if (result == VK_ERROR_OUT_OF_DATE_KHR) 
+	if (result == VK_ERROR_OUT_OF_DATE_KHR)
 	{
 		RecreateSwapChain();
 		return;
@@ -219,7 +152,8 @@ void RenderContext::DrawFrame()
 	vkResetFences(logicalDevice, 1, &commandBuffers[currentFrame].GetInFlightFence());
 
 	vkResetCommandBuffer(commandBuffers[currentFrame].GetVKCommandBuffer(), 0);
-	commandBuffers[currentFrame].RecordCommandBuffer(imageIndex);
+
+	commandBuffers[currentFrame].RecordCommandBuffer(imageIndex, vkScene);
 
 	VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -264,16 +198,6 @@ void RenderContext::DrawFrame()
 	}
 
 	currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
-}
-
-void RenderContext::DrawScene(RenderEngine::Core::Scene* _scene)
-{
-	VkScene* vkScene = WasSceneLoaded(_scene);
-
-	if (vkScene == nullptr)
-	{
-		vkScene = LoadScene(_scene);
-	}
 }
 
 VkScene* RenderContext::LoadScene(RenderEngine::Core::Scene* _scene)
@@ -322,7 +246,5 @@ void RenderContext::Cleanup()
 	graphicsPipeline.Cleanup();
 	renderPass.Cleanup();
 	swapChain.Cleanup();
-	indexBufferObject.Cleanup();
-	vertexBufferObject.Cleanup();
 	std::cout << "[Cleaned] Render Context" << std::endl;
 }
