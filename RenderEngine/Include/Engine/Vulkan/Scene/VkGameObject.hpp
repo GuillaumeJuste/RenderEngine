@@ -29,6 +29,8 @@ namespace RenderEngine::Engine::Vulkan
 		VkGameObject(const VkGameObjectCreateInfo& _createInfo);
 		~VkGameObject() = default;
 
+		void Draw(VkCommandBuffer _commandBuffer);
+
 		MeshRenderer* GetMeshRenderer() const;
 
 		bool HasMeshRenderer() const;

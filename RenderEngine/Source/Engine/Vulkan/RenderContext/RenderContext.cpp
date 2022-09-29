@@ -293,24 +293,28 @@ SceneData* RenderContext::LoadScene(RenderEngine::Core::Scene* _scene)
 
 	data->vkScene = VkScene(createInfo);
 
-	return data;
+	return &data->vkScene;
 }
 
-bool RenderContext::WasSceneLoaded(RenderEngine::Core::Scene* _scene, SceneData* _output)
+VkScene* RenderContext::WasSceneLoaded(RenderEngine::Core::Scene* _scene)
 {
 	for (std::forward_list<SceneData>::iterator it = scenesData.begin(); it != scenesData.end(); ++it)
 	{
-		if ((*it) == _scene)
+		if ((*it).scene == _scene)
 		{
-			_output = &(*it);
-			return true;
+			return &(*it).vkScene;
 		}
 	}
-	return false;
+	return nullptr;
 }
 
 void RenderContext::Cleanup()
 {
+	for (std::forward_list<SceneData>::iterator it = scenesData.begin(); it != scenesData.end(); ++it)
+	{
+		it->vkScene.Cleanup();
+	}
+
 	windowProperties->window->FramebufferResizeEvent.Remove(this, &RenderContext::FrameBufferResizedCallback);
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 	{

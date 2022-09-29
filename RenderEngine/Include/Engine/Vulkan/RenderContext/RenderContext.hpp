@@ -15,7 +15,7 @@ using namespace RenderEngine::Engine::Base;
 #include "Engine/Vulkan/CommandPool/CommandPool.hpp"
 #include "Engine/Vulkan/CommandBuffer/SwapChainCommandBuffer/SwapChainCommandBuffer.hpp"
 #include "Engine/Vulkan/BufferObject/BufferObject.hpp"
-#include "Engine/Vulkan/RenderContext/SceneData.hpp"
+#include "Engine/Vulkan/Scene/SceneData.hpp"
 
 namespace RenderEngine::Engine::Vulkan
 {
@@ -126,7 +126,7 @@ namespace RenderEngine::Engine::Vulkan
 		*/
 		void FrameBufferResizedCallback();
 
-		bool WasSceneLoaded(RenderEngine::Core::Scene* _scene, SceneData* _output);
+		VkScene* WasSceneLoaded(RenderEngine::Core::Scene* _scene);
 
 	public:
 		/// default constructor
@@ -149,7 +149,7 @@ namespace RenderEngine::Engine::Vulkan
 
 		void DrawScene(RenderEngine::Core::Scene* _scene);
 
-		SceneData* LoadScene(RenderEngine::Core::Scene* _scene);
+		VkScene* LoadScene(RenderEngine::Core::Scene* _scene);
 
 		/**
 		 * @brief clean up vulkan classes

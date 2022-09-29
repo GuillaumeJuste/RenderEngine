@@ -21,6 +21,12 @@ VkScene::VkScene(const VkSceneCreateInfo& _createInfo) :
 	}
 }
 
+
+std::forward_list<VkGameObject> VkScene::GetSceneObjects() const
+{
+	return gameObjects;
+}
+
 void VkScene::Cleanup()
 {
 	for (std::forward_list<VkGameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)

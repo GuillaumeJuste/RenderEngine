@@ -77,6 +77,20 @@ void VkGameObject::CreateIndexBufferObject()
 	stagingBufferObject.Cleanup();
 }
 
+void VkGameObject::Draw(VkCommandBuffer _commandBuffer)
+{
+	if (HasMeshRenderer())
+	{
+		VkBuffer vertexBuffers[] = { vertexBufferObject.GetVkBuffer() };
+		VkDeviceSize offsets[] = { 0 };
+		vkCmdBindVertexBuffers(_commandBuffer, 0, 1, vertexBuffers, offsets);
+
+		vkCmdBindIndexBuffer(_commandBuffer, indexBufferObject.GetVkBuffer(), 0, VK_INDEX_TYPE_UINT16);
+
+		vkCmdDrawIndexed(_commandBuffer, static_cast<uint32_t>(meshRenderer->GetMesh()->GetIndices().size()), 1, 0, 0, 0);
+	}
+}
+
 MeshRenderer* VkGameObject::GetMeshRenderer() const
 {
 	return meshRenderer;

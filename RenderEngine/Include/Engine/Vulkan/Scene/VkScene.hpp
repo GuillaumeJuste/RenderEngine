@@ -22,6 +22,8 @@ namespace RenderEngine::Engine::Vulkan
 		~VkScene() = default;
 
 		void Cleanup();
+
+		std::forward_list<VkGameObject> GetSceneObjects() const;
 	};
 
 }
