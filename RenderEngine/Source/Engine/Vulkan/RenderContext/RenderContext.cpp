@@ -207,7 +207,6 @@ void RenderContext::DrawFrame()
 	uint32_t imageIndex;
 	VkResult result = vkAcquireNextImageKHR(logicalDevice, swapChain.GetVKSwapChain(), UINT64_MAX, commandBuffers[currentFrame].GetImageAvailableSemaphore(), VK_NULL_HANDLE, &imageIndex);
 
-	/*TODO: Fix window resize fence error*/
 	if (result == VK_ERROR_OUT_OF_DATE_KHR) 
 	{
 		RecreateSwapChain();
@@ -218,7 +217,6 @@ void RenderContext::DrawFrame()
 	}
 
 	vkResetFences(logicalDevice, 1, &commandBuffers[currentFrame].GetInFlightFence());
-
 
 	vkResetCommandBuffer(commandBuffers[currentFrame].GetVKCommandBuffer(), 0);
 	commandBuffers[currentFrame].RecordCommandBuffer(imageIndex);
@@ -257,7 +255,6 @@ void RenderContext::DrawFrame()
 
 	result = vkQueuePresentKHR(presentQueue, &presentInfo);
 
-	/*TODO: Fix window resize fence error*/
 	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || frameBufferWasResized)
 	{
 		RecreateSwapChain();
@@ -271,15 +268,15 @@ void RenderContext::DrawFrame()
 
 void RenderContext::DrawScene(RenderEngine::Core::Scene* _scene)
 {
-	SceneData* sceneData = nullptr;
+	VkScene* vkScene = WasSceneLoaded(_scene);
 
-	if (!WasSceneLoaded(_scene, sceneData))
+	if (vkScene == nullptr)
 	{
-		sceneData = LoadScene(_scene);
+		vkScene = LoadScene(_scene);
 	}
 }
 
-SceneData* RenderContext::LoadScene(RenderEngine::Core::Scene* _scene)
+VkScene* RenderContext::LoadScene(RenderEngine::Core::Scene* _scene)
 {
 	SceneData* data = &scenesData.emplace_front();
 	data->scene = _scene;
