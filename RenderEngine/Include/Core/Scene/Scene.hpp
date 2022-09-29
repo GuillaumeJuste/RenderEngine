@@ -5,7 +5,6 @@
 
 #include "Core/Object/GameObject/GameObject.hpp"
 #include "Core/Object/GameObject/GameObjectCreateInfo.hpp"
-#include "Core/Scene/SceneCreateInfo.hpp"
 
 #include <string>
 #include <forward_list>
@@ -19,12 +18,6 @@ namespace RenderEngine::Core
     class Scene
     {
     private:
-
-        /**
-         * @brief scene name
-        */
-        std::string name;
-        
         /**
          * @brief list of objects present in the scene
         */
@@ -36,17 +29,16 @@ namespace RenderEngine::Core
         GameObject rootObject;
 
     public:
-        Scene() = default;
-        ~Scene() = default;
 
         /**
-         * @brief Initialize scene from create info
-         * @param _createinfo Informations to inititalize scene with
-         * @param _output Scene to initalize
+        * @brief scene name
         */
-        static void InitializeScene(const SceneCreateInfo& _createinfo, Scene* _output);
+        std::string name;
 
-        void Initilize();
+        Scene();
+        ~Scene() = default;
+
+        void Initialize();
         void Start();
         void Update();
 
@@ -87,6 +79,8 @@ namespace RenderEngine::Core
         std::forward_list<GameObject> GetGameObjects() const;
 
         void Cleanup();
+
+        bool operator==(const Scene& _scene) const;
     };
 }
 

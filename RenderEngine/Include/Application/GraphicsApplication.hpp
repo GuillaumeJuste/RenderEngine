@@ -6,7 +6,7 @@
 #include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Engine/Vulkan/VulkanContext/VulkanContext.hpp"
 #include "Window/Glfw/Window.hpp"
-#include "Core/Scene/Scene.hpp"
+#include "Core/Scene/SceneManager.hpp"
 
 using namespace RenderEngine::Window;
 
@@ -37,11 +37,8 @@ namespace RenderEngine
 		 * @brief render context to render scene
 		*/
 		IRenderContext* renderContext;
-
-		/**
-		 * @brief scene to render
-		*/
-		std::forward_list<Scene> scenes;
+		
+		SceneManager SceneManager;
 
 		/**
 		 * @brief Initialize engine context
@@ -72,8 +69,6 @@ namespace RenderEngine
 		std::string UserSelectPhysicalDevice(std::vector<std::string> _physicalDevicesNames);
 
 	public:
-
-		Scene* AddScene();
 
 		/**
 		 * @brief default constructor

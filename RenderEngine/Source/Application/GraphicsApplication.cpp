@@ -83,12 +83,8 @@ std::string GraphicsApplication::UserSelectPhysicalDevice(std::vector<std::strin
 
 void GraphicsApplication::MainLoop()
 {
-    SceneCreateInfo sceneInfo;
-    sceneInfo.name = "test_scene_1";
-
-    Scene* scene = AddScene();
-
-    Scene::InitializeScene(sceneInfo, scene);
+    Scene* scene = SceneManager.AddScene();
+    scene->name = "test_scene_1";
 
     const std::vector<Vertex> vertices = {
     {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
@@ -115,7 +111,7 @@ void GraphicsApplication::MainLoop()
     MeshRenderer* meshRenderer = obj->AddComponent<MeshRenderer>();
     meshRenderer->SetMesh(mesh);
 
-    scene->Initilize();
+    scene->Initialize();
     scene->Start();
 
     while (!glfwWindowShouldClose(window->GetGLFWWindow())) {
@@ -127,19 +123,9 @@ void GraphicsApplication::MainLoop()
     deviceContext->WaitDeviceIdle();
 }
 
-Scene* GraphicsApplication::AddScene()
-{
-    return &scenes.emplace_front();
-}
-
 void GraphicsApplication::Cleanup()
 {
     vulkanContext.Cleanup();
-
-    for (std::forward_list<Scene>::iterator it = scenes.begin(); it != scenes.end(); ++it)
-    {
-        (*it).Cleanup();
-    }
 
     window->Cleanup();
     delete window;

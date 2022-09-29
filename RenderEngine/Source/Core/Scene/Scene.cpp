@@ -2,14 +2,13 @@
 
 using namespace RenderEngine::Core;
 
-void Scene::InitializeScene(const SceneCreateInfo& _createinfo, Scene* _output)
+Scene::Scene()
 {
-	_output->name = _createinfo.name;
-	_output->rootObject.SetIsEnabled(false);
-	_output->rootObject.SetName("root");
+	rootObject.SetIsEnabled(false);
+	rootObject.SetName("root");
 }
 
-void Scene::Initilize()
+void Scene::Initialize()
 {
 	for (std::forward_list<GameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{
@@ -126,4 +125,9 @@ void Scene::Cleanup()
 	{
 		(*it).Cleanup();
 	}
+}
+
+bool Scene::operator==(const Scene& _scene) const
+{
+	return name == _scene.name;
 }
