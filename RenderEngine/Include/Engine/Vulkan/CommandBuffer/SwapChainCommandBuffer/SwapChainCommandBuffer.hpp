@@ -75,7 +75,7 @@ namespace RenderEngine::Engine::Vulkan
 		 * @param _imageIndex index of the frame to render
 		 * @param _scene scene to render
 		*/
-		void RecordCommandBuffer(uint32_t _imageIndex, VkScene* _scene);
+		void RecordCommandBuffer(uint32_t _imageIndex, int _currentFrame, VkScene* _scene);
 
 
 		/**

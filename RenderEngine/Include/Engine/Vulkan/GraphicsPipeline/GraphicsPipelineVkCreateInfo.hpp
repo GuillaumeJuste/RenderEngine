@@ -5,8 +5,11 @@
 
 #include "Engine/Vulkan/Shader/Shader.hpp"
 #include "Engine/Vulkan/RenderPass/RenderPass.hpp"
+#include "Engine/Vulkan/Descriptor/Layout/DescriptorSetLayout.hpp"
 
 #include "Engine/Base/CreateInfo/GraphicsPipelineCreateInfo.hpp"
+
+
 using namespace RenderEngine::Engine::Base;
 
 namespace RenderEngine::Engine::Vulkan
@@ -29,6 +32,8 @@ namespace RenderEngine::Engine::Vulkan
 
 		/// renderpass
 		RenderPass* renderPass;
+
+		DescriptorSetLayout* descriptorLayout;
 
 		/// default constructor
 		GraphicsPipelineVkCreateInfo() = default;

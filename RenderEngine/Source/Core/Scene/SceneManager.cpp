@@ -14,6 +14,7 @@ Scene* SceneManager::GetScene(std::string _name)
         if (it->name == _name)
             return &(*it);
     }
+    return nullptr;
 }
 
 bool SceneManager::DeleteScene(Scene* _scene) 

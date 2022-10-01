@@ -11,7 +11,8 @@ void GraphicsPipeline::InitalizeGraphicsPipeline(const GraphicsPipelineVkCreateI
 	_output->logicalDevice = _createInfo.logicalDevice;
 	_output->swapChainImageFormat = _createInfo.swapChainImageFormat;
 	_output->swapChainExtent = _createInfo.swapChainExtent;
-	_output->renderPass = _createInfo.renderPass;
+    _output->renderPass = _createInfo.renderPass;
+    _output->descriptorLayout = _createInfo.descriptorLayout;
 	
     _output->CreateShaders(_createInfo.graphicsPipelineCreateInfo.vertexShaderFilePath, _createInfo.graphicsPipelineCreateInfo.fragmentShaderFilePath);
 
@@ -78,8 +79,8 @@ void GraphicsPipeline::InitalizeGraphicsPipeline(const GraphicsPipelineVkCreateI
 
     VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    pipelineLayoutInfo.setLayoutCount = 0;
-    pipelineLayoutInfo.pushConstantRangeCount = 0;
+    pipelineLayoutInfo.setLayoutCount = 1;
+    pipelineLayoutInfo.pSetLayouts = &_output->descriptorLayout->GetDescriptorSetLayout();
 
     if (vkCreatePipelineLayout(_output->logicalDevice, &pipelineLayoutInfo, nullptr, &_output->pipelineLayout) != VK_SUCCESS) {
         throw std::runtime_error("failed to create pipeline layout!");
@@ -153,4 +154,9 @@ void GraphicsPipeline::Cleanup()
 const VkPipeline& GraphicsPipeline::GetGraphicsPipeline() const
 {
 	return graphicsPipeline;
+}
+
+const VkPipelineLayout& GraphicsPipeline::GetGraphicsPipelineLayout() const
+{
+    return pipelineLayout;
 }

@@ -4,8 +4,18 @@ using namespace RenderEngine::Core;
 
 Scene::Scene()
 {
+	GameObjectCreateInfo rootCreateInfo{};
+	rootCreateInfo.name = "root";
+	rootCreateInfo.parent = nullptr;
+	
+	Mathlib::Transform transform;
+	transform.scale = Mathlib::Vec3(1.f, 1.f, 1.f);
+
+	rootCreateInfo.transform = transform;
+
+	GameObject::InitializeGameObject(rootCreateInfo, &rootObject);
+
 	rootObject.SetIsEnabled(false);
-	rootObject.SetName("root");
 }
 
 void Scene::Initialize()

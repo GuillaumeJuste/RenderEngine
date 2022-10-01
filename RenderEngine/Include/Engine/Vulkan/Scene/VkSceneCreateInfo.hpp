@@ -5,6 +5,9 @@
 
 #include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Engine/Vulkan/CommandPool/CommandPool.hpp"
+#include "Engine/Vulkan/Descriptor/Layout/DescriptorSetLayout.hpp"
+#include "Engine/Vulkan/Descriptor/Pool/DescriptorPool.hpp"
+#include "Engine/Vulkan/GraphicsPipeline/GraphicsPipeline.hpp"
 #include "Core/Scene/Scene.hpp"
 
 namespace RenderEngine::Engine::Vulkan
@@ -25,6 +28,12 @@ namespace RenderEngine::Engine::Vulkan
 
 		/// command pool
 		CommandPool* commandPool;
+
+		GraphicsPipeline* graphicsPipeline;
+
+		DescriptorSetLayout* descriptorSetLayout;
+
+		DescriptorPool* descriptorPool;
 
 		RenderEngine::Core::Scene* scene;
 

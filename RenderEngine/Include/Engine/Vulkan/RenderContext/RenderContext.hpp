@@ -16,6 +16,8 @@ using namespace RenderEngine::Engine::Base;
 #include "Engine/Vulkan/CommandBuffer/SwapChainCommandBuffer/SwapChainCommandBuffer.hpp"
 #include "Engine/Vulkan/BufferObject/BufferObject.hpp"
 #include "Engine/Vulkan/Scene/SceneData.hpp"
+#include "Engine/Vulkan/Descriptor/Layout/DescriptorSetLayout.hpp"
+#include "Engine/Vulkan/Descriptor/Pool/DescriptorPool.hpp"
 
 namespace RenderEngine::Engine::Vulkan
 {
@@ -67,7 +69,11 @@ namespace RenderEngine::Engine::Vulkan
 		///command buffers
 		std::vector<SwapChainCommandBuffer> commandBuffers;
 
-		std::forward_list <SceneData> scenesData;
+		std::forward_list<SceneData> scenesData;
+
+		DescriptorSetLayout descriptorSetLayout;
+
+		DescriptorPool descriptorPool;
 
 		/// current frame
 		uint32_t currentFrame = 0;
@@ -101,6 +107,10 @@ namespace RenderEngine::Engine::Vulkan
 		 * @brief Create Command Buffer
 		*/
 		void CreateCommandBuffer(const SwapChainCommandBufferCreateInfo& _createInfo);
+
+		void CreateDescriptorLayout();
+
+		void CreateDescriptorPool();
 
 		/**
 		 * @brief Clean swapchain

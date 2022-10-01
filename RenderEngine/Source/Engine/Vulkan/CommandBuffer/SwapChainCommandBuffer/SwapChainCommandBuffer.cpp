@@ -42,7 +42,7 @@ void SwapChainCommandBuffer::InitializeSyncObjects()
 }
 
 
-void SwapChainCommandBuffer::RecordCommandBuffer(uint32_t _imageIndex, VkScene* _scene)
+void SwapChainCommandBuffer::RecordCommandBuffer(uint32_t _imageIndex, int _currentFrame, VkScene* _scene)
 {
 	VkCommandBufferBeginInfo beginInfo{};
 	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -76,7 +76,7 @@ void SwapChainCommandBuffer::RecordCommandBuffer(uint32_t _imageIndex, VkScene* 
 	std::forward_list<VkGameObject> sceneObjects = _scene->GetSceneObjects();
 	for (std::forward_list<VkGameObject>::iterator it = sceneObjects.begin(); it != sceneObjects.end(); ++it)
 	{
-		it->Draw(commandBuffer);
+		it->Draw(commandBuffer, _currentFrame);
 	}
 
 	vkCmdEndRenderPass(commandBuffer);

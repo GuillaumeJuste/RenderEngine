@@ -87,17 +87,10 @@ void GraphicsApplication::MainLoop()
     scene->name = "test_scene_1";
 
     const std::vector<Vertex> vertices = {
-    {{-0.75f, -0.75f}, {1.0f, 0.0f, 0.0f}},
-    {{-0.25f, -0.75f}, {0.0f, 1.0f, 0.0f}},
-    {{-0.25f, -0.25f}, {0.0f, 0.0f, 1.0f}},
-    {{-0.75f, -0.25f}, {1.0f, 1.0f, 1.0f}}
-    };
-
-    const std::vector<Vertex> vertices2 = {
-    {{0.25f, 0.25f}, {1.0f, 0.0f, 0.0f}},
-    {{0.75f, 0.25f}, {0.0f, 1.0f, 0.0f}},
-    {{0.75f, 0.75f}, {0.0f, 0.0f, 1.0f}},
-    {{0.25f, 0.75f}, {1.0f, 1.0f, 1.0f}}
+    {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+    {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+    {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+    {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
     };
 
     const std::vector<uint16_t> indices = {
@@ -107,10 +100,10 @@ void GraphicsApplication::MainLoop()
     Mesh mesh;
     Mesh::InitializeMesh(vertices, indices, &mesh);
 
-    Mesh mesh2;
-    Mesh::InitializeMesh(vertices, indices, &mesh2);
 
     Mathlib::Transform transform;
+    transform.position = Mathlib::Vec3(-2.f, 0.0f, 0.f);
+    transform.scale = Mathlib::Vec3(1.f, 1.f, 1.f);
 
     GameObjectCreateInfo createinfo;
     createinfo.transform = transform;
@@ -121,14 +114,19 @@ void GraphicsApplication::MainLoop()
     MeshRenderer* meshRenderer = obj->AddComponent<MeshRenderer>();
     meshRenderer->SetMesh(mesh);
 
+    Mathlib::Transform transform2;
+    transform2.position = Mathlib::Vec3(2.f, 0.0f, 0.f);
+    transform2.scale = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
+    transform2.scale = Mathlib::Vec3(1.f, 1.f, 1.f);
+
     GameObjectCreateInfo createinfo2;
-    createinfo2.transform = transform;
+    createinfo2.transform = transform2;
     createinfo2.parent = scene->GetSceneRoot();
     createinfo2.name = "second_object";
 
     GameObject* obj2 = scene->AddGameObject(createinfo2);
     MeshRenderer* meshRenderer2 = obj2->AddComponent<MeshRenderer>();
-    meshRenderer2->SetMesh(mesh2);
+    meshRenderer2->SetMesh(mesh);
 
     scene->Initialize();
     scene->Start();

@@ -32,6 +32,8 @@ namespace RenderEngine::Engine::Vulkan
 		/// render pass
 		RenderPass* renderPass;
 
+		DescriptorSetLayout* descriptorLayout;
+
 		/// pipeline layout
 		VkPipelineLayout pipelineLayout;
 		
@@ -73,6 +75,8 @@ namespace RenderEngine::Engine::Vulkan
 
 		/// Get Graphics Pipeline
 		const VkPipeline& GetGraphicsPipeline() const;
+
+		const VkPipelineLayout& GetGraphicsPipelineLayout() const;
 	};
 
 }
