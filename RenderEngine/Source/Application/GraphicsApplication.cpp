@@ -117,7 +117,6 @@ void GraphicsApplication::MainLoop()
     Mathlib::Transform transform2;
     transform2.position = Mathlib::Vec3(2.f, 0.0f, 0.f);
     transform2.scale = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
-    transform2.scale = Mathlib::Vec3(1.f, 1.f, 1.f);
 
     GameObjectCreateInfo createinfo2;
     createinfo2.transform = transform2;

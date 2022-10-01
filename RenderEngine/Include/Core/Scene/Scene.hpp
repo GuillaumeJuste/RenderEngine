@@ -5,6 +5,7 @@
 
 #include "Core/Object/GameObject/GameObject.hpp"
 #include "Core/Object/GameObject/GameObjectCreateInfo.hpp"
+#include "Core/Camera/Camera.hpp"
 
 #include <string>
 #include <vector>
@@ -27,6 +28,8 @@ namespace RenderEngine::Core
          * @brief root object in the scene
         */
         GameObject rootObject;
+
+        Camera camera;
 
     public:
 
@@ -75,6 +78,8 @@ namespace RenderEngine::Core
          * @return root GameObject
         */
         GameObject* GetSceneRoot();
+
+        const Camera& GetCamera() const;
 
         const std::vector<GameObject*>& GetGameObjects() const;
 

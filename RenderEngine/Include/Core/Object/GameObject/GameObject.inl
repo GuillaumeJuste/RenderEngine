@@ -23,5 +23,6 @@ namespace RenderEngine::Core
 			if (dynamic_cast<T*>(*it) != nullptr)
 				return dynamic_cast<T*>(*it);
 		}
+		return nullptr;
 	}
 }

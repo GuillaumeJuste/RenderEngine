@@ -119,6 +119,11 @@ GameObject* Scene::GetSceneRoot()
 	return &rootObject;
 }
 
+const Camera& Scene::GetCamera() const
+{
+	return camera;
+}
+
 const std::vector<GameObject*>& Scene::GetGameObjects() const
 {
 	return gameObjects;
