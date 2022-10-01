@@ -18,7 +18,7 @@ namespace RenderEngine::Engine::Vulkan
 	private:
 		VkDevice logicalDevice = VK_NULL_HANDLE;
 
-		DescriptorSetLayout* descriptorSetLayout = nullptr;
+		DescriptorSetLayout descriptorSetLayout;
 
 		DescriptorPool* descriptorPool = nullptr;
 

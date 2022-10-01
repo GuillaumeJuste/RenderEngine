@@ -11,7 +11,7 @@ void DescriptorSet::InitializeDescriptorSet(const DescriptorSetVkCreateInfo& _cr
 	_output->descriptorSetLayout = _createInfo.descriptorSetLayout;
 	_output->descriptorPool = _createInfo.descriptorPool;
 
-	std::vector<VkDescriptorSetLayout> layouts(_createInfo.frameCount, _output->descriptorSetLayout->GetDescriptorSetLayout());
+	std::vector<VkDescriptorSetLayout> layouts(_createInfo.frameCount, _output->descriptorSetLayout.GetDescriptorSetLayout());
 	VkDescriptorSetAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 	allocInfo.descriptorPool = _output->descriptorPool->GetDescriptorPool();

@@ -4,6 +4,7 @@
 #define RENDERENGINE_GRAPHICSPIPELINE
 
 #include "Engine/Vulkan/GraphicsPipeline/GraphicsPipelineVkCreateInfo.hpp"
+#include "Engine/Vulkan/Descriptor/Layout/DescriptorSetLayout.hpp"
 
 namespace RenderEngine::Engine::Vulkan
 {
@@ -32,7 +33,7 @@ namespace RenderEngine::Engine::Vulkan
 		/// render pass
 		RenderPass* renderPass;
 
-		DescriptorSetLayout* descriptorLayout;
+		DescriptorSetLayout descriptorSetLayout;
 
 		/// pipeline layout
 		VkPipelineLayout pipelineLayout;
@@ -77,6 +78,8 @@ namespace RenderEngine::Engine::Vulkan
 		const VkPipeline& GetGraphicsPipeline() const;
 
 		const VkPipelineLayout& GetGraphicsPipelineLayout() const;
+
+		const DescriptorSetLayout& GetDescriptorSetLayout() const;
 	};
 
 }

@@ -7,6 +7,7 @@
 #include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Engine/Vulkan/BufferObject/BufferObject.hpp"
 #include "Engine/Vulkan/UniformBuffer/UniformBufferObject.hpp"
+#include "Engine/Vulkan/Descriptor/Pool/DescriptorPool.hpp"
 #include "Engine/Vulkan/Descriptor/Set/DescriptorSet.hpp"
 
 #include "Core/Object/Components/MeshRenderer/MeshRenderer.hpp"
@@ -27,6 +28,8 @@ namespace RenderEngine::Engine::Vulkan
 
 		std::vector<UniformBufferObject> uniformBufferObjects;
 		
+		DescriptorPool descriptorPool;
+
 		DescriptorSet descriptorSet;
 
 		void CreateVertexBufferObject();
@@ -34,6 +37,7 @@ namespace RenderEngine::Engine::Vulkan
 
 		void CreateUniformBufferObject();
 
+		void CreateDescriptorPool();
 		void CreateDescriptorSet();
 
 	public:

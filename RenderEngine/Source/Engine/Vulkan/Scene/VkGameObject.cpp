@@ -15,6 +15,7 @@ VkGameObject::VkGameObject(const VkGameObjectCreateInfo& _createInfo) :
 
 	CreateUniformBufferObject();
 	
+	CreateDescriptorPool();
 	CreateDescriptorSet();
 
 }
@@ -105,13 +106,22 @@ void VkGameObject::CreateUniformBufferObject()
 	}
 }
 
+void VkGameObject::CreateDescriptorPool()
+{
+	DescriptorPoolVkCreateInfo poolCreateInfo{};
+	poolCreateInfo.logicalDevice = createInfo.logicalDevice;
+	poolCreateInfo.frameCount = MAX_FRAMES_IN_FLIGHT;
+
+	DescriptorPool::InitializeDescriptorPool(poolCreateInfo, &descriptorPool);
+}
+
 void VkGameObject::CreateDescriptorSet()
 {
 	DescriptorSetVkCreateInfo descriptorSetCreateInfo{};
 
 	descriptorSetCreateInfo.logicalDevice = createInfo.logicalDevice;
-	descriptorSetCreateInfo.descriptorSetLayout = createInfo.descriptorSetLayout;
-	descriptorSetCreateInfo.descriptorPool = createInfo.descriptorPool;
+	descriptorSetCreateInfo.descriptorSetLayout = createInfo.graphicsPipeline->GetDescriptorSetLayout();
+	descriptorSetCreateInfo.descriptorPool = &descriptorPool;
 	descriptorSetCreateInfo.frameCount = MAX_FRAMES_IN_FLIGHT;
 	descriptorSetCreateInfo.descriptorSetDatas.resize(MAX_FRAMES_IN_FLIGHT);
 
@@ -171,6 +181,9 @@ bool VkGameObject::HasMeshRenderer() const
 
 void VkGameObject::Cleanup()
 {
+	descriptorSet.Cleanup();
+	descriptorPool.Cleanup();
+
 	for (std::vector<UniformBufferObject>::iterator it = uniformBufferObjects.begin(); it != uniformBufferObjects.end(); ++it)
 		it->Cleanup();
 	indexBufferObject.Cleanup();

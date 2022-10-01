@@ -11,9 +11,7 @@ VkScene::VkScene(const VkSceneCreateInfo& _createInfo) :
 	gaoCreateInfo.logicalDevice = _createInfo.logicalDevice;
 	gaoCreateInfo.graphicsQueue = _createInfo.graphicsQueue;
 	gaoCreateInfo.commandPool = _createInfo.commandPool;
-	gaoCreateInfo.descriptorSetLayout = createInfo.descriptorSetLayout;
 	gaoCreateInfo.graphicsPipeline = createInfo.graphicsPipeline;
-	gaoCreateInfo.descriptorPool = createInfo.descriptorPool;
 
 	std::vector<GameObject*> _gameObjects = _createInfo.scene->GetGameObjects();
 

@@ -12,7 +12,6 @@ void GraphicsPipeline::InitalizeGraphicsPipeline(const GraphicsPipelineVkCreateI
 	_output->swapChainImageFormat = _createInfo.swapChainImageFormat;
 	_output->swapChainExtent = _createInfo.swapChainExtent;
     _output->renderPass = _createInfo.renderPass;
-    _output->descriptorLayout = _createInfo.descriptorLayout;
 	
     _output->CreateShaders(_createInfo.graphicsPipelineCreateInfo.vertexShaderFilePath, _createInfo.graphicsPipelineCreateInfo.fragmentShaderFilePath);
 
@@ -77,10 +76,15 @@ void GraphicsPipeline::InitalizeGraphicsPipeline(const GraphicsPipelineVkCreateI
     dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
     dynamicState.pDynamicStates = dynamicStates.data();
 
+    DescriptorSetLayoutVkCreateInfo createInfo{};
+    createInfo.logicalDevice = _createInfo.logicalDevice;
+
+    DescriptorSetLayout::InitializeDescriptorSetLayout(createInfo, &_output->descriptorSetLayout);
+
     VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     pipelineLayoutInfo.setLayoutCount = 1;
-    pipelineLayoutInfo.pSetLayouts = &_output->descriptorLayout->GetDescriptorSetLayout();
+    pipelineLayoutInfo.pSetLayouts = &_output->descriptorSetLayout.GetDescriptorSetLayout();
 
     if (vkCreatePipelineLayout(_output->logicalDevice, &pipelineLayoutInfo, nullptr, &_output->pipelineLayout) != VK_SUCCESS) {
         throw std::runtime_error("failed to create pipeline layout!");
@@ -146,7 +150,8 @@ void GraphicsPipeline::Cleanup()
 {
 	vkDestroyPipeline(logicalDevice, graphicsPipeline, nullptr);
 	vkDestroyPipelineLayout(logicalDevice, pipelineLayout, nullptr);
-	vertexShader.Cleanup();
+    descriptorSetLayout.Cleanup();
+    vertexShader.Cleanup();
 	fragmentShader.Cleanup(); 
 	std::cout << "[Cleaned] Graphics Pipeline" << std::endl;
 }
@@ -159,4 +164,9 @@ const VkPipeline& GraphicsPipeline::GetGraphicsPipeline() const
 const VkPipelineLayout& GraphicsPipeline::GetGraphicsPipelineLayout() const
 {
     return pipelineLayout;
+}
+
+const DescriptorSetLayout& GraphicsPipeline::GetDescriptorSetLayout() const
+{
+    return descriptorSetLayout;
 }

@@ -31,10 +31,6 @@ namespace RenderEngine::Engine::Vulkan
 
 		GraphicsPipeline* graphicsPipeline;
 
-		DescriptorSetLayout* descriptorSetLayout;
-
-		DescriptorPool* descriptorPool;
-
 		RenderEngine::Core::GameObject* gameObject = nullptr;
 
 		/// default constructor

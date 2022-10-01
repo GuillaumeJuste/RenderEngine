@@ -20,8 +20,6 @@ void RenderContext::InitalizeRenderContext(const RenderContextVkCreateInfo& _cre
 
 	_output->CreateSwapChain();
 	_output->CreateRenderPass();
-	_output->CreateDescriptorLayout();
-	_output->CreateDescriptorPool();
 	_output->CreateGraphicsPipeline(*_createInfo.renderContextCreateInfo.graphicsPipelineCreateInfo);
 	_output->CreateFrameBuffer();
 	_output->CreateCommandPool();
@@ -55,7 +53,6 @@ void RenderContext::CreateGraphicsPipeline(const GraphicsPipelineCreateInfo& _cr
 	pipelineInfo.swapChainImageFormat = swapChain.GetImageFormat();
 	pipelineInfo.logicalDevice = logicalDevice;
 	pipelineInfo.renderPass = &renderPass;
-	pipelineInfo.descriptorLayout = &descriptorSetLayout;
 	pipelineInfo.graphicsPipelineCreateInfo = _createInfo;
 	GraphicsPipeline::InitalizeGraphicsPipeline(pipelineInfo, &graphicsPipeline);
 }
@@ -97,22 +94,6 @@ void RenderContext::CreateCommandBuffer(const SwapChainCommandBufferCreateInfo& 
 	{
 		SwapChainCommandBuffer::InitializeCommandBuffer(createInfo, &commandBuffers[i]);
 	}
-}
-
-void RenderContext::CreateDescriptorLayout()
-{
-	DescriptorSetLayoutVkCreateInfo createInfo{};
-	createInfo.logicalDevice = logicalDevice;
-
-	DescriptorSetLayout::InitializeDescriptorSetLayout(createInfo, &descriptorSetLayout);
-}
-
-void RenderContext::CreateDescriptorPool()
-{
-	DescriptorPoolVkCreateInfo createInfo{};
-	createInfo.logicalDevice = logicalDevice;
-
-	DescriptorPool::InitializeDescriptorPool(createInfo, &descriptorPool);
 }
 
 void RenderContext::CleanUpSwapChain()
@@ -229,8 +210,6 @@ VkScene* RenderContext::LoadScene(RenderEngine::Core::Scene* _scene)
 	createInfo.graphicsQueue = graphicsQueue;
 	createInfo.logicalDevice = logicalDevice;
 	createInfo.physicalDevice = physicalDevice;
-	createInfo.descriptorSetLayout = &descriptorSetLayout;
-	createInfo.descriptorPool = &descriptorPool;
 	createInfo.graphicsPipeline = &graphicsPipeline;
 	createInfo.scene = _scene;
 
@@ -266,8 +245,6 @@ void RenderContext::Cleanup()
 	commandPool.Cleanup();
 	frameBuffer.Cleanup();
 	graphicsPipeline.Cleanup();
-	descriptorPool.Cleanup();
-	descriptorSetLayout.Cleanup();
 	renderPass.Cleanup();
 	swapChain.Cleanup();
 	std::cout << "[Cleaned] Render Context" << std::endl;

@@ -15,6 +15,8 @@ namespace RenderEngine::Engine::Vulkan
 		/// logical device
 		VkDevice logicalDevice = VK_NULL_HANDLE;
 
+		size_t frameCount;
+
 		DescriptorPoolVkCreateInfo() = default;
 	};
 }
