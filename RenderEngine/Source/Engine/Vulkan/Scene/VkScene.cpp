@@ -13,15 +13,19 @@ VkScene::VkScene(const VkSceneCreateInfo& _createInfo) :
 	gaoCreateInfo.commandPool = _createInfo.commandPool;
 	gaoCreateInfo.graphicsPipeline = createInfo.graphicsPipeline;
 
-	std::vector<GameObject*> _gameObjects = _createInfo.scene->GetGameObjects();
-
-	for (std::vector<GameObject*>::iterator it = _gameObjects.begin(); it != _gameObjects.end(); ++it)
-	{
-		gaoCreateInfo.gameObject = (*it);
-		gameObjects.push_front(VkGameObject(gaoCreateInfo));
-	}
+	CreateVkGameObjects(gaoCreateInfo, createInfo.scene->GetSceneRoot().GetChildrens());
 }
 
+void VkScene::CreateVkGameObjects(VkGameObjectCreateInfo _createInfo, std::vector<GameObject*> _childrens)
+{
+	for (std::vector<GameObject*>::iterator it = _childrens.begin(); it != _childrens.end(); ++it)
+	{
+		_createInfo.gameObject = (*it);
+		gameObjects.push_front(VkGameObject(_createInfo));
+
+		CreateVkGameObjects(_createInfo, (*it)->GetChildrens());
+	}
+}
 
 std::forward_list<VkGameObject> VkScene::GetSceneObjects() const
 {

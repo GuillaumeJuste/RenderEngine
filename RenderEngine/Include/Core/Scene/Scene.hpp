@@ -8,7 +8,7 @@
 #include "Core/Camera/Camera.hpp"
 
 #include <string>
-#include <vector>
+#include <list>
 
 
 namespace RenderEngine::Core
@@ -22,14 +22,14 @@ namespace RenderEngine::Core
         /**
          * @brief list of objects present in the scene
         */
-        std::vector<GameObject*> gameObjects;
+        std::list<GameObject> gameObjects;
 
         /**
          * @brief root object in the scene
         */
         GameObject rootObject;
 
-        Camera camera;
+        
 
     public:
 
@@ -37,6 +37,8 @@ namespace RenderEngine::Core
         * @brief scene name
         */
         std::string name;
+
+        Camera mainCamera;
 
         Scene();
         ~Scene() = default;
@@ -77,11 +79,9 @@ namespace RenderEngine::Core
          * @brief Get scene root Game Object
          * @return root GameObject
         */
-        GameObject* GetSceneRoot();
+        const GameObject& GetSceneRoot();
 
         const Camera& GetCamera() const;
-
-        const std::vector<GameObject*>& GetGameObjects() const;
 
         void Cleanup();
 

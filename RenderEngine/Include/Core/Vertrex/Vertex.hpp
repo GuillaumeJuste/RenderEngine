@@ -17,7 +17,7 @@ namespace RenderEngine::Core
         /**
          * @brief vertex position
         */
-        Mathlib::Vec2 position;
+        Mathlib::Vec3 position;
 
         /**
          * @brief vertex color

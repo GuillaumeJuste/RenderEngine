@@ -21,10 +21,13 @@ namespace RenderEngine::Core
         /**
          * @brief object unique ID
         */
-        unsigned int uid;
+        unsigned int uid;  
+    public :
+        Object();
+        ~Object() = default;
 
         /**
-         * @brief object name
+        * @brief object name
         */
         std::string name;
 
@@ -32,40 +35,12 @@ namespace RenderEngine::Core
          * @brief should the object be displayed
         */
         bool enable = true;
-        
-    public :
-        Object();
-        ~Object() = default;
 
         /**
          * @brief Get object UID
          * @return object UID
         */
         unsigned int GetUId() const;
-
-        /**
-         * @brief Get object name
-         * @return object name
-        */
-        std::string GetName() const;
-
-        /**
-         * @brief Get if object is hidden
-         * @return true if object is hidden
-        */
-        bool GetIsEnabled() const;
-
-        /**
-         * @brief set object name
-         * @param _name new object name
-        */
-        void SetName(std::string _name);
-
-        /**
-         * @brief set if object should be visible
-         * @param _val object new visibility value
-        */
-        void SetIsEnabled(bool _val);
 
         /**
          * @brief compare two objects

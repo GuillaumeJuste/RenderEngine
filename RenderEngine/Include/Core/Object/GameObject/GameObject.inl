@@ -25,4 +25,32 @@ namespace RenderEngine::Core
 		}
 		return nullptr;
 	}
+
+	template<typename T>
+	std::vector<T*> GameObject::GetComponents()
+	{
+		std::vector<T*> matchingComponents;
+
+		for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+		{
+			T* tmp = dynamic_cast<T*>(*it);
+			if (tmp != nullptr)
+				matchingComponents.push_back(tmp);
+		}
+		return matchingComponents;
+	}
+
+	template<typename T>
+	bool GameObject::RemoveComponent(T* _component)
+	{
+		for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+		{
+			if (_component == (*it))
+			{
+				components.erase(it);
+				return true;
+			}
+		}
+		return false;
+	}
 }

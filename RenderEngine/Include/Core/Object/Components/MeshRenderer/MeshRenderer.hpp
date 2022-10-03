@@ -24,6 +24,7 @@ namespace RenderEngine::Core
         void Update();
 
         Mesh* GetMesh();
+        // TODO : change to pointer when resourceManager is implemented
         void SetMesh(const Mesh& _mesh);
     };
 }

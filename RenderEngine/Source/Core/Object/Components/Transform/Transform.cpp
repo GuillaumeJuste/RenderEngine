@@ -23,3 +23,8 @@ const Mathlib::Transform& Transform::GetLocalTransform() const
 {
 	return transform;
 }
+
+void Transform::SetLocalTransform(const Mathlib::Transform& _transform)
+{
+	transform = _transform;
+}

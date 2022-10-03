@@ -29,7 +29,8 @@ void GameObject::Update()
 {
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
-		(*it)->Update();
+		if((*it)->enable)
+			(*it)->Update();
 	}
 }
 
@@ -70,6 +71,16 @@ Mathlib::Transform GameObject::GetWorldTransform()
 	Mathlib::Transform parentTransform = parent->GetWorldTransform();
 
 	return Mathlib::Transform::GetWorldTransfrom(parentTransform, transform.GetLocalTransform());
+}
+
+Mathlib::Transform GameObject::GetLocalTransform()
+{
+	return transform.GetLocalTransform();
+}
+
+void GameObject::SetLocalTransform(Mathlib::Transform _newTransform)
+{
+	transform.SetLocalTransform(_newTransform);
 }
 
 std::vector<GameObject*> GameObject::GetChildrens() const

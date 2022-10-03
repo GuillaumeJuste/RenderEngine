@@ -81,22 +81,37 @@ std::string GraphicsApplication::UserSelectPhysicalDevice(std::vector<std::strin
     return _physicalDevicesNames[gpuIndex];
 }
 
-void GraphicsApplication::MainLoop()
+Scene* GraphicsApplication::SetupTestScene()
 {
     Scene* scene = SceneManager.AddScene();
     scene->name = "test_scene_1";
 
     const std::vector<Vertex> vertices = {
-    {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-    {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
-    {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
-    {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
+    {{1.f, -1.f, -1.f}, {1.0f, 0.0f, 0.0f}},
+    {{1.f, -1.f, 1.f}, {0.0f, 1.0f, 0.0f}},
+    {{-1.f,-1.f, 1.f}, {0.0f, 0.0f, 1.0f}},
+    {{-1.f, -1.f,-1.f}, {1.0f, 1.0f, 1.0f}},
+    {{1.f, 1.f, -1.f}, {1.0f, 0.0f, 0.0f}},
+    {{1.f, 1.f, 1.f}, {0.0f, 1.0f, 0.0f}},
+    {{-1.f, 1.f, 1.f}, {0.0f, 0.0f, 1.0f}},
+    {{-1.f, 1.f, -1.f}, {1.0f, 1.0f, 1.0f}}
     };
 
     const std::vector<uint16_t> indices = {
-        0, 1, 2, 2, 3, 0
+        1, 2, 3,
+        7, 6, 5,
+        4, 5, 1,
+        5, 6, 2,
+        2, 6, 7,
+        0, 3, 7,
+        0, 1, 3,
+        4, 7, 5,
+        0, 4, 1,
+        1, 5, 2,
+        3, 2, 7,
+        4,0,7
     };
-    
+
     Mesh mesh;
     Mesh::InitializeMesh(vertices, indices, &mesh);
 
@@ -104,10 +119,11 @@ void GraphicsApplication::MainLoop()
     Mathlib::Transform transform;
     transform.position = Mathlib::Vec3(-2.f, 0.0f, 0.f);
     transform.scale = Mathlib::Vec3(1.f, 1.f, 1.f);
+    transform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(45.f, 0.f, 0.f));
 
     GameObjectCreateInfo createinfo;
     createinfo.transform = transform;
-    createinfo.parent = scene->GetSceneRoot();
+    createinfo.parent = nullptr;
     createinfo.name = "first_object";
 
     GameObject* obj = scene->AddGameObject(createinfo);
@@ -120,21 +136,27 @@ void GraphicsApplication::MainLoop()
 
     GameObjectCreateInfo createinfo2;
     createinfo2.transform = transform2;
-    createinfo2.parent = scene->GetSceneRoot();
+    createinfo2.parent = nullptr;
     createinfo2.name = "second_object";
 
     GameObject* obj2 = scene->AddGameObject(createinfo2);
     MeshRenderer* meshRenderer2 = obj2->AddComponent<MeshRenderer>();
     meshRenderer2->SetMesh(mesh);
 
+    return scene;
+}
+
+void GraphicsApplication::MainLoop()
+{
+    Scene* scene = SetupTestScene();
+
     scene->Initialize();
     scene->Start();
 
     while (!glfwWindowShouldClose(window->GetGLFWWindow())) {
         glfwPollEvents();
-        //renderContext->DrawFrame();
         renderContext->DrawScene(scene);
-        //scene.Update();
+        scene->Update();
     }
     deviceContext->WaitDeviceIdle();
 }

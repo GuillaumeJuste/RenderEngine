@@ -28,6 +28,7 @@ namespace RenderEngine::Core
         void Update();
 
         const Mathlib::Transform& GetLocalTransform() const;
+        void SetLocalTransform(const Mathlib::Transform& _transform);
     };
 }
 

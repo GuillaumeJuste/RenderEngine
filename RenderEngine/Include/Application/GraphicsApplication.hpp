@@ -68,6 +68,8 @@ namespace RenderEngine
 		*/
 		std::string UserSelectPhysicalDevice(std::vector<std::string> _physicalDevicesNames);
 
+		Scene* SetupTestScene();
+
 	public:
 
 		/**

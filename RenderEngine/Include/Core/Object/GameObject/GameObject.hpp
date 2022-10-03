@@ -67,6 +67,12 @@ namespace RenderEngine::Core
         template<typename T>
         T* GetComponent();
 
+        template<typename T>
+        std::vector<T*> GetComponents();
+
+        template<typename T>
+        bool RemoveComponent(T* _component);
+
         /**
          * @brief Get GameObject parent
          * @return GameObject parent
@@ -78,6 +84,11 @@ namespace RenderEngine::Core
          * @return GameObject world transform
         */
         Mathlib::Transform GetWorldTransform();
+
+        Mathlib::Transform GetLocalTransform();
+
+        void SetLocalTransform(Mathlib::Transform _newTransform);
+
 
         /**
         * @brief Get GameObject list of childrens
