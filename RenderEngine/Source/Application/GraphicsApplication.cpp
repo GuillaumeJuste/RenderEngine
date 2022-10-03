@@ -1,6 +1,7 @@
 #include "Application/GraphicsApplication.hpp"
 #include "Core/Object/GameObject/GameObject.hpp"
 #include "Core/Object/Components/MeshRenderer/MeshRenderer.hpp"
+#include "Application/CustomComponents/RotatorComponent.hpp"
 #include <iostream>
 
 
@@ -117,7 +118,7 @@ Scene* GraphicsApplication::SetupTestScene()
 
 
     Mathlib::Transform transform;
-    transform.position = Mathlib::Vec3(-2.f, 0.0f, 0.f);
+    transform.position = Mathlib::Vec3(-2.f, 3.0f, 0.f);
     transform.scale = Mathlib::Vec3(1.f, 1.f, 1.f);
     transform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(45.f, 0.f, 0.f));
 
@@ -130,8 +131,10 @@ Scene* GraphicsApplication::SetupTestScene()
     MeshRenderer* meshRenderer = obj->AddComponent<MeshRenderer>();
     meshRenderer->SetMesh(mesh);
 
+    RotatorComponent* rotator = obj->AddComponent <RotatorComponent>();
+
     Mathlib::Transform transform2;
-    transform2.position = Mathlib::Vec3(2.f, 0.0f, 0.f);
+    transform2.position = Mathlib::Vec3(2.f, 3.0f, 0.f);
     transform2.scale = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
 
     GameObjectCreateInfo createinfo2;
@@ -142,6 +145,22 @@ Scene* GraphicsApplication::SetupTestScene()
     GameObject* obj2 = scene->AddGameObject(createinfo2);
     MeshRenderer* meshRenderer2 = obj2->AddComponent<MeshRenderer>();
     meshRenderer2->SetMesh(mesh);
+    RotatorComponent* rotator2 = obj2->AddComponent <RotatorComponent>();
+    rotator2->rotationAxis = ROTATION_AXIS::Z;
+
+
+    Mathlib::Transform transform3;
+    transform3.position = Mathlib::Vec3(0.f, -2.0f, 0.f);
+    transform3.scale = Mathlib::Vec3(1.5f, 1.5f, 1.5f);
+
+    GameObjectCreateInfo createinfo3;
+    createinfo3.transform = transform3;
+    createinfo3.parent = nullptr;
+    createinfo3.name = "third_object";
+
+    GameObject* obj3 = scene->AddGameObject(createinfo3);
+    MeshRenderer* meshRenderer3 = obj3->AddComponent<MeshRenderer>();
+    meshRenderer3->SetMesh(mesh);
 
     return scene;
 }

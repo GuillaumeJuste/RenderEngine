@@ -7,11 +7,15 @@
 
 namespace RenderEngine::Core
 {
+    class GameObject;
+
     /**
      * @brief Component class implementation
     */
     class Component
     {
+    protected :
+        GameObject* gameObject = nullptr;
     public:
         /**
          * @brief should the object be displayed
@@ -24,6 +28,8 @@ namespace RenderEngine::Core
         virtual void Initialize() = 0;
         virtual void Start() = 0;
         virtual void Update() = 0;
+
+        friend class GameObject;
     };
 }
 

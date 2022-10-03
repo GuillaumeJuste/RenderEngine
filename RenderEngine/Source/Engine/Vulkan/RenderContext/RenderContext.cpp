@@ -135,6 +135,8 @@ void RenderContext::DrawScene(RenderEngine::Core::Scene* _scene)
 		vkScene = LoadScene(_scene);
 	}
 
+	vkScene->Update(currentFrame);
+
 	vkWaitForFences(logicalDevice, 1, &commandBuffers[currentFrame].GetInFlightFence(), VK_TRUE, UINT64_MAX);
 
 	uint32_t imageIndex;

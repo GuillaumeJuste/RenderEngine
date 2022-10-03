@@ -93,7 +93,7 @@ void VkGameObject::CreateUniformBufferObject()
 	UniformBufferData uboData{};
 
 	uboData.model = createInfo.gameObject->GetWorldTransform().ToMatrixWithScale().Transpose();
-	uboData.view = Mathlib::Mat4::ViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.0f, 0.0f, -10.0f), Mathlib::Vec3(0.0f, 0.0f, 0.0f), Mathlib::Vec3(0.0f, -1.0f, 0.0f)).Transpose();
+	uboData.view = Mathlib::Mat4::ViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.0f, 0.0f, -150.0f), Mathlib::Vec3(0.0f, 0.0f, 0.0f), Mathlib::Vec3(0.0f, -1.0f, 0.0f)).Transpose();
 	uboData.proj = Mathlib::Mat4::PerspectiveMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Math::Radians(45.0f), 1024.f / 720.f, 0.1f, 100.0f).Transpose();
 
 	uboCreateInfo.uniformBufferData = uboData;
@@ -177,6 +177,17 @@ const BufferObject& VkGameObject::GetUBO(uint32_t _frameIndex) const
 bool VkGameObject::HasMeshRenderer() const
 {
 	return meshRenderer != nullptr;
+}
+
+void VkGameObject::Update(size_t _currentframe)
+{
+	UniformBufferData uboData{};
+
+	uboData.model = createInfo.gameObject->GetWorldTransform().ToMatrixWithScale().Transpose();
+	uboData.view = Mathlib::Mat4::ViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.0f, 0.0f, -15.0f), Mathlib::Vec3(0.0f, 0.0f, 0.0f), Mathlib::Vec3(0.0f, -1.0f, 0.0f)).Transpose();
+	uboData.proj = Mathlib::Mat4::PerspectiveMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Math::Radians(45.0f), 1024.f / 720.f, 0.1f, 100.0f).Transpose();
+
+	uniformBufferObjects[_currentframe].UpdateUniformBufferObject(uboData);
 }
 
 void VkGameObject::Cleanup()

@@ -54,6 +54,8 @@ namespace RenderEngine::Engine::Vulkan
 		const BufferObject& GetIBO() const;
 		const BufferObject& GetUBO(uint32_t _frameIndex) const;
 
+		void Update(size_t _currentframe);
+
 		void Cleanup();
 
 	};

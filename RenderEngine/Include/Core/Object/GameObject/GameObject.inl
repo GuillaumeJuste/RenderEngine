@@ -8,7 +8,7 @@ namespace RenderEngine::Core
 		if (castedComponent != nullptr)
 		{
 			components.push_back(castedComponent);
-
+			castedComponent->gameObject = this;
 			return newComponent;
 		}
 		delete newComponent;
