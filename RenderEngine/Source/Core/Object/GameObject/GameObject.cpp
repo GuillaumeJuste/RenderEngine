@@ -90,7 +90,8 @@ std::vector<GameObject*> GameObject::GetChildrens() const
 
 void GameObject::SetParent(GameObject* _newParent)
 {
-	parent = _newParent;
+	if(_newParent != this)
+		parent = _newParent;
 }
 
 void GameObject::Cleanup()

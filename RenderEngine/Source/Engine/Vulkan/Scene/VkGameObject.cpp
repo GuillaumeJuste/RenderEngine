@@ -1,4 +1,7 @@
 #include "Engine/Vulkan/Scene/VkGameObject.hpp"
+
+#include "Engine/Vulkan/UniformBuffer/UniformBufferData.hpp"
+
 #include "Misc/Math.hpp"
 
 using namespace RenderEngine::Engine::Vulkan;
@@ -86,24 +89,14 @@ void VkGameObject::CreateIndexBufferObject()
 
 void VkGameObject::CreateUniformBufferObject()
 {
-	UniformBufferObjectVkCreateInfo uboCreateInfo{};
-	uboCreateInfo.physicalDevice = createInfo.physicalDevice;
-	uboCreateInfo.logicalDevice = createInfo.logicalDevice;
+	BufferObjectVkCreateInfo uniformBufferCreateInfo;
+	uniformBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
+	uniformBufferCreateInfo.logicalDevice = createInfo.logicalDevice;
+	uniformBufferCreateInfo.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+	uniformBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+	uniformBufferCreateInfo.bufferSize = sizeof(UniformBufferData);
 
-	UniformBufferData uboData{};
-
-	uboData.model = createInfo.gameObject->GetWorldTransform().ToMatrixWithScale().Transpose();
-	uboData.view = Mathlib::Mat4::ViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.0f, 0.0f, -150.0f), Mathlib::Vec3(0.0f, 0.0f, 0.0f), Mathlib::Vec3(0.0f, -1.0f, 0.0f)).Transpose();
-	uboData.proj = Mathlib::Mat4::PerspectiveMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Math::Radians(45.0f), 1024.f / 720.f, 0.1f, 100.0f).Transpose();
-
-	uboCreateInfo.uniformBufferData = uboData;
-
-	uniformBufferObjects.resize(MAX_FRAMES_IN_FLIGHT);
-
-	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
-	{
-		UniformBufferObject::InitializeUniformBufferObject(uboCreateInfo, &uniformBufferObjects[i]);
-	}
+	DescriptorBuffer::InitializeDescriptorBuffer(uniformBufferCreateInfo, MAX_FRAMES_IN_FLIGHT,  &uniformBufferObject);
 }
 
 void VkGameObject::CreateDescriptorPool()
@@ -128,7 +121,7 @@ void VkGameObject::CreateDescriptorSet()
 	for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 	{
 		VkDescriptorBufferInfo bufferInfo{};
-		bufferInfo.buffer = uniformBufferObjects[i].GetBufferObject().GetVkBuffer();
+		bufferInfo.buffer = uniformBufferObject[i].GetVkBuffer();
 		bufferInfo.offset = 0;
 		bufferInfo.range = sizeof(UniformBufferData);
 
@@ -169,11 +162,6 @@ const BufferObject& VkGameObject::GetIBO() const
 	return indexBufferObject;
 }
 
-const BufferObject& VkGameObject::GetUBO(uint32_t _frameIndex) const
-{
-	return uniformBufferObjects[_frameIndex].GetBufferObject();
-}
-
 bool VkGameObject::HasMeshRenderer() const
 {
 	return meshRenderer != nullptr;
@@ -187,16 +175,15 @@ void VkGameObject::Update(size_t _currentframe)
 	uboData.view = Mathlib::Mat4::ViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.0f, 0.0f, -15.0f), Mathlib::Vec3(0.0f, 0.0f, 0.0f), Mathlib::Vec3(0.0f, -1.0f, 0.0f)).Transpose();
 	uboData.proj = Mathlib::Mat4::PerspectiveMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Math::Radians(45.0f), 1024.f / 720.f, 0.1f, 100.0f).Transpose();
 
-	uniformBufferObjects[_currentframe].UpdateUniformBufferObject(uboData);
+	uniformBufferObject.CopyDataToBuffer<UniformBufferData>(_currentframe, &uboData, sizeof(UniformBufferData));
 }
 
 void VkGameObject::Cleanup()
 {
+	uniformBufferObject.Cleanup();
 	descriptorSet.Cleanup();
 	descriptorPool.Cleanup();
 
-	for (std::vector<UniformBufferObject>::iterator it = uniformBufferObjects.begin(); it != uniformBufferObjects.end(); ++it)
-		it->Cleanup();
 	indexBufferObject.Cleanup();
 	vertexBufferObject.Cleanup();
 }

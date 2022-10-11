@@ -6,10 +6,9 @@
 #include "Engine/Vulkan/Scene/VkGameObjectCreateInfo.hpp"
 #include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Engine/Vulkan/BufferObject/BufferObject.hpp"
-#include "Engine/Vulkan/UniformBuffer/UniformBufferObject.hpp"
 #include "Engine/Vulkan/Descriptor/Pool/DescriptorPool.hpp"
 #include "Engine/Vulkan/Descriptor/Set/DescriptorSet.hpp"
-
+#include "Engine/Vulkan/Descriptor/Buffer/DescriptorBuffer.hpp"
 #include "Core/Object/Components/MeshRenderer/MeshRenderer.hpp"
 
 using namespace RenderEngine::Core;
@@ -26,8 +25,8 @@ namespace RenderEngine::Engine::Vulkan
 		BufferObject vertexBufferObject;
 		BufferObject indexBufferObject;
 
-		std::vector<UniformBufferObject> uniformBufferObjects;
-		
+		DescriptorBuffer uniformBufferObject;
+
 		DescriptorPool descriptorPool;
 
 		DescriptorSet descriptorSet;
@@ -52,7 +51,6 @@ namespace RenderEngine::Engine::Vulkan
 
 		const BufferObject& GetVBO() const;
 		const BufferObject& GetIBO() const;
-		const BufferObject& GetUBO(uint32_t _frameIndex) const;
 
 		void Update(size_t _currentframe);
 

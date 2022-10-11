@@ -10,9 +10,6 @@
 
 namespace RenderEngine::Engine::Vulkan
 {
-	/**
-	 * @brief Class to manage creation and usage of Vulkan ImageView
-	*/
 	class DescriptorSet
 	{
 	private:

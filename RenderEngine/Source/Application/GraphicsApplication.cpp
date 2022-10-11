@@ -110,7 +110,7 @@ Scene* GraphicsApplication::SetupTestScene()
         0, 4, 1,
         1, 5, 2,
         3, 2, 7,
-        4,0,7
+        4, 0, 7
     };
 
     Mesh mesh;
@@ -128,9 +128,9 @@ Scene* GraphicsApplication::SetupTestScene()
     createinfo.name = "first_object";
 
     GameObject* obj = scene->AddGameObject(createinfo);
+
     MeshRenderer* meshRenderer = obj->AddComponent<MeshRenderer>();
     meshRenderer->SetMesh(mesh);
-
     RotatorComponent* rotator = obj->AddComponent <RotatorComponent>();
 
     Mathlib::Transform transform2;
@@ -161,6 +161,20 @@ Scene* GraphicsApplication::SetupTestScene()
     GameObject* obj3 = scene->AddGameObject(createinfo3);
     MeshRenderer* meshRenderer3 = obj3->AddComponent<MeshRenderer>();
     meshRenderer3->SetMesh(mesh);
+
+    Mathlib::Transform transform4;
+    transform4.position = Mathlib::Vec3(1.5f, 0.0f, 0.f);
+    transform4.scale = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
+
+    GameObjectCreateInfo createinfo4;
+    createinfo4.transform = transform4;
+    createinfo4.parent = obj2;
+    createinfo4.name = "fourth_object";
+
+    GameObject* obj4 = scene->AddGameObject(createinfo4);
+    MeshRenderer* meshRenderer4 = obj4->AddComponent<MeshRenderer>();
+    meshRenderer4->SetMesh(mesh);
+
 
     return scene;
 }
