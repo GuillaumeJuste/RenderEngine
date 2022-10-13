@@ -3,9 +3,7 @@
 #ifndef RENDERENGINE_VERTEX
 #define RENDERENGINE_VERTEX
 
-#include "Collections/Space.hpp"
-#include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
-#include <array>
+#include "Mathlib/Mathlib/Include/Space/Vec3.hpp"
 
 namespace RenderEngine::Core
 {

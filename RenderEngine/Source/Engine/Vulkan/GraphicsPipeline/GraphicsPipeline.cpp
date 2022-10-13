@@ -2,6 +2,7 @@
 #include "Core/Vertrex/Vertex.hpp"
 
 #include <iostream>
+#include <array>
 
 using namespace RenderEngine::Engine::Vulkan;
 using namespace RenderEngine::Core;

@@ -7,6 +7,7 @@
 #include "Engine/Vulkan/VulkanContext/VulkanContext.hpp"
 #include "Window/Glfw/Window.hpp"
 #include "Core/Scene/SceneManager.hpp"
+#include "Core/RessourceManager/RessourceManager.hpp"
 
 using namespace RenderEngine::Window;
 
@@ -38,7 +39,9 @@ namespace RenderEngine
 		*/
 		IRenderContext* renderContext;
 		
-		SceneManager SceneManager;
+		SceneManager sceneManager;
+
+		RessourceManager ressourceManager;
 
 		/**
 		 * @brief Initialize engine context

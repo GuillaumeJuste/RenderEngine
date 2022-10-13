@@ -84,37 +84,10 @@ std::string GraphicsApplication::UserSelectPhysicalDevice(std::vector<std::strin
 
 Scene* GraphicsApplication::SetupTestScene()
 {
-    Scene* scene = SceneManager.AddScene();
+    Scene* scene = sceneManager.AddScene();
     scene->name = "test_scene_1";
 
-    const std::vector<Vertex> vertices = {
-    {{1.f, -1.f, -1.f}, {1.0f, 0.0f, 0.0f}},
-    {{1.f, -1.f, 1.f}, {0.0f, 1.0f, 0.0f}},
-    {{-1.f,-1.f, 1.f}, {0.0f, 0.0f, 1.0f}},
-    {{-1.f, -1.f,-1.f}, {1.0f, 1.0f, 1.0f}},
-    {{1.f, 1.f, -1.f}, {1.0f, 0.0f, 0.0f}},
-    {{1.f, 1.f, 1.f}, {0.0f, 1.0f, 0.0f}},
-    {{-1.f, 1.f, 1.f}, {0.0f, 0.0f, 1.0f}},
-    {{-1.f, 1.f, -1.f}, {1.0f, 1.0f, 1.0f}}
-    };
-
-    const std::vector<uint16_t> indices = {
-        1, 2, 3,
-        7, 6, 5,
-        4, 5, 1,
-        5, 6, 2,
-        2, 6, 7,
-        0, 3, 7,
-        0, 1, 3,
-        4, 7, 5,
-        0, 4, 1,
-        1, 5, 2,
-        3, 2, 7,
-        4, 0, 7
-    };
-
-    Mesh mesh;
-    Mesh::InitializeMesh(vertices, indices, &mesh);
+    Mesh* mesh = ressourceManager.LoadMesh("Cube", "Resources/Models/cube.obj");
 
 
     Mathlib::Transform transform;

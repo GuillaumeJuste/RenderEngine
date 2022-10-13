@@ -14,7 +14,7 @@ namespace RenderEngine::Core
     class MeshRenderer : public Component
     {
     private:
-        Mesh mesh;
+        Mesh* mesh;
     public:
         MeshRenderer() = default;
         ~MeshRenderer() = default;
@@ -25,7 +25,7 @@ namespace RenderEngine::Core
 
         Mesh* GetMesh();
         // TODO : change to pointer when resourceManager is implemented
-        void SetMesh(const Mesh& _mesh);
+        void SetMesh(Mesh* _mesh);
     };
 }
 

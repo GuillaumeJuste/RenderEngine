@@ -8,12 +8,12 @@ void Mesh::InitializeMesh(std::vector<Vertex> _vertices, std::vector<uint16_t> _
 	_output->vertices = _vertices;
 }
 
-std::vector<Vertex> Mesh::GetVertices() const
+const std::vector<Vertex>& Mesh::GetVertices() const
 {
 	return vertices;
 }
 
-std::vector<uint16_t> Mesh::GetIndices() const
+const std::vector<uint16_t>& Mesh::GetIndices() const
 {
 	return indices;
 }

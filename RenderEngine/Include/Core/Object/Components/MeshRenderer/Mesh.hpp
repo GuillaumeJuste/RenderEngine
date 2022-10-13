@@ -25,9 +25,12 @@ namespace RenderEngine::Core
         */
         std::vector<uint16_t> indices;
 
+
     public:
         Mesh() = default;
         ~Mesh() = default;
+
+        std::string name;
 
         /**
          * @brief Mesh initialize function
@@ -37,8 +40,8 @@ namespace RenderEngine::Core
         */
         static void InitializeMesh(std::vector<Vertex> _vertices, std::vector<uint16_t> _indices, Mesh* _output);
 
-        std::vector<Vertex> GetVertices() const;
-        std::vector<uint16_t> GetIndices() const;
+        const std::vector<Vertex>& GetVertices() const;
+        const std::vector<uint16_t>& GetIndices() const;
     };
 }
 

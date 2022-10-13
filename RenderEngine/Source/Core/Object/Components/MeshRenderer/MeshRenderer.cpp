@@ -16,10 +16,10 @@ void MeshRenderer::Update()
 
 Mesh* MeshRenderer::GetMesh()
 {
-	return &mesh;
+	return mesh;
 }
 
-void MeshRenderer::SetMesh(const Mesh& _mesh)
+void MeshRenderer::SetMesh(Mesh* _mesh)
 {
 	mesh = _mesh;
 }

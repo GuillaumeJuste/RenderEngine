@@ -15,13 +15,16 @@ target_compile_definitions(RenderEngine PRIVATE VK_USE_PLATFORM_WIN32_KHR)
 target_compile_definitions(RenderEngine PRIVATE GLFW_EXPOSE_NATIVE_WIN32)
 target_compile_definitions(RenderEngine PRIVATE NOMINMAX)
 
+target_include_directories(RenderEngine PUBLIC ${CMAKE_SOURCE_DIR}/ThirdParty/Gitmodules)
+
 # Add Mathlib library
 target_link_libraries(RenderEngine Mathlib) 
-target_include_directories(RenderEngine PUBLIC ${CMAKE_SOURCE_DIR}/ThirdParty/Gitmodules/Mathlib/Mathlib/Include)
 
 # Add glfw library
 target_link_libraries(RenderEngine glfw) 
-target_include_directories(RenderEngine PUBLIC ${CMAKE_SOURCE_DIR}/ThirdParty/Gitmodules/Glfw/include)
+
+# Add assimp library
+target_link_libraries(RenderEngine assimp) 
 
 
 find_package(Vulkan REQUIRED)
