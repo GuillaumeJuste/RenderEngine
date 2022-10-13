@@ -4,3 +4,6 @@
 [submodule "ThirdParty/Gitmodules/Mathlib"]
 	path = ThirdParty/Gitmodules/Mathlib
 	url = https://github.com/GuillaumeJuste/Mathlib.git
+[submodule "ThirdParty/Gitmodules/assimp"]
+	path = ThirdParty/Gitmodules/assimp
+	url = https://github.com/assimp/assimp
