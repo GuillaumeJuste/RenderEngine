@@ -4,7 +4,8 @@
 #define RENDERENGINE_MESHRENDERER
 
 #include "Core/Object/Components/Component.hpp"
-#include "Core/Object/Components/MeshRenderer/Mesh.hpp"
+#include "Core/RessourceManager/Mesh.hpp"
+
 
 namespace RenderEngine::Core
 {

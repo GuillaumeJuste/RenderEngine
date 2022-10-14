@@ -12,13 +12,8 @@ namespace RenderEngine::Core
     /**
      * @brief Mesh class implementation
     */
-    class Mesh
+    struct Mesh
     {
-    private:
-       
-
-
-    public:
         /**
         * @brief mesh list of vertices
        */
@@ -31,8 +26,12 @@ namespace RenderEngine::Core
 
         std::string name;
 
+        std::string filePath;
+
         Mesh() = default;
         ~Mesh() = default;
+
+        bool operator==(const Mesh& _rhs) const;
     };
 }
 

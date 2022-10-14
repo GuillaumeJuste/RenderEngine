@@ -7,7 +7,7 @@
 using namespace RenderEngine::Core;
 
 
-Mesh* RessourceManager::LoadMesh(std::string _name, std::string _filePath)
+Mesh* RessourceManager::LoadMesh(std::string _filePath, std::string _name)
 {
 	Mesh* mesh = GetMesh(_filePath);
 	if (mesh != nullptr)
@@ -24,15 +24,14 @@ Mesh* RessourceManager::LoadMesh(std::string _name, std::string _filePath)
 		return false;
 	}
 
-	MeshData* newMeshData = &meshes.emplace_front();
-	ProcessMesh(scene, newMeshData);
-	newMeshData->filePath = _filePath;
-	newMeshData->mesh.name = _name;
+	Mesh* newMesh = &meshes.emplace_front();
+	ProcessMesh(scene, newMesh);
+	newMesh->filePath = _filePath;
 
-	return &newMeshData->mesh;
+	return newMesh;
 }
 
-void RessourceManager::ProcessMesh(const aiScene* _scene, MeshData* _output)
+void RessourceManager::ProcessMesh(const aiScene* _scene, Mesh* _output)
 {
 	if (_scene->HasMeshes())
 	{
@@ -59,34 +58,34 @@ void RessourceManager::ProcessMesh(const aiScene* _scene, MeshData* _output)
 				newVertex.textCoord.Z = mesh->mTextureCoords[0][i].z;
 			}
 
-			_output->mesh.vertices.push_back(newVertex);
+			_output->vertices.push_back(newVertex);
 		}
 
 		for (unsigned int i = 0; i < mesh->mNumFaces; i++)
 		{
 			for(unsigned int j = 0; j < mesh->mFaces[i].mNumIndices; j++)
-				_output->mesh.indices.push_back(mesh->mFaces[i].mIndices[j]);
+				_output->indices.push_back(mesh->mFaces[i].mIndices[j]);
 		}
 
-		_output->mesh.name = mesh->mName.C_Str();
+		_output->name = mesh->mName.C_Str();
 	}
 }
 
 Mesh* RessourceManager::GetMesh(std::string _name)
 {
-	for (std::forward_list<MeshData>::iterator it = meshes.begin(); it != meshes.end(); ++it)
+	for (std::forward_list<Mesh>::iterator it = meshes.begin(); it != meshes.end(); ++it)
 	{
-		if (it->mesh.name == _name)
-			return &it->mesh;
+		if (it->name == _name)
+			return &(*it);
 	}
 	return nullptr;
 }
 
 bool RessourceManager::DeleteMesh(Mesh* _mesh)
 {
-	for (std::forward_list<MeshData>::iterator it = meshes.begin(); it != meshes.end(); ++it)
+	for (std::forward_list<Mesh>::iterator it = meshes.begin(); it != meshes.end(); ++it)
 	{
-		if (&it->mesh == _mesh)
+		if (&(*it) == _mesh)
 		{
 			meshes.remove(*it);
 			return true;

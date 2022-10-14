@@ -87,7 +87,7 @@ Scene* GraphicsApplication::SetupTestScene()
     Scene* scene = sceneManager.AddScene();
     scene->name = "test_scene_1";
 
-    Mesh* mesh = ressourceManager.LoadMesh("Cube", "Resources/Models/cube.obj");
+    Mesh* mesh = ressourceManager.LoadMesh("Resources/Models/cube.obj", "Cube");
 
 
     Mathlib::Transform transform;
