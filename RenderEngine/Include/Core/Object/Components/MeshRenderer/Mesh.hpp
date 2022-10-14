@@ -15,9 +15,13 @@ namespace RenderEngine::Core
     class Mesh
     {
     private:
+       
+
+
+    public:
         /**
-         * @brief mesh list of vertices
-        */
+        * @brief mesh list of vertices
+       */
         std::vector<Vertex> vertices;
 
         /**
@@ -25,23 +29,10 @@ namespace RenderEngine::Core
         */
         std::vector<uint16_t> indices;
 
-
-    public:
-        Mesh() = default;
-        ~Mesh() = default;
-
         std::string name;
 
-        /**
-         * @brief Mesh initialize function
-         * @param _vertices Mesh list of vertices
-         * @param _indices Mesh list of indices
-         * @param _output Mesh to fill with vertices and indices
-        */
-        static void InitializeMesh(std::vector<Vertex> _vertices, std::vector<uint16_t> _indices, Mesh* _output);
-
-        const std::vector<Vertex>& GetVertices() const;
-        const std::vector<uint16_t>& GetIndices() const;
+        Mesh() = default;
+        ~Mesh() = default;
     };
 }
 

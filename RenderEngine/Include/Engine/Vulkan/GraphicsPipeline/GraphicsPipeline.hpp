@@ -51,7 +51,7 @@ namespace RenderEngine::Engine::Vulkan
 		 * @brief Get Vertex struct attribute description
 		 * @return Vertex struct attribute description
 		*/
-		static std::array<VkVertexInputAttributeDescription, 2> GetVertexAttributeDescriptions();
+		static std::array<VkVertexInputAttributeDescription, 3> GetVertexAttributeDescriptions();
 
 		void CreateShaders(const std::string& _vertexShaderFilePath, const std::string& _fragmentShaderFilePath);
 

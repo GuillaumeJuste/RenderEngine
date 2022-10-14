@@ -4,6 +4,7 @@
 #define RENDERENGINE_VERTEX
 
 #include "Mathlib/Mathlib/Include/Space/Vec3.hpp"
+#include "Mathlib/Mathlib/Include/Space/Vec4.hpp"
 
 namespace RenderEngine::Core
 {
@@ -17,10 +18,9 @@ namespace RenderEngine::Core
         */
         Mathlib::Vec3 position;
 
-        /**
-         * @brief vertex color
-        */
-        Mathlib::Vec3 color;
+        Mathlib::Vec3 normal;
+        
+        Mathlib::Vec3 textCoord;
     };
 }
 

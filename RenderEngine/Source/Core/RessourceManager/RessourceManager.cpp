@@ -37,21 +37,38 @@ void RessourceManager::ProcessMesh(const aiScene* _scene, MeshData* _output)
 	if (_scene->HasMeshes())
 	{
 		aiMesh* mesh = _scene->mMeshes[0];
-		std::vector<Vertex> vertices;
-		std::vector<uint16_t> indices;
 
 		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 		{
-			vertices.push_back(Vertex{ {mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z}, {1.f, 1.f, 1.f} });
+			Vertex newVertex;
+			newVertex.position.X = mesh->mVertices[i].x;
+			newVertex.position.Y = mesh->mVertices[i].y;
+			newVertex.position.Z = mesh->mVertices[i].z;
+
+			if (mesh->HasNormals())
+			{
+				newVertex.normal.X = mesh->mNormals[i].x;
+				newVertex.normal.Y = mesh->mNormals[i].y;
+				newVertex.normal.Z = mesh->mNormals[i].z;
+			}
+
+			if (mesh->HasTextureCoords(0))
+			{
+				newVertex.textCoord.X = mesh->mTextureCoords[0][i].x;
+				newVertex.textCoord.Y = mesh->mTextureCoords[0][i].y;
+				newVertex.textCoord.Z = mesh->mTextureCoords[0][i].z;
+			}
+
+			_output->mesh.vertices.push_back(newVertex);
 		}
 
 		for (unsigned int i = 0; i < mesh->mNumFaces; i++)
 		{
 			for(unsigned int j = 0; j < mesh->mFaces[i].mNumIndices; j++)
-			indices.push_back(mesh->mFaces[i].mIndices[j]);
+				_output->mesh.indices.push_back(mesh->mFaces[i].mIndices[j]);
 		}
 
-		Mesh::InitializeMesh(vertices, indices, &_output->mesh);
+		_output->mesh.name = mesh->mName.C_Str();
 	}
 }
 

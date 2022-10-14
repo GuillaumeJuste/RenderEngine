@@ -25,7 +25,7 @@ VkGameObject::VkGameObject(const VkGameObjectCreateInfo& _createInfo) :
 
 void VkGameObject::CreateVertexBufferObject()
 {
-	std::vector<Vertex> vertices = meshRenderer->GetMesh()->GetVertices();
+	std::vector<Vertex> vertices = meshRenderer->GetMesh()->vertices;
 
 	BufferObject stagingBufferObject;
 	BufferObjectVkCreateInfo stagingBufferCreateInfo;
@@ -57,7 +57,7 @@ void VkGameObject::CreateVertexBufferObject()
 
 void VkGameObject::CreateIndexBufferObject()
 {
-	std::vector<uint16_t> indices = meshRenderer->GetMesh()->GetIndices();
+	std::vector<uint16_t> indices = meshRenderer->GetMesh()->indices;
 
 	BufferObject stagingBufferObject;
 	BufferObjectVkCreateInfo stagingBufferCreateInfo;
@@ -143,7 +143,7 @@ void VkGameObject::Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const
 
 		vkCmdBindDescriptorSets(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, createInfo.graphicsPipeline->GetGraphicsPipelineLayout(), 0, 1, &descriptorSet.GetFrameDescriptorSet(_currentFrame), 0, nullptr);
 
-		vkCmdDrawIndexed(_commandBuffer, static_cast<uint32_t>(meshRenderer->GetMesh()->GetIndices().size()), 1, 0, 0, 0);
+		vkCmdDrawIndexed(_commandBuffer, static_cast<uint32_t>(meshRenderer->GetMesh()->indices.size()), 1, 0, 0, 0);
 	}
 }
 
