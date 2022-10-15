@@ -18,20 +18,23 @@ target_compile_definitions(RenderEngine PRIVATE NOMINMAX)
 target_include_directories(RenderEngine PUBLIC ${CMAKE_SOURCE_DIR}/ThirdParty/Gitmodules)
 
 # Add Mathlib library
-target_link_libraries(RenderEngine Mathlib) 
+target_link_libraries(RenderEngine PUBLIC Mathlib) 
 
 # Add glfw library
-target_link_libraries(RenderEngine glfw) 
+target_link_libraries(RenderEngine PUBLIC glfw) 
 
 # Add assimp library
-target_link_libraries(RenderEngine assimp) 
+target_link_libraries(RenderEngine PUBLIC assimp) 
+
+# Add STB library
+target_link_directories(RenderEngine PUBLIC ${CMAKE_SOURCE_DIR}/ThirdParty/Gitmodules/stb) 
 
 
 find_package(Vulkan REQUIRED)
 if(Vulkan_FOUND)
 	message(STATUS "Successfully located the Vulkan SDK: ${Vulkan_INCLUDE_DIRS}")	
 	include_directories(${Vulkan_INCLUDE_DIRS})
-	target_link_libraries(RenderEngine ${Vulkan_LIBRARIES} )
+	target_link_libraries(RenderEngine PUBLIC ${Vulkan_LIBRARIES} )
 else()
 	message(STATUS "Failed to locate Vulkan SDK")
 endif()

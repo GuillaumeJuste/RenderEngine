@@ -4,6 +4,10 @@
 
 #include <stdexcept>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb/stb_image.h"
+
+
 using namespace RenderEngine::Core;
 
 
@@ -88,6 +92,55 @@ bool RessourceManager::DeleteMesh(Mesh* _mesh)
 		if (&(*it) == _mesh)
 		{
 			meshes.remove(*it);
+			return true;
+		}
+	}
+	return false;
+}
+
+
+Texture* RessourceManager::LoadTexture(std::string _filePath)
+{
+	int texWidth, texHeight, texChannels;
+
+	char* data = reinterpret_cast<char*>(stbi_load(_filePath.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha));
+
+	if (!data)
+	{
+		return nullptr;
+	}
+
+	Texture* newTexture = &textures.emplace_front();
+
+	newTexture->width = texWidth;
+	newTexture->height = texHeight;
+
+	newTexture->imageSize = newTexture->width * newTexture->height * 4;
+	newTexture->data.assign(newTexture->imageSize, *data);
+	newTexture->filePath = _filePath;
+
+	stbi_image_free(data);
+
+	return newTexture;
+}
+
+Texture* RessourceManager::GetTexture(std::string _filePath)
+{
+	for (std::forward_list<Texture>::iterator it = textures.begin(); it != textures.end(); ++it)
+	{
+		if (it->filePath == _filePath)
+			return &(*it);
+	}
+	return nullptr;
+}
+
+bool RessourceManager::DeleteTexture(Texture* _texture)
+{
+	for (std::forward_list<Texture>::iterator it = textures.begin(); it != textures.end(); ++it)
+	{
+		if (&(*it) == _texture)
+		{
+			textures.remove(*it);
 			return true;
 		}
 	}
