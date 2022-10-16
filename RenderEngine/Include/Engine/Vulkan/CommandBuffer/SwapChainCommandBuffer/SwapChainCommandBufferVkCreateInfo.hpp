@@ -4,7 +4,7 @@
 #define RENDERENGINE_SWAPCHAINCOMMANDBUFFERVKCREATEINFO
 
 #include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
-#include "Engine/Vulkan/CommandBuffer/Base/CommandBufferVkCreateInfo.hpp"
+#include "Engine/Vulkan/CommandBuffer/CommandBufferVkCreateInfo.hpp"
 #include "Engine/Vulkan/SwapChain/SwapChain.hpp"
 #include "Engine/Vulkan/RenderPass/RenderPass.hpp"
 #include "Engine/Vulkan/GraphicsPipeline/GraphicsPipeline.hpp"

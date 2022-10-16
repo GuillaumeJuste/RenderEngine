@@ -1,5 +1,5 @@
 #include "Engine/Vulkan/BufferObject/BufferObject.hpp"
-
+#include "Engine/Vulkan/CommandBuffer/CommandBuffer.hpp"
 #include <iostream>
 
 using namespace RenderEngine::Engine::Vulkan;
@@ -41,35 +41,13 @@ void BufferObject::InitializeBufferObject(BufferObjectVkCreateInfo _createInfo, 
 
 void BufferObject::CopyBuffer(BufferObject* _dstBuffer, CommandPool* _commandPool, VkQueue _queue, VkDeviceSize _size)
 {
-	VkCommandBufferAllocateInfo allocInfo{};
-	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-	allocInfo.commandPool = _commandPool->GetCommandPool();
-	allocInfo.commandBufferCount = 1;
-
-	VkCommandBuffer commandBuffer;
-	vkAllocateCommandBuffers(logicalDevice, &allocInfo, &commandBuffer);
-
-	VkCommandBufferBeginInfo beginInfo{};
-	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-	beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-
-	vkBeginCommandBuffer(commandBuffer, &beginInfo);
+	VkCommandBuffer commandBuffer = CommandBuffer::BeginSingleTimeCommands(logicalDevice, _commandPool);
 
 	VkBufferCopy copyRegion{};
 	copyRegion.size = _size;
 	vkCmdCopyBuffer(commandBuffer, buffer, _dstBuffer->GetVkBuffer(), 1, &copyRegion);
-	vkEndCommandBuffer(commandBuffer);
-
-	VkSubmitInfo submitInfo{};
-	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-	submitInfo.commandBufferCount = 1;
-	submitInfo.pCommandBuffers = &commandBuffer;
-
-	vkQueueSubmit(_queue, 1, &submitInfo, VK_NULL_HANDLE);
-	vkQueueWaitIdle(_queue);
-
-	vkFreeCommandBuffers(logicalDevice, _commandPool->GetCommandPool(), 1, &commandBuffer);
+	
+	CommandBuffer::EndSingleTimeCommands(logicalDevice, _commandPool, _queue, commandBuffer);
 }
 
 uint32_t BufferObject::FindMemoryType(uint32_t _typeFilter, VkMemoryPropertyFlags _properties)

@@ -26,11 +26,12 @@ void DescriptorSet::InitializeDescriptorSet(const DescriptorSetVkCreateInfo& _cr
 
 	for (size_t i = 0; i < _createInfo.frameCount; i++) 
 	{
-		const size_t bufferSize = _createInfo.descriptorSetDatas[i].descriptorBufferInfos.size();
+		const size_t bufferSize = _createInfo.descriptorSetBufferDatas[i].descriptorBufferInfos.size();
+		const size_t imageSize = _createInfo.descriptorSetImageDatas[i].descriptorImageInfos.size();
 
 		std::vector<VkWriteDescriptorSet> descriptorWrites{};
 
-		descriptorWrites.resize(bufferSize);
+		descriptorWrites.resize(bufferSize + imageSize);
 
 		for (int j = 0; j < bufferSize; j++)
 		{
@@ -40,10 +41,21 @@ void DescriptorSet::InitializeDescriptorSet(const DescriptorSetVkCreateInfo& _cr
 			descriptorWrites[j].dstArrayElement = 0;
 			descriptorWrites[j].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 			descriptorWrites[j].descriptorCount = 1;
-			descriptorWrites[j].pBufferInfo = &_createInfo.descriptorSetDatas[i].descriptorBufferInfos[j];
+			descriptorWrites[j].pBufferInfo = &_createInfo.descriptorSetBufferDatas[i].descriptorBufferInfos[j];
+		}
+
+		for (int j = 0; j < imageSize; j++)
+		{
+			descriptorWrites[bufferSize + j].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrites[bufferSize + j].dstSet = _output->descriptorSets[i];
+			descriptorWrites[bufferSize + j].dstBinding = bufferSize + j;
+			descriptorWrites[bufferSize + j].dstArrayElement = 0;
+			descriptorWrites[bufferSize + j].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			descriptorWrites[bufferSize + j].descriptorCount = 1;
+			descriptorWrites[bufferSize + j].pImageInfo = &_createInfo.descriptorSetImageDatas[i].descriptorImageInfos[j];
 		}
 		
-		vkUpdateDescriptorSets(_output->logicalDevice, static_cast<uint32_t>(bufferSize), descriptorWrites.data(), 0, nullptr);
+		vkUpdateDescriptorSets(_output->logicalDevice, static_cast<uint32_t>(bufferSize + imageSize), descriptorWrites.data(), 0, nullptr);
 	}
 }
 

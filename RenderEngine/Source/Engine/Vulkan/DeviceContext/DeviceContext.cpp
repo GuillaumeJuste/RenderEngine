@@ -124,7 +124,10 @@ bool DeviceContext::IsDeviceSuitable(PhysicalDeviceProperties* _properties)
 		swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
 	}
 
-	if (validProperties && validQueueFamilyIndices && swapChainAdequate && extensionsSupported)
+	VkPhysicalDeviceFeatures supportedFeatures;
+	vkGetPhysicalDeviceFeatures(_properties->physicalDevice, &supportedFeatures);
+
+	if (validProperties && validQueueFamilyIndices && swapChainAdequate && extensionsSupported && supportedFeatures.samplerAnisotropy)
 	{
 		_properties->properties = properties;
 		_properties->queueFamilyIndices = queueFamilyIndices;
@@ -189,6 +192,7 @@ void DeviceContext::CreateLogicalDevice()
 	}
 
 	VkPhysicalDeviceFeatures deviceFeatures{};
+	deviceFeatures.samplerAnisotropy = VK_TRUE;
 
 	VkDeviceCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;

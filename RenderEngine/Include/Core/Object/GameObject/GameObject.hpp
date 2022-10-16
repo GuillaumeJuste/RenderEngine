@@ -4,8 +4,8 @@
 #define RENDERENGINE_GAMEOBJECT
 
 #include "Core/Object/Object.hpp"
-#include "Core/Object/Components/Component.hpp"
-#include "Core/Object/Components/Transfom/Transform.hpp"
+#include "Core/Components/Component.hpp"
+#include "Core/Components/Transfom/Transform.hpp"
 #include "Core/Object/GameObject/GameObjectCreateInfo.hpp"
 
 #include <vector>

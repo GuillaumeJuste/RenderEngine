@@ -16,6 +16,23 @@ VkGameObject::VkGameObject(const VkGameObjectCreateInfo& _createInfo) :
 		CreateIndexBufferObject();
 	}
 
+	material = createInfo.gameObject->GetComponent<Material>();
+	if (material != nullptr)
+	{
+		VkTextureVkCreateInfo textCreateInfo{};
+		textCreateInfo.logicalDevice = _createInfo.logicalDevice;
+		textCreateInfo.physicalDevice = _createInfo.physicalDevice;
+		textCreateInfo.graphicsQueue = createInfo.graphicsQueue;
+		textCreateInfo.commandPool = createInfo.commandPool;
+		textCreateInfo.material = material;
+		textCreateInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
+		textCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+		textCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+		textCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+
+		VkTexture::InitializeVkTexture(textCreateInfo, &vkTexture);
+	}
+
 	CreateUniformBufferObject();
 	
 	CreateDescriptorPool();
@@ -116,7 +133,8 @@ void VkGameObject::CreateDescriptorSet()
 	descriptorSetCreateInfo.descriptorSetLayout = createInfo.graphicsPipeline->GetDescriptorSetLayout();
 	descriptorSetCreateInfo.descriptorPool = &descriptorPool;
 	descriptorSetCreateInfo.frameCount = MAX_FRAMES_IN_FLIGHT;
-	descriptorSetCreateInfo.descriptorSetDatas.resize(MAX_FRAMES_IN_FLIGHT);
+	descriptorSetCreateInfo.descriptorSetBufferDatas.resize(MAX_FRAMES_IN_FLIGHT);
+	descriptorSetCreateInfo.descriptorSetImageDatas.resize(MAX_FRAMES_IN_FLIGHT);
 
 	for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 	{
@@ -125,7 +143,13 @@ void VkGameObject::CreateDescriptorSet()
 		bufferInfo.offset = 0;
 		bufferInfo.range = sizeof(UniformBufferData);
 
-		descriptorSetCreateInfo.descriptorSetDatas[i].descriptorBufferInfos.push_back(bufferInfo);
+		VkDescriptorImageInfo imageInfo{};
+		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		imageInfo.imageView = vkTexture.GetImageView();
+		imageInfo.sampler = vkTexture.GetSampler();
+
+		descriptorSetCreateInfo.descriptorSetBufferDatas[i].descriptorBufferInfos.push_back(bufferInfo);
+		descriptorSetCreateInfo.descriptorSetImageDatas[i].descriptorImageInfos.push_back(imageInfo);
 	}
 
 	DescriptorSet::InitializeDescriptorSet(descriptorSetCreateInfo, &descriptorSet);
@@ -180,10 +204,18 @@ void VkGameObject::Update(size_t _currentframe)
 
 void VkGameObject::Cleanup()
 {
+	if(material != nullptr)
+		vkTexture.Cleanup();
+
+
 	uniformBufferObject.Cleanup();
 	descriptorSet.Cleanup();
 	descriptorPool.Cleanup();
 
-	indexBufferObject.Cleanup();
-	vertexBufferObject.Cleanup();
+	if (meshRenderer != nullptr)
+	{
+		indexBufferObject.Cleanup();
+		vertexBufferObject.Cleanup();
+	}
+
 }

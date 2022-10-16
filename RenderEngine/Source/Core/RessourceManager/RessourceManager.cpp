@@ -116,7 +116,7 @@ Texture* RessourceManager::LoadTexture(std::string _filePath)
 	newTexture->height = texHeight;
 
 	newTexture->imageSize = newTexture->width * newTexture->height * 4;
-	newTexture->data.assign(newTexture->imageSize, *data);
+	newTexture->pixels.assign(newTexture->imageSize, *data);
 	newTexture->filePath = _filePath;
 
 	stbi_image_free(data);

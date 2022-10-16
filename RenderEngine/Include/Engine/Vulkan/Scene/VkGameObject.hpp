@@ -9,7 +9,9 @@
 #include "Engine/Vulkan/Descriptor/Pool/DescriptorPool.hpp"
 #include "Engine/Vulkan/Descriptor/Set/DescriptorSet.hpp"
 #include "Engine/Vulkan/Descriptor/Buffer/DescriptorBuffer.hpp"
-#include "Core/Object/Components/MeshRenderer/MeshRenderer.hpp"
+#include "Core/Components/MeshRenderer/MeshRenderer.hpp"
+#include "Core/Components/Material/Material.hpp"
+#include "Engine/Vulkan/Texture/VkTexture.hpp"
 
 using namespace RenderEngine::Core;
 
@@ -21,6 +23,7 @@ namespace RenderEngine::Engine::Vulkan
 		VkGameObjectCreateInfo createInfo;
 
 		MeshRenderer* meshRenderer = nullptr;
+		Material* material = nullptr;
 
 		BufferObject vertexBufferObject;
 		BufferObject indexBufferObject;
@@ -30,6 +33,8 @@ namespace RenderEngine::Engine::Vulkan
 		DescriptorPool descriptorPool;
 
 		DescriptorSet descriptorSet;
+
+		VkTexture vkTexture;
 
 		void CreateVertexBufferObject();
 		void CreateIndexBufferObject();

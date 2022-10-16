@@ -19,7 +19,7 @@ namespace RenderEngine::Core
         int height;
         int imageSize;
 
-        std::vector<char> data;
+        std::vector<char> pixels;
 
         Texture() = default;
         ~Texture() = default;

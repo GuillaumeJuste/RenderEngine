@@ -3,7 +3,7 @@
 #ifndef RENDERENGINE_TRANSFORM
 #define RENDERENGINE_TRANSFORM
 
-#include "Core/Object/Components/Component.hpp"
+#include "Core/Components/Component.hpp"
 #include "Transform/Transform.hpp"
 
 namespace RenderEngine::Core

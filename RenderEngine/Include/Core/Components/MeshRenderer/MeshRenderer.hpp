@@ -3,7 +3,7 @@
 #ifndef RENDERENGINE_MESHRENDERER
 #define RENDERENGINE_MESHRENDERER
 
-#include "Core/Object/Components/Component.hpp"
+#include "Core/Components/Component.hpp"
 #include "Core/RessourceManager/Mesh.hpp"
 
 

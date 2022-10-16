@@ -1,17 +1,17 @@
 #pragma once
 
-#ifndef RENDERENGINE_COMMANDBUFFERBASE
-#define RENDERENGINE_COMMANDBUFFERBASE
+#ifndef RENDERENGINE_COMMANDBUFFER
+#define RENDERENGINE_COMMANDBUFFER
 
 #include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
-#include "Engine/Vulkan/CommandBuffer/Base/CommandBufferVkCreateInfo.hpp"
+#include "Engine/Vulkan/CommandBuffer/CommandBufferVkCreateInfo.hpp"
 
 namespace RenderEngine::Engine::Vulkan
 {
 	/**
 	 * @brief Base class for command buffer creation
 	*/
-	class CommandBufferBase
+	class CommandBuffer
 	{
 	protected:
 
@@ -37,8 +37,12 @@ namespace RenderEngine::Engine::Vulkan
 		 * @param _createInfo information to use to initialize command buffer
 		 * @param _output command buffer to initialize
 		*/
-		static void InitializeCommandBuffer(const CommandBufferVkCreateInfo& _createInfo, CommandBufferBase* _output);
+		static void InitializeCommandBuffer(const CommandBufferVkCreateInfo& _createInfo, CommandBuffer* _output);
 
+		static VkCommandBuffer BeginSingleTimeCommands(VkDevice _logicalDevice, CommandPool* _commandPool);
+
+		static void EndSingleTimeCommands(VkDevice _logicalDevice, CommandPool* _commandPool, VkQueue _queue, VkCommandBuffer _commandBuffer);
+		
 		/**
 		 * @brief cleanup function
 		*/

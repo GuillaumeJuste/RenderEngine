@@ -17,7 +17,7 @@ void SwapChainCommandBuffer::InitializeCommandBuffer(const SwapChainCommandBuffe
 	_output->commandBufferCreateInfo = _createInfo.commandBufferCreateInfo;
 	_output->swapChain = _createInfo.swapChain;
 	
-	CommandBufferBase::InitializeCommandBuffer(_createInfo, _output);
+	CommandBuffer::InitializeCommandBuffer(_createInfo, _output);
 	_output->SwapChainExtentResizedCallback();
 	_output->swapChain->SwapchainExtentResized.Add(_output, &SwapChainCommandBuffer::SwapChainExtentResizedCallback);
 

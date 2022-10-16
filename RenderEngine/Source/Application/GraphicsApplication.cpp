@@ -1,6 +1,7 @@
 #include "Application/GraphicsApplication.hpp"
 #include "Core/Object/GameObject/GameObject.hpp"
-#include "Core/Object/Components/MeshRenderer/MeshRenderer.hpp"
+#include "Core/Components/MeshRenderer/MeshRenderer.hpp"
+#include "Core/Components/Material/Material.hpp"
 #include "Application/CustomComponents/RotatorComponent.hpp"
 #include <iostream>
 
@@ -107,7 +108,10 @@ Scene* GraphicsApplication::SetupTestScene()
     meshRenderer->SetMesh(mesh);
     RotatorComponent* rotator = obj->AddComponent <RotatorComponent>();
 
-    Mathlib::Transform transform2;
+    Material* material = obj->AddComponent<Material>();
+    material->SetTexture(texture);
+
+    /*Mathlib::Transform transform2;
     transform2.position = Mathlib::Vec3(2.f, 3.0f, 0.f);
     transform2.scale = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
 
@@ -147,7 +151,7 @@ Scene* GraphicsApplication::SetupTestScene()
 
     GameObject* obj4 = scene->AddGameObject(createinfo4);
     MeshRenderer* meshRenderer4 = obj4->AddComponent<MeshRenderer>();
-    meshRenderer4->SetMesh(mesh);
+    meshRenderer4->SetMesh(mesh);*/
 
 
     return scene;

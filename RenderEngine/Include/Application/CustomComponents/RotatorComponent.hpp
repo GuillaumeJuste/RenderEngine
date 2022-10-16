@@ -3,7 +3,7 @@
 #ifndef ROTATORCOMPONENT
 #define ROTATORCOMPONENT
 
-#include "Core/Object/Components/Component.hpp"
+#include "Core/Components/Component.hpp"
 
 
 enum class ROTATION_AXIS

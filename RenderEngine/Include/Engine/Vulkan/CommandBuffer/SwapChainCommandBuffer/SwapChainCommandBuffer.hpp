@@ -4,7 +4,7 @@
 #define RENDERENGINE_SWAPCHAINCOMMANDBUFFER
 
 #include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
-#include "Engine/Vulkan/CommandBuffer/Base/CommandBufferBase.hpp"
+#include "Engine/Vulkan/CommandBuffer/CommandBuffer.hpp"
 #include "Engine/Vulkan/CommandBuffer/SwapChainCommandBuffer/SwapChainCommandBufferVkCreateInfo.hpp"
 #include "Engine/Vulkan/Scene/VkScene.hpp"
 
@@ -14,7 +14,7 @@ namespace RenderEngine::Engine::Vulkan
 	/**
 	 * @brief Class to manage creation and usage of swapchain command buffer
 	*/
-	class SwapChainCommandBuffer : public CommandBufferBase
+	class SwapChainCommandBuffer : public CommandBuffer
 	{
 	private:
 		/**
