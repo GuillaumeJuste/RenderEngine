@@ -41,18 +41,11 @@ void GraphicsApplication::InitEngine()
     std::vector<std::string> deviceNames = deviceContext->QueryAvailblePhysicalDevices();
     deviceContext->InitializeDeviceContext(UserSelectPhysicalDevice(deviceNames));
 
-    GraphicsPipelineCreateInfo gPCreateInfo{};
-    gPCreateInfo.vertexShaderFilePath = "Resources/Shaders/VertexShader.spv";
-    gPCreateInfo.fragmentShaderFilePath = "Resources/Shaders/FragmentShader.spv";
-    gPCreateInfo.drawMode = PolygonDrawMode::FILL;
-    gPCreateInfo.frontFace = FrontFace::CLOCKWISE;
-
     SwapChainCommandBufferCreateInfo CBCreateInfo{};
     CBCreateInfo.customViewport = false;
     CBCreateInfo.customScissor = false;
 
     IRenderContextCreateInfo renderContextCreateInfo {};
-    renderContextCreateInfo.graphicsPipelineCreateInfo = &gPCreateInfo;
     renderContextCreateInfo.swapChainCommandBufferCreateInfo = &CBCreateInfo;
     renderContext = deviceContext->CreateRenderContext(renderContextCreateInfo);
 }

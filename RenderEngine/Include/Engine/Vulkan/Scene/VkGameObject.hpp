@@ -6,6 +6,7 @@
 #include "Engine/Vulkan/Scene/VkGameObjectCreateInfo.hpp"
 #include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Engine/Vulkan/BufferObject/BufferObject.hpp"
+#include "Engine/Vulkan/GraphicsPipeline/GraphicsPipeline.hpp"
 #include "Engine/Vulkan/Descriptor/Pool/DescriptorPool.hpp"
 #include "Engine/Vulkan/Descriptor/Set/DescriptorSet.hpp"
 #include "Engine/Vulkan/Descriptor/Buffer/DescriptorBuffer.hpp"
@@ -23,6 +24,8 @@ namespace RenderEngine::Engine::Vulkan
 
 		MeshRenderer* meshRenderer = nullptr;
 
+		GraphicsPipeline graphicsPipeline;
+
 		BufferObject vertexBufferObject;
 		BufferObject indexBufferObject;
 
@@ -36,13 +39,19 @@ namespace RenderEngine::Engine::Vulkan
 
 		VkTexture vkTexture;
 
+		void CreateGraphicsPipeline();
+
 		void CreateVertexBufferObject();
 		void CreateIndexBufferObject();
+
+		void CreateVkTexture();
 
 		void CreateUniformBufferObject();
 
 		void CreateDescriptorPool();
 		void CreateDescriptorSet();
+
+		
 
 	public:
 		VkGameObject(const VkGameObjectCreateInfo& _createInfo);

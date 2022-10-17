@@ -6,6 +6,10 @@
 #include "Core/Components/Component.hpp"
 #include "Core/RessourceManager/Mesh.hpp"
 #include "Core/RessourceManager/Texture.hpp"
+#include "Engine/Base/Enum/PolygonDrawMode.hpp"
+#include "Engine/Base/Enum/FrontFace.hpp"
+
+using namespace RenderEngine::Engine::Base;
 
 namespace RenderEngine::Core
 {
@@ -16,6 +20,12 @@ namespace RenderEngine::Core
         Texture* texture;
 
     public:
+
+        std::string vertexShaderFilePath;
+        std::string fragmentShaderFilePath;
+        PolygonDrawMode drawMode = PolygonDrawMode::FILL;
+        FrontFace frontFace = FrontFace::CLOCKWISE;
+
         MeshRenderer() = default;
         ~MeshRenderer() = default;
 

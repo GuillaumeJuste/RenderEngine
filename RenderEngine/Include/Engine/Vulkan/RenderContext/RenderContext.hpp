@@ -10,7 +10,6 @@ using namespace RenderEngine::Engine::Base;
 #include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Engine/Vulkan/Surface/Surface.hpp"
 #include "Engine/Vulkan/SwapChain/SwapChain.hpp"
-#include "Engine/Vulkan/GraphicsPipeline/GraphicsPipeline.hpp"
 #include "Engine/Vulkan/FrameBuffer/FrameBuffer.hpp"
 #include "Engine/Vulkan/CommandPool/CommandPool.hpp"
 #include "Engine/Vulkan/CommandBuffer/SwapChainCommandBuffer/SwapChainCommandBuffer.hpp"
@@ -56,9 +55,6 @@ namespace RenderEngine::Engine::Vulkan
 		/// render pass
 		RenderPass renderPass;
 		
-		/// graphics pipeline
-		GraphicsPipeline graphicsPipeline;
-		
 		/// framebuffer
 		FrameBuffer frameBuffer;
 		
@@ -83,11 +79,6 @@ namespace RenderEngine::Engine::Vulkan
 		*/
 		void CreateRenderPass();
 
-		/**
-		 * @brief Create Graphics Pipeline
-		*/
-		void CreateGraphicsPipeline(const GraphicsPipelineCreateInfo& _createInfo);
-		
 		/**
 		 * @brief Create Framebuffer
 		*/

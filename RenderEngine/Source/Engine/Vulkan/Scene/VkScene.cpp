@@ -11,7 +11,8 @@ VkScene::VkScene(const VkSceneCreateInfo& _createInfo) :
 	gaoCreateInfo.logicalDevice = _createInfo.logicalDevice;
 	gaoCreateInfo.graphicsQueue = _createInfo.graphicsQueue;
 	gaoCreateInfo.commandPool = _createInfo.commandPool;
-	gaoCreateInfo.graphicsPipeline = createInfo.graphicsPipeline;
+	gaoCreateInfo.renderpass = _createInfo.renderpass;
+	gaoCreateInfo.swapchain = _createInfo.swapchain;
 
 	CreateVkGameObjects(gaoCreateInfo, createInfo.scene->GetSceneRoot().GetChildrens());
 }

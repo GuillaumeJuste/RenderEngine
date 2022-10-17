@@ -21,7 +21,6 @@ void RenderContext::InitalizeRenderContext(const RenderContextVkCreateInfo& _cre
 
 	_output->CreateSwapChain();
 	_output->CreateRenderPass();
-	_output->CreateGraphicsPipeline(*_createInfo.renderContextCreateInfo.graphicsPipelineCreateInfo);
 	_output->CreateFrameBuffer();
 	_output->CreateCommandBuffer(*_createInfo.renderContextCreateInfo.swapChainCommandBufferCreateInfo);
 }
@@ -44,17 +43,6 @@ void RenderContext::CreateRenderPass()
 	createInfo.swapChainImageFormat = swapChain.GetImageFormat();
 
 	RenderPass::InitializeRenderPass(createInfo, &renderPass);
-}
-
-void RenderContext::CreateGraphicsPipeline(const GraphicsPipelineCreateInfo& _createInfo)
-{
-	GraphicsPipelineVkCreateInfo pipelineInfo{};
-	pipelineInfo.swapChainExtent = swapChain.GetExtent();
-	pipelineInfo.swapChainImageFormat = swapChain.GetImageFormat();
-	pipelineInfo.logicalDevice = logicalDevice;
-	pipelineInfo.renderPass = &renderPass;
-	pipelineInfo.graphicsPipelineCreateInfo = _createInfo;
-	GraphicsPipeline::InitalizeGraphicsPipeline(pipelineInfo, &graphicsPipeline);
 }
 
 void RenderContext::CreateFrameBuffer()
@@ -203,7 +191,8 @@ VkScene* RenderContext::LoadScene(RenderEngine::Core::Scene* _scene)
 	createInfo.graphicsQueue = graphicsQueue;
 	createInfo.logicalDevice = logicalDevice;
 	createInfo.physicalDevice = physicalDevice;
-	createInfo.graphicsPipeline = &graphicsPipeline;
+	createInfo.renderpass = &renderPass;
+	createInfo.swapchain = &swapChain;
 	createInfo.scene = _scene;
 
 	data->vkScene = VkScene(createInfo);
@@ -236,7 +225,6 @@ void RenderContext::Cleanup()
 		commandBuffers[i].Cleanup();
 	}
 	frameBuffer.Cleanup();
-	graphicsPipeline.Cleanup();
 	renderPass.Cleanup();
 	swapChain.Cleanup();
 	std::cout << "[Cleaned] Render Context" << std::endl;

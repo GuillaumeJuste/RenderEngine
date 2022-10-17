@@ -11,25 +11,15 @@ using namespace RenderEngine::Engine::Vulkan;
 VkGameObject::VkGameObject(const VkGameObjectCreateInfo& _createInfo) :
 	createInfo{ _createInfo }
 {
+
 	meshRenderer = createInfo.gameObject->GetComponent<MeshRenderer>();
 	if (meshRenderer != nullptr)
 	{
+		CreateGraphicsPipeline();
 		CreateVertexBufferObject();
 		CreateIndexBufferObject();
 
-		VkTextureVkCreateInfo textCreateInfo{};
-		textCreateInfo.logicalDevice = _createInfo.logicalDevice;
-		textCreateInfo.physicalDevice = _createInfo.physicalDevice;
-		textCreateInfo.graphicsQueue = createInfo.graphicsQueue;
-		textCreateInfo.commandPool = createInfo.commandPool;
-		textCreateInfo.texture = meshRenderer->GetTexture();
-		textCreateInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
-		textCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-		textCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
-		textCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-
-		VkTexture::InitializeVkTexture(textCreateInfo, &vkTexture);
-
+		CreateVkTexture();
 	}
 
 	CreateUniformBufferObject();
@@ -37,6 +27,18 @@ VkGameObject::VkGameObject(const VkGameObjectCreateInfo& _createInfo) :
 	CreateDescriptorPool();
 	CreateDescriptorSet();
 
+}
+
+void VkGameObject::CreateGraphicsPipeline()
+{
+	GraphicsPipelineVkCreateInfo gpCreateInfo{};
+	gpCreateInfo.logicalDevice = createInfo.logicalDevice;
+	gpCreateInfo.renderPass = createInfo.renderpass;
+	gpCreateInfo.swapChainExtent = createInfo.swapchain->GetExtent();
+	gpCreateInfo.swapChainImageFormat = createInfo.swapchain->GetImageFormat();
+	gpCreateInfo.meshRenderer = meshRenderer;
+
+	GraphicsPipeline::InitalizeGraphicsPipeline(gpCreateInfo, &graphicsPipeline);
 }
 
 void VkGameObject::CreateVertexBufferObject()
@@ -103,6 +105,22 @@ void VkGameObject::CreateIndexBufferObject()
 	stagingBufferObject.Cleanup();
 }
 
+void VkGameObject::CreateVkTexture()
+{
+	VkTextureVkCreateInfo textCreateInfo{};
+	textCreateInfo.logicalDevice = createInfo.logicalDevice;
+	textCreateInfo.physicalDevice = createInfo.physicalDevice;
+	textCreateInfo.graphicsQueue = createInfo.graphicsQueue;
+	textCreateInfo.commandPool = createInfo.commandPool;
+	textCreateInfo.texture = meshRenderer->GetTexture();
+	textCreateInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
+	textCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+	textCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+	textCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+
+	VkTexture::InitializeVkTexture(textCreateInfo, &vkTexture);
+}
+
 void VkGameObject::CreateUniformBufferObject()
 {
 	BufferObjectVkCreateInfo uniformBufferCreateInfo;
@@ -126,7 +144,7 @@ void VkGameObject::CreateDescriptorPool()
 
 void VkGameObject::CreateDescriptorSet()
 {
-	std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, createInfo.graphicsPipeline->GetDescriptorSetLayout().GetDescriptorSetLayout());
+	std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, graphicsPipeline.GetDescriptorSetLayout().GetDescriptorSetLayout());
 	VkDescriptorSetAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 	allocInfo.descriptorPool = descriptorPool.GetDescriptorPool();
@@ -175,7 +193,7 @@ void VkGameObject::Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const
 {
 	if (HasMeshRenderer())
 	{
-		vkCmdBindPipeline(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, createInfo.graphicsPipeline->GetGraphicsPipeline());
+		vkCmdBindPipeline(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.GetGraphicsPipeline());
 
 		VkBuffer vertexBuffers[] = { vertexBufferObject.GetVkBuffer() };
 		VkDeviceSize offsets[] = { 0 };
@@ -183,7 +201,7 @@ void VkGameObject::Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const
 
 		vkCmdBindIndexBuffer(_commandBuffer, indexBufferObject.GetVkBuffer(), 0, VK_INDEX_TYPE_UINT16);
 
-		vkCmdBindDescriptorSets(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, createInfo.graphicsPipeline->GetGraphicsPipelineLayout(), 0, 1, &descriptorSets[_currentFrame], 0, nullptr);
+		vkCmdBindDescriptorSets(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.GetGraphicsPipelineLayout(), 0, 1, &descriptorSets[_currentFrame], 0, nullptr);
 
 		vkCmdDrawIndexed(_commandBuffer, static_cast<uint32_t>(meshRenderer->GetMesh()->indices.size()), 1, 0, 0, 0);
 	}
@@ -232,4 +250,5 @@ void VkGameObject::Cleanup()
 		vertexBufferObject.Cleanup();
 	}
 
+	graphicsPipeline.Cleanup();
 }

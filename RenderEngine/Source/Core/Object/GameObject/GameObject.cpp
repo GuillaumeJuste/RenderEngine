@@ -15,6 +15,8 @@ void GameObject::InitializeGameObject(const GameObjectCreateInfo& _createinfo, G
 	MeshRenderer* meshRenderer = _output->AddComponent<MeshRenderer>();
 	meshRenderer->SetMesh(mesh);
 	meshRenderer->SetTexture(texture);
+	meshRenderer->vertexShaderFilePath = "Resources/Shaders/VertexShader.spv";
+	meshRenderer->fragmentShaderFilePath = "Resources/Shaders/FragmentShader.spv";
 }
 
 void GameObject::Initialize()

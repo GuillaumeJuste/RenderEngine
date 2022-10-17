@@ -7,7 +7,8 @@
 #include "Engine/Vulkan/CommandPool/CommandPool.hpp"
 #include "Engine/Vulkan/Descriptor/Layout/DescriptorSetLayout.hpp"
 #include "Engine/Vulkan/Descriptor/Pool/DescriptorPool.hpp"
-#include "Engine/Vulkan/GraphicsPipeline/GraphicsPipeline.hpp"
+#include "Engine/Vulkan/SwapChain/SwapChain.hpp"
+#include "Engine/Vulkan/RenderPass/RenderPass.hpp"
 #include "Core/Scene/Scene.hpp"
 
 namespace RenderEngine::Engine::Vulkan
@@ -29,7 +30,9 @@ namespace RenderEngine::Engine::Vulkan
 		/// command pool
 		CommandPool* commandPool;
 
-		GraphicsPipeline* graphicsPipeline;
+		SwapChain* swapchain;
+
+		RenderPass* renderpass;
 
 		RenderEngine::Core::Scene* scene;
 

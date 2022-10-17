@@ -6,8 +6,7 @@
 #include "Engine/Vulkan/Shader/Shader.hpp"
 #include "Engine/Vulkan/RenderPass/RenderPass.hpp"
 
-#include "Engine/Base/CreateInfo/GraphicsPipelineCreateInfo.hpp"
-
+#include "Core/Components/MeshRenderer/MeshRenderer.hpp"
 
 using namespace RenderEngine::Engine::Base;
 
@@ -21,8 +20,6 @@ namespace RenderEngine::Engine::Vulkan
 		/// logical device
 		VkDevice logicalDevice;
 		
-		GraphicsPipelineCreateInfo graphicsPipelineCreateInfo;
-
 		/// swapchain extent
 		VkExtent2D swapChainExtent;
 		
@@ -31,6 +28,8 @@ namespace RenderEngine::Engine::Vulkan
 
 		/// renderpass
 		RenderPass* renderPass;
+
+		RenderEngine::Core::MeshRenderer* meshRenderer;
 
 		/// default constructor
 		GraphicsPipelineVkCreateInfo() = default;
