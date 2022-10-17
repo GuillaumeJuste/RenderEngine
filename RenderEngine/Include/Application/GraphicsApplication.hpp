@@ -41,7 +41,7 @@ namespace RenderEngine
 		
 		SceneManager sceneManager;
 
-		RessourceManager ressourceManager;
+		RessourceManager* ressourceManager;
 
 		/**
 		 * @brief Initialize engine context

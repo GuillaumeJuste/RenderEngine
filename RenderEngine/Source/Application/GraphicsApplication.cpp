@@ -14,6 +14,7 @@ using namespace RenderEngine::Window;
 void GraphicsApplication::Run()
 {
     InitWindow();
+    ressourceManager = RessourceManager::GetInstance();
     InitEngine();
     MainLoop();
     Cleanup();
@@ -88,9 +89,9 @@ Scene* GraphicsApplication::SetupTestScene()
     Scene* scene = sceneManager.AddScene();
     scene->name = "test_scene_1";
 
-    Mesh* mesh = ressourceManager.LoadMesh("Resources/Models/cube.obj", "Cube");
+    Mesh* mesh = RessourceManager::GetInstance()->LoadMesh("Resources/Models/viking_room.obj", "viking_room");
 
-    Texture* texture = ressourceManager.LoadTexture("Resources/Textures/White.jpg");
+    Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/viking_room.png");
 
     Mathlib::Transform transform;
     transform.position = Mathlib::Vec3(-2.f, 3.0f, 0.f);
@@ -104,14 +105,13 @@ Scene* GraphicsApplication::SetupTestScene()
 
     GameObject* obj = scene->AddGameObject(createinfo);
 
-    MeshRenderer* meshRenderer = obj->AddComponent<MeshRenderer>();
+    MeshRenderer* meshRenderer = obj->GetComponent<MeshRenderer>();
     meshRenderer->SetMesh(mesh);
-    RotatorComponent* rotator = obj->AddComponent <RotatorComponent>();
 
-    Material* material = obj->AddComponent<Material>();
+    Material* material = obj->GetComponent<Material>();
     material->SetTexture(texture);
 
-    /*Mathlib::Transform transform2;
+    Mathlib::Transform transform2;
     transform2.position = Mathlib::Vec3(2.f, 3.0f, 0.f);
     transform2.scale = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
 
@@ -121,8 +121,6 @@ Scene* GraphicsApplication::SetupTestScene()
     createinfo2.name = "second_object";
 
     GameObject* obj2 = scene->AddGameObject(createinfo2);
-    MeshRenderer* meshRenderer2 = obj2->AddComponent<MeshRenderer>();
-    meshRenderer2->SetMesh(mesh);
     RotatorComponent* rotator2 = obj2->AddComponent <RotatorComponent>();
     rotator2->rotationAxis = ROTATION_AXIS::Z;
 
@@ -137,8 +135,6 @@ Scene* GraphicsApplication::SetupTestScene()
     createinfo3.name = "third_object";
 
     GameObject* obj3 = scene->AddGameObject(createinfo3);
-    MeshRenderer* meshRenderer3 = obj3->AddComponent<MeshRenderer>();
-    meshRenderer3->SetMesh(mesh);
 
     Mathlib::Transform transform4;
     transform4.position = Mathlib::Vec3(1.5f, 0.0f, 0.f);
@@ -150,8 +146,6 @@ Scene* GraphicsApplication::SetupTestScene()
     createinfo4.name = "fourth_object";
 
     GameObject* obj4 = scene->AddGameObject(createinfo4);
-    MeshRenderer* meshRenderer4 = obj4->AddComponent<MeshRenderer>();
-    meshRenderer4->SetMesh(mesh);*/
 
 
     return scene;

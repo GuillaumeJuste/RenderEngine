@@ -11,6 +11,12 @@
 using namespace RenderEngine::Core;
 
 
+RessourceManager* RessourceManager::GetInstance()
+{
+	static RessourceManager instance;
+	return &instance;
+}
+
 Mesh* RessourceManager::LoadMesh(std::string _filePath, std::string _name)
 {
 	Mesh* mesh = GetMesh(_filePath);
@@ -31,6 +37,7 @@ Mesh* RessourceManager::LoadMesh(std::string _filePath, std::string _name)
 	Mesh* newMesh = &meshes.emplace_front();
 	ProcessMesh(scene, newMesh);
 	newMesh->filePath = _filePath;
+	newMesh->name = _name;
 
 	return newMesh;
 }
@@ -70,8 +77,6 @@ void RessourceManager::ProcessMesh(const aiScene* _scene, Mesh* _output)
 			for(unsigned int j = 0; j < mesh->mFaces[i].mNumIndices; j++)
 				_output->indices.push_back(mesh->mFaces[i].mIndices[j]);
 		}
-
-		_output->name = mesh->mName.C_Str();
 	}
 }
 

@@ -21,9 +21,15 @@ namespace RenderEngine::Core
         std::forward_list<Mesh> meshes;
         std::forward_list<Texture> textures;
 
+        RessourceManager() = default;
+
         void ProcessMesh(const aiScene* _scene, Mesh* _output);
 
     public:
+        RessourceManager(RessourceManager& other) = delete;
+        void operator=(const RessourceManager&) = delete;
+
+        static RessourceManager* GetInstance();
 
         Mesh* LoadMesh(std::string _filePath, std::string _name);
         Mesh* GetMesh(std::string _name);
@@ -32,8 +38,6 @@ namespace RenderEngine::Core
         Texture* LoadTexture(std::string _filePath);
         Texture* GetTexture(std::string _filePath);
         bool DeleteTexture(Texture* _texture);
-
-        void Cleanup();
     };
 }
 
