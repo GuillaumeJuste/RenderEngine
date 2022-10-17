@@ -90,7 +90,7 @@ Scene* GraphicsApplication::SetupTestScene()
 
     Mesh* mesh = ressourceManager.LoadMesh("Resources/Models/cube.obj", "Cube");
 
-    Texture* texture = ressourceManager.LoadTexture("Resources/Textures/texture.jpg");
+    Texture* texture = ressourceManager.LoadTexture("Resources/Textures/White.jpg");
 
     Mathlib::Transform transform;
     transform.position = Mathlib::Vec3(-2.f, 3.0f, 0.f);

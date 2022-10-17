@@ -32,7 +32,9 @@ namespace RenderEngine::Engine::Vulkan
 
 		DescriptorPool descriptorPool;
 
-		DescriptorSet descriptorSet;
+		//DescriptorSet descriptorSet;
+
+		std::vector<VkDescriptorSet> descriptorSets;
 
 		VkTexture vkTexture;
 

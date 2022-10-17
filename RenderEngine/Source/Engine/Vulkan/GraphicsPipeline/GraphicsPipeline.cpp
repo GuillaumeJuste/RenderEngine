@@ -136,7 +136,7 @@ std::array<VkVertexInputAttributeDescription, 3> GraphicsPipeline::GetVertexAttr
     attributeDescriptions[1].offset = offsetof(Vertex, normal);
 
     attributeDescriptions[2].binding = 0;
-    attributeDescriptions[2].location = 1;
+    attributeDescriptions[2].location = 2;
     attributeDescriptions[2].format = VK_FORMAT_R32G32B32_SFLOAT;
     attributeDescriptions[2].offset = offsetof(Vertex, textCoord);
 

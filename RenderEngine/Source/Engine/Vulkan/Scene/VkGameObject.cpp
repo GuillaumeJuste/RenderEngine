@@ -4,6 +4,8 @@
 
 #include "Misc/Math.hpp"
 
+#include <array>
+
 using namespace RenderEngine::Engine::Vulkan;
 
 VkGameObject::VkGameObject(const VkGameObjectCreateInfo& _createInfo) :
@@ -127,17 +129,19 @@ void VkGameObject::CreateDescriptorPool()
 
 void VkGameObject::CreateDescriptorSet()
 {
-	DescriptorSetVkCreateInfo descriptorSetCreateInfo{};
+	std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, createInfo.graphicsPipeline->GetDescriptorSetLayout().GetDescriptorSetLayout());
+	VkDescriptorSetAllocateInfo allocInfo{};
+	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+	allocInfo.descriptorPool = descriptorPool.GetDescriptorPool();
+	allocInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+	allocInfo.pSetLayouts = layouts.data();
 
-	descriptorSetCreateInfo.logicalDevice = createInfo.logicalDevice;
-	descriptorSetCreateInfo.descriptorSetLayout = createInfo.graphicsPipeline->GetDescriptorSetLayout();
-	descriptorSetCreateInfo.descriptorPool = &descriptorPool;
-	descriptorSetCreateInfo.frameCount = MAX_FRAMES_IN_FLIGHT;
-	descriptorSetCreateInfo.descriptorSetBufferDatas.resize(MAX_FRAMES_IN_FLIGHT);
-	descriptorSetCreateInfo.descriptorSetImageDatas.resize(MAX_FRAMES_IN_FLIGHT);
+	descriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
+	if (vkAllocateDescriptorSets(createInfo.logicalDevice, &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
+		throw std::runtime_error("failed to allocate descriptor sets!");
+	}
 
-	for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
-	{
+	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
 		VkDescriptorBufferInfo bufferInfo{};
 		bufferInfo.buffer = uniformBufferObject[i].GetVkBuffer();
 		bufferInfo.offset = 0;
@@ -148,11 +152,26 @@ void VkGameObject::CreateDescriptorSet()
 		imageInfo.imageView = vkTexture.GetImageView();
 		imageInfo.sampler = vkTexture.GetSampler();
 
-		descriptorSetCreateInfo.descriptorSetBufferDatas[i].descriptorBufferInfos.push_back(bufferInfo);
-		descriptorSetCreateInfo.descriptorSetImageDatas[i].descriptorImageInfos.push_back(imageInfo);
-	}
+		std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
 
-	DescriptorSet::InitializeDescriptorSet(descriptorSetCreateInfo, &descriptorSet);
+		descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrites[0].dstSet = descriptorSets[i];
+		descriptorWrites[0].dstBinding = 0;
+		descriptorWrites[0].dstArrayElement = 0;
+		descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		descriptorWrites[0].descriptorCount = 1;
+		descriptorWrites[0].pBufferInfo = &bufferInfo;
+
+		descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrites[1].dstSet = descriptorSets[i];
+		descriptorWrites[1].dstBinding = 1;
+		descriptorWrites[1].dstArrayElement = 0;
+		descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		descriptorWrites[1].descriptorCount = 1;
+		descriptorWrites[1].pImageInfo = &imageInfo;
+
+		vkUpdateDescriptorSets(createInfo.logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+	}
 }
 
 void VkGameObject::Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const
@@ -165,7 +184,7 @@ void VkGameObject::Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const
 
 		vkCmdBindIndexBuffer(_commandBuffer, indexBufferObject.GetVkBuffer(), 0, VK_INDEX_TYPE_UINT16);
 
-		vkCmdBindDescriptorSets(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, createInfo.graphicsPipeline->GetGraphicsPipelineLayout(), 0, 1, &descriptorSet.GetFrameDescriptorSet(_currentFrame), 0, nullptr);
+		vkCmdBindDescriptorSets(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, createInfo.graphicsPipeline->GetGraphicsPipelineLayout(), 0, 1, &descriptorSets[_currentFrame], 0, nullptr);
 
 		vkCmdDrawIndexed(_commandBuffer, static_cast<uint32_t>(meshRenderer->GetMesh()->indices.size()), 1, 0, 0, 0);
 	}
@@ -209,7 +228,6 @@ void VkGameObject::Cleanup()
 
 
 	uniformBufferObject.Cleanup();
-	descriptorSet.Cleanup();
 	descriptorPool.Cleanup();
 
 	if (meshRenderer != nullptr)
