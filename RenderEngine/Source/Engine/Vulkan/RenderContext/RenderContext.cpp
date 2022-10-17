@@ -15,6 +15,7 @@ void RenderContext::InitalizeRenderContext(const RenderContextVkCreateInfo& _cre
 	_output->queueFamilyIndices = _createInfo.queueFamilyIndices;
 	_output->graphicsQueue = _createInfo.graphicsQueue;
 	_output->presentQueue = _createInfo.presentQueue;
+	_output->commandPool = _createInfo.commandPool;
 
 	_output->windowProperties->window->FramebufferResizeEvent.Add(_output, &RenderContext::FrameBufferResizedCallback);
 
@@ -22,7 +23,6 @@ void RenderContext::InitalizeRenderContext(const RenderContextVkCreateInfo& _cre
 	_output->CreateRenderPass();
 	_output->CreateGraphicsPipeline(*_createInfo.renderContextCreateInfo.graphicsPipelineCreateInfo);
 	_output->CreateFrameBuffer();
-	_output->CreateCommandPool();
 	_output->CreateCommandBuffer(*_createInfo.renderContextCreateInfo.swapChainCommandBufferCreateInfo);
 }
 
@@ -69,22 +69,13 @@ void RenderContext::CreateFrameBuffer()
 	FrameBuffer::InitializeFrameBuffer(createInfo, &frameBuffer);
 }
 
-void RenderContext::CreateCommandPool()
-{
-	CommandPoolVkCreateInfo createInfo{};
-	createInfo.logicalDevice = logicalDevice;
-	createInfo.graphicsQueueIndex = queueFamilyIndices.graphicsFamily.value();
-	CommandPool::InitializeCommandPool(createInfo, &commandPool);
-}
-
 void RenderContext::CreateCommandBuffer(const SwapChainCommandBufferCreateInfo& _createInfo)
 {
 	SwapChainCommandBufferVkCreateInfo createInfo{};
 	createInfo.commandBufferCreateInfo = _createInfo;
 	createInfo.logicalDevice = logicalDevice;
-	createInfo.commandPool = &commandPool;
+	createInfo.commandPool = commandPool;
 	createInfo.renderPass = &renderPass;
-	createInfo.graphicsPipeline = &graphicsPipeline;
 	createInfo.frameBuffer = &frameBuffer;
 	createInfo.swapChain = &swapChain;
 
@@ -208,7 +199,7 @@ VkScene* RenderContext::LoadScene(RenderEngine::Core::Scene* _scene)
 	data->scene = _scene;
 
 	VkSceneCreateInfo createInfo{};
-	createInfo.commandPool = &commandPool;
+	createInfo.commandPool = commandPool;
 	createInfo.graphicsQueue = graphicsQueue;
 	createInfo.logicalDevice = logicalDevice;
 	createInfo.physicalDevice = physicalDevice;
@@ -244,7 +235,6 @@ void RenderContext::Cleanup()
 	{
 		commandBuffers[i].Cleanup();
 	}
-	commandPool.Cleanup();
 	frameBuffer.Cleanup();
 	graphicsPipeline.Cleanup();
 	renderPass.Cleanup();

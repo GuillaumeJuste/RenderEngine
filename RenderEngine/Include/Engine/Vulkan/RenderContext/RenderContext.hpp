@@ -63,7 +63,7 @@ namespace RenderEngine::Engine::Vulkan
 		FrameBuffer frameBuffer;
 		
 		/// command pool
-		CommandPool commandPool;
+		CommandPool* commandPool;
 		
 		///command buffers
 		std::vector<SwapChainCommandBuffer> commandBuffers;
@@ -92,11 +92,6 @@ namespace RenderEngine::Engine::Vulkan
 		 * @brief Create Framebuffer
 		*/
 		void CreateFrameBuffer();
-
-		/**
-		 * @brief Create Command Pool
-		*/
-		void CreateCommandPool();
 
 		/**
 		 * @brief Create Command Buffer

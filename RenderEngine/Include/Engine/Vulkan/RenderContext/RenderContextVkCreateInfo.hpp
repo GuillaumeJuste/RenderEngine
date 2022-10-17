@@ -8,6 +8,7 @@
 #include "Engine/Vulkan/WindowProperties/WindowProperties.hpp"
 #include "Engine/Vulkan/DeviceContext/QueueFamilyIndices.hpp"
 #include "Engine/Base/CreateInfo/IRenderContextCreateInfo.hpp"
+#include "Engine/Vulkan/CommandPool/CommandPool.hpp"
 
 using namespace RenderEngine::Engine::Base;
 
@@ -40,6 +41,8 @@ namespace RenderEngine::Engine::Vulkan
 		
 		/// present queue
 		VkQueue presentQueue;
+
+		CommandPool* commandPool;
 
 		/// default constructor
 		RenderContextVkCreateInfo() = default;

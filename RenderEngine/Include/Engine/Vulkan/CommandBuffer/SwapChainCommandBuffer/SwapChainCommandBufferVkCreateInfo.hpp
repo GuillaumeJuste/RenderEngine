@@ -26,9 +26,6 @@ namespace RenderEngine::Engine::Vulkan
 		
 		/// render pass
 		RenderPass* renderPass;
-
-		/// graphics pipeline
-		GraphicsPipeline* graphicsPipeline;
 		
 		/// framebuffer
 		FrameBuffer* frameBuffer;

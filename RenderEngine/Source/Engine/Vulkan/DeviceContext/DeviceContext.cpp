@@ -60,6 +60,7 @@ void DeviceContext::InitializeDeviceContext(std::string _physicalDeviceName)
 
 	PickPhysicalDevice(_physicalDeviceName);
 	CreateLogicalDevice();
+	CreateCommandPool();
 }
 
 bool DeviceContext::checkDeviceExtensionSupport(const VkPhysicalDevice& device)
@@ -222,6 +223,14 @@ void DeviceContext::CreateLogicalDevice()
 	vkGetDeviceQueue(logicalDevice, indices.presentFamily.value(), 0, &presentQueue);
 }
 
+void DeviceContext::CreateCommandPool()
+{
+	CommandPoolVkCreateInfo createInfo{};
+	createInfo.logicalDevice = logicalDevice;
+	createInfo.graphicsQueueIndex = physicalDeviceProperties.queueFamilyIndices.graphicsFamily.value();
+	CommandPool::InitializeCommandPool(createInfo, &commandPool);
+}
+
 const VkPhysicalDevice& DeviceContext::GetPhysicalDevice() const
 {
 	return physicalDevice;
@@ -248,6 +257,7 @@ IRenderContext* DeviceContext::CreateRenderContext(const IRenderContextCreateInf
 	createInfo.queueFamilyIndices = physicalDeviceProperties.queueFamilyIndices;
 	createInfo.graphicsQueue = graphicsQueue;
 	createInfo.presentQueue = presentQueue;
+	createInfo.commandPool = &commandPool;
 
 	RenderContext* renderContext = &renderContexts.emplace_front();
 
@@ -267,6 +277,8 @@ void DeviceContext::Cleanup()
 	{
 		it->Cleanup();
 	}
+
+	commandPool.Cleanup();
 
 	vkDestroyDevice(logicalDevice, nullptr);
 	std::cout << "[Cleaned] Device Context" << std::endl;

@@ -16,23 +16,20 @@ VkGameObject::VkGameObject(const VkGameObjectCreateInfo& _createInfo) :
 	{
 		CreateVertexBufferObject();
 		CreateIndexBufferObject();
-	}
 
-	material = createInfo.gameObject->GetComponent<Material>();
-	if (material != nullptr)
-	{
 		VkTextureVkCreateInfo textCreateInfo{};
 		textCreateInfo.logicalDevice = _createInfo.logicalDevice;
 		textCreateInfo.physicalDevice = _createInfo.physicalDevice;
 		textCreateInfo.graphicsQueue = createInfo.graphicsQueue;
 		textCreateInfo.commandPool = createInfo.commandPool;
-		textCreateInfo.material = material;
+		textCreateInfo.texture = meshRenderer->GetTexture();
 		textCreateInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
 		textCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
 		textCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 		textCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 
 		VkTexture::InitializeVkTexture(textCreateInfo, &vkTexture);
+
 	}
 
 	CreateUniformBufferObject();
@@ -178,6 +175,8 @@ void VkGameObject::Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const
 {
 	if (HasMeshRenderer())
 	{
+		vkCmdBindPipeline(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, createInfo.graphicsPipeline->GetGraphicsPipeline());
+
 		VkBuffer vertexBuffers[] = { vertexBufferObject.GetVkBuffer() };
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(_commandBuffer, 0, 1, vertexBuffers, offsets);
@@ -223,15 +222,12 @@ void VkGameObject::Update(size_t _currentframe)
 
 void VkGameObject::Cleanup()
 {
-	if(material != nullptr)
-		vkTexture.Cleanup();
-
-
 	uniformBufferObject.Cleanup();
 	descriptorPool.Cleanup();
 
 	if (meshRenderer != nullptr)
 	{
+		vkTexture.Cleanup();
 		indexBufferObject.Cleanup();
 		vertexBufferObject.Cleanup();
 	}

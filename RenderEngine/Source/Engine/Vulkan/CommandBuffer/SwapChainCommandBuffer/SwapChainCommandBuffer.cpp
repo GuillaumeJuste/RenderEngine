@@ -12,7 +12,6 @@ using namespace RenderEngine::Engine::Vulkan;
 void SwapChainCommandBuffer::InitializeCommandBuffer(const SwapChainCommandBufferVkCreateInfo& _createInfo, SwapChainCommandBuffer* _output)
 {
 	_output->renderPass = _createInfo.renderPass;
-	_output->graphicsPipeline = _createInfo.graphicsPipeline;
 	_output->frameBuffer = _createInfo.frameBuffer;
 	_output->commandBufferCreateInfo = _createInfo.commandBufferCreateInfo;
 	_output->swapChain = _createInfo.swapChain;
@@ -66,8 +65,6 @@ void SwapChainCommandBuffer::RecordCommandBuffer(uint32_t _imageIndex, int _curr
 	renderPassInfo.pClearValues = &clearColor;
 
 	vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-
-	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->GetGraphicsPipeline());
 
 	vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 

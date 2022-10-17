@@ -3,8 +3,8 @@
 #ifndef RENDERENGINE_VKTEXURECREATEINFO
 #define RENDERENGINE_VKTEXURECREATEINFO
 
-#include "Core/Components/Material/Material.hpp"
 #include "Engine/Vulkan/CommandPool/CommandPool.hpp"
+#include "Core/RessourceManager/Texture.hpp"
 
 namespace RenderEngine::Engine::Vulkan
 {
@@ -22,7 +22,7 @@ namespace RenderEngine::Engine::Vulkan
 		/// command pool
 		CommandPool* commandPool;
 
-		RenderEngine::Core::Material* material;
+		RenderEngine::Core::Texture* texture;
 
 		VkFormat format;
 		VkImageTiling tiling;

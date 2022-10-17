@@ -1,5 +1,4 @@
 #include "Core/Object/GameObject/GameObject.hpp"
-#include "Core/Components/Material/Material.hpp"
 #include "Core/Components/MeshRenderer/MeshRenderer.hpp"
 #include "Core/RessourceManager/RessourceManager.hpp"
 
@@ -12,12 +11,10 @@ void GameObject::InitializeGameObject(const GameObjectCreateInfo& _createinfo, G
 	_output->name = _createinfo.name;
 
 	Mesh* mesh = RessourceManager::GetInstance()->LoadMesh("Resources/Models/cube.obj", "Cube");
+	Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/White.jpg");
 	MeshRenderer* meshRenderer = _output->AddComponent<MeshRenderer>();
 	meshRenderer->SetMesh(mesh);
-
-	Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/White.jpg");
-	Material* material = _output->AddComponent<Material>();
-	material->SetTexture(texture); 
+	meshRenderer->SetTexture(texture);
 }
 
 void GameObject::Initialize()

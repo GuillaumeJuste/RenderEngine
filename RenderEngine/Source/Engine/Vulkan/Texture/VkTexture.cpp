@@ -24,20 +24,20 @@ void VkTexture::CreateImage()
 	stagingBufferCreateInfo.logicalDevice = createInfo.logicalDevice;
 	stagingBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 	stagingBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-	stagingBufferCreateInfo.bufferSize = createInfo.material->GetTexture()->imageSize;
+	stagingBufferCreateInfo.bufferSize = createInfo.texture->imageSize;
 
 	BufferObject::InitializeBufferObject(stagingBufferCreateInfo, &stagingBuffer);
 
 	void* data;
 	vkMapMemory(createInfo.logicalDevice, stagingBuffer.GetVkBufferMemory(), 0, stagingBuffer.GetBufferSize(), 0, &data);
-	memcpy(data, createInfo.material->GetTexture()->pixels.data(), stagingBuffer.GetBufferSize());
+	memcpy(data, createInfo.texture->pixels.data(), stagingBuffer.GetBufferSize());
 	vkUnmapMemory(createInfo.logicalDevice, stagingBuffer.GetVkBufferMemory());
 
 	VkImageCreateInfo imageInfo{};
 	imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 	imageInfo.imageType = VK_IMAGE_TYPE_2D;
-	imageInfo.extent.width = static_cast<uint32_t>(createInfo.material->GetTexture()->width);
-	imageInfo.extent.height = static_cast<uint32_t>(createInfo.material->GetTexture()->height);
+	imageInfo.extent.width = static_cast<uint32_t>(createInfo.texture->width);
+	imageInfo.extent.height = static_cast<uint32_t>(createInfo.texture->height);
 	imageInfo.extent.depth = 1;
 	imageInfo.mipLevels = 1;
 	imageInfo.arrayLayers = 1;

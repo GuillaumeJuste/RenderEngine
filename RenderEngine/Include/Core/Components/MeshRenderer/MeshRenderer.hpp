@@ -5,17 +5,16 @@
 
 #include "Core/Components/Component.hpp"
 #include "Core/RessourceManager/Mesh.hpp"
-
+#include "Core/RessourceManager/Texture.hpp"
 
 namespace RenderEngine::Core
 {
-    /**
-     * @brief Component class implementation
-    */
     class MeshRenderer : public Component
     {
     private:
         Mesh* mesh;
+        Texture* texture;
+
     public:
         MeshRenderer() = default;
         ~MeshRenderer() = default;
@@ -25,8 +24,10 @@ namespace RenderEngine::Core
         void Update();
 
         Mesh* GetMesh();
-        // TODO : change to pointer when resourceManager is implemented
         void SetMesh(Mesh* _mesh);
+
+        Texture* GetTexture();
+        void SetTexture(Texture* _texture);
     };
 }
 

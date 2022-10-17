@@ -13,6 +13,7 @@ using namespace RenderEngine::Engine::Base;
 #include "Engine/Vulkan/Surface/Surface.hpp"
 #include "Engine/Vulkan/RenderContext/RenderContext.hpp"
 #include "Engine/Vulkan/DeviceContext/PhysicalDeviceProperties.hpp"
+#include "Engine/Vulkan/CommandPool/CommandPool.hpp"
 
 #include <forward_list>
 
@@ -64,6 +65,8 @@ namespace RenderEngine::Engine::Vulkan
 		*/
 		VkQueue presentQueue = VK_NULL_HANDLE;
 
+		CommandPool commandPool;
+
 		/**
 		 * @brief render context owned by the device
 		*/
@@ -100,6 +103,8 @@ namespace RenderEngine::Engine::Vulkan
 		 * @brief create logical device
 		*/
 		void CreateLogicalDevice();
+
+		void CreateCommandPool();
 
 	public:
 		/// default constructor

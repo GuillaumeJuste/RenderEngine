@@ -1,7 +1,6 @@
 #include "Application/GraphicsApplication.hpp"
 #include "Core/Object/GameObject/GameObject.hpp"
 #include "Core/Components/MeshRenderer/MeshRenderer.hpp"
-#include "Core/Components/Material/Material.hpp"
 #include "Application/CustomComponents/RotatorComponent.hpp"
 #include <iostream>
 
@@ -92,6 +91,7 @@ Scene* GraphicsApplication::SetupTestScene()
     Mesh* mesh = RessourceManager::GetInstance()->LoadMesh("Resources/Models/viking_room.obj", "viking_room");
 
     Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/viking_room.png");
+    Texture* texture2 = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/texture.jpg");
 
     Mathlib::Transform transform;
     transform.position = Mathlib::Vec3(-2.f, 3.0f, 0.f);
@@ -107,9 +107,7 @@ Scene* GraphicsApplication::SetupTestScene()
 
     MeshRenderer* meshRenderer = obj->GetComponent<MeshRenderer>();
     meshRenderer->SetMesh(mesh);
-
-    Material* material = obj->GetComponent<Material>();
-    material->SetTexture(texture);
+    meshRenderer->SetTexture(texture);
 
     Mathlib::Transform transform2;
     transform2.position = Mathlib::Vec3(2.f, 3.0f, 0.f);
@@ -121,6 +119,9 @@ Scene* GraphicsApplication::SetupTestScene()
     createinfo2.name = "second_object";
 
     GameObject* obj2 = scene->AddGameObject(createinfo2);
+    MeshRenderer* meshRenderer2 = obj2->GetComponent<MeshRenderer>();
+    meshRenderer2->SetTexture(texture2);
+
     RotatorComponent* rotator2 = obj2->AddComponent <RotatorComponent>();
     rotator2->rotationAxis = ROTATION_AXIS::Z;
 

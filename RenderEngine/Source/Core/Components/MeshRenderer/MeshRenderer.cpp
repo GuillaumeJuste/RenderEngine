@@ -23,3 +23,13 @@ void MeshRenderer::SetMesh(Mesh* _mesh)
 {
 	mesh = _mesh;
 }
+
+Texture* MeshRenderer::GetTexture()
+{
+	return texture;
+}
+
+void MeshRenderer::SetTexture(Texture* _texture)
+{
+	texture = _texture;
+}

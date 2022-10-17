@@ -25,11 +25,6 @@ namespace RenderEngine::Engine::Vulkan
 		SwapChainCommandBufferCreateInfo commandBufferCreateInfo;
 
 		/**
-		 * @brief graphic pipline to use for render
-		*/
-		GraphicsPipeline* graphicsPipeline;
-
-		/**
 		 * @brief framebuffer
 		*/
 		FrameBuffer* frameBuffer;
