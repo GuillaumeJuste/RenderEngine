@@ -1,4 +1,4 @@
-#include "Engine/Vulkan/Scene/SceneData.hpp"
+#include "Engine/Vulkan/Scene/Data/SceneData.hpp"
 
 using namespace RenderEngine::Engine::Vulkan;
 

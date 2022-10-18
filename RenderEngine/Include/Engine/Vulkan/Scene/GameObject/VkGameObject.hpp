@@ -3,11 +3,10 @@
 #ifndef RENDERENGINE_VKGAMEOBJECT
 #define RENDERENGINE_VKGAMEOBJECT
 
-#include "Engine/Vulkan/Scene/VkGameObjectCreateInfo.hpp"
+#include "Engine/Vulkan/Scene/GameObject/VkGameObjectCreateInfo.hpp"
 #include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Engine/Vulkan/BufferObject/BufferObject.hpp"
 #include "Engine/Vulkan/GraphicsPipeline/GraphicsPipeline.hpp"
-#include "Engine/Vulkan/Descriptor/Pool/DescriptorPool.hpp"
 #include "Engine/Vulkan/Descriptor/Set/DescriptorSet.hpp"
 #include "Engine/Vulkan/Descriptor/Buffer/DescriptorBuffer.hpp"
 #include "Core/Components/MeshRenderer/MeshRenderer.hpp"
@@ -31,7 +30,6 @@ namespace RenderEngine::Engine::Vulkan
 
 		DescriptorBuffer uniformBufferObject;
 
-		DescriptorPool descriptorPool;
 
 		//DescriptorSet descriptorSet;
 
@@ -48,10 +46,7 @@ namespace RenderEngine::Engine::Vulkan
 
 		void CreateUniformBufferObject();
 
-		void CreateDescriptorPool();
 		void CreateDescriptorSet();
-
-		
 
 	public:
 		VkGameObject(const VkGameObjectCreateInfo& _createInfo);

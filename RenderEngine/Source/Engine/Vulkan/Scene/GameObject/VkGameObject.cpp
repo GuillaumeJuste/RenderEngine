@@ -1,4 +1,4 @@
-#include "Engine/Vulkan/Scene/VkGameObject.hpp"
+#include "Engine/Vulkan/Scene/GameObject/VkGameObject.hpp"
 
 #include "Engine/Vulkan/UniformBuffer/UniformBufferData.hpp"
 
@@ -24,9 +24,7 @@ VkGameObject::VkGameObject(const VkGameObjectCreateInfo& _createInfo) :
 
 	CreateUniformBufferObject();
 	
-	CreateDescriptorPool();
 	CreateDescriptorSet();
-
 }
 
 void VkGameObject::CreateGraphicsPipeline()
@@ -133,21 +131,12 @@ void VkGameObject::CreateUniformBufferObject()
 	DescriptorBuffer::InitializeDescriptorBuffer(uniformBufferCreateInfo, MAX_FRAMES_IN_FLIGHT,  &uniformBufferObject);
 }
 
-void VkGameObject::CreateDescriptorPool()
-{
-	DescriptorPoolVkCreateInfo poolCreateInfo{};
-	poolCreateInfo.logicalDevice = createInfo.logicalDevice;
-	poolCreateInfo.frameCount = MAX_FRAMES_IN_FLIGHT;
-
-	DescriptorPool::InitializeDescriptorPool(poolCreateInfo, &descriptorPool);
-}
-
 void VkGameObject::CreateDescriptorSet()
 {
 	std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, graphicsPipeline.GetDescriptorSetLayout().GetDescriptorSetLayout());
 	VkDescriptorSetAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-	allocInfo.descriptorPool = descriptorPool.GetDescriptorPool();
+	allocInfo.descriptorPool = graphicsPipeline.GetDescriptorPool().GetVkDescriptorPool();
 	allocInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 	allocInfo.pSetLayouts = layouts.data();
 
@@ -241,7 +230,6 @@ void VkGameObject::Update(size_t _currentframe)
 void VkGameObject::Cleanup()
 {
 	uniformBufferObject.Cleanup();
-	descriptorPool.Cleanup();
 
 	if (meshRenderer != nullptr)
 	{

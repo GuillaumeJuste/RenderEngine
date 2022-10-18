@@ -28,7 +28,7 @@ namespace RenderEngine::Engine::Vulkan
 
 		static void InitializeDescriptorPool(const DescriptorPoolVkCreateInfo& _createInfo, DescriptorPool* _output);
 
-		const VkDescriptorPool& GetDescriptorPool() const;
+		const VkDescriptorPool& GetVkDescriptorPool() const;
 
 		void Cleanup();
 	};

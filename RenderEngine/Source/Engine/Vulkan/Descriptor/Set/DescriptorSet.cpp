@@ -7,7 +7,7 @@ using namespace RenderEngine::Engine::Vulkan;
 
 void DescriptorSet::InitializeDescriptorSet(const DescriptorSetVkCreateInfo& _createInfo, DescriptorSet* _output)
 {
-	_output->logicalDevice = _createInfo.logicalDevice;
+	/*_output->logicalDevice = _createInfo.logicalDevice;
 	_output->descriptorSetLayout = _createInfo.descriptorSetLayout;
 	_output->descriptorPool = _createInfo.descriptorPool;
 
@@ -56,7 +56,7 @@ void DescriptorSet::InitializeDescriptorSet(const DescriptorSetVkCreateInfo& _cr
 		}
 		
 		vkUpdateDescriptorSets(_output->logicalDevice, static_cast<uint32_t>(bufferSize + imageSize), descriptorWrites.data(), 0, nullptr);
-	}
+	}*/
 }
 
 const VkDescriptorSet& DescriptorSet::GetFrameDescriptorSet(int _frame) const

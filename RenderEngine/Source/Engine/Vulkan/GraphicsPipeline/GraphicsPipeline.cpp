@@ -110,6 +110,8 @@ void GraphicsPipeline::InitalizeGraphicsPipeline(const GraphicsPipelineVkCreateI
     if (vkCreateGraphicsPipelines(_output->logicalDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &_output->graphicsPipeline) != VK_SUCCESS) {
         throw std::runtime_error("failed to create graphics pipeline!");
     }
+
+    _output->CreateDescriptorPool();
 }
 
 VkVertexInputBindingDescription GraphicsPipeline::GetVertexBindingDescription()
@@ -152,8 +154,19 @@ void GraphicsPipeline::CreateShaders(const std::string& _vertexShaderFilePath, c
     Shader::CreateShader(fragmentShaderCreateInfo, &fragmentShader);
 }
 
+void GraphicsPipeline::CreateDescriptorPool()
+{
+    DescriptorPoolVkCreateInfo poolCreateInfo{};
+    poolCreateInfo.logicalDevice = logicalDevice;
+    poolCreateInfo.frameCount = MAX_FRAMES_IN_FLIGHT;
+
+    DescriptorPool::InitializeDescriptorPool(poolCreateInfo, &descriptorPool);
+}
+
 void GraphicsPipeline::Cleanup()
 {
+    descriptorPool.Cleanup();
+
 	vkDestroyPipeline(logicalDevice, graphicsPipeline, nullptr);
 	vkDestroyPipelineLayout(logicalDevice, pipelineLayout, nullptr);
     descriptorSetLayout.Cleanup();
@@ -175,4 +188,9 @@ const VkPipelineLayout& GraphicsPipeline::GetGraphicsPipelineLayout() const
 const DescriptorSetLayout& GraphicsPipeline::GetDescriptorSetLayout() const
 {
     return descriptorSetLayout;
+}
+
+const DescriptorPool& GraphicsPipeline::GetDescriptorPool() const
+{
+    return descriptorPool;
 }

@@ -14,7 +14,7 @@ using namespace RenderEngine::Engine::Base;
 #include "Engine/Vulkan/CommandPool/CommandPool.hpp"
 #include "Engine/Vulkan/CommandBuffer/SwapChainCommandBuffer/SwapChainCommandBuffer.hpp"
 #include "Engine/Vulkan/BufferObject/BufferObject.hpp"
-#include "Engine/Vulkan/Scene/SceneData.hpp"
+#include "Engine/Vulkan/Scene/Data/SceneData.hpp"
 #include "Engine/Vulkan/Descriptor/Pool/DescriptorPool.hpp"
 
 namespace RenderEngine::Engine::Vulkan

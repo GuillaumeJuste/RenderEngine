@@ -5,6 +5,7 @@
 
 #include "Engine/Vulkan/GraphicsPipeline/GraphicsPipelineVkCreateInfo.hpp"
 #include "Engine/Vulkan/Descriptor/Layout/DescriptorSetLayout.hpp"
+#include "Engine/Vulkan/Descriptor/Pool/DescriptorPool.hpp"
 
 namespace RenderEngine::Engine::Vulkan
 {
@@ -34,6 +35,7 @@ namespace RenderEngine::Engine::Vulkan
 		RenderPass* renderPass;
 
 		DescriptorSetLayout descriptorSetLayout;
+		DescriptorPool descriptorPool;
 
 		/// pipeline layout
 		VkPipelineLayout pipelineLayout;
@@ -54,6 +56,8 @@ namespace RenderEngine::Engine::Vulkan
 		static std::array<VkVertexInputAttributeDescription, 3> GetVertexAttributeDescriptions();
 
 		void CreateShaders(const std::string& _vertexShaderFilePath, const std::string& _fragmentShaderFilePath);
+
+		void CreateDescriptorPool();
 
 	public:
 		/// default constructor
@@ -80,6 +84,8 @@ namespace RenderEngine::Engine::Vulkan
 		const VkPipelineLayout& GetGraphicsPipelineLayout() const;
 
 		const DescriptorSetLayout& GetDescriptorSetLayout() const;
+
+		const DescriptorPool& GetDescriptorPool() const;
 	};
 
 }

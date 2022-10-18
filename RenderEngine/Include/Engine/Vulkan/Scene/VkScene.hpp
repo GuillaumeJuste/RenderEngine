@@ -5,8 +5,8 @@
 
 #include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Engine/Vulkan/Scene/VkSceneCreateInfo.hpp"
-#include "Engine/Vulkan/Scene/VkGameObjectCreateInfo.hpp"
-#include "Engine/Vulkan/Scene/VkGameObject.hpp"
+#include "Engine/Vulkan/Scene/GameObject/VkGameObjectCreateInfo.hpp"
+#include "Engine/Vulkan/Scene/GameObject/VkGameObject.hpp"
 
 #include <forward_list>
 #include <vector>

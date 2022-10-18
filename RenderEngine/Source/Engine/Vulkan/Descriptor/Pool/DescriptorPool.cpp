@@ -25,7 +25,7 @@ void DescriptorPool::InitializeDescriptorPool(const DescriptorPoolVkCreateInfo& 
 	}
 }
 
-const VkDescriptorPool& DescriptorPool::GetDescriptorPool() const
+const VkDescriptorPool& DescriptorPool::GetVkDescriptorPool() const
 {
 	return descriptorPool;
 }

@@ -1,5 +1,5 @@
 #include "Engine/Vulkan/Scene/VkScene.hpp"
-#include "Engine/Vulkan/Scene/VkGameObjectCreateInfo.hpp"
+#include "Engine/Vulkan/Scene/GameObject/VkGameObjectCreateInfo.hpp"
 
 using namespace RenderEngine::Engine::Vulkan;
 
