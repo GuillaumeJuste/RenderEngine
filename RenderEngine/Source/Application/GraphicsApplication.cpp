@@ -81,7 +81,7 @@ Scene* GraphicsApplication::SetupTestScene()
     Scene* scene = sceneManager.AddScene();
     scene->name = "test_scene_1";
 
-    Mesh* mesh = RessourceManager::GetInstance()->LoadMesh("Resources/Models/viking_room.obj", "viking_room");
+    Mesh* mesh = RessourceManager::GetInstance()->LoadMesh("Resources/Models/viking_room.obj");
 
     Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/viking_room.png");
     Texture* texture2 = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/texture.jpg");

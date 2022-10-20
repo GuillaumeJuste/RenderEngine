@@ -11,6 +11,8 @@
 #include "Engine/Vulkan/GraphicsPipeline/GraphicsPipeline.hpp"
 #include "Engine/Vulkan/SwapChain/SwapChain.hpp"
 #include "Engine/Vulkan/RenderPass/RenderPass.hpp"
+#include "Engine/Vulkan/Scene/Data/MeshData.hpp"
+#include "Engine/Vulkan/Scene/Data/TextureData.hpp"
 
 namespace RenderEngine::Engine::Vulkan
 {
@@ -25,15 +27,12 @@ namespace RenderEngine::Engine::Vulkan
 		/// logical device
 		VkDevice logicalDevice;
 
-		/// graphics queue
-		VkQueue graphicsQueue;
-
-		/// command pool
-		CommandPool* commandPool;
-
 		SwapChain* swapchain;
 
 		RenderPass* renderpass;
+
+		MeshData* meshData;
+		TextureData* textureData;
 
 		RenderEngine::Core::GameObject* gameObject = nullptr;
 

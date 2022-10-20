@@ -31,8 +31,8 @@ namespace RenderEngine::Core
 
         static RessourceManager* GetInstance();
 
-        Mesh* LoadMesh(std::string _filePath, std::string _name);
-        Mesh* GetMesh(std::string _name);
+        Mesh* LoadMesh(std::string _filePath);
+        Mesh* GetMesh(std::string _filepath);
         bool DeleteMesh(Mesh* _mesh);
 
         Texture* LoadTexture(std::string _filePath);

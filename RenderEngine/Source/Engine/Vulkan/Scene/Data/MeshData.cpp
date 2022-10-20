@@ -6,3 +6,9 @@ bool MeshData::operator==(RenderEngine::Core::Mesh* _mesh) const
 {
 	return mesh == _mesh;
 }
+
+void MeshData::Cleanup()
+{
+	vertexBufferObject.Cleanup();
+	indexBufferObject.Cleanup();
+}

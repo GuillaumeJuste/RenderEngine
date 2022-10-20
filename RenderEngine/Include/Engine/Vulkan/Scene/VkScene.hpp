@@ -8,6 +8,9 @@
 #include "Engine/Vulkan/Scene/GameObject/VkGameObjectCreateInfo.hpp"
 #include "Engine/Vulkan/Scene/GameObject/VkGameObject.hpp"
 
+#include "Engine/Vulkan/Scene/Data/MeshData.hpp"
+#include "Engine/Vulkan/Scene/Data/TextureData.hpp"
+
 #include <forward_list>
 #include <vector>
 
@@ -20,7 +23,20 @@ namespace RenderEngine::Engine::Vulkan
 
 		std::forward_list<VkGameObject> gameObjects;
 
+		std::vector<MeshData*> sceneMeshes;
+		std::vector<TextureData*> sceneTextures;
+
 		void CreateVkGameObjects(VkGameObjectCreateInfo _createInfo, std::vector<GameObject*> _childrens);
+
+		MeshData* LoadMesh(RenderEngine::Core::Mesh* _mesh);
+		MeshData* GetMesh(RenderEngine::Core::Mesh* _mesh);
+		void CreateVertexBufferObject(RenderEngine::Core::Mesh* _mesh, MeshData* _output);
+		void CreateIndexBufferObject(RenderEngine::Core::Mesh* _mesh, MeshData* _output);
+
+		TextureData* LoadTexture(RenderEngine::Core::Texture* _texture);
+		TextureData* GetTexture(RenderEngine::Core::Texture* _texture);
+
+		void CreateVkTexture(RenderEngine::Core::Texture* _texture, TextureData* _output);
 
 	public:
 		VkScene() = default;
@@ -29,9 +45,9 @@ namespace RenderEngine::Engine::Vulkan
 
 		void Update(size_t _currentframe);
 
-		void Cleanup();
+		void Draw(VkCommandBuffer _commandBuffer, int _currentFrame);
 
-		std::forward_list<VkGameObject> GetSceneObjects() const;
+		void Cleanup();
 	};
 
 }

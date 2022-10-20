@@ -70,11 +70,7 @@ void SwapChainCommandBuffer::RecordCommandBuffer(uint32_t _imageIndex, int _curr
 
 	vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-	std::forward_list<VkGameObject> sceneObjects = _scene->GetSceneObjects();
-	for (std::forward_list<VkGameObject>::iterator it = sceneObjects.begin(); it != sceneObjects.end(); ++it)
-	{
-		it->Draw(commandBuffer, _currentFrame);
-	}
+	_scene->Draw(commandBuffer, _currentFrame);
 
 	vkCmdEndRenderPass(commandBuffer);
 

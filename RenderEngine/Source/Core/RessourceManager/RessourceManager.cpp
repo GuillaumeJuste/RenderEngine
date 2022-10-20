@@ -17,7 +17,7 @@ RessourceManager* RessourceManager::GetInstance()
 	return &instance;
 }
 
-Mesh* RessourceManager::LoadMesh(std::string _filePath, std::string _name)
+Mesh* RessourceManager::LoadMesh(std::string _filePath)
 {
 	Mesh* mesh = GetMesh(_filePath);
 	if (mesh != nullptr)
@@ -37,7 +37,6 @@ Mesh* RessourceManager::LoadMesh(std::string _filePath, std::string _name)
 	Mesh* newMesh = &meshes.emplace_front();
 	ProcessMesh(scene, newMesh);
 	newMesh->filePath = _filePath;
-	newMesh->name = _name;
 
 	return newMesh;
 }
@@ -47,6 +46,8 @@ void RessourceManager::ProcessMesh(const aiScene* _scene, Mesh* _output)
 	if (_scene->HasMeshes())
 	{
 		aiMesh* mesh = _scene->mMeshes[0];
+
+		_output->name = mesh->mName.C_Str();
 
 		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 		{
@@ -80,11 +81,11 @@ void RessourceManager::ProcessMesh(const aiScene* _scene, Mesh* _output)
 	}
 }
 
-Mesh* RessourceManager::GetMesh(std::string _name)
+Mesh* RessourceManager::GetMesh(std::string _filepath)
 {
 	for (std::forward_list<Mesh>::iterator it = meshes.begin(); it != meshes.end(); ++it)
 	{
-		if (it->name == _name)
+		if (it->filePath == _filepath)
 			return &(*it);
 	}
 	return nullptr;
@@ -106,6 +107,10 @@ bool RessourceManager::DeleteMesh(Mesh* _mesh)
 
 Texture* RessourceManager::LoadTexture(std::string _filePath)
 {
+	Texture* texture = GetTexture(_filePath);
+	if (texture != nullptr)
+		return texture;
+
 	int texWidth, texHeight, texChannels;
 
 	char* data = reinterpret_cast<char*>(stbi_load(_filePath.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha));

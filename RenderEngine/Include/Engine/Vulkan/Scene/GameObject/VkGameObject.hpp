@@ -25,24 +25,13 @@ namespace RenderEngine::Engine::Vulkan
 
 		GraphicsPipeline graphicsPipeline;
 
-		BufferObject vertexBufferObject;
-		BufferObject indexBufferObject;
-
 		DescriptorBuffer uniformBufferObject;
-
 
 		//DescriptorSet descriptorSet;
 
 		std::vector<VkDescriptorSet> descriptorSets;
 
-		VkTexture vkTexture;
-
 		void CreateGraphicsPipeline();
-
-		void CreateVertexBufferObject();
-		void CreateIndexBufferObject();
-
-		void CreateVkTexture();
 
 		void CreateUniformBufferObject();
 
@@ -57,9 +46,6 @@ namespace RenderEngine::Engine::Vulkan
 		MeshRenderer* GetMeshRenderer() const;
 
 		bool HasMeshRenderer() const;
-
-		const BufferObject& GetVBO() const;
-		const BufferObject& GetIBO() const;
 
 		void Update(size_t _currentframe);
 

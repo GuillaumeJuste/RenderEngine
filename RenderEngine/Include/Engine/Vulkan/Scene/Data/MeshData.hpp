@@ -19,6 +19,8 @@ namespace RenderEngine::Engine::Vulkan
 		MeshData() = default;
 
 		bool operator==(RenderEngine::Core::Mesh* _mesh) const;
+
+		void Cleanup();
 	};
 }
 

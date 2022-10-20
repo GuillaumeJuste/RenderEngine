@@ -10,7 +10,7 @@ void GameObject::InitializeGameObject(const GameObjectCreateInfo& _createinfo, G
 	_output->transform = Transform(_createinfo.transform);
 	_output->name = _createinfo.name;
 
-	Mesh* mesh = RessourceManager::GetInstance()->LoadMesh("Resources/Models/cube.obj", "Cube");
+	Mesh* mesh = RessourceManager::GetInstance()->LoadMesh("Resources/Models/cube.obj");
 	Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/White.jpg");
 	MeshRenderer* meshRenderer = _output->AddComponent<MeshRenderer>();
 	meshRenderer->SetMesh(mesh);

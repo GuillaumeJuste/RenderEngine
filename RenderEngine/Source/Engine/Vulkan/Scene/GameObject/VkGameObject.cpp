@@ -15,11 +15,8 @@ VkGameObject::VkGameObject(const VkGameObjectCreateInfo& _createInfo) :
 	meshRenderer = createInfo.gameObject->GetComponent<MeshRenderer>();
 	if (meshRenderer != nullptr)
 	{
-		CreateGraphicsPipeline();
-		CreateVertexBufferObject();
-		CreateIndexBufferObject();
 
-		CreateVkTexture();
+		CreateGraphicsPipeline();
 	}
 
 	CreateUniformBufferObject();
@@ -37,86 +34,6 @@ void VkGameObject::CreateGraphicsPipeline()
 	gpCreateInfo.meshRenderer = meshRenderer;
 
 	GraphicsPipeline::InitalizeGraphicsPipeline(gpCreateInfo, &graphicsPipeline);
-}
-
-void VkGameObject::CreateVertexBufferObject()
-{
-	std::vector<Vertex> vertices = meshRenderer->GetMesh()->vertices;
-
-	BufferObject stagingBufferObject;
-	BufferObjectVkCreateInfo stagingBufferCreateInfo;
-	stagingBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
-	stagingBufferCreateInfo.logicalDevice = createInfo.logicalDevice;
-	stagingBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-	stagingBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-	stagingBufferCreateInfo.bufferSize = sizeof(vertices[0]) * vertices.size();
-
-	BufferObject::InitializeBufferObject(stagingBufferCreateInfo, &stagingBufferObject);
-
-	void* data;
-	vkMapMemory(createInfo.logicalDevice, stagingBufferObject.GetVkBufferMemory(), 0, stagingBufferCreateInfo.bufferSize, 0, &data);
-	memcpy(data, vertices.data(), (size_t)stagingBufferCreateInfo.bufferSize);
-	vkUnmapMemory(createInfo.logicalDevice, stagingBufferObject.GetVkBufferMemory());
-
-	BufferObjectVkCreateInfo vertexBuffeCreateInfo;
-	vertexBuffeCreateInfo.physicalDevice = createInfo.physicalDevice;
-	vertexBuffeCreateInfo.logicalDevice = createInfo.logicalDevice;
-	vertexBuffeCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-	vertexBuffeCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-	vertexBuffeCreateInfo.bufferSize = stagingBufferCreateInfo.bufferSize;
-
-	BufferObject::InitializeBufferObject(vertexBuffeCreateInfo, &vertexBufferObject);
-
-	stagingBufferObject.CopyBuffer(&vertexBufferObject, createInfo.commandPool, createInfo.graphicsQueue, stagingBufferCreateInfo.bufferSize);
-	stagingBufferObject.Cleanup();
-}
-
-void VkGameObject::CreateIndexBufferObject()
-{
-	std::vector<uint16_t> indices = meshRenderer->GetMesh()->indices;
-
-	BufferObject stagingBufferObject;
-	BufferObjectVkCreateInfo stagingBufferCreateInfo;
-	stagingBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
-	stagingBufferCreateInfo.logicalDevice = createInfo.logicalDevice;
-	stagingBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-	stagingBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-	stagingBufferCreateInfo.bufferSize = sizeof(indices[0]) * indices.size();
-
-	BufferObject::InitializeBufferObject(stagingBufferCreateInfo, &stagingBufferObject);
-
-	void* data;
-	vkMapMemory(createInfo.logicalDevice, stagingBufferObject.GetVkBufferMemory(), 0, stagingBufferCreateInfo.bufferSize, 0, &data);
-	memcpy(data, indices.data(), (size_t)stagingBufferCreateInfo.bufferSize);
-	vkUnmapMemory(createInfo.logicalDevice, stagingBufferObject.GetVkBufferMemory());
-
-	BufferObjectVkCreateInfo indexBufferCreateInfo;
-	indexBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
-	indexBufferCreateInfo.logicalDevice = createInfo.logicalDevice;
-	indexBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
-	indexBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-	indexBufferCreateInfo.bufferSize = stagingBufferCreateInfo.bufferSize;
-
-	BufferObject::InitializeBufferObject(indexBufferCreateInfo, &indexBufferObject);
-
-	stagingBufferObject.CopyBuffer(&indexBufferObject, createInfo.commandPool, createInfo.graphicsQueue, stagingBufferCreateInfo.bufferSize);
-	stagingBufferObject.Cleanup();
-}
-
-void VkGameObject::CreateVkTexture()
-{
-	VkTextureVkCreateInfo textCreateInfo{};
-	textCreateInfo.logicalDevice = createInfo.logicalDevice;
-	textCreateInfo.physicalDevice = createInfo.physicalDevice;
-	textCreateInfo.graphicsQueue = createInfo.graphicsQueue;
-	textCreateInfo.commandPool = createInfo.commandPool;
-	textCreateInfo.texture = meshRenderer->GetTexture();
-	textCreateInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
-	textCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-	textCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
-	textCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-
-	VkTexture::InitializeVkTexture(textCreateInfo, &vkTexture);
 }
 
 void VkGameObject::CreateUniformBufferObject()
@@ -153,8 +70,8 @@ void VkGameObject::CreateDescriptorSet()
 
 		VkDescriptorImageInfo imageInfo{};
 		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		imageInfo.imageView = vkTexture.GetImageView();
-		imageInfo.sampler = vkTexture.GetSampler();
+		imageInfo.imageView = createInfo.textureData->vkTexture.GetImageView();
+		imageInfo.sampler = createInfo.textureData->vkTexture.GetSampler();
 
 		std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
 
@@ -184,11 +101,11 @@ void VkGameObject::Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const
 	{
 		vkCmdBindPipeline(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.GetGraphicsPipeline());
 
-		VkBuffer vertexBuffers[] = { vertexBufferObject.GetVkBuffer() };
+		VkBuffer vertexBuffers[] = { createInfo.meshData->vertexBufferObject.GetVkBuffer() };
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(_commandBuffer, 0, 1, vertexBuffers, offsets);
 
-		vkCmdBindIndexBuffer(_commandBuffer, indexBufferObject.GetVkBuffer(), 0, VK_INDEX_TYPE_UINT16);
+		vkCmdBindIndexBuffer(_commandBuffer, createInfo.meshData->indexBufferObject.GetVkBuffer(), 0, VK_INDEX_TYPE_UINT16);
 
 		vkCmdBindDescriptorSets(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.GetGraphicsPipelineLayout(), 0, 1, &descriptorSets[_currentFrame], 0, nullptr);
 
@@ -199,16 +116,6 @@ void VkGameObject::Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const
 MeshRenderer* VkGameObject::GetMeshRenderer() const
 {
 	return meshRenderer;
-}
-
-const BufferObject& VkGameObject::GetVBO() const
-{
-	return vertexBufferObject;
-}
-
-const BufferObject& VkGameObject::GetIBO() const
-{
-	return indexBufferObject;
 }
 
 bool VkGameObject::HasMeshRenderer() const
@@ -230,13 +137,6 @@ void VkGameObject::Update(size_t _currentframe)
 void VkGameObject::Cleanup()
 {
 	uniformBufferObject.Cleanup();
-
-	if (meshRenderer != nullptr)
-	{
-		vkTexture.Cleanup();
-		indexBufferObject.Cleanup();
-		vertexBufferObject.Cleanup();
-	}
 
 	graphicsPipeline.Cleanup();
 }

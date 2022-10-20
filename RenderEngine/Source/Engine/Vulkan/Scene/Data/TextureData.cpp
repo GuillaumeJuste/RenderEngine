@@ -6,3 +6,8 @@ bool TextureData::operator==(RenderEngine::Core::Texture* _texture) const
 {
 	return texture == _texture;
 }
+
+void TextureData::Cleanup()
+{
+	vkTexture.Cleanup();
+}

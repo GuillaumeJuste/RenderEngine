@@ -18,6 +18,8 @@ namespace RenderEngine::Engine::Vulkan
 		TextureData() = default;
 
 		bool operator==(RenderEngine::Core::Texture* _texture) const;
+
+		void Cleanup();
 	};
 }
 
