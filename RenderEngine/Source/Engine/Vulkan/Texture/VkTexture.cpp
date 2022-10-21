@@ -1,8 +1,10 @@
 #include "Engine/Vulkan/Texture/VkTexture.hpp"
 #include "Engine/Vulkan/BufferObject/BufferObject.hpp"
 #include "Engine/Vulkan/CommandBuffer/CommandBuffer.hpp"
+#include "Engine/Vulkan/Misc/Utils.hpp"
 
 #include <iostream>
+
 
 using namespace RenderEngine::Engine::Vulkan;
 
@@ -10,132 +12,43 @@ void VkTexture::InitializeVkTexture(const VkTextureVkCreateInfo& _vkTextureCreat
 {
 	_output->createInfo = _vkTextureCreateInfo;
 
-	_output->CreateImage();
-	_output->CreateImageView();
-	_output->CreateSampler();
-}
-
-
-void VkTexture::CreateImage()
-{
 	BufferObject stagingBuffer;
 	BufferObjectVkCreateInfo stagingBufferCreateInfo;
-	stagingBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
-	stagingBufferCreateInfo.logicalDevice = createInfo.logicalDevice;
+	stagingBufferCreateInfo.physicalDevice = _vkTextureCreateInfo.physicalDevice;
+	stagingBufferCreateInfo.logicalDevice = _vkTextureCreateInfo.logicalDevice;
 	stagingBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 	stagingBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-	stagingBufferCreateInfo.bufferSize = createInfo.texture->imageSize;
+	stagingBufferCreateInfo.bufferSize = _vkTextureCreateInfo.texture->imageSize;
 
 	BufferObject::InitializeBufferObject(stagingBufferCreateInfo, &stagingBuffer);
 
 	void* data;
-	vkMapMemory(createInfo.logicalDevice, stagingBuffer.GetVkBufferMemory(), 0, stagingBuffer.GetBufferSize(), 0, &data);
-	memcpy(data, createInfo.texture->pixels.data(), stagingBuffer.GetBufferSize());
-	vkUnmapMemory(createInfo.logicalDevice, stagingBuffer.GetVkBufferMemory());
+	vkMapMemory(_vkTextureCreateInfo.logicalDevice, stagingBuffer.GetVkBufferMemory(), 0, stagingBuffer.GetBufferSize(), 0, &data);
+	memcpy(data, _vkTextureCreateInfo.texture->pixels.data(), stagingBuffer.GetBufferSize());
+	vkUnmapMemory(_vkTextureCreateInfo.logicalDevice, stagingBuffer.GetVkBufferMemory());
 
-	VkImageCreateInfo imageInfo{};
-	imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-	imageInfo.imageType = VK_IMAGE_TYPE_2D;
-	imageInfo.extent.width = static_cast<uint32_t>(createInfo.texture->width);
-	imageInfo.extent.height = static_cast<uint32_t>(createInfo.texture->height);
-	imageInfo.extent.depth = 1;
-	imageInfo.mipLevels = 1;
-	imageInfo.arrayLayers = 1;
-	imageInfo.format = createInfo.format;
-	imageInfo.tiling = createInfo.tiling;
-	imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	imageInfo.usage = createInfo.usage;
-	imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-	imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+	ImageVkCreateInfo imageCreateInfo{};
+	imageCreateInfo.physicalDevice = _vkTextureCreateInfo.physicalDevice;
+	imageCreateInfo.logicalDevice = _vkTextureCreateInfo.logicalDevice;
+	imageCreateInfo.width = static_cast<uint32_t>(_vkTextureCreateInfo.texture->width);
+	imageCreateInfo.height = static_cast<uint32_t>(_vkTextureCreateInfo.texture->height);
+	imageCreateInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
+	imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+	imageCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+	imageCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+	imageCreateInfo.commandPool = _vkTextureCreateInfo.commandPool;
+	imageCreateInfo.graphicsQueue = _vkTextureCreateInfo.graphicsQueue;
+	Image::InitializeImage(imageCreateInfo, &_output->image);
 
-	if (vkCreateImage(createInfo.logicalDevice, &imageInfo, nullptr, &image) != VK_SUCCESS)
-	{
-		throw std::runtime_error("failed to create image!");
-	}
-
-	VkMemoryRequirements memRequirements;
-	vkGetImageMemoryRequirements(createInfo.logicalDevice, image, &memRequirements);
-
-	VkMemoryAllocateInfo allocInfo{};
-	allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-	allocInfo.allocationSize = memRequirements.size;
-	allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, createInfo.properties);
-
-	if (vkAllocateMemory(createInfo.logicalDevice, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS)
-	{
-		throw std::runtime_error("failed to allocate image memory!");
-	}
-
-	vkBindImageMemory(createInfo.logicalDevice, image, imageMemory, 0);
-
-	TransitionImageLayout(VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-	CopyBufferToImage(stagingBuffer.GetVkBuffer(), imageInfo.extent.width, imageInfo.extent.height);
-	TransitionImageLayout(VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+	_output->image.TransitionImageLayout(VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+	_output->CopyBufferToImage(stagingBuffer.GetVkBuffer(), static_cast<uint32_t>(_vkTextureCreateInfo.texture->width), static_cast<uint32_t>(_vkTextureCreateInfo.texture->height));
+	_output->image.TransitionImageLayout(VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
 	stagingBuffer.Cleanup();
-}
 
-uint32_t VkTexture::FindMemoryType(uint32_t _typeFilter, VkMemoryPropertyFlags _properties)
-{
-	VkPhysicalDeviceMemoryProperties memProperties;
-	vkGetPhysicalDeviceMemoryProperties(createInfo.physicalDevice, &memProperties);
+	_output->CreateImageView();
 
-	for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
-		if ((_typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & _properties) == _properties) {
-			return i;
-		}
-	}
-	throw std::runtime_error("failed to find suitable memory type!");
-}
-
-void VkTexture::TransitionImageLayout(VkFormat _format, VkImageLayout _oldLayout, VkImageLayout _newLayout)
-{
-	VkCommandBuffer commandBuffer = CommandBuffer::BeginSingleTimeCommands(createInfo.logicalDevice, createInfo.commandPool);
-
-	VkImageMemoryBarrier barrier{};
-	barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-	barrier.oldLayout = _oldLayout;
-	barrier.newLayout = _newLayout;
-	barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-	barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-	barrier.image = image;
-	barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-	barrier.subresourceRange.baseMipLevel = 0;
-	barrier.subresourceRange.levelCount = 1;
-	barrier.subresourceRange.baseArrayLayer = 0;
-	barrier.subresourceRange.layerCount = 1;
-	
-	VkPipelineStageFlags sourceStage;
-	VkPipelineStageFlags destinationStage;
-
-	if (_oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && _newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
-		barrier.srcAccessMask = 0;
-		barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-
-		sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-		destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
-	}
-	else if (_oldLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && _newLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) {
-		barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-		barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
-
-		sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
-		destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
-	}
-	else {
-		throw std::invalid_argument("unsupported layout transition!");
-	}
-
-	vkCmdPipelineBarrier(
-		commandBuffer,
-		sourceStage, destinationStage,
-		0,
-		0, nullptr,
-		0, nullptr,
-		1, &barrier
-	);
-
-	CommandBuffer::EndSingleTimeCommands(createInfo.logicalDevice, createInfo.commandPool, createInfo.graphicsQueue, commandBuffer);
+	_output->CreateSampler();
 }
 
 void VkTexture::CopyBufferToImage(VkBuffer _buffer, uint32_t _width, uint32_t _height)
@@ -162,7 +75,7 @@ void VkTexture::CopyBufferToImage(VkBuffer _buffer, uint32_t _width, uint32_t _h
 	vkCmdCopyBufferToImage(
 		commandBuffer,
 		_buffer,
-		image,
+		image.GetVkImage(),
 		VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 		1,
 		&region
@@ -173,21 +86,12 @@ void VkTexture::CopyBufferToImage(VkBuffer _buffer, uint32_t _width, uint32_t _h
 
 void VkTexture::CreateImageView()
 {
-	VkImageViewCreateInfo viewInfo{};
-	viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-	viewInfo.image = image;
-	viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-	viewInfo.format = createInfo.format;
-	viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-	viewInfo.subresourceRange.baseMipLevel = 0;
-	viewInfo.subresourceRange.levelCount = 1;
-	viewInfo.subresourceRange.baseArrayLayer = 0;
-	viewInfo.subresourceRange.layerCount = 1;
-
-	if (vkCreateImageView(createInfo.logicalDevice, &viewInfo, nullptr, &imageView) != VK_SUCCESS) 
-	{
-		throw std::runtime_error("failed to create texture image view!");
-	}
+	ImageViewVkCreateInfo imageViewCreateInfo;
+	imageViewCreateInfo.logicalDevice = createInfo.logicalDevice;
+	imageViewCreateInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
+	imageViewCreateInfo.aspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
+	imageViewCreateInfo.image = image.GetVkImage();
+	ImageView::InitializeImageView(imageViewCreateInfo, &imageView);
 }
 
 void VkTexture::CreateSampler()
@@ -223,14 +127,13 @@ void VkTexture::CreateSampler()
 void VkTexture::Cleanup()
 {
 	vkDestroySampler(createInfo.logicalDevice, sampler, nullptr);
-	vkDestroyImageView(createInfo.logicalDevice, imageView, nullptr);
-	vkDestroyImage(createInfo.logicalDevice, image, nullptr);
-	vkFreeMemory(createInfo.logicalDevice, imageMemory, nullptr);
+	imageView.Cleanup();
+	image.Cleanup();
 }
 
 VkImageView VkTexture::GetImageView() const
 {
-	return imageView;
+	return imageView.GetImageView();
 }
 
 VkSampler VkTexture::GetSampler() const

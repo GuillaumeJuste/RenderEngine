@@ -82,10 +82,18 @@ void SwapChain::CreateImageView()
 {
 	ImageViewVkCreateInfo createInfo;
 	createInfo.logicalDevice = logicalDevice;
-	createInfo.swapChainImages = images;
-	createInfo.swapChainImageFormat = imageFormat;
+	createInfo.format = imageFormat;
+	createInfo.aspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
 
-	ImageView::InitializeImageView(createInfo, &imageView);
+	imageViews.resize(images.size());
+
+	for (int i = 0; i < images.size(); i++)
+	{
+		createInfo.image = images[i];
+		ImageView::InitializeImageView(createInfo, &imageViews[i]);
+	}
+	
+
 }
 
 SwapChainSupportDetails SwapChain::QuerySwapChainSupport(const VkPhysicalDevice& _device, const Surface& _surface)
@@ -159,7 +167,10 @@ VkExtent2D SwapChain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& _capabili
 
 void SwapChain::Cleanup()
 {
-	imageView.Cleanup();
+	for (int i = 0; i < images.size(); i++)
+	{
+		imageViews[i].Cleanup();
+	}
 	vkDestroySwapchainKHR(logicalDevice, vkSwapChain, nullptr);
 	std::cout << "[Cleaned] Swap Chain" << std::endl;
 }
@@ -179,9 +190,9 @@ const VkFormat& SwapChain::GetImageFormat() const
 	return imageFormat;
 }
 
-const ImageView& SwapChain::GetImageView() const
+const std::vector<ImageView>& SwapChain::GetImageViews() const
 {
-	return imageView;
+	return imageViews;
 }
 
 const size_t& SwapChain::GetImageCount() const

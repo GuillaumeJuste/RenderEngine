@@ -41,7 +41,7 @@ namespace RenderEngine::Engine::Vulkan
 		VkExtent2D extent;
 
 		/// Image view
-		ImageView imageView;
+		std::vector<ImageView> imageViews;
 
 		/**
 		 * @brief Create Swapchain
@@ -106,7 +106,7 @@ namespace RenderEngine::Engine::Vulkan
 		const VkFormat& GetImageFormat() const;
 		
 		/// Get swapchain imageview
-		const ImageView& GetImageView() const;
+		const std::vector<ImageView>& GetImageViews() const;
 		
 		/// Get swapchain image count
 		const size_t& GetImageCount() const;

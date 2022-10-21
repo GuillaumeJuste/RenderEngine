@@ -51,13 +51,6 @@ namespace RenderEngine::Engine::Vulkan
 		*/
 		VkDeviceMemory bufferMemory;
 
-		/**
-		 * @brief find memory type usable for buffer memory
-		 * @param _typeFilter mask corresponding to all memory type supported by the physical device
-		 * @param _properties requiered memory property
-		 * @return index of memory matching properties
-		*/
-		uint32_t FindMemoryType(uint32_t _typeFilter, VkMemoryPropertyFlags _properties);
 	public:
 		BufferObject() = default;
 		~BufferObject() = default;

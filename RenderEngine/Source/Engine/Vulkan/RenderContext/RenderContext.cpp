@@ -20,6 +20,7 @@ void RenderContext::InitalizeRenderContext(const RenderContextVkCreateInfo& _cre
 	_output->windowProperties->window->FramebufferResizeEvent.Add(_output, &RenderContext::FrameBufferResizedCallback);
 
 	_output->CreateSwapChain();
+	_output->CreateDepthBuffer();
 	_output->CreateRenderPass();
 	_output->CreateFrameBuffer();
 	_output->CreateCommandBuffer(*_createInfo.renderContextCreateInfo.swapChainCommandBufferCreateInfo);
@@ -41,6 +42,7 @@ void RenderContext::CreateRenderPass()
 	RenderPassVkCreateInfo createInfo{};
 	createInfo.logicalDevice = logicalDevice;
 	createInfo.swapChainImageFormat = swapChain.GetImageFormat();
+	createInfo.depthBuffer = &depthBuffer;
 
 	RenderPass::InitializeRenderPass(createInfo, &renderPass);
 }
@@ -50,11 +52,24 @@ void RenderContext::CreateFrameBuffer()
 	FrameBufferVkCreateInfo createInfo{};
 	createInfo.logicalDevice = logicalDevice;
 	createInfo.renderPass = &renderPass;
-	createInfo.imageView = &swapChain.GetImageView();
+	createInfo.imageViews = swapChain.GetImageViews();
 	createInfo.swapChainImageCount = swapChain.GetImageCount();
 	createInfo.swapChainExtent = swapChain.GetExtent();
+	createInfo.depthBuffer = &depthBuffer;
 
 	FrameBuffer::InitializeFrameBuffer(createInfo, &frameBuffer);
+}
+
+void RenderContext::CreateDepthBuffer()
+{
+	DepthBufferVkCreateInfo createInfo{};
+	createInfo.physicalDevice = physicalDevice;
+	createInfo.logicalDevice = logicalDevice;
+	createInfo.commandPool = commandPool;
+	createInfo.graphicsQueue = graphicsQueue;
+	createInfo.swapChainExtent = swapChain.GetExtent();
+	
+	DepthBuffer::InitializeDepthBuffer(createInfo, &depthBuffer);
 }
 
 void RenderContext::CreateCommandBuffer(const SwapChainCommandBufferCreateInfo& _createInfo)
@@ -225,6 +240,7 @@ void RenderContext::Cleanup()
 		commandBuffers[i].Cleanup();
 	}
 	frameBuffer.Cleanup();
+	depthBuffer.Cleanup();
 	renderPass.Cleanup();
 	swapChain.Cleanup();
 	std::cout << "[Cleaned] Render Context" << std::endl;

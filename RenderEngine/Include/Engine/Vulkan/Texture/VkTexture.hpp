@@ -5,6 +5,8 @@
 
 #include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Engine/Vulkan/Texture/VkTextureCreateInfo.hpp"
+#include "Engine/Vulkan/ImageView/ImageView.hpp"
+#include "Engine/Vulkan/Image/Image.hpp"
 
 namespace RenderEngine::Engine::Vulkan
 {
@@ -14,16 +16,12 @@ namespace RenderEngine::Engine::Vulkan
 
 		VkTextureVkCreateInfo createInfo;
 
-		VkImage image;
-		VkDeviceMemory imageMemory;
-		VkImageView imageView;
+		Image image;
+		ImageView imageView;
 		VkSampler sampler;
 
-		void CreateImage();
 		void CreateImageView();
 		void CreateSampler();
-		uint32_t FindMemoryType(uint32_t _typeFilter, VkMemoryPropertyFlags _properties);
-		void TransitionImageLayout(VkFormat _format, VkImageLayout _oldLayout, VkImageLayout _newLayout);
 		void CopyBufferToImage(VkBuffer _buffer, uint32_t _width, uint32_t _height);
 
 	public:

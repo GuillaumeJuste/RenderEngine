@@ -16,12 +16,13 @@ namespace RenderEngine::Engine::Vulkan
 		VkDevice logicalDevice = VK_NULL_HANDLE;
 		
 		/// swapchain images
-		std::vector<VkImage> swapChainImages;
+		VkImage image;
 
 		/// swapchain images format 
-		VkFormat swapChainImageFormat = VK_FORMAT_UNDEFINED;
+		VkFormat format = VK_FORMAT_UNDEFINED;
 
-		/// default constructor
+		VkImageAspectFlags aspectFlags;
+
 		ImageViewVkCreateInfo() = default;
 	};
 }

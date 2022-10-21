@@ -16,6 +16,8 @@ using namespace RenderEngine::Engine::Base;
 #include "Engine/Vulkan/BufferObject/BufferObject.hpp"
 #include "Engine/Vulkan/Scene/Data/SceneData.hpp"
 #include "Engine/Vulkan/Descriptor/Pool/DescriptorPool.hpp"
+#include "Engine/Vulkan/DepthBuffer/DepthBuffer.hpp"
+
 
 namespace RenderEngine::Engine::Vulkan
 {
@@ -49,6 +51,9 @@ namespace RenderEngine::Engine::Vulkan
 		/// present queue
 		VkQueue presentQueue;
 
+		/// command pool
+		CommandPool* commandPool;
+
 		/// swap chain
 		SwapChain swapChain;
 		
@@ -58,8 +63,7 @@ namespace RenderEngine::Engine::Vulkan
 		/// framebuffer
 		FrameBuffer frameBuffer;
 		
-		/// command pool
-		CommandPool* commandPool;
+		DepthBuffer depthBuffer;
 		
 		///command buffers
 		std::vector<SwapChainCommandBuffer> commandBuffers;
@@ -83,6 +87,8 @@ namespace RenderEngine::Engine::Vulkan
 		 * @brief Create Framebuffer
 		*/
 		void CreateFrameBuffer();
+
+		void CreateDepthBuffer();
 
 		/**
 		 * @brief Create Command Buffer

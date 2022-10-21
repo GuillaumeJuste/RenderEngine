@@ -18,7 +18,7 @@ namespace RenderEngine::Engine::Vulkan
 		VkDevice logicalDevice = VK_NULL_HANDLE;
 		
 		/// Image views
-		std::vector<VkImageView> swapChainImageViews;
+		VkImageView imageView;
 
 	public:
 
@@ -40,7 +40,7 @@ namespace RenderEngine::Engine::Vulkan
 		*/
 		void Cleanup();
 
-		const std::vector<VkImageView>& GetSwapChainImageViews() const;
+		const VkImageView& GetImageView() const;
 	};
 
 }

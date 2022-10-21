@@ -4,6 +4,7 @@
 #define RENDERENGINE_RENDERPASSVKCREATEINFO
 
 #include "Engine/Vulkan/Shader/Shader.hpp"
+#include "Engine/Vulkan/DepthBuffer/DepthBuffer.hpp"
 
 namespace RenderEngine::Engine::Vulkan
 {
@@ -17,6 +18,8 @@ namespace RenderEngine::Engine::Vulkan
 
 		/// swapchain image format
 		VkFormat swapChainImageFormat;
+
+		DepthBuffer* depthBuffer;
 
 		RenderPassVkCreateInfo() = default;
 	};

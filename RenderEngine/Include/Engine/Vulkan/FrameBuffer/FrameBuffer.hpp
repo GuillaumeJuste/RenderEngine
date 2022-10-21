@@ -18,18 +18,6 @@ namespace RenderEngine::Engine::Vulkan
 		/// logical device
 		VkDevice logicalDevice;
 		
-		/// renderPass
-		RenderPass* renderPass;
-		
-		/// Image View
-		const ImageView* imageView;
-		
-		/// number of image in the swapchain
-		size_t swapChainImageCount;
-		
-		/// swapchaine extent
-		VkExtent2D swapChainExtent;
-
 		///Framebuffers
 		std::vector<VkFramebuffer> framebuffers;
 

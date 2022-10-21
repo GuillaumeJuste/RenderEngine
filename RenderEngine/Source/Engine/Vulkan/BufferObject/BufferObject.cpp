@@ -1,5 +1,6 @@
 #include "Engine/Vulkan/BufferObject/BufferObject.hpp"
 #include "Engine/Vulkan/CommandBuffer/CommandBuffer.hpp"
+#include "Engine/Vulkan/Misc/Utils.hpp"
 #include <iostream>
 
 using namespace RenderEngine::Engine::Vulkan;
@@ -29,7 +30,7 @@ void BufferObject::InitializeBufferObject(BufferObjectVkCreateInfo _createInfo, 
 	VkMemoryAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 	allocInfo.allocationSize = memRequirements.size;
-	allocInfo.memoryTypeIndex = _output->FindMemoryType(memRequirements.memoryTypeBits, _createInfo.memoryProperties);
+	allocInfo.memoryTypeIndex = FindMemoryType(_output->physicalDevice, memRequirements.memoryTypeBits, _createInfo.memoryProperties);
 
 	if (vkAllocateMemory(_createInfo.logicalDevice, &allocInfo, nullptr, &_output->bufferMemory) != VK_SUCCESS)
 	{
@@ -48,19 +49,6 @@ void BufferObject::CopyBuffer(BufferObject* _dstBuffer, CommandPool* _commandPoo
 	vkCmdCopyBuffer(commandBuffer, buffer, _dstBuffer->GetVkBuffer(), 1, &copyRegion);
 	
 	CommandBuffer::EndSingleTimeCommands(logicalDevice, _commandPool, _queue, commandBuffer);
-}
-
-uint32_t BufferObject::FindMemoryType(uint32_t _typeFilter, VkMemoryPropertyFlags _properties)
-{
-	VkPhysicalDeviceMemoryProperties memProperties;
-	vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
-
-	for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
-		if ((_typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & _properties) == _properties) {
-			return i;
-		}
-	}
-	throw std::runtime_error("failed to find suitable memory type!");
 }
 
 const VkBuffer& BufferObject::GetVkBuffer() const
