@@ -110,6 +110,9 @@ void RenderContext::RecreateSwapChain()
 	CleanUpSwapChain();
 
 	CreateSwapChain();
+
+	CreateDepthBuffer();
+
 	CreateFrameBuffer();
 
 	frameBufferWasResized = false;

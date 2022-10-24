@@ -195,7 +195,7 @@ const std::vector<ImageView>& SwapChain::GetImageViews() const
 	return imageViews;
 }
 
-const size_t& SwapChain::GetImageCount() const
+size_t SwapChain::GetImageCount() const
 {
 	return images.size();
 }

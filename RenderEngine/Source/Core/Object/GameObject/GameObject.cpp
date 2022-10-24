@@ -1,6 +1,4 @@
 #include "Core/Object/GameObject/GameObject.hpp"
-#include "Core/Components/MeshRenderer/MeshRenderer.hpp"
-#include "Core/RessourceManager/RessourceManager.hpp"
 
 using namespace RenderEngine::Core;
 
@@ -9,14 +7,6 @@ void GameObject::InitializeGameObject(const GameObjectCreateInfo& _createinfo, G
 	_output->parent = _createinfo.parent;
 	_output->transform = Transform(_createinfo.transform);
 	_output->name = _createinfo.name;
-
-	Mesh* mesh = RessourceManager::GetInstance()->LoadMesh("Resources/Models/cube.obj");
-	Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/White.jpg");
-	MeshRenderer* meshRenderer = _output->AddComponent<MeshRenderer>();
-	meshRenderer->SetMesh(mesh);
-	meshRenderer->SetTexture(texture);
-	meshRenderer->vertexShaderFilePath = "Resources/Shaders/VertexShader.spv";
-	meshRenderer->fragmentShaderFilePath = "Resources/Shaders/FragmentShader.spv";
 }
 
 void GameObject::Initialize()
@@ -71,7 +61,7 @@ GameObject* GameObject::GetParent() const
 }
 
 
-Mathlib::Transform GameObject::GetWorldTransform()
+Mathlib::Transform GameObject::GetWorldTransform() const
 {
 	if (parent == nullptr)
 	{
@@ -80,10 +70,10 @@ Mathlib::Transform GameObject::GetWorldTransform()
 
 	Mathlib::Transform parentTransform = parent->GetWorldTransform();
 
-	return Mathlib::Transform::GetWorldTransfrom(parentTransform, transform.GetLocalTransform());
+	return transform.GetLocalTransform().GetWorldTransfrom(parentTransform);
 }
 
-Mathlib::Transform GameObject::GetLocalTransform()
+Mathlib::Transform GameObject::GetLocalTransform() const
 {
 	return transform.GetLocalTransform();
 }

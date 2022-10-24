@@ -3,7 +3,8 @@
 #ifndef RENDERENGINE_CAMERA
 #define RENDERENGINE_CAMERA
 
-#include "Collections/Space.hpp"
+#include "Collections/Mathlib.hpp"
+#include "Core/Object/GameObject/GameObject.hpp"
 
 #ifdef near
 #undef near
@@ -15,13 +16,9 @@
 
 namespace RenderEngine::Core
 {
-    class Camera
+    class Camera : public GameObject
     {
     public:
-
-        Mathlib::Vec3 position;
-        Mathlib::Vec3 lookAt;
-        Mathlib::Vec3 up;
 
         float fov;
         float near;

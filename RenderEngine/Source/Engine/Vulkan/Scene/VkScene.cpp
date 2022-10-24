@@ -1,7 +1,11 @@
 #include "Engine/Vulkan/Scene/VkScene.hpp"
 #include "Engine/Vulkan/Scene/GameObject/VkGameObjectCreateInfo.hpp"
+#include "Engine/Vulkan/UniformBuffer/UniformBufferData.hpp"
+#include "Core/Scene/Scene.hpp"
+#include "Core/Object/GameObject/Camera/Camera.hpp"
 
 using namespace RenderEngine::Engine::Vulkan;
+using namespace RenderEngine::Core;
 
 VkScene::VkScene(const VkSceneCreateInfo& _createInfo) :
 	createInfo{ _createInfo }
@@ -11,6 +15,15 @@ VkScene::VkScene(const VkSceneCreateInfo& _createInfo) :
 	gaoCreateInfo.logicalDevice = _createInfo.logicalDevice;
 	gaoCreateInfo.renderpass = _createInfo.renderpass;
 	gaoCreateInfo.swapchain = _createInfo.swapchain;
+
+	BufferObjectVkCreateInfo cameraBufferCreateInfo;
+	cameraBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
+	cameraBufferCreateInfo.logicalDevice = createInfo.logicalDevice;
+	cameraBufferCreateInfo.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+	cameraBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+	cameraBufferCreateInfo.bufferSize = sizeof(CameraBufferData);
+
+	DescriptorBuffer::InitializeDescriptorBuffer(cameraBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &cameraBuffer);
 
 	CreateVkGameObjects(gaoCreateInfo, createInfo.scene->GetSceneRoot().GetChildrens());
 }
@@ -28,7 +41,7 @@ void VkScene::CreateVkGameObjects(VkGameObjectCreateInfo _createInfo, std::vecto
 			_createInfo.textureData = LoadTexture(meshRenderer->GetTexture());
 		}
 
-		gameObjects.push_front(VkGameObject(_createInfo));
+		gameObjects.push_front(VkGameObject(_createInfo, &cameraBuffer));
 
 		CreateVkGameObjects(_createInfo, (*it)->GetChildrens());
 	}
@@ -181,6 +194,15 @@ void VkScene::Draw(VkCommandBuffer _commandBuffer, int _currentFrame)
 
 void VkScene::Update(size_t _currentframe)
 {
+	Camera camera = createInfo.scene->GetCamera();
+	VkExtent2D extent = createInfo.swapchain->GetExtent();
+
+	CameraBufferData cameraBufferdata{};
+	cameraBufferdata.view = camera.GetViewMatrix();
+	cameraBufferdata.proj = camera.GetProjectionMatrix((float)(extent.width / extent.height));
+
+	cameraBuffer.CopyDataToBuffer<CameraBufferData>((int)_currentframe, &cameraBufferdata, sizeof(CameraBufferData));
+
 	for (std::forward_list<VkGameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{
 		it->Update(_currentframe);

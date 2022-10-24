@@ -8,7 +8,7 @@
 
 using namespace RenderEngine::Engine::Vulkan;
 
-VkGameObject::VkGameObject(const VkGameObjectCreateInfo& _createInfo) :
+VkGameObject::VkGameObject(const VkGameObjectCreateInfo& _createInfo, DescriptorBuffer* _cameraBuffer) :
 	createInfo{ _createInfo }
 {
 
@@ -21,7 +21,7 @@ VkGameObject::VkGameObject(const VkGameObjectCreateInfo& _createInfo) :
 
 	CreateUniformBufferObject();
 	
-	CreateDescriptorSet();
+	CreateDescriptorSet(_cameraBuffer);
 }
 
 void VkGameObject::CreateGraphicsPipeline()
@@ -48,7 +48,7 @@ void VkGameObject::CreateUniformBufferObject()
 	DescriptorBuffer::InitializeDescriptorBuffer(uniformBufferCreateInfo, MAX_FRAMES_IN_FLIGHT,  &uniformBufferObject);
 }
 
-void VkGameObject::CreateDescriptorSet()
+void VkGameObject::CreateDescriptorSet(DescriptorBuffer* _cameraBuffer)
 {
 	std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, graphicsPipeline.GetDescriptorSetLayout().GetDescriptorSetLayout());
 	VkDescriptorSetAllocateInfo allocInfo{};
@@ -68,12 +68,17 @@ void VkGameObject::CreateDescriptorSet()
 		bufferInfo.offset = 0;
 		bufferInfo.range = sizeof(UniformBufferData);
 
+		VkDescriptorBufferInfo camerabufferInfo{};
+		camerabufferInfo.buffer = _cameraBuffer->operator[](i).GetVkBuffer();
+		camerabufferInfo.offset = 0;
+		camerabufferInfo.range = sizeof(CameraBufferData);
+
 		VkDescriptorImageInfo imageInfo{};
 		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		imageInfo.imageView = createInfo.textureData->vkTexture.GetImageView();
 		imageInfo.sampler = createInfo.textureData->vkTexture.GetSampler();
 
-		std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
+		std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
 
 		descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descriptorWrites[0].dstSet = descriptorSets[i];
@@ -90,6 +95,14 @@ void VkGameObject::CreateDescriptorSet()
 		descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		descriptorWrites[1].descriptorCount = 1;
 		descriptorWrites[1].pImageInfo = &imageInfo;
+
+		descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrites[2].dstSet = descriptorSets[i];
+		descriptorWrites[2].dstBinding = 2;
+		descriptorWrites[2].dstArrayElement = 0;
+		descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		descriptorWrites[2].descriptorCount = 1;
+		descriptorWrites[2].pBufferInfo = &camerabufferInfo;
 
 		vkUpdateDescriptorSets(createInfo.logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 	}
@@ -128,10 +141,8 @@ void VkGameObject::Update(size_t _currentframe)
 	UniformBufferData uboData{};
 
 	uboData.model = createInfo.gameObject->GetWorldTransform().ToMatrixWithScale().Transpose();
-	uboData.view = Mathlib::Mat4::ViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(1.0f, 0.0f, -3.0f), Mathlib::Vec3(0.0f, 0.0f, 0.0f), Mathlib::Vec3(0.0f, -1.0f, 0.0f)).Transpose();
-	uboData.proj = Mathlib::Mat4::PerspectiveMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Math::Radians(45.0f), 1024.f / 720.f, 0.1f, 100.0f).Transpose();
-
-	uniformBufferObject.CopyDataToBuffer<UniformBufferData>(_currentframe, &uboData, sizeof(UniformBufferData));
+	
+	uniformBufferObject.CopyDataToBuffer<UniformBufferData>((int)_currentframe, &uboData, sizeof(UniformBufferData));
 }
 
 void VkGameObject::Cleanup()

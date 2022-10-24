@@ -5,7 +5,7 @@
 
 #include "Core/Object/GameObject/GameObject.hpp"
 #include "Core/Object/GameObject/GameObjectCreateInfo.hpp"
-#include "Core/Camera/Camera.hpp"
+#include "Core/Object/GameObject/Camera/Camera.hpp"
 
 #include <string>
 #include <list>
@@ -29,7 +29,7 @@ namespace RenderEngine::Core
         */
         GameObject rootObject;
 
-        
+        Camera mainCamera;
 
     public:
 
@@ -38,7 +38,6 @@ namespace RenderEngine::Core
         */
         std::string name;
 
-        Camera mainCamera;
 
         Scene();
         ~Scene() = default;

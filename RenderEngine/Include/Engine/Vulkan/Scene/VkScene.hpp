@@ -10,6 +10,7 @@
 
 #include "Engine/Vulkan/Scene/Data/MeshData.hpp"
 #include "Engine/Vulkan/Scene/Data/TextureData.hpp"
+#include "Engine/Vulkan/Descriptor/Buffer/DescriptorBuffer.hpp"
 
 #include <forward_list>
 #include <vector>
@@ -20,6 +21,8 @@ namespace RenderEngine::Engine::Vulkan
 	{
 	private:
 		VkSceneCreateInfo createInfo;
+
+		DescriptorBuffer cameraBuffer;
 
 		std::forward_list<VkGameObject> gameObjects;
 

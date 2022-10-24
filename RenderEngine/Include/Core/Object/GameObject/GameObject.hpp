@@ -17,7 +17,7 @@ namespace RenderEngine::Core
     */
     class GameObject : public Object
     {
-    private:
+    protected:
 
         /**
          * @brief GameObject Parent
@@ -83,9 +83,9 @@ namespace RenderEngine::Core
          * @brief Get GameObject world transform
          * @return GameObject world transform
         */
-        Mathlib::Transform GetWorldTransform();
+        Mathlib::Transform GetWorldTransform() const;
 
-        Mathlib::Transform GetLocalTransform();
+        Mathlib::Transform GetLocalTransform() const;
 
         void SetLocalTransform(Mathlib::Transform _newTransform);
 

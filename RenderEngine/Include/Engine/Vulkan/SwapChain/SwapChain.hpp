@@ -109,7 +109,7 @@ namespace RenderEngine::Engine::Vulkan
 		const std::vector<ImageView>& GetImageViews() const;
 		
 		/// Get swapchain image count
-		const size_t& GetImageCount() const;
+		size_t GetImageCount() const;
 
 		/**
 		 * @brief Query Swapchain support

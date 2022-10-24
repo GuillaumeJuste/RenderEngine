@@ -11,10 +11,16 @@ namespace RenderEngine::Engine::Vulkan
 	struct UniformBufferData
 	{
 		Mathlib::Mat4 model;
+
+		UniformBufferData() = default;
+	};
+
+	struct CameraBufferData
+	{
 		Mathlib::Mat4 view;
 		Mathlib::Mat4 proj;
 
-		UniformBufferData() = default;
+		CameraBufferData() = default;
 	};
 }
 

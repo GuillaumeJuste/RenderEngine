@@ -1,4 +1,6 @@
 #include "Core/Scene/Scene.hpp"
+#include "Core/RessourceManager/RessourceManager.hpp"
+#include "Core/Components/MeshRenderer/MeshRenderer.hpp"
 
 using namespace RenderEngine::Core;
 
@@ -16,6 +18,17 @@ Scene::Scene()
 	GameObject::InitializeGameObject(rootCreateInfo, &rootObject);
 
 	rootObject.enable = false;
+
+	GameObjectCreateInfo mainCameraCreateInfo{};
+	mainCameraCreateInfo.name = "mainCamera";
+	mainCameraCreateInfo.parent = &rootObject;
+
+	Mathlib::Transform cameraTransform;
+	cameraTransform.position = Mathlib::Vec3(0.0f, 0.0f, -10.0f);
+
+	mainCameraCreateInfo.transform = cameraTransform;
+
+	GameObject::InitializeGameObject(mainCameraCreateInfo, &mainCamera);
 }
 
 void Scene::Initialize()
@@ -58,6 +71,14 @@ GameObject* Scene::AddGameObject(GameObjectCreateInfo _createInfo)
 	}	
 
 	GameObject::InitializeGameObject(_createInfo, gao);
+
+	Mesh* mesh = RessourceManager::GetInstance()->LoadMesh("Resources/Models/cube.obj");
+	Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/White.jpg");
+	MeshRenderer* meshRenderer = gao->AddComponent<MeshRenderer>();
+	meshRenderer->SetMesh(mesh);
+	meshRenderer->SetTexture(texture);
+	meshRenderer->vertexShaderFilePath = "Resources/Shaders/VertexShader.spv";
+	meshRenderer->fragmentShaderFilePath = "Resources/Shaders/FragmentShader.spv";
 
 	return gao;
 }
@@ -111,6 +132,11 @@ const GameObject* Scene::GetGameObjectByID(unsigned int _id)
 const GameObject& Scene::GetSceneRoot()
 {
 	return rootObject;
+}
+
+const Camera& Scene::GetCamera() const
+{
+	return mainCamera;
 }
 
 void Scene::Cleanup()
