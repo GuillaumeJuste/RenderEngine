@@ -90,10 +90,10 @@ void SwapChainCommandBuffer::SwapChainExtentResizedCallback()
 	
 	if (commandBufferCreateInfo.customViewport == false)
 	{
-		viewport.x = 0.0f;
-		viewport.y = 0.0f;
 		viewport.width = static_cast<float>(swapChainExtent.width);
-		viewport.height = static_cast<float>(swapChainExtent.height);
+		viewport.height = -static_cast<float>(swapChainExtent.height); 
+		viewport.x = 0.0f;
+		viewport.y = static_cast<float>(swapChainExtent.height);
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
 	}

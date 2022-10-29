@@ -80,7 +80,7 @@ namespace RenderEngine::Core
         */
         const GameObject& GetSceneRoot();
 
-        const Camera& GetCamera() const;
+        Camera* GetCamera();
 
         void Cleanup();
 

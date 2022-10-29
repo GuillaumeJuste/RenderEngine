@@ -23,11 +23,6 @@ Scene::Scene()
 	mainCameraCreateInfo.name = "mainCamera";
 	mainCameraCreateInfo.parent = &rootObject;
 
-	Mathlib::Transform cameraTransform;
-	cameraTransform.position = Mathlib::Vec3(0.0f, 0.0f, -10.0f);
-
-	mainCameraCreateInfo.transform = cameraTransform;
-
 	GameObject::InitializeGameObject(mainCameraCreateInfo, &mainCamera);
 }
 
@@ -134,9 +129,9 @@ const GameObject& Scene::GetSceneRoot()
 	return rootObject;
 }
 
-const Camera& Scene::GetCamera() const
+Camera* Scene::GetCamera()
 {
-	return mainCamera;
+	return &mainCamera;
 }
 
 void Scene::Cleanup()

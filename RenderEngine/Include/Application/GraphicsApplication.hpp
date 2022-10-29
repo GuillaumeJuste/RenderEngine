@@ -73,6 +73,8 @@ namespace RenderEngine
 
 		Scene* SetupTestScene();
 
+		Scene* SetupIlluminationScene();
+
 	public:
 
 		/**

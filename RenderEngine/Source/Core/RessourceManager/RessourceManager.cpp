@@ -81,6 +81,15 @@ void RessourceManager::ProcessMesh(const aiScene* _scene, Mesh* _output)
 	}
 }
 
+Mesh* RessourceManager::LoadMesh(std::vector<Vertex> _vertices, std::vector<uint16_t> _indices)
+{
+	Mesh* newMesh = &meshes.emplace_front();
+	newMesh->vertices = _vertices;
+	newMesh->indices = _indices;
+
+	return newMesh;
+}
+
 Mesh* RessourceManager::GetMesh(std::string _filepath)
 {
 	for (std::forward_list<Mesh>::iterator it = meshes.begin(); it != meshes.end(); ++it)

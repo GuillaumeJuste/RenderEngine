@@ -32,6 +32,7 @@ namespace RenderEngine::Core
         static RessourceManager* GetInstance();
 
         Mesh* LoadMesh(std::string _filePath);
+        Mesh* LoadMesh(std::vector<Vertex> _vertices, std::vector<uint16_t> _indices);
         Mesh* GetMesh(std::string _filepath);
         bool DeleteMesh(Mesh* _mesh);
 

@@ -23,8 +23,10 @@ namespace RenderEngine::Core
 
         std::string vertexShaderFilePath;
         std::string fragmentShaderFilePath;
-        PolygonDrawMode drawMode = PolygonDrawMode::FILL;
         FrontFace frontFace = FrontFace::CLOCKWISE;
+        PolygonDrawMode drawMode = PolygonDrawMode::FILL;
+        float lineWidth = 1.0f;
+
 
         MeshRenderer() = default;
         ~MeshRenderer() = default;

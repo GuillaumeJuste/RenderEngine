@@ -81,13 +81,18 @@ Scene* GraphicsApplication::SetupTestScene()
     Scene* scene = sceneManager.AddScene();
     scene->name = "test_scene_1";
 
+    Camera* camera = scene->GetCamera();
+    Mathlib::Transform cameraTransform;
+    cameraTransform.position = Mathlib::Vec3(0.0f, 0.0f, -10.0f);
+    camera->SetLocalTransform(cameraTransform);
+
     Mesh* mesh = RessourceManager::GetInstance()->LoadMesh("Resources/Models/viking_room.obj");
 
     Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/viking_room.png");
-    //Texture* texture2 = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/texture.jpg");
+    Texture* texture2 = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/texture.jpg");
 
     Mathlib::Transform transform;
-    transform.position = Mathlib::Vec3(0.f, 1.0f, 0.f);
+    transform.position = Mathlib::Vec3(0.f, .0f, 0.f);
     transform.scale = Mathlib::Vec3(1.f, 1.f, 1.f);
     transform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(90.f, 90.f, 0.f));
 
@@ -101,49 +106,68 @@ Scene* GraphicsApplication::SetupTestScene()
     MeshRenderer* meshRenderer = obj->GetComponent<MeshRenderer>();
     meshRenderer->SetMesh(mesh);
     meshRenderer->SetTexture(texture);
-    meshRenderer->frontFace = FrontFace::COUNTER_CLOCKWISE;
-
-    //obj->AddComponent<RotatorComponent>();
-
-    //Mathlib::Transform transform2;
-    //transform2.position = Mathlib::Vec3(2.f, 3.0f, 0.f);
-    //transform2.scale = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
-
-    //GameObjectCreateInfo createinfo2;
-    //createinfo2.transform = transform2;
-    //createinfo2.parent = nullptr;
-    //createinfo2.name = "second_object";
-
-    //GameObject* obj2 = scene->AddGameObject(createinfo2);
-    //MeshRenderer* meshRenderer2 = obj2->GetComponent<MeshRenderer>();
-    //meshRenderer2->SetTexture(texture2);
-
-    //RotatorComponent* rotator2 = obj2->AddComponent <RotatorComponent>();
-    //rotator2->rotationAxis = ROTATION_AXIS::Z;
+    meshRenderer->fragmentShaderFilePath = "Resources/Shaders/TextureFragmentShader.spv";
 
 
-    //Mathlib::Transform transform3;
-    //transform3.position = Mathlib::Vec3(0.f, -2.0f, 0.f);
-    //transform3.scale = Mathlib::Vec3(1.5f, 1.5f, 1.5f);
+    Mathlib::Transform transform2;
+    transform2.position = Mathlib::Vec3(2.f, 3.0f, 0.f);
+    transform2.scale = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
 
-    //GameObjectCreateInfo createinfo3;
-    //createinfo3.transform = transform3;
-    //createinfo3.parent = nullptr;
-    //createinfo3.name = "third_object";
+    GameObjectCreateInfo createinfo2;
+    createinfo2.transform = transform2;
+    createinfo2.parent = nullptr;
+    createinfo2.name = "second_object";
 
-    //GameObject* obj3 = scene->AddGameObject(createinfo3);
+    GameObject* obj2 = scene->AddGameObject(createinfo2);
+    MeshRenderer* meshRenderer2 = obj2->GetComponent<MeshRenderer>();
+    meshRenderer2->SetTexture(texture2);
 
-    //Mathlib::Transform transform4;
-    //transform4.position = Mathlib::Vec3(1.5f, 0.0f, 0.f);
-    //transform4.scale = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
+    RotatorComponent* rotator2 = obj2->AddComponent <RotatorComponent>();
+    rotator2->rotationAxis = ROTATION_AXIS::Z;
 
-    //GameObjectCreateInfo createinfo4;
-    //createinfo4.transform = transform4;
-    //createinfo4.parent = obj2;
-    //createinfo4.name = "fourth_object";
 
-    //GameObject* obj4 = scene->AddGameObject(createinfo4);
+    /* Mathlib::Transform transform4;
+    transform4.position = Mathlib::Vec3(1.5f, 0.0f, 0.f);
+    transform4.scale = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
 
+    GameObjectCreateInfo createinfo4;
+    createinfo4.transform = transform4;
+    createinfo4.parent = obj2;
+    createinfo4.name = "fourth_object";
+
+    GameObject* obj4 = scene->AddGameObject(createinfo4);*/
+
+
+    return scene;
+}
+
+Scene* GraphicsApplication::SetupIlluminationScene()
+{
+    Scene* scene = sceneManager.AddScene();
+    scene->name = "test_scene_illumination";
+
+    Camera* camera = scene->GetCamera();
+    Mathlib::Transform cameraTransform;
+    cameraTransform.position = Mathlib::Vec3(0.0f, -2.0f, -3.0f);
+    cameraTransform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(-45.f, 0.f, 0.f));
+    camera->SetLocalTransform(cameraTransform);
+
+    Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/White.jpg");
+
+    Mathlib::Transform transform;
+    transform.position = Mathlib::Vec3(0.f, 0.0f, 0.f);
+    transform.scale = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
+    transform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 45.f, 0.f));
+
+    GameObjectCreateInfo createinfo;
+    createinfo.transform = transform;
+    createinfo.parent = nullptr;
+    createinfo.name = "first_object";
+
+    GameObject* obj = scene->AddGameObject(createinfo);
+
+    MeshRenderer* meshRenderer = obj->GetComponent<MeshRenderer>();
+    meshRenderer->SetTexture(texture);
 
     return scene;
 }

@@ -141,7 +141,6 @@ void VkGameObject::Update(size_t _currentframe)
 	UniformBufferData uboData{};
 
 	uboData.model = createInfo.gameObject->GetWorldTransform().ToMatrixWithScale().Transpose();
-	
 	uniformBufferObject.CopyDataToBuffer<UniformBufferData>((int)_currentframe, &uboData, sizeof(UniformBufferData));
 }
 

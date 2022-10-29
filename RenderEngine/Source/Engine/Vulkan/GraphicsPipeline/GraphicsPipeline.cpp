@@ -43,7 +43,7 @@ void GraphicsPipeline::InitalizeGraphicsPipeline(const GraphicsPipelineVkCreateI
     rasterizer.depthClampEnable = VK_FALSE;
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = (VkPolygonMode)_createInfo.meshRenderer->drawMode;
-    rasterizer.lineWidth = 1.0f;
+    rasterizer.lineWidth = _createInfo.meshRenderer->lineWidth;
     rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
     rasterizer.frontFace = (VkFrontFace)_createInfo.meshRenderer->frontFace;
     rasterizer.depthBiasEnable = VK_FALSE;

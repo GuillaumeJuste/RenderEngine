@@ -194,12 +194,13 @@ void VkScene::Draw(VkCommandBuffer _commandBuffer, int _currentFrame)
 
 void VkScene::Update(size_t _currentframe)
 {
-	Camera camera = createInfo.scene->GetCamera();
+	Camera* camera = createInfo.scene->GetCamera();
 	VkExtent2D extent = createInfo.swapchain->GetExtent();
 
 	CameraBufferData cameraBufferdata{};
-	cameraBufferdata.view = camera.GetViewMatrix();
-	cameraBufferdata.proj = camera.GetProjectionMatrix((float)(extent.width / extent.height));
+	cameraBufferdata.invView = camera->GetViewMatrix().Inverse();
+	cameraBufferdata.proj = camera->GetProjectionMatrix((float)(extent.width / extent.height));
+	cameraBufferdata.cameraPos = camera->GetWorldTransform().position;
 
 	cameraBuffer.CopyDataToBuffer<CameraBufferData>((int)_currentframe, &cameraBufferdata, sizeof(CameraBufferData));
 
@@ -211,6 +212,8 @@ void VkScene::Update(size_t _currentframe)
 
 void VkScene::Cleanup()
 {
+	cameraBuffer.Cleanup();
+
 	for (std::forward_list<VkGameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{
 		(*it).Cleanup();

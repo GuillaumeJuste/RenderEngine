@@ -17,8 +17,9 @@ namespace RenderEngine::Engine::Vulkan
 
 	struct CameraBufferData
 	{
-		Mathlib::Mat4 view;
+		Mathlib::Mat4 invView;
 		Mathlib::Mat4 proj;
+		alignas(16) Mathlib::Vec3 cameraPos;
 
 		CameraBufferData() = default;
 	};

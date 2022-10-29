@@ -18,6 +18,6 @@ Mathlib::Mat4 Camera::GetProjectionMatrix(float _windowAspectRatio) const
 Mathlib::Mat4 Camera::GetViewMatrix() const
 {
 	Mathlib::Transform tmp = GetWorldTransform();
-
-	return Mathlib::Mat4::ViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, tmp.position, tmp.GetForwardVector(), -tmp.GetUpVector()).Transpose();
+	
+	return Mathlib::Mat4::ViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, tmp.position, tmp.GetForwardVector(), tmp.GetUpVector()).Transpose();
 }
