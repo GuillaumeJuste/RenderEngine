@@ -198,11 +198,9 @@ void VkScene::Update(size_t _currentframe)
 	VkExtent2D extent = createInfo.swapchain->GetExtent();
 
 	CameraBufferData cameraBufferdata{};
-	cameraBufferdata.invView = camera->GetViewMatrix();
+	cameraBufferdata.invView = camera->GetViewMatrix().Transpose();
 
-	//Mathlib::Mat4 invView = camera->GetViewMatrix().Inverse();
-
-	cameraBufferdata.proj = camera->GetProjectionMatrix((float)extent.width / (float)extent.height);
+	cameraBufferdata.proj = camera->GetProjectionMatrix((float)extent.width / (float)extent.height).Transpose();
 	cameraBufferdata.cameraPos = camera->GetWorldTransform().position;
 
 	cameraBuffer.CopyDataToBuffer<CameraBufferData>((int)_currentframe, &cameraBufferdata, sizeof(CameraBufferData));

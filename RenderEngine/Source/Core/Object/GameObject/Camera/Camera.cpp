@@ -12,12 +12,12 @@ Camera::Camera() :
 
 Mathlib::Mat4 Camera::GetProjectionMatrix(float _windowAspectRatio) const
 {
-	return Mathlib::Mat4::PerspectiveMatrix(Mathlib::COORDINATE_SYSTEM::LEFT_HAND, Mathlib::Math::Radians(fov), _windowAspectRatio, near, far).Transpose();
+	return Mathlib::Mat4::PerspectiveMatrix(Mathlib::COORDINATE_SYSTEM::LEFT_HAND, Mathlib::Math::Radians(fov), _windowAspectRatio, near, far);
 }
 
 Mathlib::Mat4 Camera::GetViewMatrix() const
 {
 	Mathlib::Transform tmp = GetWorldTransform();
 	
-	return Mathlib::Mat4::ViewMatrix(Mathlib::COORDINATE_SYSTEM::LEFT_HAND, tmp.position, tmp.GetForwardVector(), tmp.GetUpVector()).Transpose();
+	return Mathlib::Mat4::ViewMatrix(Mathlib::COORDINATE_SYSTEM::LEFT_HAND, tmp.position, tmp.GetForwardVector(), tmp.GetUpVector());
 }
