@@ -94,7 +94,7 @@ Scene* GraphicsApplication::SetupTestScene()
     Mathlib::Transform transform;
     transform.position = Mathlib::Vec3(0.f, .0f, 0.f);
     transform.scale = Mathlib::Vec3(1.f, 1.f, 1.f);
-    transform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(90.f, 90.f, 0.f));
+    transform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 90.f, 90.f));
 
     GameObjectCreateInfo createinfo;
     createinfo.transform = transform;
@@ -108,9 +108,8 @@ Scene* GraphicsApplication::SetupTestScene()
     meshRenderer->SetTexture(texture);
     meshRenderer->fragmentShaderFilePath = "Resources/Shaders/TextureFragmentShader.spv";
 
-
     Mathlib::Transform transform2;
-    transform2.position = Mathlib::Vec3(2.f, 3.0f, 0.f);
+    transform2.position = Mathlib::Vec3(2.f, 3.0f, 2.f);
     transform2.scale = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
 
     GameObjectCreateInfo createinfo2;

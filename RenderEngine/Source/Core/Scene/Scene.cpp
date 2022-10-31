@@ -44,6 +44,8 @@ void Scene::Start()
 
 void Scene::Update()
 {
+	mainCamera.Update();
+
 	for (std::list<GameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{
 		if(it->enable)
