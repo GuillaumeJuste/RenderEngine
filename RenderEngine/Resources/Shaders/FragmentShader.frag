@@ -13,9 +13,9 @@ layout(binding = 1) uniform sampler2D texSampler;
 layout(location = 0) out vec4 outColor;
 
 vec3 lightColor = vec3(1.0, 0.42, 0);
-vec3 lightPosition = vec3(-3.0, -3.0, 0);
+vec3 lightPosition = vec3(0.0, 0.0, -3.0);
 float ambientStrength = 0.1;
-float specularStrength = 0.5;
+float specularStrength = 0.8;
 
 void main() {
     vec4 texture = texture(texSampler, vec2(fsIn.fragTexCoord.x, fsIn.fragTexCoord.y));

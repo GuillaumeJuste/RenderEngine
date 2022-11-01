@@ -147,8 +147,8 @@ Scene* GraphicsApplication::SetupIlluminationScene()
 
     Camera* camera = scene->GetCamera();
     Mathlib::Transform cameraTransform;
-    cameraTransform.position = Mathlib::Vec3(0.0f, -2.0f, -3.0f);
-    cameraTransform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(-45.f, 0.f, 0.f));
+    cameraTransform.position = Mathlib::Vec3(0.0f, 0.0f, -3.0f);
+    cameraTransform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 0.f, 0.f));
     camera->SetLocalTransform(cameraTransform);
 
     Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/White.jpg");
@@ -168,12 +168,15 @@ Scene* GraphicsApplication::SetupIlluminationScene()
     MeshRenderer* meshRenderer = obj->GetComponent<MeshRenderer>();
     meshRenderer->SetTexture(texture);
 
+    RotatorComponent* rotator = obj->AddComponent<RotatorComponent>();
+    rotator->rotationAxis = ROTATION_AXIS::Y;
+
     return scene;
 }
 
 void GraphicsApplication::MainLoop()
 {
-    Scene* scene = SetupTestScene();
+    Scene* scene = SetupIlluminationScene();
 
     scene->Initialize();
     scene->Start();
