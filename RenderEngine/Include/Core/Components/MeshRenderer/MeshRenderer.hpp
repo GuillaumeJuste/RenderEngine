@@ -26,7 +26,10 @@ namespace RenderEngine::Core
         FrontFace frontFace = FrontFace::CLOCKWISE;
         PolygonDrawMode drawMode = PolygonDrawMode::FILL;
         float lineWidth = 1.0f;
-
+        Mathlib::Vec3 ambient;
+        Mathlib::Vec3 diffuse;
+        Mathlib::Vec3 specular;
+        float shininess;
 
         MeshRenderer() = default;
         ~MeshRenderer() = default;

@@ -4,7 +4,7 @@ layout(binding = 0) uniform UniformBufferObject {
     mat4 model;
 } ubo;
 
-layout(binding = 2) uniform CameraBufferObject {
+layout(binding = 1) uniform CameraBufferObject {
     mat4 invView;
     mat4 proj;
     vec3 cameraPos;

@@ -1,6 +1,7 @@
 #include "Engine/Vulkan/Scene/GameObject/VkGameObject.hpp"
 
 #include "Engine/Vulkan/UniformBuffer/UniformBufferData.hpp"
+#include "Engine/Vulkan/Scene/Data/Material.hpp"
 
 #include "Misc/Math.hpp"
 
@@ -19,7 +20,7 @@ VkGameObject::VkGameObject(const VkGameObjectCreateInfo& _createInfo, Descriptor
 		CreateGraphicsPipeline();
 	}
 
-	CreateUniformBufferObject();
+	CreatedescriptorBufferObjects();
 	
 	CreateDescriptorSet(_cameraBuffer);
 }
@@ -36,7 +37,7 @@ void VkGameObject::CreateGraphicsPipeline()
 	GraphicsPipeline::InitalizeGraphicsPipeline(gpCreateInfo, &graphicsPipeline);
 }
 
-void VkGameObject::CreateUniformBufferObject()
+void VkGameObject::CreatedescriptorBufferObjects()
 {
 	BufferObjectVkCreateInfo uniformBufferCreateInfo;
 	uniformBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
@@ -46,6 +47,15 @@ void VkGameObject::CreateUniformBufferObject()
 	uniformBufferCreateInfo.bufferSize = sizeof(UniformBufferData);
 
 	DescriptorBuffer::InitializeDescriptorBuffer(uniformBufferCreateInfo, MAX_FRAMES_IN_FLIGHT,  &uniformBufferObject);
+
+	BufferObjectVkCreateInfo materialBufferCreateInfo;
+	materialBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
+	materialBufferCreateInfo.logicalDevice = createInfo.logicalDevice;
+	materialBufferCreateInfo.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+	materialBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+	materialBufferCreateInfo.bufferSize = sizeof(Material);
+
+	DescriptorBuffer::InitializeDescriptorBuffer(uniformBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &materialBufferObject);
 }
 
 void VkGameObject::CreateDescriptorSet(DescriptorBuffer* _cameraBuffer)
@@ -78,7 +88,12 @@ void VkGameObject::CreateDescriptorSet(DescriptorBuffer* _cameraBuffer)
 		imageInfo.imageView = createInfo.textureData->vkTexture.GetImageView();
 		imageInfo.sampler = createInfo.textureData->vkTexture.GetSampler();
 
-		std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
+		VkDescriptorBufferInfo materialbufferInfo{};
+		materialbufferInfo.buffer = materialBufferObject[i].GetVkBuffer();
+		materialbufferInfo.offset = 0;
+		materialbufferInfo.range = sizeof(Material);
+
+		std::array<VkWriteDescriptorSet, 4> descriptorWrites{};
 
 		descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descriptorWrites[0].dstSet = descriptorSets[i];
@@ -92,17 +107,25 @@ void VkGameObject::CreateDescriptorSet(DescriptorBuffer* _cameraBuffer)
 		descriptorWrites[1].dstSet = descriptorSets[i];
 		descriptorWrites[1].dstBinding = 1;
 		descriptorWrites[1].dstArrayElement = 0;
-		descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		descriptorWrites[1].descriptorCount = 1;
-		descriptorWrites[1].pImageInfo = &imageInfo;
+		descriptorWrites[1].pBufferInfo = &camerabufferInfo;
 
 		descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descriptorWrites[2].dstSet = descriptorSets[i];
 		descriptorWrites[2].dstBinding = 2;
 		descriptorWrites[2].dstArrayElement = 0;
-		descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		descriptorWrites[2].descriptorCount = 1;
-		descriptorWrites[2].pBufferInfo = &camerabufferInfo;
+		descriptorWrites[2].pImageInfo = &imageInfo;
+
+		descriptorWrites[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrites[3].dstSet = descriptorSets[i];
+		descriptorWrites[3].dstBinding = 3;
+		descriptorWrites[3].dstArrayElement = 0;
+		descriptorWrites[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		descriptorWrites[3].descriptorCount = 1;
+		descriptorWrites[3].pBufferInfo = &materialbufferInfo;
 
 		vkUpdateDescriptorSets(createInfo.logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 	}
@@ -143,11 +166,20 @@ void VkGameObject::Update(size_t _currentframe)
 	uboData.model = createInfo.gameObject->GetWorldTransform().ToMatrixWithScale().Transpose();
 
 	uniformBufferObject.CopyDataToBuffer<UniformBufferData>((int)_currentframe, &uboData, sizeof(UniformBufferData));
+
+	Material material{};
+	material.ambient = meshRenderer->ambient;
+	material.diffuse = meshRenderer->diffuse;
+	material.specular = meshRenderer->specular;
+	material.shininess = meshRenderer->shininess;
+
+	materialBufferObject.CopyDataToBuffer<Material>((int)_currentframe, &material, sizeof(Material));
 }
 
 void VkGameObject::Cleanup()
 {
 	uniformBufferObject.Cleanup();
+	materialBufferObject.Cleanup();
 
 	graphicsPipeline.Cleanup();
 }

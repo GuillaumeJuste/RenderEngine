@@ -27,13 +27,13 @@ namespace RenderEngine::Engine::Vulkan
 
 		DescriptorBuffer uniformBufferObject;
 
-		//DescriptorSet descriptorSet;
+		DescriptorBuffer materialBufferObject;
 
 		std::vector<VkDescriptorSet> descriptorSets;
 
 		void CreateGraphicsPipeline();
 
-		void CreateUniformBufferObject();
+		void CreatedescriptorBufferObjects();
 
 		void CreateDescriptorSet(DescriptorBuffer* _cameraBuffer);
 

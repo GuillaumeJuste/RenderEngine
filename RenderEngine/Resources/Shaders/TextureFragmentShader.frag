@@ -8,7 +8,14 @@ layout(location = 0) in DataBlock
 	vec3 cameraPos;
 } fsIn;
 
-layout(binding = 1) uniform sampler2D texSampler;
+layout(binding = 2) uniform sampler2D texSampler;
+
+layout(binding = 3) uniform MaterialBufferObject {
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+	float shininess;
+} material;
 
 layout(location = 0) out vec4 outColor;
 

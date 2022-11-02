@@ -1,6 +1,7 @@
 #include "Application/GraphicsApplication.hpp"
 #include "Core/Object/GameObject/GameObject.hpp"
 #include "Core/Components/MeshRenderer/MeshRenderer.hpp"
+#include "Core/Components/Light/Light.hpp"
 #include "Application/CustomComponents/RotatorComponent.hpp"
 #include <iostream>
 
@@ -167,9 +168,30 @@ Scene* GraphicsApplication::SetupIlluminationScene()
 
     MeshRenderer* meshRenderer = obj->GetComponent<MeshRenderer>();
     meshRenderer->SetTexture(texture);
+    meshRenderer->ambient = Mathlib::Vec3(1.0f, 0.5f, 0.31f);
+    meshRenderer->diffuse = Mathlib::Vec3(1.0f, 0.5f, 0.31f);
+    meshRenderer->specular = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
+    meshRenderer->shininess = 32.0f;
 
     RotatorComponent* rotator = obj->AddComponent<RotatorComponent>();
     rotator->rotationAxis = ROTATION_AXIS::Y;
+
+    Mathlib::Transform transform2;
+    transform2.position = Mathlib::Vec3(0.f, 0.0f, -3.f);
+    transform2.scale = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
+
+    GameObjectCreateInfo createinfo2;
+    createinfo2.transform = transform2;
+    createinfo2.parent = nullptr;
+    createinfo2.name = "light_1";
+
+    GameObject* obj2 = scene->AddGameObject(createinfo2);
+
+    Light* light = obj2->AddComponent<Light>();
+    light->color = Mathlib::Vec3(1.0f, 0.42f, 0.0f);
+    light->ambient = Mathlib::Vec3(0.2f, 0.2f, 0.2f);
+    light->diffuse = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
+    light->specular = Mathlib::Vec3(1.0f, 1.0f, 1.0f);
 
     return scene;
 }
