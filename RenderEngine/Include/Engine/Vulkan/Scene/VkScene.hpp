@@ -11,6 +11,8 @@
 #include "Engine/Vulkan/Scene/Data/MeshData.hpp"
 #include "Engine/Vulkan/Scene/Data/TextureData.hpp"
 #include "Engine/Vulkan/Descriptor/Buffer/DescriptorBuffer.hpp"
+#include "Engine/Vulkan/Scene/VkLight.hpp"
+#include "Engine/Vulkan/Scene/Data/LightData.hpp"
 
 #include <forward_list>
 #include <vector>
@@ -23,13 +25,19 @@ namespace RenderEngine::Engine::Vulkan
 		VkSceneCreateInfo createInfo;
 
 		DescriptorBuffer cameraBuffer;
+		DescriptorBuffer lightsBuffer;
 
 		std::forward_list<VkGameObject> gameObjects;
 
 		std::vector<MeshData*> sceneMeshes;
 		std::vector<TextureData*> sceneTextures;
+		std::vector<VkLight> sceneLights;
 
 		void CreateVkGameObjects(VkGameObjectCreateInfo _createInfo, std::vector<GameObject*> _childrens);
+
+		std::vector<LightData> GenerateLightsData();
+		void CreateLightBuffer();
+
 
 		MeshData* LoadMesh(RenderEngine::Core::Mesh* _mesh);
 		MeshData* GetMesh(RenderEngine::Core::Mesh* _mesh);

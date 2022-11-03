@@ -17,29 +17,50 @@ layout(binding = 3) uniform MaterialBufferObject {
 	float shininess;
 } material;
 
+struct Light
+{
+	vec3 position;
+	vec3 color;
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+};
+
+layout (binding = 4) buffer LightInfo
+{
+	Light lights[];
+} lightsBuffer;
+
 layout(location = 0) out vec4 outColor;
 
-vec3 lightColor = vec3(1.0, 0.42, 0);
-vec3 lightPosition = vec3(0.0, 0.0, -3.0);
-float ambientStrength = 0.1;
-float specularStrength = 0.8;
+vec3 ComputeLighting(Light light);
 
-void main() {
+void main() 
+{
     vec4 texture = texture(texSampler, vec2(fsIn.fragTexCoord.x, fsIn.fragTexCoord.y));
 
-    vec3 ambient = ambientStrength * lightColor * material.ambient;
+	vec3 color = vec3(0.0);
+    for(int i = 0; i < lightsBuffer.lights.length(); i++)
+  		color += ComputeLighting(lightsBuffer.lights[i]);
+
+	outColor =  texture * vec4(color, 1.0);
+}
+
+vec3 ComputeLighting(Light light)
+{
+	vec3 ambient = light.color * light.ambient * material.ambient;
 
 	vec3 norm = normalize(fsIn.normal);
-	vec3 lightDir = normalize(lightPosition - fsIn.fragPos);  
+	vec3 lightDir = normalize(light.position - fsIn.fragPos);  
 
 	float diff = max(dot(norm, lightDir), 0.0);
-	vec3 diffuse = lightColor * (diff * material.diffuse);
+	vec3 diffuse = light.color * light.diffuse * (diff * material.diffuse);
 
 	vec3 viewDir = normalize(fsIn.cameraPos - fsIn.fragPos);
 	vec3 reflectDir = reflect(-lightDir, norm);  
 
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-	vec3 specular = lightColor * (spec * material.specular);  
+	vec3 specular = light.color * light.specular *(spec * material.specular);  
 
-	outColor =  texture * vec4(ambient + diffuse + specular, 1.0);
+	return ambient + diffuse + specular;
 }

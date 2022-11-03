@@ -26,6 +26,13 @@ VkScene::VkScene(const VkSceneCreateInfo& _createInfo) :
 	DescriptorBuffer::InitializeDescriptorBuffer(cameraBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &cameraBuffer);
 
 	CreateVkGameObjects(gaoCreateInfo, createInfo.scene->GetSceneRoot().GetChildrens());
+
+	CreateLightBuffer();
+
+	for (std::forward_list<VkGameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
+	{
+		it->CreateDescriptorSet(&cameraBuffer, &lightsBuffer);
+	}
 }
 
 void VkScene::CreateVkGameObjects(VkGameObjectCreateInfo _createInfo, std::vector<GameObject*> _childrens)
@@ -41,10 +48,52 @@ void VkScene::CreateVkGameObjects(VkGameObjectCreateInfo _createInfo, std::vecto
 			_createInfo.textureData = LoadTexture(meshRenderer->GetTexture());
 		}
 
-		gameObjects.push_front(VkGameObject(_createInfo, &cameraBuffer));
+		gameObjects.push_front(VkGameObject(_createInfo));
 
 		CreateVkGameObjects(_createInfo, (*it)->GetChildrens());
+
+		Light* light = _createInfo.gameObject->GetComponent<Light>();
+		if (light != nullptr)
+		{
+			VkLight vkLight{};
+			vkLight.gameObject = (*it);
+			vkLight.light = light;
+
+			sceneLights.push_back(vkLight);
+		}
 	}
+}
+
+std::vector<LightData> VkScene::GenerateLightsData()
+{
+	std::vector<LightData> lightsdata;
+	for (std::vector<VkLight>::iterator it = sceneLights.begin(); it != sceneLights.end(); ++it)
+	{
+		LightData data{};
+		data.position = it->gameObject->GetWorldTransform().position;
+		data.color = it->light->color;
+		data.ambient = it->light->ambient;
+		data.diffuse = it->light->diffuse;
+		data.specular = it->light->specular;
+
+		lightsdata.push_back(data);
+	}
+
+	return lightsdata;
+}
+
+void VkScene::CreateLightBuffer()
+{
+	std::vector<LightData> lightsdata = GenerateLightsData();
+
+	BufferObjectVkCreateInfo lightsBufferCreateInfo;
+	lightsBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
+	lightsBufferCreateInfo.logicalDevice = createInfo.logicalDevice;
+	lightsBufferCreateInfo.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+	lightsBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+	lightsBufferCreateInfo.bufferSize = sizeof(LightData) * lightsdata.size();
+
+	DescriptorBuffer::InitializeDescriptorBuffer(lightsBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &lightsBuffer);
 }
 
 MeshData* VkScene::LoadMesh(RenderEngine::Core::Mesh* _mesh)
@@ -199,11 +248,12 @@ void VkScene::Update(size_t _currentframe)
 
 	CameraBufferData cameraBufferdata{};
 	cameraBufferdata.invView = camera->GetViewMatrix().Transpose();
-
 	cameraBufferdata.proj = camera->GetProjectionMatrix((float)extent.width / (float)extent.height).Transpose();
 	cameraBufferdata.cameraPos = camera->GetWorldTransform().position;
-
 	cameraBuffer.CopyDataToBuffer<CameraBufferData>((int)_currentframe, &cameraBufferdata, sizeof(CameraBufferData));
+
+	std::vector<LightData> lightsdata = GenerateLightsData();
+	lightsBuffer.CopyDataToBuffer<LightData>((int)_currentframe, lightsdata.data(), sizeof(LightData) * lightsdata.size());
 
 	for (std::forward_list<VkGameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{
@@ -214,6 +264,7 @@ void VkScene::Update(size_t _currentframe)
 void VkScene::Cleanup()
 {
 	cameraBuffer.Cleanup();
+	lightsBuffer.Cleanup();
 
 	for (std::forward_list<VkGameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{

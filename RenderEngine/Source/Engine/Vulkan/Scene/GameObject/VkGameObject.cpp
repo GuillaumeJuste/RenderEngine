@@ -2,6 +2,7 @@
 
 #include "Engine/Vulkan/UniformBuffer/UniformBufferData.hpp"
 #include "Engine/Vulkan/Scene/Data/Material.hpp"
+#include "Engine/Vulkan/Scene/Data/LightData.hpp"
 
 #include "Misc/Math.hpp"
 
@@ -9,7 +10,7 @@
 
 using namespace RenderEngine::Engine::Vulkan;
 
-VkGameObject::VkGameObject(const VkGameObjectCreateInfo& _createInfo, DescriptorBuffer* _cameraBuffer) :
+VkGameObject::VkGameObject(const VkGameObjectCreateInfo& _createInfo) :
 	createInfo{ _createInfo }
 {
 
@@ -20,9 +21,7 @@ VkGameObject::VkGameObject(const VkGameObjectCreateInfo& _createInfo, Descriptor
 		CreateGraphicsPipeline();
 	}
 
-	CreatedescriptorBufferObjects();
-	
-	CreateDescriptorSet(_cameraBuffer);
+	CreateDescriptorBufferObjects();
 }
 
 void VkGameObject::CreateGraphicsPipeline()
@@ -37,7 +36,7 @@ void VkGameObject::CreateGraphicsPipeline()
 	GraphicsPipeline::InitalizeGraphicsPipeline(gpCreateInfo, &graphicsPipeline);
 }
 
-void VkGameObject::CreatedescriptorBufferObjects()
+void VkGameObject::CreateDescriptorBufferObjects()
 {
 	BufferObjectVkCreateInfo uniformBufferCreateInfo;
 	uniformBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
@@ -58,7 +57,7 @@ void VkGameObject::CreatedescriptorBufferObjects()
 	DescriptorBuffer::InitializeDescriptorBuffer(uniformBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &materialBufferObject);
 }
 
-void VkGameObject::CreateDescriptorSet(DescriptorBuffer* _cameraBuffer)
+void VkGameObject::CreateDescriptorSet(DescriptorBuffer* _cameraBuffer, DescriptorBuffer* _lightsBuffer)
 {
 	std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, graphicsPipeline.GetDescriptorSetLayout().GetDescriptorSetLayout());
 	VkDescriptorSetAllocateInfo allocInfo{};
@@ -78,22 +77,27 @@ void VkGameObject::CreateDescriptorSet(DescriptorBuffer* _cameraBuffer)
 		bufferInfo.offset = 0;
 		bufferInfo.range = sizeof(UniformBufferData);
 
-		VkDescriptorBufferInfo camerabufferInfo{};
-		camerabufferInfo.buffer = _cameraBuffer->operator[](i).GetVkBuffer();
-		camerabufferInfo.offset = 0;
-		camerabufferInfo.range = sizeof(CameraBufferData);
+		VkDescriptorBufferInfo cameraBufferInfo{};
+		cameraBufferInfo.buffer = _cameraBuffer->operator[](i).GetVkBuffer();
+		cameraBufferInfo.offset = 0;
+		cameraBufferInfo.range = sizeof(CameraBufferData);
 
 		VkDescriptorImageInfo imageInfo{};
 		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		imageInfo.imageView = createInfo.textureData->vkTexture.GetImageView();
 		imageInfo.sampler = createInfo.textureData->vkTexture.GetSampler();
 
-		VkDescriptorBufferInfo materialbufferInfo{};
-		materialbufferInfo.buffer = materialBufferObject[i].GetVkBuffer();
-		materialbufferInfo.offset = 0;
-		materialbufferInfo.range = sizeof(Material);
+		VkDescriptorBufferInfo materialBufferInfo{};
+		materialBufferInfo.buffer = materialBufferObject[i].GetVkBuffer();
+		materialBufferInfo.offset = 0;
+		materialBufferInfo.range = sizeof(Material);
 
-		std::array<VkWriteDescriptorSet, 4> descriptorWrites{};
+		VkDescriptorBufferInfo lightBufferInfo{};
+		lightBufferInfo.buffer = _lightsBuffer->operator[](i).GetVkBuffer();
+		lightBufferInfo.offset = 0;
+		lightBufferInfo.range = _lightsBuffer->operator[](i).GetBufferSize();
+
+		std::array<VkWriteDescriptorSet, 5> descriptorWrites{};
 
 		descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descriptorWrites[0].dstSet = descriptorSets[i];
@@ -109,7 +113,7 @@ void VkGameObject::CreateDescriptorSet(DescriptorBuffer* _cameraBuffer)
 		descriptorWrites[1].dstArrayElement = 0;
 		descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		descriptorWrites[1].descriptorCount = 1;
-		descriptorWrites[1].pBufferInfo = &camerabufferInfo;
+		descriptorWrites[1].pBufferInfo = &cameraBufferInfo;
 
 		descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descriptorWrites[2].dstSet = descriptorSets[i];
@@ -125,7 +129,15 @@ void VkGameObject::CreateDescriptorSet(DescriptorBuffer* _cameraBuffer)
 		descriptorWrites[3].dstArrayElement = 0;
 		descriptorWrites[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		descriptorWrites[3].descriptorCount = 1;
-		descriptorWrites[3].pBufferInfo = &materialbufferInfo;
+		descriptorWrites[3].pBufferInfo = &materialBufferInfo;
+
+		descriptorWrites[4].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrites[4].dstSet = descriptorSets[i];
+		descriptorWrites[4].dstBinding = 4;
+		descriptorWrites[4].dstArrayElement = 0;
+		descriptorWrites[4].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+		descriptorWrites[4].descriptorCount = 1;
+		descriptorWrites[4].pBufferInfo = &lightBufferInfo;
 
 		vkUpdateDescriptorSets(createInfo.logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 	}

@@ -33,13 +33,14 @@ namespace RenderEngine::Engine::Vulkan
 
 		void CreateGraphicsPipeline();
 
-		void CreatedescriptorBufferObjects();
+		void CreateDescriptorBufferObjects();
 
-		void CreateDescriptorSet(DescriptorBuffer* _cameraBuffer);
 
 	public:
-		VkGameObject(const VkGameObjectCreateInfo& _createInfo, DescriptorBuffer* _cameraBuffer);
+		VkGameObject(const VkGameObjectCreateInfo& _createInfo);
 		~VkGameObject() = default;
+
+		void CreateDescriptorSet(DescriptorBuffer* _cameraBuffer, DescriptorBuffer* _lightsBuffer);
 
 		void Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const;
 

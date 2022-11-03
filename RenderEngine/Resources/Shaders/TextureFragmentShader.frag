@@ -17,6 +17,20 @@ layout(binding = 3) uniform MaterialBufferObject {
 	float shininess;
 } material;
 
+struct Light
+{
+	vec3 position;
+	vec3 color;
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+};
+
+layout (binding = 4) buffer LightInfo
+{
+	Light lights[];
+} lightsBuffer;
+
 layout(location = 0) out vec4 outColor;
 
 void main() {
