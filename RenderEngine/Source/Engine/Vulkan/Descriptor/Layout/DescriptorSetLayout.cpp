@@ -43,7 +43,14 @@ void DescriptorSetLayout::InitializeDescriptorSetLayout(const DescriptorSetLayou
     lightLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
     lightLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
-    std::array<VkDescriptorSetLayoutBinding, 5> bindings = { uboLayoutBinding, samplerLayoutBinding, cameraLayoutBinding, materialBinding, lightLayoutBinding };
+    VkDescriptorSetLayoutBinding specularSamplerLayoutBinding{};
+    specularSamplerLayoutBinding.binding = 5;
+    specularSamplerLayoutBinding.descriptorCount = 1;
+    specularSamplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    specularSamplerLayoutBinding.pImmutableSamplers = nullptr;
+    specularSamplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+    std::array<VkDescriptorSetLayoutBinding, 6> bindings = { uboLayoutBinding, samplerLayoutBinding, cameraLayoutBinding, materialBinding, lightLayoutBinding, specularSamplerLayoutBinding };
 
     VkDescriptorSetLayoutCreateInfo layoutInfo{};
     layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;

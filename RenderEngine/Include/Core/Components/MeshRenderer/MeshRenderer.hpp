@@ -18,6 +18,7 @@ namespace RenderEngine::Core
     private:
         Mesh* mesh;
         Texture* texture;
+        Texture* specularMap;
 
     public:
 
@@ -28,7 +29,6 @@ namespace RenderEngine::Core
         float lineWidth = 1.0f;
         Mathlib::Vec3 ambient;
         Mathlib::Vec3 diffuse;
-        Mathlib::Vec3 specular;
         float shininess;
 
         MeshRenderer() = default;
@@ -43,6 +43,9 @@ namespace RenderEngine::Core
 
         Texture* GetTexture();
         void SetTexture(Texture* _texture);
+        
+        Texture* GetSpecularMap();
+        void SetSpecularMap(Texture* _specularMap);
     };
 }
 

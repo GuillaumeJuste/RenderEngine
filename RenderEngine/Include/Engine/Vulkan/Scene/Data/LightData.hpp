@@ -11,9 +11,9 @@ namespace RenderEngine::Engine::Vulkan
 	{
 		alignas(16) Mathlib::Vec3 position;
 		alignas(16) Mathlib::Vec3 color;
-		alignas(16) Mathlib::Vec3 ambient;
-		alignas(16) Mathlib::Vec3 diffuse;
-		alignas(16) Mathlib::Vec3 specular;
+		float ambient;
+		float diffuse;
+		float specular;
 
 		/// default constructor
 		LightData() = default;

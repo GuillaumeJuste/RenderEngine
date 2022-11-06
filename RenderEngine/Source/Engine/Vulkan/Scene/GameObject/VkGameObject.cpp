@@ -97,7 +97,12 @@ void VkGameObject::CreateDescriptorSet(DescriptorBuffer* _cameraBuffer, Descript
 		lightBufferInfo.offset = 0;
 		lightBufferInfo.range = _lightsBuffer->operator[](i).GetBufferSize();
 
-		std::array<VkWriteDescriptorSet, 5> descriptorWrites{};
+		VkDescriptorImageInfo specularSamplerInfo{};
+		specularSamplerInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		specularSamplerInfo.imageView = createInfo.specularMap->vkTexture.GetImageView();
+		specularSamplerInfo.sampler = createInfo.specularMap->vkTexture.GetSampler();
+
+		std::array<VkWriteDescriptorSet, 6> descriptorWrites{};
 
 		descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descriptorWrites[0].dstSet = descriptorSets[i];
@@ -138,6 +143,14 @@ void VkGameObject::CreateDescriptorSet(DescriptorBuffer* _cameraBuffer, Descript
 		descriptorWrites[4].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 		descriptorWrites[4].descriptorCount = 1;
 		descriptorWrites[4].pBufferInfo = &lightBufferInfo;
+
+		descriptorWrites[5].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrites[5].dstSet = descriptorSets[i];
+		descriptorWrites[5].dstBinding = 5;
+		descriptorWrites[5].dstArrayElement = 0;
+		descriptorWrites[5].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		descriptorWrites[5].descriptorCount = 1;
+		descriptorWrites[5].pImageInfo = &specularSamplerInfo;
 
 		vkUpdateDescriptorSets(createInfo.logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 	}
@@ -180,9 +193,6 @@ void VkGameObject::Update(size_t _currentframe)
 	uniformBufferObject.CopyDataToBuffer<UniformBufferData>((int)_currentframe, &uboData, sizeof(UniformBufferData));
 
 	Material material{};
-	material.ambient = meshRenderer->ambient;
-	material.diffuse = meshRenderer->diffuse;
-	material.specular = meshRenderer->specular;
 	material.shininess = meshRenderer->shininess;
 
 	materialBufferObject.CopyDataToBuffer<Material>((int)_currentframe, &material, sizeof(Material));

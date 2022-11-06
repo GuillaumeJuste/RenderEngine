@@ -33,6 +33,7 @@ namespace RenderEngine::Engine::Vulkan
 
 		MeshData* meshData;
 		TextureData* textureData;
+		TextureData* specularMap;
 
 		RenderEngine::Core::GameObject* gameObject = nullptr;
 

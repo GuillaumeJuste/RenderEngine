@@ -46,6 +46,7 @@ void VkScene::CreateVkGameObjects(VkGameObjectCreateInfo _createInfo, std::vecto
 		{
 			_createInfo.meshData = LoadMesh(meshRenderer->GetMesh());
 			_createInfo.textureData = LoadTexture(meshRenderer->GetTexture());
+			_createInfo.specularMap = LoadTexture(meshRenderer->GetSpecularMap());
 		}
 
 		gameObjects.push_front(VkGameObject(_createInfo));

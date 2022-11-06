@@ -74,6 +74,7 @@ GameObject* Scene::AddGameObject(GameObjectCreateInfo _createInfo)
 	MeshRenderer* meshRenderer = gao->AddComponent<MeshRenderer>();
 	meshRenderer->SetMesh(mesh);
 	meshRenderer->SetTexture(texture);
+	meshRenderer->SetSpecularMap(texture);
 	meshRenderer->vertexShaderFilePath = "Resources/Shaders/VertexShader.spv";
 	meshRenderer->fragmentShaderFilePath = "Resources/Shaders/FragmentShader.spv";
 

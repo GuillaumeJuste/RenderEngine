@@ -33,3 +33,13 @@ void MeshRenderer::SetTexture(Texture* _texture)
 {
 	texture = _texture;
 }
+
+Texture* MeshRenderer::GetSpecularMap()
+{
+	return specularMap;
+}
+
+void MeshRenderer::SetSpecularMap(Texture* _specularMap)
+{
+	specularMap = _specularMap;
+}
