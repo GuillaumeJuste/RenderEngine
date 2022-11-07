@@ -53,7 +53,7 @@ void VkScene::CreateVkGameObjects(VkGameObjectCreateInfo _createInfo, std::vecto
 
 		CreateVkGameObjects(_createInfo, (*it)->GetChildrens());
 
-		Light* light = _createInfo.gameObject->GetComponent<Light>();
+		PointLight* light = _createInfo.gameObject->GetComponent<PointLight>();
 		if (light != nullptr)
 		{
 			VkLight vkLight{};
@@ -73,6 +73,7 @@ std::vector<LightData> VkScene::GenerateLightsData()
 		LightData data{};
 		data.position = it->gameObject->GetWorldTransform().position;
 		data.color = it->light->color;
+		data.range = it->light->range;
 		data.ambient = it->light->ambient;
 		data.diffuse = it->light->diffuse;
 		data.specular = it->light->specular;

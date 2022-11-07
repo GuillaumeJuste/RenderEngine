@@ -21,6 +21,7 @@ struct Light
 {
 	vec3 position;
 	vec3 color;
+	float range;
 	float ambient;
 	float diffuse;
 	float specular;
@@ -49,6 +50,12 @@ void main()
 
 vec3 ComputeLighting(Light light, vec3 texture, vec3 specularMap)
 {
+	float distance    = length(light.position - fsIn.fragPos);
+	float linear = 4.5 / light.range;
+	float quadratic = 75.0 / (light.range * light.range);
+	float attenuation = 1.0 / (1.0 + linear * distance + 
+		quadratic * (distance * distance));    
+
 	vec3 ambient = light.color * light.ambient * texture;
 
 	vec3 norm = normalize(fsIn.normal);
@@ -62,6 +69,10 @@ vec3 ComputeLighting(Light light, vec3 texture, vec3 specularMap)
 
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
 	vec3 specular = light.color * light.specular * spec * specularMap;  
+
+	ambient  *= attenuation; 
+	diffuse  *= attenuation;
+	specular *= attenuation;   
 
 	return ambient + diffuse + specular;
 }

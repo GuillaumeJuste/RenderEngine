@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef RENDERENGINE_LIGHT
-#define RENDERENGINE_LIGHT
+#ifndef RENDERENGINE_POINTLIGHT
+#define RENDERENGINE_POINTLIGHT
 
 #include "Core/Components/Component.hpp"
 #include "Mathlib/Mathlib/Include/Space/Vec3.hpp"
@@ -11,16 +11,19 @@ namespace RenderEngine::Core
     /**
      * @brief Component class implementation
     */
-    class Light : public Component
+    class PointLight : public Component
     {
     public:
         Mathlib::Vec3 color;
+
+        float range;
+
         float ambient;
         float diffuse;
         float specular;
 
-        Light() = default;
-        ~Light() = default;
+        PointLight() = default;
+        ~PointLight() = default;
 
         void Initialize();
         void Start();

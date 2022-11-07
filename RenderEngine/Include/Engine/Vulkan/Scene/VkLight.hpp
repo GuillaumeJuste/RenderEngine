@@ -3,7 +3,7 @@
 #ifndef RENDERENGINE_VKLIGHT
 #define RENDERENGINE_VKLIGHT
 
-#include "Core/Components/Light/Light.hpp"
+#include "Core/Components/Light/PointLight.hpp"
 #include "Core/Object/GameObject/GameObject.hpp"
 
 namespace RenderEngine::Engine::Vulkan
@@ -11,7 +11,7 @@ namespace RenderEngine::Engine::Vulkan
 	struct VkLight
 	{
 		RenderEngine::Core::GameObject* gameObject;
-		RenderEngine::Core::Light* light;
+		RenderEngine::Core::PointLight* light;
 
 		/// default constructor
 		VkLight() = default;
