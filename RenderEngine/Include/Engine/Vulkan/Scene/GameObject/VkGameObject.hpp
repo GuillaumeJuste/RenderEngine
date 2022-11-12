@@ -40,7 +40,7 @@ namespace RenderEngine::Engine::Vulkan
 		VkGameObject(const VkGameObjectCreateInfo& _createInfo);
 		~VkGameObject() = default;
 
-		void CreateDescriptorSet(DescriptorBuffer* _cameraBuffer, DescriptorBuffer* _lightsBuffer);
+		void CreateDescriptorSet(DescriptorBuffer* _cameraBuffer, DescriptorBuffer* _pointLightsBuffer, DescriptorBuffer* _directionalLightsBuffer, DescriptorBuffer* _spotLightsBuffer);
 
 		void Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const;
 

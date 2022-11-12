@@ -37,11 +37,11 @@ void DescriptorSetLayout::InitializeDescriptorSetLayout(const DescriptorSetLayou
     materialBinding.pImmutableSamplers = nullptr;
     materialBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
-    VkDescriptorSetLayoutBinding lightLayoutBinding{};
-    lightLayoutBinding.binding = 4;
-    lightLayoutBinding.descriptorCount = 1;
-    lightLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-    lightLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    VkDescriptorSetLayoutBinding pointLightLayoutBinding{};
+    pointLightLayoutBinding.binding = 4;
+    pointLightLayoutBinding.descriptorCount = 1;
+    pointLightLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    pointLightLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
     VkDescriptorSetLayoutBinding specularSamplerLayoutBinding{};
     specularSamplerLayoutBinding.binding = 5;
@@ -50,7 +50,19 @@ void DescriptorSetLayout::InitializeDescriptorSetLayout(const DescriptorSetLayou
     specularSamplerLayoutBinding.pImmutableSamplers = nullptr;
     specularSamplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
-    std::array<VkDescriptorSetLayoutBinding, 6> bindings = { uboLayoutBinding, samplerLayoutBinding, cameraLayoutBinding, materialBinding, lightLayoutBinding, specularSamplerLayoutBinding };
+    VkDescriptorSetLayoutBinding directionalLightLayoutBinding{};
+    directionalLightLayoutBinding.binding = 6;
+    directionalLightLayoutBinding.descriptorCount = 1;
+    directionalLightLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    directionalLightLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+    VkDescriptorSetLayoutBinding spotLightLayoutBinding{};
+    spotLightLayoutBinding.binding = 7;
+    spotLightLayoutBinding.descriptorCount = 1;
+    spotLightLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    spotLightLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+    std::array<VkDescriptorSetLayoutBinding, 8> bindings = { uboLayoutBinding, samplerLayoutBinding, cameraLayoutBinding, materialBinding, pointLightLayoutBinding, specularSamplerLayoutBinding, directionalLightLayoutBinding, spotLightLayoutBinding };
 
     VkDescriptorSetLayoutCreateInfo layoutInfo{};
     layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;

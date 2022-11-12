@@ -75,6 +75,8 @@ namespace RenderEngine
 
 		Scene* SetupIlluminationScene();
 
+		Scene* SetupSimplePlaneScene();
+
 	public:
 
 		/**

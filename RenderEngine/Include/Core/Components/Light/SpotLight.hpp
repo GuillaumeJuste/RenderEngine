@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef RENDERENGINE_POINTLIGHT
-#define RENDERENGINE_POINTLIGHT
+#ifndef RENDERENGINE_SPOTLIGHT
+#define RENDERENGINE_SPOTLIGHT
 
 #include "Core/Components/Component.hpp"
 #include "Mathlib/Mathlib/Include/Space/Vec3.hpp"
@@ -10,15 +10,16 @@
 namespace RenderEngine::Core
 {
     /**
-     * @brief Point Light class implementation
+     * @brief Spot Light class implementation
     */
-    class PointLight : public Component, public Light
+    class SpotLight : public Component, public Light
     {
     public:
         float range;
+        float cutOff;
 
-        PointLight() = default;
-        ~PointLight() = default;
+        SpotLight() = default;
+        ~SpotLight() = default;
 
         void Initialize();
         void Start();

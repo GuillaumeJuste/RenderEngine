@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef RENDERENGINE_POINTLIGHT
-#define RENDERENGINE_POINTLIGHT
+#ifndef RENDERENGINE_DIRECTIONALLIGHT
+#define RENDERENGINE_DIRECTIONALLIGHT
 
 #include "Core/Components/Component.hpp"
 #include "Mathlib/Mathlib/Include/Space/Vec3.hpp"
@@ -10,15 +10,13 @@
 namespace RenderEngine::Core
 {
     /**
-     * @brief Point Light class implementation
+     * @brief Directional Light class implementation
     */
-    class PointLight : public Component, public Light
+    class DirectionalLight : public Component, public Light
     {
     public:
-        float range;
-
-        PointLight() = default;
-        ~PointLight() = default;
+        DirectionalLight() = default;
+        ~DirectionalLight() = default;
 
         void Initialize();
         void Start();

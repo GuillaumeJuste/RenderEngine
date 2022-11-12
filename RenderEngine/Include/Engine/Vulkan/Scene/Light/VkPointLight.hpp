@@ -1,20 +1,20 @@
 #pragma once
 
-#ifndef RENDERENGINE_VKLIGHT
-#define RENDERENGINE_VKLIGHT
+#ifndef RENDERENGINE_VKPOINTLIGHT
+#define RENDERENGINE_VKPOINTLIGHT
 
 #include "Core/Components/Light/PointLight.hpp"
 #include "Core/Object/GameObject/GameObject.hpp"
 
 namespace RenderEngine::Engine::Vulkan
 {
-	struct VkLight
+	struct VkPointLight
 	{
 		RenderEngine::Core::GameObject* gameObject;
-		RenderEngine::Core::PointLight* light;
+		RenderEngine::Core::PointLight* pointlight;
 
 		/// default constructor
-		VkLight() = default;
+		VkPointLight() = default;
 	};
 }
 

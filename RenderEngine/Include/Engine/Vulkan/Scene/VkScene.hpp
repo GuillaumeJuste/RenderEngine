@@ -11,8 +11,12 @@
 #include "Engine/Vulkan/Scene/Data/MeshData.hpp"
 #include "Engine/Vulkan/Scene/Data/TextureData.hpp"
 #include "Engine/Vulkan/Descriptor/Buffer/DescriptorBuffer.hpp"
-#include "Engine/Vulkan/Scene/VkLight.hpp"
-#include "Engine/Vulkan/Scene/Data/LightData.hpp"
+#include "Engine/Vulkan/Scene/Light/VkPointLight.hpp"
+#include "Engine/Vulkan/Scene/Light/VkDirectionalLight.hpp"
+#include "Engine/Vulkan/Scene/Light/VkSpotLight.hpp"
+#include "Engine/Vulkan/Scene/Data/Light/PointLightData.hpp"
+#include "Engine/Vulkan/Scene/Data/Light/DirectionalLightData.hpp"
+#include "Engine/Vulkan/Scene/Data/Light/SpotLightData.hpp"
 
 #include <forward_list>
 #include <vector>
@@ -24,18 +28,26 @@ namespace RenderEngine::Engine::Vulkan
 	private:
 		VkSceneCreateInfo createInfo;
 
+		int minimumLightCount = 10;
+
 		DescriptorBuffer cameraBuffer;
-		DescriptorBuffer lightsBuffer;
+		DescriptorBuffer pointLightsBuffer;
+		DescriptorBuffer directionalLightsBuffer;
+		DescriptorBuffer spotLightsBuffer;
 
 		std::forward_list<VkGameObject> gameObjects;
 
 		std::vector<MeshData*> sceneMeshes;
 		std::vector<TextureData*> sceneTextures;
-		std::vector<VkLight> sceneLights;
+		std::vector<VkPointLight> scenePointLights;
+		std::vector<VkDirectionalLight> sceneDirectionalLights;
+		std::vector<VkSpotLight> sceneSpotLights;
 
 		void CreateVkGameObjects(VkGameObjectCreateInfo _createInfo, std::vector<GameObject*> _childrens);
 
-		std::vector<LightData> GenerateLightsData();
+		std::vector<PointLightData> GeneratePointLightsData();
+		std::vector<DirectionalLightData> GenerateDirectionalLightsData();
+		std::vector<SpotLightData> GenerateSpotLightsData();
 		void CreateLightBuffer();
 
 

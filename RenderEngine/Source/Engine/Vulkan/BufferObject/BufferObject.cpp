@@ -34,7 +34,7 @@ void BufferObject::InitializeBufferObject(BufferObjectVkCreateInfo _createInfo, 
 
 	if (vkAllocateMemory(_createInfo.logicalDevice, &allocInfo, nullptr, &_output->bufferMemory) != VK_SUCCESS)
 	{
-		throw std::runtime_error("failed to allocate vertex buffer memory!");
+		throw std::runtime_error("failed to allocate buffer memory!");
 	}
 
 	vkBindBufferMemory(_output->logicalDevice, _output->buffer, _output->bufferMemory, 0);
