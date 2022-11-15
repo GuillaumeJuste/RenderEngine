@@ -13,7 +13,6 @@ layout(binding = 2) uniform sampler2D albedoSampler;
 layout(binding = 5) uniform sampler2D specularSampler;
 
 layout(binding = 3) uniform MaterialBufferObject {
-	vec3 specular;
 	float shininess;
 } material;
 
@@ -176,11 +175,12 @@ vec3 ComputeSpotLightLighting(SpotLight spotLight, vec3 specularMap)
 		vec3 specular = spotLight.color * spotLight.specular * spec * specularMap;  
 
 		
-//		diffuse  *= attenuation;
-//		specular *= attenuation;   
+		diffuse  *= attenuation;
+		specular *= attenuation;   
 
 		return ambient + diffuse + specular;
 	}
 
-	return vec3(0.0);
+	return ambient;
+	//return vec3(0.0);
 }

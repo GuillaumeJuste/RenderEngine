@@ -384,6 +384,8 @@ void VkScene::Cleanup()
 {
 	cameraBuffer.Cleanup();
 	pointLightsBuffer.Cleanup();
+	directionalLightsBuffer.Cleanup();
+	spotLightsBuffer.Cleanup();
 
 	for (std::forward_list<VkGameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{

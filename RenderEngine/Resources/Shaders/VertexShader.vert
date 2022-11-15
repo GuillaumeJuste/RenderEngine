@@ -27,7 +27,7 @@ void main() {
     gl_Position = cbo.proj * cbo.invView * ubo.model * vec4(vec3(inPosition.x, inPosition.y, inPosition.z), 1.0);
 
     vsOut.fragTexCoord = inTexCoord;
-    vsOut.fragPos = mat3(ubo.model) * inPosition;
+    vsOut.fragPos = vec3( ubo.model * vec4(inPosition, 1.0));
     vsOut.normal = mat3(transpose(inverse(ubo.model))) * inNormal;  
     vsOut.cameraPos = cbo.cameraPos;
 }
