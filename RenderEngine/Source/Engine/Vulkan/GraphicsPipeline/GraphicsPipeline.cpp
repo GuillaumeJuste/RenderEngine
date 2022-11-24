@@ -88,6 +88,7 @@ void GraphicsPipeline::InitalizeGraphicsPipeline(const GraphicsPipelineVkCreateI
 
     DescriptorSetLayoutVkCreateInfo createInfo{};
     createInfo.logicalDevice = _createInfo.logicalDevice;
+    createInfo.descriptorSetDatas = _createInfo.descriptorSetDatas;
 
     DescriptorSetLayout::InitializeDescriptorSetLayout(createInfo, &_output->descriptorSetLayout);
 
@@ -121,7 +122,7 @@ void GraphicsPipeline::InitalizeGraphicsPipeline(const GraphicsPipelineVkCreateI
         throw std::runtime_error("failed to create graphics pipeline!");
     }
 
-    _output->CreateDescriptorPool();
+    _output->CreateDescriptorPool(_createInfo.descriptorSetDatas);
 }
 
 VkVertexInputBindingDescription GraphicsPipeline::GetVertexBindingDescription()
@@ -164,11 +165,12 @@ void GraphicsPipeline::CreateShaders(const std::string& _vertexShaderFilePath, c
     Shader::CreateShader(fragmentShaderCreateInfo, &fragmentShader);
 }
 
-void GraphicsPipeline::CreateDescriptorPool()
+void GraphicsPipeline::CreateDescriptorPool(std::vector<BaseDescriptorSetData> _descriptorSetDatas)
 {
     DescriptorPoolVkCreateInfo poolCreateInfo{};
     poolCreateInfo.logicalDevice = logicalDevice;
     poolCreateInfo.frameCount = MAX_FRAMES_IN_FLIGHT;
+    poolCreateInfo.descriptorSetDatas = _descriptorSetDatas;
 
     DescriptorPool::InitializeDescriptorPool(poolCreateInfo, &descriptorPool);
 }

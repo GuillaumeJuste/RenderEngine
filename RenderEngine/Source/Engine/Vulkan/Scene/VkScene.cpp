@@ -31,7 +31,7 @@ VkScene::VkScene(const VkSceneCreateInfo& _createInfo) :
 
 	for (std::forward_list<VkGameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{
-		it->CreateDescriptorSet(&cameraBuffer, &pointLightsBuffer, &directionalLightsBuffer, &spotLightsBuffer);
+		it->CreateGraphicsPipeline(&cameraBuffer, &pointLightsBuffer, &directionalLightsBuffer, &spotLightsBuffer);
 	}
 }
 
@@ -149,7 +149,7 @@ std::vector<SpotLightData> VkScene::GenerateSpotLightsData()
 		data.position = it->gameObject->GetWorldTransform().position;
 		data.direction = it->gameObject->GetWorldTransform().GetForwardVector();
 		data.range = it->spotLight->range;
-		data.cutOff = it->spotLight->cutOff;
+		data.cutOff = Mathlib::Math::Cos(it->spotLight->cutOff * Mathlib::Math::DegToRad);
 		data.ambient = it->spotLight->ambient;
 		data.diffuse = it->spotLight->diffuse;
 		data.specular = it->spotLight->specular;

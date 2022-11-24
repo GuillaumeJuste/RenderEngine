@@ -4,6 +4,7 @@
 #define RENDERENGINE_DESCRIPTORSETLAYOUTVKCREATEINFO
 
 #include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
+#include "Engine/Vulkan/Descriptor/Set/BaseDescriptorSetData.hpp"
 
 namespace RenderEngine::Engine::Vulkan
 {
@@ -14,7 +15,8 @@ namespace RenderEngine::Engine::Vulkan
 	{
 		/// logical device
 		VkDevice logicalDevice = VK_NULL_HANDLE;
-		
+		std::vector<BaseDescriptorSetData> descriptorSetDatas;
+
 		DescriptorSetLayoutVkCreateInfo() = default;
 	};
 }

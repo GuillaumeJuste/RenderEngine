@@ -174,7 +174,6 @@ vec3 ComputeSpotLightLighting(SpotLight spotLight, vec3 specularMap)
 		float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
 		vec3 specular = spotLight.color * spotLight.specular * spec * specularMap;  
 
-		
 		diffuse  *= attenuation;
 		specular *= attenuation;   
 
@@ -182,5 +181,4 @@ vec3 ComputeSpotLightLighting(SpotLight spotLight, vec3 specularMap)
 	}
 
 	return ambient;
-	//return vec3(0.0);
 }

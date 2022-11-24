@@ -8,23 +8,18 @@ void DescriptorPool::InitializeDescriptorPool(const DescriptorPoolVkCreateInfo& 
 {
 	_output->logicalDevice = _createInfo.logicalDevice;
 
-	std::array<VkDescriptorPoolSize, 8> poolSizes{};
-	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
-	poolSizes[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	poolSizes[1].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
-	poolSizes[2].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	poolSizes[2].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
-	poolSizes[3].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	poolSizes[3].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
-	poolSizes[4].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-	poolSizes[4].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
-	poolSizes[5].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	poolSizes[5].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
-	poolSizes[6].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-	poolSizes[6].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
-	poolSizes[7].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-	poolSizes[7].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+	size_t descriptorCount = _createInfo.descriptorSetDatas.size();
+
+	std::vector<VkDescriptorPoolSize> poolSizes{};
+
+	for (size_t i = 0; i < descriptorCount; i++)
+	{
+		VkDescriptorPoolSize poolSize{};
+		poolSize.descriptorCount = _createInfo.frameCount;
+		poolSize.type = _createInfo.descriptorSetDatas[i].descriptorType;
+
+		poolSizes.push_back(poolSize);
+	}
 
 	VkDescriptorPoolCreateInfo poolInfo{};
 	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;

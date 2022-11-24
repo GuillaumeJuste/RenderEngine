@@ -57,7 +57,7 @@ namespace RenderEngine::Engine::Vulkan
 
 		void CreateShaders(const std::string& _vertexShaderFilePath, const std::string& _fragmentShaderFilePath);
 
-		void CreateDescriptorPool();
+		void CreateDescriptorPool(std::vector<BaseDescriptorSetData> _descriptorSetDatas);
 
 	public:
 		/// default constructor

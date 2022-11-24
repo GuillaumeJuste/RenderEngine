@@ -11,6 +11,7 @@
 #include "Engine/Vulkan/Descriptor/Buffer/DescriptorBuffer.hpp"
 #include "Core/Components/MeshRenderer/MeshRenderer.hpp"
 #include "Engine/Vulkan/Texture/VkTexture.hpp"
+#include "Engine/Vulkan/Descriptor/Set/BaseDescriptorSetData.hpp"
 
 using namespace RenderEngine::Core;
 
@@ -31,7 +32,9 @@ namespace RenderEngine::Engine::Vulkan
 
 		std::vector<VkDescriptorSet> descriptorSets;
 
-		void CreateGraphicsPipeline();
+		std::vector<BaseDescriptorSetData> GenerateDefaultDescriptorSet();
+
+		void CreateDescriptorSet(DescriptorBuffer* _cameraBuffer, DescriptorBuffer* _pointLightsBuffer, DescriptorBuffer* _directionalLightsBuffer, DescriptorBuffer* _spotLightsBuffer);
 
 		void CreateDescriptorBufferObjects();
 
@@ -40,7 +43,7 @@ namespace RenderEngine::Engine::Vulkan
 		VkGameObject(const VkGameObjectCreateInfo& _createInfo);
 		~VkGameObject() = default;
 
-		void CreateDescriptorSet(DescriptorBuffer* _cameraBuffer, DescriptorBuffer* _pointLightsBuffer, DescriptorBuffer* _directionalLightsBuffer, DescriptorBuffer* _spotLightsBuffer);
+		void CreateGraphicsPipeline(DescriptorBuffer* _cameraBuffer, DescriptorBuffer* _pointLightsBuffer, DescriptorBuffer* _directionalLightsBuffer, DescriptorBuffer* _spotLightsBuffer);
 
 		void Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const;
 
