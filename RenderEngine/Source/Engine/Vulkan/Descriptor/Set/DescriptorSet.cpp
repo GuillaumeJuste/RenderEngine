@@ -1,62 +1,81 @@
 #include "Engine/Vulkan/Descriptor/Set/DescriptorSet.hpp"
+#include "Engine/Vulkan/Descriptor/Set/DescriptorData.hpp"
 
 #include <stdexcept>
-#include <array>
+#include <list>
+#include <vector>
 
 using namespace RenderEngine::Engine::Vulkan;
 
 void DescriptorSet::InitializeDescriptorSet(const DescriptorSetVkCreateInfo& _createInfo, DescriptorSet* _output)
 {
-	/*_output->logicalDevice = _createInfo.logicalDevice;
-	_output->descriptorSetLayout = _createInfo.descriptorSetLayout;
-	_output->descriptorPool = _createInfo.descriptorPool;
+	_output->logicalDevice = _createInfo.logicalDevice;
 
-	std::vector<VkDescriptorSetLayout> layouts(_createInfo.frameCount, _output->descriptorSetLayout.GetDescriptorSetLayout());
+	std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, _createInfo.descriptorSetLayout.GetDescriptorSetLayout());
 	VkDescriptorSetAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-	allocInfo.descriptorPool = _output->descriptorPool->GetDescriptorPool();
-	allocInfo.descriptorSetCount = static_cast<uint32_t>(_createInfo.frameCount);
+	allocInfo.descriptorPool = _createInfo.descriptorPool.GetVkDescriptorPool();
+	allocInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 	allocInfo.pSetLayouts = layouts.data();
 
-	_output->descriptorSets.resize(_createInfo.frameCount);
-	if (vkAllocateDescriptorSets(_output->logicalDevice, &allocInfo, _output->descriptorSets.data()) != VK_SUCCESS) 
+	_output->descriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
+	if (vkAllocateDescriptorSets(_createInfo.logicalDevice, &allocInfo, _output->descriptorSets.data()) != VK_SUCCESS) 
 	{
 		throw std::runtime_error("failed to allocate descriptor sets!");
 	}
 
-	for (size_t i = 0; i < _createInfo.frameCount; i++) 
+	int descriptorCount = _createInfo.descriptorDatas.size();
+	for (int frameIndex = 0; frameIndex < _createInfo.frameCount; frameIndex++)
 	{
-		const size_t bufferSize = _createInfo.descriptorSetBufferDatas[i].descriptorBufferInfos.size();
-		const size_t imageSize = _createInfo.descriptorSetImageDatas[i].descriptorImageInfos.size();
-
+		std::list<VkDescriptorBufferInfo>  DBI{};
+		std::list<VkDescriptorImageInfo>  DII{};
 		std::vector<VkWriteDescriptorSet> descriptorWrites{};
 
-		descriptorWrites.resize(bufferSize + imageSize);
-
-		for (int j = 0; j < bufferSize; j++)
+		for (int descriptorIndex = 0; descriptorIndex < descriptorCount; descriptorIndex++)
 		{
-			descriptorWrites[j].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-			descriptorWrites[j].dstSet = _output->descriptorSets[i];
-			descriptorWrites[j].dstBinding = j;
-			descriptorWrites[j].dstArrayElement = 0;
-			descriptorWrites[j].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			descriptorWrites[j].descriptorCount = 1;
-			descriptorWrites[j].pBufferInfo = &_createInfo.descriptorSetBufferDatas[i].descriptorBufferInfos[j];
+			DescriptorData data = _createInfo.descriptorDatas[descriptorIndex];
+
+			if (data.buffer != nullptr && (data.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER || data.descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER))
+			{
+				VkDescriptorBufferInfo* bufferInfo = &DBI.emplace_back();
+				bufferInfo->buffer = data.buffer->operator[](frameIndex).GetVkBuffer();
+				bufferInfo->offset = 0;
+				bufferInfo->range = data.buffer->operator[](frameIndex).GetBufferSize();
+
+				VkWriteDescriptorSet descriptorWrite{};
+				descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+				descriptorWrite.dstSet = _output->descriptorSets[frameIndex];
+				descriptorWrite.dstBinding = data.binding;
+				descriptorWrite.dstArrayElement = 0;
+				descriptorWrite.descriptorType = data.descriptorType;
+				descriptorWrite.descriptorCount = 1;
+				descriptorWrite.pBufferInfo = bufferInfo;
+
+				descriptorWrites.push_back(descriptorWrite);
+			}
+
+			else if (data.texture != nullptr && data.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+			{
+				VkDescriptorImageInfo* imageInfo = &DII.emplace_back();
+				imageInfo->imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+				imageInfo->imageView = data.texture->GetImageView();
+				imageInfo->sampler = data.texture->GetSampler();
+
+				VkWriteDescriptorSet descriptorWrite{};
+				descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+				descriptorWrite.dstSet = _output->descriptorSets[frameIndex];
+				descriptorWrite.dstBinding = data.binding;
+				descriptorWrite.dstArrayElement = 0;
+				descriptorWrite.descriptorType = data.descriptorType;
+				descriptorWrite.descriptorCount = 1;
+				descriptorWrite.pImageInfo = imageInfo;
+
+				descriptorWrites.push_back(descriptorWrite);
+			}
 		}
 
-		for (int j = 0; j < imageSize; j++)
-		{
-			descriptorWrites[bufferSize + j].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-			descriptorWrites[bufferSize + j].dstSet = _output->descriptorSets[i];
-			descriptorWrites[bufferSize + j].dstBinding = bufferSize + j;
-			descriptorWrites[bufferSize + j].dstArrayElement = 0;
-			descriptorWrites[bufferSize + j].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-			descriptorWrites[bufferSize + j].descriptorCount = 1;
-			descriptorWrites[bufferSize + j].pImageInfo = &_createInfo.descriptorSetImageDatas[i].descriptorImageInfos[j];
-		}
-		
-		vkUpdateDescriptorSets(_output->logicalDevice, static_cast<uint32_t>(bufferSize + imageSize), descriptorWrites.data(), 0, nullptr);
-	}*/
+		vkUpdateDescriptorSets(_createInfo.logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+	}
 }
 
 const VkDescriptorSet& DescriptorSet::GetFrameDescriptorSet(int _frame) const

@@ -9,7 +9,7 @@ void DescriptorSetLayout::InitializeDescriptorSetLayout(const DescriptorSetLayou
 {
     _output->logicalDevice = _createInfo.logicalDevice;
 
-    size_t descriptorCount = _createInfo.descriptorSetDatas.size();
+    size_t descriptorCount = _createInfo.descriptorDatas.size();
 
     std::vector<VkDescriptorSetLayoutBinding> bindings{};
 
@@ -17,10 +17,10 @@ void DescriptorSetLayout::InitializeDescriptorSetLayout(const DescriptorSetLayou
     {
         VkDescriptorSetLayoutBinding setLayout{};
 
-        setLayout.binding = _createInfo.descriptorSetDatas[i].binding;
-        setLayout.descriptorType = _createInfo.descriptorSetDatas[i].descriptorType;
+        setLayout.binding = _createInfo.descriptorDatas[i].binding;
+        setLayout.descriptorType = _createInfo.descriptorDatas[i].descriptorType;
         setLayout.descriptorCount = 1;
-        setLayout.stageFlags = _createInfo.descriptorSetDatas[i].stageFlags;
+        setLayout.stageFlags = _createInfo.descriptorDatas[i].stageFlags;
         setLayout.pImmutableSamplers = nullptr;
 
         bindings.push_back(setLayout);

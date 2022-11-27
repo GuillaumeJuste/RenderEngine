@@ -8,7 +8,7 @@ void DescriptorPool::InitializeDescriptorPool(const DescriptorPoolVkCreateInfo& 
 {
 	_output->logicalDevice = _createInfo.logicalDevice;
 
-	size_t descriptorCount = _createInfo.descriptorSetDatas.size();
+	size_t descriptorCount = _createInfo.descriptorDatas.size();
 
 	std::vector<VkDescriptorPoolSize> poolSizes{};
 
@@ -16,7 +16,7 @@ void DescriptorPool::InitializeDescriptorPool(const DescriptorPoolVkCreateInfo& 
 	{
 		VkDescriptorPoolSize poolSize{};
 		poolSize.descriptorCount = _createInfo.frameCount;
-		poolSize.type = _createInfo.descriptorSetDatas[i].descriptorType;
+		poolSize.type = _createInfo.descriptorDatas[i].descriptorType;
 
 		poolSizes.push_back(poolSize);
 	}

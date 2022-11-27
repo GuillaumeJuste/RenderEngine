@@ -15,10 +15,6 @@ namespace RenderEngine::Engine::Vulkan
 	private:
 		VkDevice logicalDevice = VK_NULL_HANDLE;
 
-		DescriptorSetLayout descriptorSetLayout;
-
-		DescriptorPool* descriptorPool = nullptr;
-
 		std::vector<VkDescriptorSet> descriptorSets;
 
 	public:

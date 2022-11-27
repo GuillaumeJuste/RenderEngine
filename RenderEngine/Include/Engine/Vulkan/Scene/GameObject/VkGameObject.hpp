@@ -11,7 +11,7 @@
 #include "Engine/Vulkan/Descriptor/Buffer/DescriptorBuffer.hpp"
 #include "Core/Components/MeshRenderer/MeshRenderer.hpp"
 #include "Engine/Vulkan/Texture/VkTexture.hpp"
-#include "Engine/Vulkan/Descriptor/Set/BaseDescriptorSetData.hpp"
+#include "Engine/Vulkan/Descriptor/Set/DescriptorData.hpp"
 
 using namespace RenderEngine::Core;
 
@@ -30,11 +30,11 @@ namespace RenderEngine::Engine::Vulkan
 
 		DescriptorBuffer materialBufferObject;
 
-		std::vector<VkDescriptorSet> descriptorSets;
+		DescriptorSet descriptorSets;
 
-		std::vector<BaseDescriptorSetData> GenerateDefaultDescriptorSet();
+		std::vector<DescriptorData> GenerateDefaultDescriptorSet(DescriptorBuffer* _cameraBuffer, DescriptorBuffer* _pointLightsBuffer, DescriptorBuffer* _directionalLightsBuffer, DescriptorBuffer* _spotLightsBuffer);
 
-		void CreateDescriptorSet(DescriptorBuffer* _cameraBuffer, DescriptorBuffer* _pointLightsBuffer, DescriptorBuffer* _directionalLightsBuffer, DescriptorBuffer* _spotLightsBuffer);
+		void CreateDescriptorSet(std::vector<DescriptorData> _descriptorData);
 
 		void CreateDescriptorBufferObjects();
 
