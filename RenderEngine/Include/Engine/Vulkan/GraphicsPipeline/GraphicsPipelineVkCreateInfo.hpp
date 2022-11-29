@@ -7,7 +7,7 @@
 #include "Engine/Vulkan/RenderPass/RenderPass.hpp"
 
 #include "Core/Components/MeshRenderer/MeshRenderer.hpp"
-#include "Engine/Vulkan/Descriptor/Set/DescriptorData.hpp"
+#include "Engine/Vulkan/Descriptor/Set/DescriptorDataList.hpp"
 
 using namespace RenderEngine::Engine::Base;
 
@@ -32,7 +32,7 @@ namespace RenderEngine::Engine::Vulkan
 
 		RenderEngine::Core::MeshRenderer* meshRenderer;
 
-		std::vector<DescriptorData> descriptorDatas;
+		DescriptorDataList descriptorDatas;
 
 		/// default constructor
 		GraphicsPipelineVkCreateInfo() = default;

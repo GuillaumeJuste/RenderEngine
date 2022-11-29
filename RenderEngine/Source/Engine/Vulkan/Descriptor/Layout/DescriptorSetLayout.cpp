@@ -1,4 +1,5 @@
 #include "Engine/Vulkan/Descriptor/Layout/DescriptorSetLayout.hpp"
+#include "Engine/Vulkan/Descriptor/Set/DescriptorDataList.hpp"
 
 #include <stdexcept>
 #include <array>
@@ -9,7 +10,7 @@ void DescriptorSetLayout::InitializeDescriptorSetLayout(const DescriptorSetLayou
 {
     _output->logicalDevice = _createInfo.logicalDevice;
 
-    size_t descriptorCount = _createInfo.descriptorDatas.size();
+    size_t descriptorCount = _createInfo.descriptorDatas.Size();
 
     std::vector<VkDescriptorSetLayoutBinding> bindings{};
 

@@ -6,6 +6,7 @@
 #include "Engine/Vulkan/GraphicsPipeline/GraphicsPipelineVkCreateInfo.hpp"
 #include "Engine/Vulkan/Descriptor/Layout/DescriptorSetLayout.hpp"
 #include "Engine/Vulkan/Descriptor/Pool/DescriptorPool.hpp"
+#include "Engine/Vulkan/Descriptor/Set/DescriptorDataList.hpp"
 
 namespace RenderEngine::Engine::Vulkan
 {
@@ -57,7 +58,7 @@ namespace RenderEngine::Engine::Vulkan
 
 		void CreateShaders(const std::string& _vertexShaderFilePath, const std::string& _fragmentShaderFilePath);
 
-		void CreateDescriptorPool(std::vector<DescriptorData> _descriptorSetDatas);
+		void CreateDescriptorPool(DescriptorDataList _descriptorSetDatas);
 
 	public:
 		/// default constructor

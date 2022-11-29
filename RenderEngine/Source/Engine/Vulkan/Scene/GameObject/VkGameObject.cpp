@@ -56,70 +56,70 @@ void VkGameObject::CreateDescriptorBufferObjects()
 	DescriptorBuffer::InitializeDescriptorBuffer(uniformBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &materialBufferObject);
 }
 
-std::vector<DescriptorData> VkGameObject::GenerateDefaultDescriptorSet(DescriptorBuffer* _cameraBuffer, DescriptorBuffer* _pointLightsBuffer, DescriptorBuffer* _directionalLightsBuffer, DescriptorBuffer* _spotLightsBuffer)
+DescriptorDataList VkGameObject::GenerateDefaultDescriptorSet(DescriptorBuffer* _cameraBuffer, DescriptorBuffer* _pointLightsBuffer, DescriptorBuffer* _directionalLightsBuffer, DescriptorBuffer* _spotLightsBuffer)
 {
-	std::vector<DescriptorData> data;
+	DescriptorDataList datalist{};
 
 	DescriptorData uniformBufferData{};
 	uniformBufferData.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	uniformBufferData.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 	uniformBufferData.binding = 0;
 	uniformBufferData.buffer = &uniformBufferObject;
-	data.push_back(uniformBufferData);
+	datalist.Add(uniformBufferData);
 
 	DescriptorData cameraBufferData{};
 	cameraBufferData.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	cameraBufferData.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 	cameraBufferData.binding = 1;
 	cameraBufferData.buffer = _cameraBuffer;
-	data.push_back(cameraBufferData);
+	datalist.Add(cameraBufferData);
 
 	DescriptorData textureBufferData{};
 	textureBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 	textureBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 	textureBufferData.binding = 2;
 	textureBufferData.texture = &createInfo.textureData->vkTexture;
-	data.push_back(textureBufferData);
+	datalist.Add(textureBufferData);
 
 	DescriptorData materialBufferData{};
 	materialBufferData.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	materialBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 	materialBufferData.binding = 3;
 	materialBufferData.buffer = &materialBufferObject;
-	data.push_back(materialBufferData);
+	datalist.Add(materialBufferData);
 
 	DescriptorData pointLightBufferData{};
 	pointLightBufferData.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 	pointLightBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 	pointLightBufferData.binding = 4;
 	pointLightBufferData.buffer = _pointLightsBuffer;
-	data.push_back(pointLightBufferData);
+	datalist.Add(pointLightBufferData);
 
 	DescriptorData specularBufferData{};
 	specularBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 	specularBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 	specularBufferData.binding = 5;
 	specularBufferData.texture = &createInfo.specularMap->vkTexture;
-	data.push_back(specularBufferData);
+	datalist.Add(specularBufferData);
 
 	DescriptorData directionalLightBufferData{};
 	directionalLightBufferData.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 	directionalLightBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 	directionalLightBufferData.binding = 6;
 	directionalLightBufferData.buffer = _directionalLightsBuffer;
-	data.push_back(directionalLightBufferData);
+	datalist.Add(directionalLightBufferData);
 
 	DescriptorData spotLightBufferData{};
 	spotLightBufferData.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 	spotLightBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 	spotLightBufferData.binding = 7;
 	spotLightBufferData.buffer = _spotLightsBuffer;
-	data.push_back(spotLightBufferData);
+	datalist.Add(spotLightBufferData);
 
-	return data;
+	return datalist;
 }
 
-void VkGameObject::CreateDescriptorSet(std::vector<DescriptorData> _descriptorData)
+void VkGameObject::CreateDescriptorSet(const DescriptorDataList& _descriptorData)
 {
 	DescriptorSetVkCreateInfo descriptorSetCreateInfo{};
 	descriptorSetCreateInfo.logicalDevice = createInfo.logicalDevice;

@@ -165,7 +165,7 @@ void GraphicsPipeline::CreateShaders(const std::string& _vertexShaderFilePath, c
     Shader::CreateShader(fragmentShaderCreateInfo, &fragmentShader);
 }
 
-void GraphicsPipeline::CreateDescriptorPool(std::vector<DescriptorData> _descriptorSetDatas)
+void GraphicsPipeline::CreateDescriptorPool(DescriptorDataList _descriptorSetDatas)
 {
     DescriptorPoolVkCreateInfo poolCreateInfo{};
     poolCreateInfo.logicalDevice = logicalDevice;

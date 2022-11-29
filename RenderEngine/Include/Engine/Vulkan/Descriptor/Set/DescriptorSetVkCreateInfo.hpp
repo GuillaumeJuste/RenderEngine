@@ -6,7 +6,8 @@
 #include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Engine/Vulkan/Descriptor/Layout/DescriptorSetLayout.hpp"
 #include "Engine/Vulkan/Descriptor/Pool/DescriptorPool.hpp"
-#include "Engine/Vulkan/Descriptor/Set/DescriptorData.hpp"
+#include "Engine/Vulkan/Descriptor/Set/DescriptorDataList.hpp"
+
 
 namespace RenderEngine::Engine::Vulkan
 {
@@ -22,7 +23,7 @@ namespace RenderEngine::Engine::Vulkan
 
 		DescriptorPool descriptorPool;
 
-		std::vector<DescriptorData> descriptorDatas;
+		DescriptorDataList descriptorDatas;
 
 		size_t frameCount;
 

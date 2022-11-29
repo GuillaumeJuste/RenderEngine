@@ -4,7 +4,8 @@
 #define RENDERENGINE_DESCRIPTORPOOLVKCREATEINFO
 
 #include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
-#include "Engine/Vulkan/Descriptor/Set/DescriptorData.hpp"
+#include "Engine/Vulkan/Descriptor/Set/DescriptorDataList.hpp"
+
 
 namespace RenderEngine::Engine::Vulkan
 {
@@ -18,7 +19,7 @@ namespace RenderEngine::Engine::Vulkan
 
 		size_t frameCount;
 
-		std::vector<DescriptorData> descriptorDatas;
+		DescriptorDataList descriptorDatas;
 
 		DescriptorPoolVkCreateInfo() = default;
 	};

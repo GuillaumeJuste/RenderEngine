@@ -12,6 +12,7 @@
 #include "Core/Components/MeshRenderer/MeshRenderer.hpp"
 #include "Engine/Vulkan/Texture/VkTexture.hpp"
 #include "Engine/Vulkan/Descriptor/Set/DescriptorData.hpp"
+#include "Engine/Vulkan/Descriptor/Set/DescriptorDataList.hpp"
 
 using namespace RenderEngine::Core;
 
@@ -32,9 +33,9 @@ namespace RenderEngine::Engine::Vulkan
 
 		DescriptorSet descriptorSets;
 
-		std::vector<DescriptorData> GenerateDefaultDescriptorSet(DescriptorBuffer* _cameraBuffer, DescriptorBuffer* _pointLightsBuffer, DescriptorBuffer* _directionalLightsBuffer, DescriptorBuffer* _spotLightsBuffer);
+		DescriptorDataList GenerateDefaultDescriptorSet(DescriptorBuffer* _cameraBuffer, DescriptorBuffer* _pointLightsBuffer, DescriptorBuffer* _directionalLightsBuffer, DescriptorBuffer* _spotLightsBuffer);
 
-		void CreateDescriptorSet(std::vector<DescriptorData> _descriptorData);
+		void CreateDescriptorSet(const DescriptorDataList& _descriptorData);
 
 		void CreateDescriptorBufferObjects();
 

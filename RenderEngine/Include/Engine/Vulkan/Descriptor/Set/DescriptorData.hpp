@@ -19,6 +19,8 @@ namespace RenderEngine::Engine::Vulkan
 		DescriptorBuffer* buffer = nullptr;
 
 		DescriptorData() = default;
+
+		bool operator==(const DescriptorData& _rhs);
 	};
 }
 
