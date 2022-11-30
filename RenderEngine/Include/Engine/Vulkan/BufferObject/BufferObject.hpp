@@ -24,32 +24,32 @@ namespace RenderEngine::Engine::Vulkan
 		/**
 		 * @brief vulkan logical device handle
 		*/
-		VkDevice logicalDevice;
+		VkDevice logicalDevice = VK_NULL_HANDLE;
 
 		/**
 		 * @brief Size of the buffer to be allocated
 		*/
-		VkDeviceSize bufferSize;
+		VkDeviceSize bufferSize = 0;
 
 		/**
 		 * @brief buffer usage flags
 		*/
-		VkBufferUsageFlags usage;
+		VkBufferUsageFlags usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 
 		/**
 		 * @brief memoery property flags
 		*/
-		VkMemoryPropertyFlags memoryProperties;
+		VkMemoryPropertyFlags memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
 
 		/**
 		 * @brief vkBuffer handle
 		*/
-		VkBuffer buffer;
+		VkBuffer buffer = VK_NULL_HANDLE;
 
 		/**
 		 * @brief buffer memory handle
 		*/
-		VkDeviceMemory bufferMemory;
+		VkDeviceMemory bufferMemory = VK_NULL_HANDLE;
 
 	public:
 		BufferObject() = default;

@@ -30,12 +30,12 @@ namespace RenderEngine::Engine::Vulkan
 		/**
 		 * @brief buffer usage flags
 		*/
-		VkBufferUsageFlags usage;
+		VkBufferUsageFlags usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 
 		/**
 		 * @brief memoery property flags
 		*/
-		VkMemoryPropertyFlags memoryProperties;
+		VkMemoryPropertyFlags memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
 
 		BufferObjectVkCreateInfo() = default;
 	};

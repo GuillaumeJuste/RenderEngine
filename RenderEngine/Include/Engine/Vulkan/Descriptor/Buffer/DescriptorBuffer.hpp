@@ -31,7 +31,7 @@ namespace RenderEngine::Engine::Vulkan
 
 		void Cleanup();
 
-		const BufferObject& operator[](int _index);
+		const BufferObject& operator[](size_t _index);
 	};
 
 }

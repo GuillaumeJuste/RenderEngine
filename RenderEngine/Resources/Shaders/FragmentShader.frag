@@ -9,10 +9,10 @@ layout(location = 0) in DataBlock
 	vec3 cameraPos;
 } fsIn;
 
-layout(binding = 2) uniform sampler2D albedoSampler;
-layout(binding = 5) uniform sampler2D specularSampler;
+layout(set = 1, binding = 0) uniform sampler2D albedoSampler;
+layout(set = 1, binding = 3) uniform sampler2D specularSampler;
 
-layout(binding = 3) uniform MaterialBufferObject {
+layout(set = 1, binding = 1) uniform MaterialBufferObject {
 	float shininess;
 } material;
 
@@ -27,7 +27,7 @@ struct PointLight
 	float specular;
 };
 
-layout (binding = 4) buffer PointLightData
+layout (set = 1,binding = 2) buffer PointLightData
 {
 	PointLight lights[];
 } pointLightsBuffer;
@@ -42,7 +42,7 @@ struct DirectionalLight
 	float specular;
 };
 
-layout (binding = 6) buffer DirectionalLightData
+layout (set = 1,binding = 4) buffer DirectionalLightData
 {
 	DirectionalLight lights[];
 } directionalLightsBuffer;
@@ -60,7 +60,7 @@ struct SpotLight
 	float specular;
 };
 
-layout (binding = 7) buffer SpotLightData
+layout (set = 1,binding = 5) buffer SpotLightData
 {
 	SpotLight lights[];
 } spotLightsBuffer;

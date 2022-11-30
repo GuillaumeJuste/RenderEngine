@@ -10,7 +10,7 @@ namespace RenderEngine::Engine::Vulkan
 {
 	struct MeshData
 	{
-		RenderEngine::Core::Mesh* mesh;
+		RenderEngine::Core::Mesh* mesh = nullptr;
 
 		BufferObject vertexBufferObject;
 		BufferObject indexBufferObject;

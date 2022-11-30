@@ -35,8 +35,8 @@ namespace RenderEngine::Engine::Vulkan
 		/// render pass
 		RenderPass* renderPass;
 
-		DescriptorSetLayout descriptorSetLayout;
-		DescriptorPool descriptorPool;
+		std::vector<DescriptorSetLayout> descriptorSetLayout;
+		std::vector<DescriptorPool> descriptorPool;
 
 		/// pipeline layout
 		VkPipelineLayout pipelineLayout;
@@ -58,7 +58,7 @@ namespace RenderEngine::Engine::Vulkan
 
 		void CreateShaders(const std::string& _vertexShaderFilePath, const std::string& _fragmentShaderFilePath);
 
-		void CreateDescriptorPool(DescriptorDataList _descriptorSetDatas);
+		void CreateDescriptorPool(std::vector<DescriptorDataList> _descriptorSetDatas);
 
 	public:
 		/// default constructor
@@ -84,9 +84,9 @@ namespace RenderEngine::Engine::Vulkan
 
 		const VkPipelineLayout& GetGraphicsPipelineLayout() const;
 
-		const DescriptorSetLayout& GetDescriptorSetLayout() const;
+		const DescriptorSetLayout& GetDescriptorSetLayout(size_t _index) const;
 
-		const DescriptorPool& GetDescriptorPool() const;
+		const DescriptorPool& GetDescriptorPool(size_t _index) const;
 	};
 
 }

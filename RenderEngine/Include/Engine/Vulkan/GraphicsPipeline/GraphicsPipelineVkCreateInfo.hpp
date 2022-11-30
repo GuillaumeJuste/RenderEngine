@@ -20,10 +20,10 @@ namespace RenderEngine::Engine::Vulkan
 	{
 		/// logical device
 		VkDevice logicalDevice;
-		
+
 		/// swapchain extent
 		VkExtent2D swapChainExtent;
-		
+
 		/// swapchain image format
 		VkFormat swapChainImageFormat;
 
@@ -32,7 +32,7 @@ namespace RenderEngine::Engine::Vulkan
 
 		RenderEngine::Core::MeshRenderer* meshRenderer;
 
-		DescriptorDataList descriptorDatas;
+		std::vector<DescriptorDataList> descriptorDatas;
 
 		/// default constructor
 		GraphicsPipelineVkCreateInfo() = default;

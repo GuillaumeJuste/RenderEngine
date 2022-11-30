@@ -102,7 +102,7 @@ std::vector<PointLightData> VkScene::GeneratePointLightsData()
 		lightsdata.push_back(data);
 	}
 
-	for (int i = lightsdata.size(); i < minimumLightCount; i++)
+	for (size_t i = lightsdata.size(); i < minimumLightCount; i++)
 	{
 		PointLightData data{};
 		data.enable = false;
@@ -129,7 +129,7 @@ std::vector<DirectionalLightData> VkScene::GenerateDirectionalLightsData()
 		lightsdata.push_back(data);
 	}
 
-	for (int i = lightsdata.size(); i < minimumLightCount; i++)
+	for (size_t i = lightsdata.size(); i < minimumLightCount; i++)
 	{
 		DirectionalLightData data{};
 		data.enable = false;
@@ -157,7 +157,7 @@ std::vector<SpotLightData> VkScene::GenerateSpotLightsData()
 		lightsdata.push_back(data);
 	}
 
-	for (int i = lightsdata.size(); i < minimumLightCount; i++)
+	for (size_t i = lightsdata.size(); i < minimumLightCount; i++)
 	{
 		SpotLightData data{};
 		data.enable = false;
@@ -170,7 +170,7 @@ void VkScene::CreateLightBuffer()
 {
 	std::vector<PointLightData> pointLightsdata = GeneratePointLightsData();
 
-	int pointLightCount = pointLightsdata.size() > minimumLightCount ? pointLightsdata.size() : minimumLightCount;
+	size_t pointLightCount = pointLightsdata.size() > minimumLightCount ? pointLightsdata.size() : minimumLightCount;
 
 	BufferObjectVkCreateInfo pointLightsBufferCreateInfo;
 	pointLightsBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
@@ -184,7 +184,7 @@ void VkScene::CreateLightBuffer()
 
 	std::vector<DirectionalLightData> directionalLightsdata = GenerateDirectionalLightsData();
 
-	int directionalLightCount = directionalLightsdata.size() > minimumLightCount ? directionalLightsdata.size() : minimumLightCount;
+	size_t directionalLightCount = directionalLightsdata.size() > minimumLightCount ? directionalLightsdata.size() : minimumLightCount;
 
 	BufferObjectVkCreateInfo directionalLightsBufferCreateInfo;
 	directionalLightsBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
@@ -197,7 +197,7 @@ void VkScene::CreateLightBuffer()
 
 	std::vector<SpotLightData> spotLightsdata = GenerateSpotLightsData();
 
-	int spotLightCount = spotLightsdata.size() > minimumLightCount ? spotLightsdata.size() : minimumLightCount;
+	size_t spotLightCount = spotLightsdata.size() > minimumLightCount ? spotLightsdata.size() : minimumLightCount;
 
 	BufferObjectVkCreateInfo spotLightsBufferCreateInfo;
 	spotLightsBufferCreateInfo.physicalDevice = createInfo.physicalDevice;

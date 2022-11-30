@@ -15,7 +15,7 @@ void DescriptorPool::InitializeDescriptorPool(const DescriptorPoolVkCreateInfo& 
 	for (size_t i = 0; i < descriptorCount; i++)
 	{
 		VkDescriptorPoolSize poolSize{};
-		poolSize.descriptorCount = _createInfo.frameCount;
+		poolSize.descriptorCount = (uint32_t)_createInfo.frameCount;
 		poolSize.type = _createInfo.descriptorDatas[i].descriptorType;
 
 		poolSizes.push_back(poolSize);

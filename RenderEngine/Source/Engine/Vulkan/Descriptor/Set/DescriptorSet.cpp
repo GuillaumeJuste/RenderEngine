@@ -24,8 +24,8 @@ void DescriptorSet::InitializeDescriptorSet(const DescriptorSetVkCreateInfo& _cr
 		throw std::runtime_error("failed to allocate descriptor sets!");
 	}
 
-	int descriptorCount = _createInfo.descriptorDatas.Size();
-	for (int frameIndex = 0; frameIndex < _createInfo.frameCount; frameIndex++)
+	size_t descriptorCount = _createInfo.descriptorDatas.Size();
+	for (size_t frameIndex = 0; frameIndex < _createInfo.frameCount; frameIndex++)
 	{
 		std::list<VkDescriptorBufferInfo>  DBI{};
 		std::list<VkDescriptorImageInfo>  DII{};

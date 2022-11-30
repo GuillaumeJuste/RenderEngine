@@ -10,7 +10,7 @@ namespace RenderEngine::Engine::Vulkan
 {
 	struct TextureData
 	{
-		RenderEngine::Core::Texture* texture;
+		RenderEngine::Core::Texture* texture = nullptr;
 
 		VkTexture vkTexture;
 

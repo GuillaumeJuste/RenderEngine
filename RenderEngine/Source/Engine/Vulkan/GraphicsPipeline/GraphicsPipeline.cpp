@@ -86,16 +86,26 @@ void GraphicsPipeline::InitalizeGraphicsPipeline(const GraphicsPipelineVkCreateI
     dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
     dynamicState.pDynamicStates = dynamicStates.data();
 
-    DescriptorSetLayoutVkCreateInfo createInfo{};
-    createInfo.logicalDevice = _createInfo.logicalDevice;
-    createInfo.descriptorDatas = _createInfo.descriptorDatas;
+    size_t descrtiptorSetCount = _createInfo.descriptorDatas.size();
+    _output->descriptorSetLayout.resize(descrtiptorSetCount);
 
-    DescriptorSetLayout::InitializeDescriptorSetLayout(createInfo, &_output->descriptorSetLayout);
+    std::vector<VkDescriptorSetLayout> vkDescriptorSetLayout;
+
+    for (int index = 0; index < descrtiptorSetCount; index++)
+    {
+        DescriptorSetLayoutVkCreateInfo createInfo{};
+        createInfo.logicalDevice = _createInfo.logicalDevice;
+        createInfo.descriptorDatas = _createInfo.descriptorDatas[index];
+
+        DescriptorSetLayout::InitializeDescriptorSetLayout(createInfo, &_output->descriptorSetLayout[index]);
+        vkDescriptorSetLayout.push_back(_output->descriptorSetLayout[index].GetDescriptorSetLayout());
+    }
+    
 
     VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    pipelineLayoutInfo.setLayoutCount = 1;
-    pipelineLayoutInfo.pSetLayouts = &_output->descriptorSetLayout.GetDescriptorSetLayout();
+    pipelineLayoutInfo.setLayoutCount = (uint32_t)descrtiptorSetCount;
+    pipelineLayoutInfo.pSetLayouts = vkDescriptorSetLayout.data();
 
     if (vkCreatePipelineLayout(_output->logicalDevice, &pipelineLayoutInfo, nullptr, &_output->pipelineLayout) != VK_SUCCESS) {
         throw std::runtime_error("failed to create pipeline layout!");
@@ -165,23 +175,33 @@ void GraphicsPipeline::CreateShaders(const std::string& _vertexShaderFilePath, c
     Shader::CreateShader(fragmentShaderCreateInfo, &fragmentShader);
 }
 
-void GraphicsPipeline::CreateDescriptorPool(DescriptorDataList _descriptorSetDatas)
+void GraphicsPipeline::CreateDescriptorPool(std::vector<DescriptorDataList> _descriptorSetDatas)
 {
-    DescriptorPoolVkCreateInfo poolCreateInfo{};
-    poolCreateInfo.logicalDevice = logicalDevice;
-    poolCreateInfo.frameCount = MAX_FRAMES_IN_FLIGHT;
-    poolCreateInfo.descriptorDatas = _descriptorSetDatas;
+    size_t descrtiptorSetCount = _descriptorSetDatas.size();
+    descriptorPool.resize(descrtiptorSetCount);
 
-    DescriptorPool::InitializeDescriptorPool(poolCreateInfo, &descriptorPool);
+    for (int index = 0; index < descrtiptorSetCount; index++)
+    {
+        DescriptorPoolVkCreateInfo poolCreateInfo{};
+        poolCreateInfo.logicalDevice = logicalDevice;
+        poolCreateInfo.frameCount = MAX_FRAMES_IN_FLIGHT;
+        poolCreateInfo.descriptorDatas = _descriptorSetDatas[index];
+
+        DescriptorPool::InitializeDescriptorPool(poolCreateInfo, &descriptorPool[index]);
+    }
 }
 
 void GraphicsPipeline::Cleanup()
 {
-    descriptorPool.Cleanup();
-
 	vkDestroyPipeline(logicalDevice, graphicsPipeline, nullptr);
 	vkDestroyPipelineLayout(logicalDevice, pipelineLayout, nullptr);
-    descriptorSetLayout.Cleanup();
+    size_t descriptorCount = descriptorSetLayout.size();
+    for (size_t index = 0; index < descriptorCount; index++)
+    {
+        descriptorPool[index].Cleanup();
+        descriptorSetLayout[index].Cleanup();
+
+    }
     vertexShader.Cleanup();
 	fragmentShader.Cleanup(); 
 	std::cout << "[Cleaned] Graphics Pipeline" << std::endl;
@@ -197,12 +217,12 @@ const VkPipelineLayout& GraphicsPipeline::GetGraphicsPipelineLayout() const
     return pipelineLayout;
 }
 
-const DescriptorSetLayout& GraphicsPipeline::GetDescriptorSetLayout() const
+const DescriptorSetLayout& GraphicsPipeline::GetDescriptorSetLayout(size_t _index) const
 {
-    return descriptorSetLayout;
+    return descriptorSetLayout[_index];
 }
 
-const DescriptorPool& GraphicsPipeline::GetDescriptorPool() const
+const DescriptorPool& GraphicsPipeline::GetDescriptorPool(size_t _index) const
 {
-    return descriptorPool;
+    return descriptorPool[_index];
 }

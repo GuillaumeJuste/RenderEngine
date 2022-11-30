@@ -1,11 +1,11 @@
 #version 450
 #pragma shader_stage(vertex)
 
-layout(binding = 0) uniform UniformBufferObject {
+layout(set = 0, binding = 0) uniform UniformBufferObject {
     mat4 model;
 } ubo;
 
-layout(binding = 1) uniform CameraBufferObject {
+layout(set = 0, binding = 1) uniform CameraBufferObject {
     mat4 invView;
     mat4 proj;
     vec3 cameraPos;

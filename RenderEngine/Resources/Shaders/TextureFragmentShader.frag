@@ -9,31 +9,63 @@ layout(location = 0) in DataBlock
 	vec3 cameraPos;
 } fsIn;
 
-layout(binding = 2) uniform sampler2D texSampler;
+layout(set = 1, binding = 0) uniform sampler2D albedoSampler;
+layout(set = 1, binding = 3) uniform sampler2D specularSampler;
 
-layout(binding = 3) uniform MaterialBufferObject {
-	vec3 ambient;
-	vec3 diffuse;
-	vec3 specular;
+layout(set = 1, binding = 1) uniform MaterialBufferObject {
 	float shininess;
 } material;
 
-struct Light
+struct PointLight
 {
+	bool enable;
 	vec3 position;
 	vec3 color;
+	float range;
 	float ambient;
 	float diffuse;
 	float specular;
 };
 
-layout (binding = 4) buffer LightInfo
+layout (set = 1,binding = 2) buffer PointLightData
 {
-	Light lights[];
-} lightsBuffer;
+	PointLight lights[];
+} pointLightsBuffer;
 
+struct DirectionalLight
+{
+	bool enable;
+	vec3 color;
+	vec3 direction;
+	float ambient;
+	float diffuse;
+	float specular;
+};
+
+layout (set = 1,binding = 4) buffer DirectionalLightData
+{
+	DirectionalLight lights[];
+} directionalLightsBuffer;
+
+struct SpotLight
+{
+	bool enable;
+	vec3 position;
+	vec3 direction;
+	vec3 color;
+	float range;
+	float cutOff;
+	float ambient;
+	float diffuse;
+	float specular;
+};
+
+layout (set = 1,binding = 5) buffer SpotLightData
+{
+	SpotLight lights[];
+} spotLightsBuffer;
 layout(location = 0) out vec4 outColor;
 
 void main() {
-    outColor = texture(texSampler, vec2(fsIn.fragTexCoord.x, fsIn.fragTexCoord.y));
+    outColor = texture(albedoSampler, vec2(fsIn.fragTexCoord.x, fsIn.fragTexCoord.y));
 }

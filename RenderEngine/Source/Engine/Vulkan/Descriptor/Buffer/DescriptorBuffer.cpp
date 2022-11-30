@@ -19,7 +19,7 @@ void DescriptorBuffer::Cleanup()
 		it->Cleanup();
 }
 
-const BufferObject& DescriptorBuffer::operator[](int _index)
+const BufferObject& DescriptorBuffer::operator[](size_t _index)
 {
 	return bufferObjects[_index];
 }

@@ -31,11 +31,13 @@ namespace RenderEngine::Engine::Vulkan
 
 		DescriptorBuffer materialBufferObject;
 
-		DescriptorSet descriptorSets;
+		std::vector<DescriptorSet> descriptorSets;
 
-		DescriptorDataList GenerateDefaultDescriptorSet(DescriptorBuffer* _cameraBuffer, DescriptorBuffer* _pointLightsBuffer, DescriptorBuffer* _directionalLightsBuffer, DescriptorBuffer* _spotLightsBuffer);
+		DescriptorDataList GenerateDefaultVertexShaderDescriptorSet(DescriptorBuffer* _cameraBuffer);
 
-		void CreateDescriptorSet(const DescriptorDataList& _descriptorData);
+		DescriptorDataList GenerateDefaultFragmentShaderDescriptorSet(DescriptorBuffer* _pointLightsBuffer, DescriptorBuffer* _directionalLightsBuffer, DescriptorBuffer* _spotLightsBuffer);
+
+		void CreateDescriptorSet(std::vector<DescriptorDataList> _descriptorDatas);
 
 		void CreateDescriptorBufferObjects();
 

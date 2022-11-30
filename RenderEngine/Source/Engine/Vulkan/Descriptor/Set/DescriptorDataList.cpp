@@ -16,8 +16,3 @@ const DescriptorData& DescriptorDataList::operator[](size_t _index) const
 {
 	return descriptorDatas[_index];
 }
-
-void DescriptorDataList::Remove(const DescriptorData& _data)
-{
-	remove(descriptorDatas.begin(), descriptorDatas.end(), _data);
-}

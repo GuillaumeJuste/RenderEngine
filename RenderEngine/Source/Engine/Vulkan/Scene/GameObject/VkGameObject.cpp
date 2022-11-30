@@ -27,7 +27,9 @@ void VkGameObject::CreateGraphicsPipeline(DescriptorBuffer* _cameraBuffer, Descr
 		gpCreateInfo.swapChainExtent = createInfo.swapchain->GetExtent();
 		gpCreateInfo.swapChainImageFormat = createInfo.swapchain->GetImageFormat();
 		gpCreateInfo.meshRenderer = meshRenderer;
-		gpCreateInfo.descriptorDatas = GenerateDefaultDescriptorSet(_cameraBuffer, _pointLightsBuffer, _directionalLightsBuffer, _spotLightsBuffer);
+
+		gpCreateInfo.descriptorDatas.push_back(GenerateDefaultVertexShaderDescriptorSet(_cameraBuffer));
+		gpCreateInfo.descriptorDatas.push_back(GenerateDefaultFragmentShaderDescriptorSet(_pointLightsBuffer, _directionalLightsBuffer, _spotLightsBuffer));
 
 		GraphicsPipeline::InitalizeGraphicsPipeline(gpCreateInfo, &graphicsPipeline);
 
@@ -56,7 +58,7 @@ void VkGameObject::CreateDescriptorBufferObjects()
 	DescriptorBuffer::InitializeDescriptorBuffer(uniformBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &materialBufferObject);
 }
 
-DescriptorDataList VkGameObject::GenerateDefaultDescriptorSet(DescriptorBuffer* _cameraBuffer, DescriptorBuffer* _pointLightsBuffer, DescriptorBuffer* _directionalLightsBuffer, DescriptorBuffer* _spotLightsBuffer)
+DescriptorDataList VkGameObject::GenerateDefaultVertexShaderDescriptorSet(DescriptorBuffer* _cameraBuffer)
 {
 	DescriptorDataList datalist{};
 
@@ -74,61 +76,74 @@ DescriptorDataList VkGameObject::GenerateDefaultDescriptorSet(DescriptorBuffer* 
 	cameraBufferData.buffer = _cameraBuffer;
 	datalist.Add(cameraBufferData);
 
+	return datalist;
+}
+
+DescriptorDataList VkGameObject::GenerateDefaultFragmentShaderDescriptorSet(DescriptorBuffer* _pointLightsBuffer, DescriptorBuffer* _directionalLightsBuffer, DescriptorBuffer* _spotLightsBuffer)
+{
+	DescriptorDataList datalist{};
+
 	DescriptorData textureBufferData{};
 	textureBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 	textureBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	textureBufferData.binding = 2;
+	textureBufferData.binding = 0;
 	textureBufferData.texture = &createInfo.textureData->vkTexture;
 	datalist.Add(textureBufferData);
 
 	DescriptorData materialBufferData{};
 	materialBufferData.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	materialBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	materialBufferData.binding = 3;
+	materialBufferData.binding = 1;
 	materialBufferData.buffer = &materialBufferObject;
 	datalist.Add(materialBufferData);
 
 	DescriptorData pointLightBufferData{};
 	pointLightBufferData.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 	pointLightBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	pointLightBufferData.binding = 4;
+	pointLightBufferData.binding = 2;
 	pointLightBufferData.buffer = _pointLightsBuffer;
 	datalist.Add(pointLightBufferData);
 
 	DescriptorData specularBufferData{};
 	specularBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 	specularBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	specularBufferData.binding = 5;
+	specularBufferData.binding = 3;
 	specularBufferData.texture = &createInfo.specularMap->vkTexture;
 	datalist.Add(specularBufferData);
 
 	DescriptorData directionalLightBufferData{};
 	directionalLightBufferData.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 	directionalLightBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	directionalLightBufferData.binding = 6;
+	directionalLightBufferData.binding = 4;
 	directionalLightBufferData.buffer = _directionalLightsBuffer;
 	datalist.Add(directionalLightBufferData);
 
 	DescriptorData spotLightBufferData{};
 	spotLightBufferData.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 	spotLightBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	spotLightBufferData.binding = 7;
+	spotLightBufferData.binding = 5;
 	spotLightBufferData.buffer = _spotLightsBuffer;
 	datalist.Add(spotLightBufferData);
 
 	return datalist;
 }
 
-void VkGameObject::CreateDescriptorSet(const DescriptorDataList& _descriptorData)
+void VkGameObject::CreateDescriptorSet(std::vector<DescriptorDataList> _descriptorDatas)
 {
-	DescriptorSetVkCreateInfo descriptorSetCreateInfo{};
-	descriptorSetCreateInfo.logicalDevice = createInfo.logicalDevice;
-	descriptorSetCreateInfo.descriptorSetLayout = graphicsPipeline.GetDescriptorSetLayout();
-	descriptorSetCreateInfo.descriptorPool = graphicsPipeline.GetDescriptorPool();
-	descriptorSetCreateInfo.descriptorDatas = _descriptorData;
-	descriptorSetCreateInfo.frameCount = MAX_FRAMES_IN_FLIGHT;
+	size_t descrtiptorSetCount = _descriptorDatas.size();
+	descriptorSets.resize(descrtiptorSetCount);
 
-	DescriptorSet::InitializeDescriptorSet(descriptorSetCreateInfo, &descriptorSets);
+	for (int index = 0; index < descrtiptorSetCount; index++)
+	{
+		DescriptorSetVkCreateInfo descriptorSetCreateInfo{};
+		descriptorSetCreateInfo.logicalDevice = createInfo.logicalDevice;
+		descriptorSetCreateInfo.descriptorSetLayout = graphicsPipeline.GetDescriptorSetLayout(index);
+		descriptorSetCreateInfo.descriptorPool = graphicsPipeline.GetDescriptorPool(index);
+		descriptorSetCreateInfo.descriptorDatas = _descriptorDatas[index];
+		descriptorSetCreateInfo.frameCount = MAX_FRAMES_IN_FLIGHT;
+
+		DescriptorSet::InitializeDescriptorSet(descriptorSetCreateInfo, &descriptorSets[index]);
+	}
 }
 
 void VkGameObject::Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const
@@ -144,9 +159,13 @@ void VkGameObject::Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const
 			vkCmdBindVertexBuffers(_commandBuffer, 0, 1, vertexBuffers, offsets);
 
 			vkCmdBindIndexBuffer(_commandBuffer, createInfo.meshData->indexBufferObject.GetVkBuffer(), 0, VK_INDEX_TYPE_UINT16);
+			
+			size_t descrtiptorSetCount = descriptorSets.size();
 
-			vkCmdBindDescriptorSets(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.GetGraphicsPipelineLayout(), 0, 1, &descriptorSets.GetFrameDescriptorSet(_currentFrame), 0, nullptr);
-
+			for (int index = 0; index < descrtiptorSetCount; index++)
+			{
+				vkCmdBindDescriptorSets(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.GetGraphicsPipelineLayout(), index, 1, &descriptorSets[index].GetFrameDescriptorSet(_currentFrame), 0, nullptr);
+			}
 			vkCmdDrawIndexed(_commandBuffer, static_cast<uint32_t>(meshRenderer->GetMesh()->indices.size()), 1, 0, 0, 0);
 		}
 	}
@@ -180,8 +199,6 @@ void VkGameObject::Cleanup()
 {
 	uniformBufferObject.Cleanup();
 	materialBufferObject.Cleanup();
-
-	descriptorSets.Cleanup();
 
 	graphicsPipeline.Cleanup();
 }
