@@ -76,7 +76,7 @@ GameObject* Scene::AddGameObject(GameObjectCreateInfo _createInfo)
 	meshRenderer->SetTexture(texture);
 	meshRenderer->SetSpecularMap(texture);
 	meshRenderer->vertexShaderFilePath = "Resources/Shaders/VertexShader.spv";
-	meshRenderer->fragmentShaderFilePath = "Resources/Shaders/FragmentShader.spv";
+	meshRenderer->fragmentShaderFilePath = "Resources/Shaders/BlinnPhongFragmentShader.spv";
 
 	return gao;
 }

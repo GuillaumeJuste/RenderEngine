@@ -31,7 +31,8 @@ Texture* MeshRenderer::GetTexture()
 
 void MeshRenderer::SetTexture(Texture* _texture)
 {
-	texture = _texture;
+	if(_texture != nullptr)
+		texture = _texture;
 }
 
 Texture* MeshRenderer::GetSpecularMap()
@@ -41,5 +42,6 @@ Texture* MeshRenderer::GetSpecularMap()
 
 void MeshRenderer::SetSpecularMap(Texture* _specularMap)
 {
-	specularMap = _specularMap;
+	if (_specularMap != nullptr)
+		specularMap = _specularMap;
 }

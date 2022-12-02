@@ -181,79 +181,79 @@ Scene* GraphicsApplication::SetupIlluminationScene()
             meshRenderer->SetSpecularMap(specularMap);
             meshRenderer->shininess = 32.0f;
 
-            /*RotatorComponent* rotator = obj->AddComponent<RotatorComponent>();
-            rotator->rotationAxis = ROTATION_AXIS::Y;*/
+            RotatorComponent* rotator = obj->AddComponent<RotatorComponent>();
+            rotator->rotationAxis = ROTATION_AXIS::Y;
         }
     }
 
-    ///* light 2 */
+    /* light 2 */
 
-    //Mathlib::Transform transform2;
-    //transform2.position = Mathlib::Vec3(-5.5f, 0.0f, 0.f);
-    //transform2.scale = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
+    Mathlib::Transform transform2;
+    transform2.position = Mathlib::Vec3(-5.5f, 0.0f, 0.f);
+    transform2.scale = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
 
-    //GameObjectCreateInfo createinfo2;
-    //createinfo2.transform = transform2;
-    //createinfo2.parent = nullptr;
-    //createinfo2.name = "light_2";
+    GameObjectCreateInfo createinfo2;
+    createinfo2.transform = transform2;
+    createinfo2.parent = nullptr;
+    createinfo2.name = "light_2";
 
-    //GameObject* light2 = scene->AddGameObject(createinfo2);
+    GameObject* light2 = scene->AddGameObject(createinfo2);
 
-    //PointLight* lightComponent = light2->AddComponent<PointLight>();
-    //lightComponent->color = Mathlib::Vec3(1.0f, 0.00f, 0.0f);
-    //lightComponent->range = 40.f;
-    //lightComponent->ambient = 0.2f;
-    //lightComponent->diffuse = 0.5f;
-    //lightComponent->specular = 1.0f;
+    PointLight* lightComponent = light2->AddComponent<PointLight>();
+    lightComponent->color = Mathlib::Vec3(1.0f, 0.00f, 0.0f);
+    lightComponent->range = 40.f;
+    lightComponent->ambient = 0.2f;
+    lightComponent->diffuse = 0.5f;
+    lightComponent->specular = 1.0f;
 
-    //MeshRenderer* meshRenderer1 = light2->GetComponent<MeshRenderer>();
-    //meshRenderer1->fragmentShaderFilePath = "Resources/Shaders/TextureFragmentShader.spv";
+    MeshRenderer* meshRenderer1 = light2->GetComponent<MeshRenderer>();
+    meshRenderer1->fragmentShaderFilePath = "Resources/Shaders/TextureFragmentShader.spv";
 
-    ///* light 3 */
+    /* light 3 */
 
-    //Mathlib::Transform transform3;
-    //transform3.position = Mathlib::Vec3(5.5f, 0.0f, 0.f);
-    //transform3.scale = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
+    Mathlib::Transform transform3;
+    transform3.position = Mathlib::Vec3(5.5f, 0.0f, 0.f);
+    transform3.scale = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
 
-    //GameObjectCreateInfo createinfo3;
-    //createinfo3.transform = transform3;
-    //createinfo3.parent = nullptr;
-    //createinfo3.name = "light_3";
+    GameObjectCreateInfo createinfo3;
+    createinfo3.transform = transform3;
+    createinfo3.parent = nullptr;
+    createinfo3.name = "light_3";
 
-    //GameObject* light3 = scene->AddGameObject(createinfo3);
+    GameObject* light3 = scene->AddGameObject(createinfo3);
 
-    //PointLight* lightComponent3 = light3->AddComponent<PointLight>();
-    //lightComponent3->color = Mathlib::Vec3(0.0f, 1.0f, 0.0f);
-    //lightComponent3->range = 25.f;
-    //lightComponent3->ambient = 0.2f;
-    //lightComponent3->diffuse = 0.5f;
-    //lightComponent3->specular = 1.0f;
+    PointLight* lightComponent3 = light3->AddComponent<PointLight>();
+    lightComponent3->color = Mathlib::Vec3(0.0f, 1.0f, 0.0f);
+    lightComponent3->range = 25.f;
+    lightComponent3->ambient = 0.2f;
+    lightComponent3->diffuse = 0.5f;
+    lightComponent3->specular = 1.0f;
 
-    //MeshRenderer* meshRenderer3 = light3->GetComponent<MeshRenderer>();
-    //meshRenderer3->fragmentShaderFilePath = "Resources/Shaders/TextureFragmentShader.spv";
+    MeshRenderer* meshRenderer3 = light3->GetComponent<MeshRenderer>();
+    meshRenderer3->fragmentShaderFilePath = "Resources/Shaders/TextureFragmentShader.spv";
 
-    /* light 4 */
+    ///* light 4 */
 
-    /*Mathlib::Transform transform4;
-    transform4.position = Mathlib::Vec3(0.f, 0.0f, -5.f);
-    transform4.scale = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
+    //Mathlib::Transform transform4;
+    //transform4.position = Mathlib::Vec3(0.f, 0.0f, -5.f);
+    //transform4.scale = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
 
-    GameObjectCreateInfo createinfo4;
-    createinfo4.transform = transform4;
-    createinfo4.parent = nullptr;
-    createinfo4.name = "light_4";
+    //GameObjectCreateInfo createinfo4;
+    //createinfo4.transform = transform4;
+    //createinfo4.parent = nullptr;
+    //createinfo4.name = "light_4";
 
-    GameObject* light4 = scene->AddGameObject(createinfo4);
+    //GameObject* light4 = scene->AddGameObject(createinfo4);
 
-    DirectionalLight* lightComponent4 = light4->AddComponent<DirectionalLight>();
-    lightComponent4->color = Mathlib::Vec3(1.0f, 1.0f, 01.f);
-    lightComponent4->ambient = 0.2f;
-    lightComponent4->diffuse = 0.5f;
-    lightComponent4->specular = 1.0f;
+    //DirectionalLight* lightComponent4 = light4->AddComponent<DirectionalLight>();
+    //lightComponent4->color = Mathlib::Vec3(1.0f, 1.0f, 01.f);
+    //lightComponent4->ambient = 0.2f;
+    //lightComponent4->diffuse = 0.5f;
+    //lightComponent4->specular = 1.0f;
 
-    MeshRenderer* meshRenderer4 = light4->GetComponent<MeshRenderer>();
-    meshRenderer4->enable = false;
-    meshRenderer4->fragmentShaderFilePath = "Resources/Shaders/TextureFragmentShader.spv";*/
+    //MeshRenderer* meshRenderer4 = light4->GetComponent<MeshRenderer>();
+    //meshRenderer4->enable = false;
+    //meshRenderer4->fragmentShaderFilePath = "Resources/Shaders/TextureFragmentShader.spv";
 
     /* light 5 */
 
@@ -269,7 +269,7 @@ Scene* GraphicsApplication::SetupIlluminationScene()
     GameObject* light5 = scene->AddGameObject(createinfo5);
 
     SpotLight* lightComponent5 = light5->AddComponent<SpotLight>();
-    lightComponent5->color = Mathlib::Vec3(1.0f, 1.0f, 1.0f);
+    lightComponent5->color = Mathlib::Vec3(0.0f, 0.0f, 1.0f);
     lightComponent5->range = 30.f;
     lightComponent5->cutOff = 25.f;
     lightComponent5->ambient = 0.05f;
@@ -362,29 +362,55 @@ Scene* GraphicsApplication::SetupSimpleCubeScene()
     camera->SetLocalTransform(cameraTransform);
     camera->fov = 90.f;
 
-    Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/container.png");
+    Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Red.jpg");
     Texture* specularMap = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/container_specular.png");
 
+    /*Cube 1*/
     Mathlib::Transform transform; 
-    transform.position = Mathlib::Vec3(0.f,0.f, 0.0f);
+    transform.position = Mathlib::Vec3(1.f,0.f, 0.0f);
     transform.scale = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
-    transform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 273.f, 0.f));
+    //transform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 273.f, 0.f));
 
     GameObjectCreateInfo createinfo;
     createinfo.transform = transform;
     createinfo.parent = nullptr;
-    createinfo.name = "object";
+    createinfo.name = "Cube_1";
 
     GameObject* obj = scene->AddGameObject(createinfo);
 
     MeshRenderer* meshRenderer = obj->GetComponent<MeshRenderer>();
     meshRenderer->SetTexture(texture);
-    meshRenderer->SetSpecularMap(specularMap);
-    meshRenderer->shininess = 64.0f;
+    //meshRenderer->SetSpecularMap(specularMap);
+    meshRenderer->shininess = 256.0f;
 
-    //RotatorComponent* rotator = obj->AddComponent<RotatorComponent>();
-    //rotator->rotationAxis = ROTATION_AXIS::Y;
+    RotatorComponent* rotator = obj->AddComponent<RotatorComponent>();
+    rotator->rotationAxis = ROTATION_AXIS::Y;
 
+    /*cube 2*/
+
+    Mathlib::Transform transform2;
+    transform2.position = Mathlib::Vec3(-1.f, 0.f, 0.0f);
+    transform2.scale = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
+    //transform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 273.f, 0.f));
+
+    GameObjectCreateInfo createinfo2;
+    createinfo2.transform = transform2;
+    createinfo2.parent = nullptr;
+    createinfo2.name = "Cube_2";
+
+    GameObject* obj2 = scene->AddGameObject(createinfo2);
+
+    MeshRenderer* meshRenderer2 = obj2->GetComponent<MeshRenderer>();
+    meshRenderer2->SetTexture(texture);
+    //meshRenderer->SetSpecularMap(specularMap);
+    meshRenderer2->shininess = 64.0f;
+    meshRenderer2->fragmentShaderFilePath = "Resources/Shaders/BlinnFragmentShader.spv";
+
+    RotatorComponent* rotator2 = obj2->AddComponent<RotatorComponent>();
+    rotator2->rotationAxis = ROTATION_AXIS::Y;
+
+
+    /*light 1*/
     Mathlib::Transform transform4;
     transform4.position = Mathlib::Vec3(0.f, 0.0f, -6.f);
     transform4.scale = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
@@ -396,11 +422,12 @@ Scene* GraphicsApplication::SetupSimpleCubeScene()
 
     GameObject* light4 = scene->AddGameObject(createinfo4);
 
-    DirectionalLight* lightComponent4 = light4->AddComponent<DirectionalLight>();
+    PointLight* lightComponent4 = light4->AddComponent<PointLight>();
     lightComponent4->color = Mathlib::Vec3(1.0f, 1.0f, 1.f);
     lightComponent4->ambient = 0.2f;
     lightComponent4->diffuse = 0.5f;
     lightComponent4->specular = 1.0f;
+    lightComponent4->range = 20.f;
 
     MeshRenderer* meshRenderer4 = light4->GetComponent<MeshRenderer>();
     meshRenderer4->enable = false;

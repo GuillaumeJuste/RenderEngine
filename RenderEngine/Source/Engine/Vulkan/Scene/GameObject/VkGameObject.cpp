@@ -90,26 +90,26 @@ DescriptorDataList VkGameObject::GenerateDefaultFragmentShaderDescriptorSet(Desc
 	textureBufferData.texture = &createInfo.textureData->vkTexture;
 	datalist.Add(textureBufferData);
 
+	DescriptorData specularBufferData{};
+	specularBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	specularBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+	specularBufferData.binding = 1;
+	specularBufferData.texture = &createInfo.specularMap->vkTexture;
+	datalist.Add(specularBufferData);
+
 	DescriptorData materialBufferData{};
 	materialBufferData.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	materialBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	materialBufferData.binding = 1;
+	materialBufferData.binding = 2;
 	materialBufferData.buffer = &materialBufferObject;
 	datalist.Add(materialBufferData);
 
 	DescriptorData pointLightBufferData{};
 	pointLightBufferData.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 	pointLightBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	pointLightBufferData.binding = 2;
+	pointLightBufferData.binding = 3;
 	pointLightBufferData.buffer = _pointLightsBuffer;
 	datalist.Add(pointLightBufferData);
-
-	DescriptorData specularBufferData{};
-	specularBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	specularBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	specularBufferData.binding = 3;
-	specularBufferData.texture = &createInfo.specularMap->vkTexture;
-	datalist.Add(specularBufferData);
 
 	DescriptorData directionalLightBufferData{};
 	directionalLightBufferData.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
