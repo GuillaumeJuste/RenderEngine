@@ -66,6 +66,7 @@ layout (set = 1,binding = 5) buffer SpotLightData
 } spotLightsBuffer;
 layout(location = 0) out vec4 outColor;
 
-void main() {
+void main() 
+{
     outColor = texture(albedoSampler, vec2(fsIn.fragTexCoord.x, fsIn.fragTexCoord.y));
 }

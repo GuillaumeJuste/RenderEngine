@@ -363,11 +363,11 @@ Scene* GraphicsApplication::SetupSimpleCubeScene()
     camera->fov = 90.f;
 
     Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Red.jpg");
-    Texture* specularMap = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/container_specular.png");
+    Texture* specularMap = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/DefaultSpecular.jpg");
 
     /*Cube 1*/
     Mathlib::Transform transform; 
-    transform.position = Mathlib::Vec3(1.f,0.f, 0.0f);
+    transform.position = Mathlib::Vec3(-1.f,0.f, 0.0f);
     transform.scale = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
     //transform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 273.f, 0.f));
 
@@ -382,6 +382,7 @@ Scene* GraphicsApplication::SetupSimpleCubeScene()
     meshRenderer->SetTexture(texture);
     //meshRenderer->SetSpecularMap(specularMap);
     meshRenderer->shininess = 256.0f;
+    meshRenderer->fragmentShaderFilePath = "Resources/Shaders/PhongFragmentShader.spv";
 
     RotatorComponent* rotator = obj->AddComponent<RotatorComponent>();
     rotator->rotationAxis = ROTATION_AXIS::Y;
@@ -389,7 +390,7 @@ Scene* GraphicsApplication::SetupSimpleCubeScene()
     /*cube 2*/
 
     Mathlib::Transform transform2;
-    transform2.position = Mathlib::Vec3(-1.f, 0.f, 0.0f);
+    transform2.position = Mathlib::Vec3(1.f, 0.f, 0.0f);
     transform2.scale = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
     //transform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 273.f, 0.f));
 
@@ -402,9 +403,9 @@ Scene* GraphicsApplication::SetupSimpleCubeScene()
 
     MeshRenderer* meshRenderer2 = obj2->GetComponent<MeshRenderer>();
     meshRenderer2->SetTexture(texture);
-    //meshRenderer->SetSpecularMap(specularMap);
+    meshRenderer2->SetSpecularMap(specularMap);
     meshRenderer2->shininess = 64.0f;
-    meshRenderer2->fragmentShaderFilePath = "Resources/Shaders/BlinnFragmentShader.spv";
+    meshRenderer2->fragmentShaderFilePath = "Resources/Shaders/PBRFragmentShader.spv";
 
     RotatorComponent* rotator2 = obj2->AddComponent<RotatorComponent>();
     rotator2->rotationAxis = ROTATION_AXIS::Y;
@@ -423,11 +424,11 @@ Scene* GraphicsApplication::SetupSimpleCubeScene()
     GameObject* light4 = scene->AddGameObject(createinfo4);
 
     PointLight* lightComponent4 = light4->AddComponent<PointLight>();
-    lightComponent4->color = Mathlib::Vec3(1.0f, 1.0f, 1.f);
+    lightComponent4->color = Mathlib::Vec3(3.0f, 3.0f, 3.f);
     lightComponent4->ambient = 0.2f;
     lightComponent4->diffuse = 0.5f;
     lightComponent4->specular = 1.0f;
-    lightComponent4->range = 20.f;
+    lightComponent4->range = 30.f;
 
     MeshRenderer* meshRenderer4 = light4->GetComponent<MeshRenderer>();
     meshRenderer4->enable = false;
@@ -438,7 +439,7 @@ Scene* GraphicsApplication::SetupSimpleCubeScene()
 
 void GraphicsApplication::MainLoop()
 {
-    Scene* scene = SetupIlluminationScene();
+    Scene* scene = SetupSimpleCubeScene();
 
     scene->Initialize();
     scene->Start();

@@ -68,9 +68,9 @@ layout (set = 1,binding = 5) buffer SpotLightData
 
 layout(location = 0) out vec4 outColor;
 
-vec3 ComputePointLightLighting(PointLight pointLight, vec3 specularMap);
-vec3 ComputeDirectionalLightLighting(DirectionalLight directionalLight, vec3 specularMap);
-vec3 ComputeSpotLightLighting(SpotLight spotLight, vec3 specularMap);
+vec3 ComputePointLightLighting(PointLight _pointLight, vec3 _specularMap);
+vec3 ComputeDirectionalLightLighting(DirectionalLight _directionalLight, vec3 _specularMap);
+vec3 ComputeSpotLightLighting(SpotLight _spotLight, vec3 _specularMap);
 
 void main() 
 {
@@ -99,27 +99,27 @@ void main()
 	outColor = albedo * vec4(color, 1.0);
 }
 
-vec3 ComputePointLightLighting(PointLight pointLight, vec3 specularMap)
+vec3 ComputePointLightLighting(PointLight _pointLight, vec3 _specularMap)
 {
-	float distance    = length(pointLight.position - fsIn.fragPos);
-	float linear = 4.5 / pointLight.range;
-	float quadratic = 75.0 / (pointLight.range * pointLight.range);
+	float distance    = length(_pointLight.position - fsIn.fragPos);
+	float linear = 4.5 / _pointLight.range;
+	float quadratic = 75.0 / (_pointLight.range * _pointLight.range);
 	float attenuation = 1.0 / (1.0 + linear * distance + 
 		quadratic * (distance * distance));    
 
-	vec3 ambient = pointLight.color * pointLight.ambient;
+	vec3 ambient = _pointLight.color * _pointLight.ambient;
 
 	vec3 norm = normalize(fsIn.normal);
-	vec3 lightDir = normalize(pointLight.position - fsIn.fragPos);  
+	vec3 lightDir = normalize(_pointLight.position - fsIn.fragPos);  
 
 	float diff = max(dot(norm, lightDir), 0.0);
-	vec3 diffuse = pointLight.color * pointLight.diffuse * diff;
+	vec3 diffuse = _pointLight.color * _pointLight.diffuse * diff;
 
 	vec3 viewDir = normalize(fsIn.cameraPos - fsIn.fragPos);
 	vec3 reflectDir = reflect(-lightDir, norm);  
 
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-	vec3 specular = pointLight.color * pointLight.specular * spec * specularMap;  
+	vec3 specular = _pointLight.color * _pointLight.specular * spec * _specularMap;  
 
 	ambient  *= attenuation; 
 	diffuse  *= attenuation;
@@ -128,51 +128,51 @@ vec3 ComputePointLightLighting(PointLight pointLight, vec3 specularMap)
 	return ambient + diffuse + specular;
 }
 
-vec3 ComputeDirectionalLightLighting(DirectionalLight directionalLight, vec3 specularMap)
+vec3 ComputeDirectionalLightLighting(DirectionalLight _directionalLight, vec3 _specularMap)
 {
-	vec3 ambient = directionalLight.color * directionalLight.ambient;
+	vec3 ambient = _directionalLight.color * _directionalLight.ambient;
 
 	vec3 norm = normalize(fsIn.normal);
-	vec3 lightDir = normalize(-directionalLight.direction);  
+	vec3 lightDir = normalize(-_directionalLight.direction);  
 
 	float diff = max(dot(norm, lightDir), 0.0);
-	vec3 diffuse = directionalLight.color * directionalLight.diffuse * diff;
+	vec3 diffuse = _directionalLight.color * _directionalLight.diffuse * diff;
 
 	vec3 viewDir = normalize(fsIn.cameraPos - fsIn.fragPos);
 	vec3 reflectDir = reflect(-lightDir, norm);  
 
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-	vec3 specular = directionalLight.color * directionalLight.specular * spec * specularMap;  
+	vec3 specular = _directionalLight.color * _directionalLight.specular * spec * _specularMap;  
 
 	return ambient + diffuse + specular;
 }
 
-vec3 ComputeSpotLightLighting(SpotLight spotLight, vec3 specularMap)
+vec3 ComputeSpotLightLighting(SpotLight _spotLight, vec3 _specularMap)
 {
-	vec3 lightDir = normalize(spotLight.position - fsIn.fragPos);  
-	float theta = dot(lightDir, normalize(-spotLight.direction));
-	vec3 ambient = spotLight.color * spotLight.ambient;
+	vec3 lightDir = normalize(_spotLight.position - fsIn.fragPos);  
+	float theta = dot(lightDir, normalize(-_spotLight.direction));
+	vec3 ambient = _spotLight.color * _spotLight.ambient;
     
-	float distance    = length(spotLight.position - fsIn.fragPos);
-	float linear = 4.5 / spotLight.range;
-	float quadratic = 75.0 / (spotLight.range * spotLight.range);
+	float distance    = length(_spotLight.position - fsIn.fragPos);
+	float linear = 4.5 / _spotLight.range;
+	float quadratic = 75.0 / (_spotLight.range * _spotLight.range);
 	float attenuation = 1.0 / (1.0 + linear * distance + 
 		quadratic * (distance * distance));    
 	
 	ambient  *= attenuation; 
 
-	if(theta > spotLight.cutOff) 
+	if(theta > _spotLight.cutOff) 
 	{       
 		vec3 norm = normalize(fsIn.normal);
 
 		float diff = max(dot(norm, lightDir), 0.0);
-		vec3 diffuse = spotLight.color * spotLight.diffuse * diff;
+		vec3 diffuse = _spotLight.color * _spotLight.diffuse * diff;
 
 		vec3 viewDir = normalize(fsIn.cameraPos - fsIn.fragPos);
 		vec3 reflectDir = reflect(-lightDir, norm);  
 
 		float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-		vec3 specular = spotLight.color * spotLight.specular * spec * specularMap;  
+		vec3 specular = _spotLight.color * _spotLight.specular * spec * _specularMap;  
 
 		diffuse  *= attenuation;
 		specular *= attenuation;   
