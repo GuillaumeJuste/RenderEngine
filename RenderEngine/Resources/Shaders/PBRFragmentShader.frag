@@ -51,8 +51,8 @@ struct SpotLight
 {
 	bool enable;
 	vec3 position;
-	vec3 direction;
 	vec3 color;
+	vec3 direction;
 	float range;
 	float cutOff;
 	float ambient;

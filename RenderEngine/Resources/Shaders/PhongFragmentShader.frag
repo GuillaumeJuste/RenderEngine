@@ -189,5 +189,5 @@ vec4 ComputeSpotLightLighting(SpotLight _spotLight, vec4 _albedo, vec4 _metalnes
 			specular = material.Ks * _albedo * pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess) * vec4(_spotLight.color.xyz, 1.0) * _metalness;
 		}
 	}
-	return ambient + diffuse + specular;
+	return attenuation * (ambient + diffuse + specular);
 }
