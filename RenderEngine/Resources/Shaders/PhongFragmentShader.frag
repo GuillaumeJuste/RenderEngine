@@ -12,8 +12,12 @@ layout(location = 0) in DataBlock
 layout(set = 1, binding = 0) uniform sampler2D albedoSampler;
 layout(set = 1, binding = 1) uniform sampler2D specularSampler;
 
-layout(set = 1, binding = 2) uniform MaterialBufferObject {
+layout(set = 1, binding = 2) uniform MaterialBufferObject 
+{
 	float shininess;
+	vec4 Ka;
+	vec4 Kd;
+	vec4 Ks;
 } material;
 
 struct PointLight
@@ -22,9 +26,6 @@ struct PointLight
 	vec3 position;
 	vec3 color;
 	float range;
-	float ambient;
-	float diffuse;
-	float specular;
 };
 
 layout (set = 1,binding = 3) buffer PointLightData
@@ -37,9 +38,6 @@ struct DirectionalLight
 	bool enable;
 	vec3 color;
 	vec3 direction;
-	float ambient;
-	float diffuse;
-	float specular;
 };
 
 layout (set = 1,binding = 4) buffer DirectionalLightData
@@ -51,13 +49,11 @@ struct SpotLight
 {
 	bool enable;
 	vec3 position;
-	vec3 direction;
 	vec3 color;
+	vec3 direction;
 	float range;
 	float cutOff;
-	float ambient;
-	float diffuse;
-	float specular;
+	
 };
 
 layout (set = 1,binding = 5) buffer SpotLightData
@@ -68,117 +64,130 @@ layout (set = 1,binding = 5) buffer SpotLightData
 
 layout(location = 0) out vec4 outColor;
 
-vec3 ComputePointLightLighting(PointLight _pointLight, vec3 _specularMap);
-vec3 ComputeDirectionalLightLighting(DirectionalLight _directionalLight, vec3 _specularMap);
-vec3 ComputeSpotLightLighting(SpotLight _spotLight, vec3 _specularMap);
+float ComputeAttenuation(float _distance, float _lightRange);
+vec4 ComputePointLightLighting(PointLight _pointLight,vec4 _albedo, vec4 _metalness);
+vec4 ComputeDirectionalLightLighting(DirectionalLight _directionalLight, vec4 _albedo, vec4 _metalness);
+vec4 ComputeSpotLightLighting(SpotLight _spotLight, vec4 _albedo, vec4 _metalness);
 
 void main() 
 {
     vec4 albedo = texture(albedoSampler, vec2(fsIn.fragTexCoord.x, fsIn.fragTexCoord.y));
     vec4 specular = texture(specularSampler, vec2(fsIn.fragTexCoord.x, fsIn.fragTexCoord.y));
 
-	vec3 color = vec3(0.0);
-    for(int i = 0; i < pointLightsBuffer.lights.length(); i++)
-  	{
+	vec4 color = vec4(0.0);
+	for(int i = 0; i < pointLightsBuffer.lights.length(); i++)
+	{
 		if(pointLightsBuffer.lights[i].enable == true)
-			color += ComputePointLightLighting(pointLightsBuffer.lights[i], vec3(specular));
+			color += ComputePointLightLighting(pointLightsBuffer.lights[i], albedo, specular);
 	}
 
 	for(int i = 0; i < directionalLightsBuffer.lights.length(); i++)
-  	{
+	{
 		if(directionalLightsBuffer.lights[i].enable == true)
-			color += ComputeDirectionalLightLighting(directionalLightsBuffer.lights[i], vec3(specular));
+			color += ComputeDirectionalLightLighting(directionalLightsBuffer.lights[i], albedo, specular);
 	}
 
 	for(int i = 0; i < spotLightsBuffer.lights.length(); i++)
   	{
 		if(spotLightsBuffer.lights[i].enable == true)
-			color += ComputeSpotLightLighting(spotLightsBuffer.lights[i], vec3(specular));
+			color += ComputeSpotLightLighting(spotLightsBuffer.lights[i], albedo, specular);
 	}
 
-	outColor = albedo * vec4(color, 1.0);
+	outColor = color;
 }
 
-vec3 ComputePointLightLighting(PointLight _pointLight, vec3 _specularMap)
+float ComputeAttenuation(float _distance, float _lightRange)
 {
-	float distance    = length(_pointLight.position - fsIn.fragPos);
-	float linear = 4.5 / _pointLight.range;
-	float quadratic = 75.0 / (_pointLight.range * _pointLight.range);
-	float attenuation = 1.0 / (1.0 + linear * distance + 
-		quadratic * (distance * distance));    
+	float linear = 4.5 / _lightRange;
+	float quadratic = 75.0 / (_lightRange * _lightRange);
+	return 1.0 / (1.0 + linear * _distance + quadratic * (_distance * _distance));
+}
 
-	vec3 ambient = _pointLight.color * _pointLight.ambient;
+vec4 ComputePointLightLighting(PointLight _pointLight,vec4 _albedo, vec4 _metalness)
+{
+	float distance = length(_pointLight.position - fsIn.fragPos);
 
-	vec3 norm = normalize(fsIn.normal);
-	vec3 lightDir = normalize(_pointLight.position - fsIn.fragPos);  
+	float attenuation = ComputeAttenuation(distance, _pointLight.range);    
 
-	float diff = max(dot(norm, lightDir), 0.0);
-	vec3 diffuse = _pointLight.color * _pointLight.diffuse * diff;
+	vec4 ambient = vec4(_pointLight.color.xyz, 1.0) * material.Ka * _albedo;
 
-	vec3 viewDir = normalize(fsIn.cameraPos - fsIn.fragPos);
-	vec3 reflectDir = reflect(-lightDir, norm);  
+	vec4 diffuse = vec4(0.0, 0.0, 0.0, 1.0);
+    vec4 specular = vec4(0.0, 0.0, 0.0, 1.0);
 
-	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-	vec3 specular = _pointLight.color * _pointLight.specular * spec * _specularMap;  
+	vec3 normal = normalize(fsIn.normal);
+	vec3 lightDirection = normalize(_pointLight.position - fsIn.fragPos);  
 
-	ambient  *= attenuation; 
-	diffuse  *= attenuation;
-	specular *= attenuation;   
+	float cosTheta = max(dot(normal, lightDirection), 0.0);
+
+	// Only if the light is visible from the surface point.
+	if(cosTheta > 0.0) 
+	{
+		diffuse = material.Kd * _albedo * vec4(_pointLight.color.xyz, 1.0) * cosTheta;
+
+		vec3 viewDirection = normalize(fsIn.cameraPos - fsIn.fragPos);
+		vec3 reflectDirection = reflect(-lightDirection, normal);  
+
+		specular = material.Ks * _albedo * pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess) * vec4(_pointLight.color.xyz, 1.0) * _metalness;
+	}
+
+	return attenuation * (ambient + diffuse + specular);
+}
+
+vec4 ComputeDirectionalLightLighting(DirectionalLight _directionalLight, vec4 _albedo, vec4 _metalness)
+{
+	vec4 ambient = vec4(_directionalLight.color.xyz, 1.0) * material.Ka * _albedo;
+
+	vec4 diffuse = vec4(0.0, 0.0, 0.0, 1.0);
+    vec4 specular = vec4(0.0, 0.0, 0.0, 1.0);
+
+	vec3 normal = normalize(fsIn.normal);
+	vec3 lightDirection = normalize(-_directionalLight.direction);
+
+	float cosTheta = max(dot(normal, lightDirection), 0.0);
+
+	// Only if the light is visible from the surface point.
+	if(cosTheta > 0.0) 
+	{
+		diffuse = material.Kd * _albedo * vec4(_directionalLight.color.xyz, 1.0) * cosTheta;
+
+		vec3 viewDirection = normalize(fsIn.cameraPos - fsIn.fragPos);
+		vec3 reflectDirection = reflect(-lightDirection, normal);  
+
+		specular = material.Ks * _albedo * pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess) * vec4(_directionalLight.color.xyz, 1.0) * _metalness;
+	}
 
 	return ambient + diffuse + specular;
+
 }
 
-vec3 ComputeDirectionalLightLighting(DirectionalLight _directionalLight, vec3 _specularMap)
+vec4 ComputeSpotLightLighting(SpotLight _spotLight, vec4 _albedo, vec4 _metalness)
 {
-	vec3 ambient = _directionalLight.color * _directionalLight.ambient;
+	vec3 lightDirection = normalize(_spotLight.position - fsIn.fragPos);   
+	float lightTheta = dot(lightDirection, normalize(-_spotLight.direction));
 
-	vec3 norm = normalize(fsIn.normal);
-	vec3 lightDir = normalize(-_directionalLight.direction);  
-
-	float diff = max(dot(norm, lightDir), 0.0);
-	vec3 diffuse = _directionalLight.color * _directionalLight.diffuse * diff;
-
-	vec3 viewDir = normalize(fsIn.cameraPos - fsIn.fragPos);
-	vec3 reflectDir = reflect(-lightDir, norm);  
-
-	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-	vec3 specular = _directionalLight.color * _directionalLight.specular * spec * _specularMap;  
-
-	return ambient + diffuse + specular;
-}
-
-vec3 ComputeSpotLightLighting(SpotLight _spotLight, vec3 _specularMap)
-{
-	vec3 lightDir = normalize(_spotLight.position - fsIn.fragPos);  
-	float theta = dot(lightDir, normalize(-_spotLight.direction));
-	vec3 ambient = _spotLight.color * _spotLight.ambient;
+	vec4 ambient = vec4(_spotLight.color.xyz, 1.0) * material.Ka * _albedo;
     
 	float distance    = length(_spotLight.position - fsIn.fragPos);
-	float linear = 4.5 / _spotLight.range;
-	float quadratic = 75.0 / (_spotLight.range * _spotLight.range);
-	float attenuation = 1.0 / (1.0 + linear * distance + 
-		quadratic * (distance * distance));    
-	
-	ambient  *= attenuation; 
+	float attenuation = ComputeAttenuation(distance, _spotLight.range);    
 
-	if(theta > _spotLight.cutOff) 
+	vec4 diffuse = vec4(0.0, 0.0, 0.0, 1.0);
+    vec4 specular = vec4(0.0, 0.0, 0.0, 1.0);
+
+	if(lightTheta > _spotLight.cutOff) 
 	{       
-		vec3 norm = normalize(fsIn.normal);
+	vec3 normal = normalize(fsIn.normal);
+	float cosTheta = max(dot(normal, lightDirection), 0.0);
 
-		float diff = max(dot(norm, lightDir), 0.0);
-		vec3 diffuse = _spotLight.color * _spotLight.diffuse * diff;
+		// Only if the light is visible from the surface point.
+		if(cosTheta > 0.0) 
+		{
+			diffuse = material.Kd * _albedo * vec4(_spotLight.color.xyz, 1.0) * cosTheta;
 
-		vec3 viewDir = normalize(fsIn.cameraPos - fsIn.fragPos);
-		vec3 reflectDir = reflect(-lightDir, norm);  
+			vec3 viewDirection = normalize(fsIn.cameraPos - fsIn.fragPos);
+			vec3 reflectDirection = reflect(-lightDirection, normal);  
 
-		float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-		vec3 specular = _spotLight.color * _spotLight.specular * spec * _specularMap;  
-
-		diffuse  *= attenuation;
-		specular *= attenuation;   
-
-		return ambient + diffuse + specular;
+			specular = material.Ks * _albedo * pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess) * vec4(_spotLight.color.xyz, 1.0) * _metalness;
+		}
 	}
-
-	return ambient;
+	return ambient + diffuse + specular;
 }

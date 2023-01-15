@@ -11,13 +11,10 @@ namespace RenderEngine::Engine::Vulkan
 	{
 		bool enable = false;
 		alignas(16) Mathlib::Vec3 position;
-		alignas(16) Mathlib::Vec3 direction;
 		alignas(16) Mathlib::Vec3 color;
+		alignas(16) Mathlib::Vec3 direction;
 		float range;
 		float cutOff;
-		float ambient;
-		float diffuse;
-		float specular;
 
 		/// default constructor
 		SpotLightData() = default;

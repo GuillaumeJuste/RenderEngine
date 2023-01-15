@@ -9,7 +9,10 @@ namespace RenderEngine::Engine::Vulkan
 {
 	struct Material
 	{
-		float shininess;
+		alignas(16) float shininess;
+		alignas(16) Mathlib::Vec4 ambient;
+		alignas(16) Mathlib::Vec4 diffuse;
+		alignas(16) Mathlib::Vec4 specular;
 
 		/// default constructor
 		Material() = default;

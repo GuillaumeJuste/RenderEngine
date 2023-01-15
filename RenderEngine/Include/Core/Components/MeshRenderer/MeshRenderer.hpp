@@ -28,6 +28,9 @@ namespace RenderEngine::Core
         PolygonDrawMode drawMode = PolygonDrawMode::FILL;
         float lineWidth = 1.0f;
         float shininess;
+        Mathlib::Vec4 ambient;
+        Mathlib::Vec4 diffuse;
+        Mathlib::Vec4 specular;
 
         MeshRenderer() = default;
         ~MeshRenderer() = default;

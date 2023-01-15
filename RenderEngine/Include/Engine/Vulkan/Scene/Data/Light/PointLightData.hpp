@@ -13,9 +13,6 @@ namespace RenderEngine::Engine::Vulkan
 		alignas(16) Mathlib::Vec3 position;
 		alignas(16) Mathlib::Vec3 color;
 		float range;
-		float ambient;
-		float diffuse;
-		float specular;
 
 		/// default constructor
 		PointLightData() = default;

@@ -191,6 +191,9 @@ void VkGameObject::Update(size_t _currentframe)
 
 	Material material{};
 	material.shininess = meshRenderer->shininess;
+	material.ambient = meshRenderer->ambient;
+	material.diffuse = meshRenderer->diffuse;
+	material.specular = meshRenderer->specular;
 
 	materialBufferObject.CopyDataToBuffer<Material>((int)_currentframe, &material, sizeof(Material));
 }

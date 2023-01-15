@@ -16,10 +16,6 @@ namespace RenderEngine::Core
     public:
         Mathlib::Vec3 color;
 
-        float ambient;
-        float diffuse;
-        float specular;
-
         Light() = default;
         ~Light() = default;
     };

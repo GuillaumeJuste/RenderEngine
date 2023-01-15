@@ -12,9 +12,6 @@ namespace RenderEngine::Engine::Vulkan
 		bool enable = false;
 		alignas(16) Mathlib::Vec3 color;
 		alignas(16) Mathlib::Vec3 direction;
-		float ambient;
-		float diffuse;
-		float specular;
 
 		/// default constructor
 		DirectionalLightData() = default;
