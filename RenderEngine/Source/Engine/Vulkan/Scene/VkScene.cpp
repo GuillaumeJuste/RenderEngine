@@ -95,6 +95,7 @@ std::vector<PointLightData> VkScene::GeneratePointLightsData()
 		data.position = it->gameObject->GetWorldTransform().position;
 		data.color = it->pointlight->color;
 		data.range = it->pointlight->range;
+		data.intensity = it->pointlight->intensity;
 
 		lightsdata.push_back(data);
 	}
@@ -119,6 +120,7 @@ std::vector<DirectionalLightData> VkScene::GenerateDirectionalLightsData()
 		data.enable = it->directionalLight->enable;
 		data.color = it->directionalLight->color;
 		data.direction = it->gameObject->GetWorldTransform().GetForwardVector();
+		data.intensity = it->directionalLight->intensity;
 
 		lightsdata.push_back(data);
 	}
@@ -142,6 +144,7 @@ std::vector<SpotLightData> VkScene::GenerateSpotLightsData()
 		data.color = it->spotLight->color;
 		data.position = it->gameObject->GetWorldTransform().position;
 		data.direction = it->gameObject->GetWorldTransform().GetForwardVector();
+		data.intensity = it->spotLight->intensity;
 		data.range = it->spotLight->range;
 		data.cutOff = Mathlib::Math::Cos(it->spotLight->cutOff * Mathlib::Math::DegToRad);
 

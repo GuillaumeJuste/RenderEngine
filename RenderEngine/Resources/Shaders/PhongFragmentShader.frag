@@ -4,7 +4,7 @@
 layout(location = 0) in DataBlock
 {
 	vec3 fragPos;
-	vec3 normal;
+	vec3 interpNormal;
 	vec3 fragTexCoord;
 	vec3 cameraPos;
 } fsIn;
@@ -25,6 +25,7 @@ struct PointLight
 	bool enable;
 	vec3 position;
 	vec3 color;
+	float intensity;
 	float range;
 };
 
@@ -38,6 +39,7 @@ struct DirectionalLight
 	bool enable;
 	vec3 color;
 	vec3 direction;
+	float intensity;
 };
 
 layout (set = 1,binding = 4) buffer DirectionalLightData
@@ -51,6 +53,7 @@ struct SpotLight
 	vec3 position;
 	vec3 color;
 	vec3 direction;
+	float intensity;
 	float range;
 	float cutOff;
 	
@@ -108,26 +111,27 @@ vec4 ComputePointLightLighting(PointLight _pointLight,vec4 _albedo, vec4 _metaln
 	float distance = length(_pointLight.position - fsIn.fragPos);
 
 	float attenuation = ComputeAttenuation(distance, _pointLight.range);    
+	vec3 lightIntensity = _pointLight.color * _pointLight.intensity;
 
-	vec4 ambient = vec4(_pointLight.color.xyz, 1.0) * material.Ka * _albedo;
+	vec4 ambient = vec4(lightIntensity.xyz, 1.0) * material.Ka * _albedo;
 
 	vec4 diffuse = vec4(0.0, 0.0, 0.0, 1.0);
     vec4 specular = vec4(0.0, 0.0, 0.0, 1.0);
 
-	vec3 normal = normalize(fsIn.normal);
+	vec3 normal = normalize(fsIn.interpNormal);
 	vec3 lightDirection = normalize(_pointLight.position - fsIn.fragPos);  
 
-	float cosTheta = max(dot(normal, lightDirection), 0.0);
+	float cosTheta = dot(normal, lightDirection);
 
 	// Only if the light is visible from the surface point.
 	if(cosTheta > 0.0) 
 	{
-		diffuse = material.Kd * _albedo * vec4(_pointLight.color.xyz, 1.0) * cosTheta;
+		diffuse = material.Kd * _albedo * vec4(lightIntensity.xyz, 1.0) * cosTheta;
 
 		vec3 viewDirection = normalize(fsIn.cameraPos - fsIn.fragPos);
-		vec3 reflectDirection = reflect(-lightDirection, normal);  
+		vec3 reflectDirection = 2.0 * dot(lightDirection, normal) * normal - lightDirection;  
 
-		specular = material.Ks * _albedo * pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess) * vec4(_pointLight.color.xyz, 1.0) * _metalness;
+		specular = material.Ks * _albedo * pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess) * vec4(lightIntensity.xyz, 1.0) * _metalness;
 	}
 
 	return attenuation * (ambient + diffuse + specular);
@@ -135,12 +139,14 @@ vec4 ComputePointLightLighting(PointLight _pointLight,vec4 _albedo, vec4 _metaln
 
 vec4 ComputeDirectionalLightLighting(DirectionalLight _directionalLight, vec4 _albedo, vec4 _metalness)
 {
-	vec4 ambient = vec4(_directionalLight.color.xyz, 1.0) * material.Ka * _albedo;
+	vec3 lightIntensity = _directionalLight.color * _directionalLight.intensity;
+
+	vec4 ambient = vec4(lightIntensity.xyz, 1.0) * material.Ka * _albedo;
 
 	vec4 diffuse = vec4(0.0, 0.0, 0.0, 1.0);
     vec4 specular = vec4(0.0, 0.0, 0.0, 1.0);
 
-	vec3 normal = normalize(fsIn.normal);
+	vec3 normal = normalize(fsIn.interpNormal);
 	vec3 lightDirection = normalize(-_directionalLight.direction);
 
 	float cosTheta = max(dot(normal, lightDirection), 0.0);
@@ -148,12 +154,12 @@ vec4 ComputeDirectionalLightLighting(DirectionalLight _directionalLight, vec4 _a
 	// Only if the light is visible from the surface point.
 	if(cosTheta > 0.0) 
 	{
-		diffuse = material.Kd * _albedo * vec4(_directionalLight.color.xyz, 1.0) * cosTheta;
+		diffuse = material.Kd * _albedo * vec4(lightIntensity.xyz, 1.0) * cosTheta;
 
 		vec3 viewDirection = normalize(fsIn.cameraPos - fsIn.fragPos);
-		vec3 reflectDirection = reflect(-lightDirection, normal);  
+		vec3 reflectDirection = 2.0 * dot(lightDirection, normal) * normal - lightDirection;  
 
-		specular = material.Ks * _albedo * pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess) * vec4(_directionalLight.color.xyz, 1.0) * _metalness;
+		specular = material.Ks * _albedo * pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess) * vec4(lightIntensity.xyz, 1.0) * _metalness;
 	}
 
 	return ambient + diffuse + specular;
@@ -164,29 +170,30 @@ vec4 ComputeSpotLightLighting(SpotLight _spotLight, vec4 _albedo, vec4 _metalnes
 {
 	vec3 lightDirection = normalize(_spotLight.position - fsIn.fragPos);   
 	float lightTheta = dot(lightDirection, normalize(-_spotLight.direction));
-
-	vec4 ambient = vec4(_spotLight.color.xyz, 1.0) * material.Ka * _albedo;
     
 	float distance    = length(_spotLight.position - fsIn.fragPos);
 	float attenuation = ComputeAttenuation(distance, _spotLight.range);    
+	
+	vec3 lightIntensity = _spotLight.color * _spotLight.intensity;
 
+	vec4 ambient = vec4(lightIntensity.xyz, 1.0) * material.Ka * _albedo;
 	vec4 diffuse = vec4(0.0, 0.0, 0.0, 1.0);
     vec4 specular = vec4(0.0, 0.0, 0.0, 1.0);
 
 	if(lightTheta > _spotLight.cutOff) 
 	{       
-	vec3 normal = normalize(fsIn.normal);
+	vec3 normal = normalize(fsIn.interpNormal);
 	float cosTheta = max(dot(normal, lightDirection), 0.0);
 
 		// Only if the light is visible from the surface point.
 		if(cosTheta > 0.0) 
 		{
-			diffuse = material.Kd * _albedo * vec4(_spotLight.color.xyz, 1.0) * cosTheta;
+			diffuse = material.Kd * _albedo * vec4(lightIntensity.xyz, 1.0) * cosTheta;
 
 			vec3 viewDirection = normalize(fsIn.cameraPos - fsIn.fragPos);
-			vec3 reflectDirection = reflect(-lightDirection, normal);  
+			vec3 reflectDirection = 2.0 * dot(lightDirection, normal) * normal - lightDirection;  
 
-			specular = material.Ks * _albedo * pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess) * vec4(_spotLight.color.xyz, 1.0) * _metalness;
+			specular = material.Ks * _albedo * pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess) * vec4(lightIntensity.xyz, 1.0) * _metalness;
 		}
 	}
 	return attenuation * (ambient + diffuse + specular);

@@ -351,14 +351,14 @@ Scene* GraphicsApplication::SetupSimpleCubeScene()
     camera->SetLocalTransform(cameraTransform);
     camera->fov = 90.f;
 
+    Mesh* sphere = RessourceManager::GetInstance()->LoadMesh("Resources/Models/Sphere.obj");
     Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Red.jpg");
     Texture* specularMap = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/DefaultSpecular.jpg");
 
     /*Cube 1*/
     Mathlib::Transform transform; 
-    transform.position = Mathlib::Vec3(-1.f, 0.f, 0.0f);
-    transform.scale = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
-    //transform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 273.f, 0.f));
+    transform.position = Mathlib::Vec3(0.f, 0.f, 0.0f);
+    transform.scale = Mathlib::Vec3(0.02f, 0.02f, 0.02f);
 
     GameObjectCreateInfo createinfo;
     createinfo.transform = transform;
@@ -368,44 +368,45 @@ Scene* GraphicsApplication::SetupSimpleCubeScene()
     GameObject* obj = scene->AddGameObject(createinfo);
 
     MeshRenderer* meshRenderer = obj->GetComponent<MeshRenderer>();
+    meshRenderer->SetMesh(sphere);
     meshRenderer->SetTexture(texture);
-    meshRenderer->shininess = 8.0f;
-    meshRenderer->fragmentShaderFilePath = "Resources/Shaders/PhongFragmentShader.spv";
+    meshRenderer->shininess = 32.0f;
+    meshRenderer->fragmentShaderFilePath = "Resources/Shaders/BlinnPhongFragmentShader.spv";
     meshRenderer->ambient = Mathlib::Vec4(0.1f, 0.1f, 0.1f, 1.f);
-    meshRenderer->diffuse = Mathlib::Vec4(0.5f, 0.5f, 0.5f, 1.f);
-    meshRenderer->specular = Mathlib::Vec4(1.0f, 1.0f, 1.0f, 1.f);
+    meshRenderer->diffuse = Mathlib::Vec4(0.4f, 0.4f, 0.4f, 1.f);
+    meshRenderer->specular = Mathlib::Vec4(0.8f, 0.8f, 0.8f, 1.f);
 
-    RotatorComponent* rotator = obj->AddComponent<RotatorComponent>();
-    rotator->rotationAxis = ROTATION_AXIS::Y;
+    /*RotatorComponent* rotator = obj->AddComponent<RotatorComponent>();
+    rotator->rotationAxis = ROTATION_AXIS::Y;*/
 
-    /*cube 2*/
+    ///*cube 2*/
 
-    Mathlib::Transform transform2;
-    transform2.position = Mathlib::Vec3(1.f, 0.f, 0.0f);
-    transform2.scale = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
-    //transform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 273.f, 0.f));
+    //Mathlib::Transform transform2;
+    //transform2.position = Mathlib::Vec3(1.f, 0.f, 0.0f);
+    //transform2.scale = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
+    ////transform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 273.f, 0.f));
 
-    GameObjectCreateInfo createinfo2;
-    createinfo2.transform = transform2;
-    createinfo2.parent = nullptr;
-    createinfo2.name = "Cube_2";
+    //GameObjectCreateInfo createinfo2;
+    //createinfo2.transform = transform2;
+    //createinfo2.parent = nullptr;
+    //createinfo2.name = "Cube_2";
 
-    GameObject* obj2 = scene->AddGameObject(createinfo2);
+    //GameObject* obj2 = scene->AddGameObject(createinfo2);
 
-    MeshRenderer* meshRenderer2 = obj2->GetComponent<MeshRenderer>();
-    meshRenderer2->SetTexture(texture);
-    meshRenderer2->shininess = 32.0f;
-    meshRenderer2->fragmentShaderFilePath = "Resources/Shaders/BlinnPhongFragmentShader.spv";
-    meshRenderer2->ambient = Mathlib::Vec4(0.1f, 0.1f, 0.1f, 1.f);
-    meshRenderer2->diffuse = Mathlib::Vec4(0.5f, 0.5f, 0.5f, 1.f);
-    meshRenderer2->specular = Mathlib::Vec4(1.0f, 1.0f, 1.0f, 1.f);
+    //MeshRenderer* meshRenderer2 = obj2->GetComponent<MeshRenderer>();
+    //meshRenderer2->SetTexture(texture);
+    //meshRenderer2->shininess = 32.0f;
+    //meshRenderer2->fragmentShaderFilePath = "Resources/Shaders/BlinnPhongFragmentShader.spv";
+    //meshRenderer2->ambient = Mathlib::Vec4(0.1f, 0.1f, 0.1f, 1.f);
+    //meshRenderer2->diffuse = Mathlib::Vec4(0.5f, 0.5f, 0.5f, 1.f);
+    //meshRenderer2->specular = Mathlib::Vec4(1.0f, 1.0f, 1.0f, 1.f);
 
-    RotatorComponent* rotator2 = obj2->AddComponent<RotatorComponent>();
-    rotator2->rotationAxis = ROTATION_AXIS::Y;
+    //RotatorComponent* rotator2 = obj2->AddComponent<RotatorComponent>();
+    //rotator2->rotationAxis = ROTATION_AXIS::Y;
 
     /*light 1*/
     Mathlib::Transform transform4;
-    transform4.position = Mathlib::Vec3(0.f, 0.0f, -6.f);
+    transform4.position = Mathlib::Vec3(3.f, 0.0f, -3.f);
     transform4.scale = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
 
     GameObjectCreateInfo createinfo4;
@@ -428,7 +429,7 @@ Scene* GraphicsApplication::SetupSimpleCubeScene()
 
 void GraphicsApplication::MainLoop()
 {
-    Scene* scene = SetupIlluminationScene();
+    Scene* scene = SetupSimpleCubeScene();
 
     scene->Initialize();
     scene->Start();

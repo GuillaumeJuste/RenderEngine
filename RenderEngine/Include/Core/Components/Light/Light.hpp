@@ -15,6 +15,7 @@ namespace RenderEngine::Core
     {
     public:
         Mathlib::Vec3 color;
+        float intensity = 1.0f;
 
         Light() = default;
         ~Light() = default;
