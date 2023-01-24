@@ -13,35 +13,3 @@ void MeshRenderer::Start()
 void MeshRenderer::Update()
 {
 }
-
-Mesh* MeshRenderer::GetMesh()
-{
-	return mesh;
-}
-
-void MeshRenderer::SetMesh(Mesh* _mesh)
-{
-	mesh = _mesh;
-}
-
-Texture* MeshRenderer::GetTexture()
-{
-	return texture;
-}
-
-void MeshRenderer::SetTexture(Texture* _texture)
-{
-	if(_texture != nullptr)
-		texture = _texture;
-}
-
-Texture* MeshRenderer::GetSpecularMap()
-{
-	return specularMap;
-}
-
-void MeshRenderer::SetSpecularMap(Texture* _specularMap)
-{
-	if (_specularMap != nullptr)
-		specularMap = _specularMap;
-}

@@ -109,8 +109,8 @@ Scene* GraphicsApplication::SetupTestScene()
     GameObject* obj = scene->AddGameObject(createinfo);
 
     MeshRenderer* meshRenderer = obj->GetComponent<MeshRenderer>();
-    meshRenderer->SetMesh(mesh);
-    meshRenderer->SetTexture(texture);
+    meshRenderer->mesh = mesh;
+    meshRenderer->texture = texture;
     meshRenderer->fragmentShaderFilePath = "Resources/Shaders/TextureFragmentShader.spv";
 
     Mathlib::Transform transform2;
@@ -124,7 +124,7 @@ Scene* GraphicsApplication::SetupTestScene()
 
     GameObject* obj2 = scene->AddGameObject(createinfo2);
     MeshRenderer* meshRenderer2 = obj2->GetComponent<MeshRenderer>();
-    meshRenderer2->SetTexture(texture2);
+    meshRenderer2->texture = texture2;
 
     RotatorComponent* rotator2 = obj2->AddComponent <RotatorComponent>();
     rotator2->rotationAxis = ROTATION_AXIS::Z;
@@ -178,8 +178,8 @@ Scene* GraphicsApplication::SetupIlluminationScene()
 
             MeshRenderer* meshRenderer = obj->GetComponent<MeshRenderer>();
             meshRenderer->fragmentShaderFilePath = "Resources/Shaders/BlinnPhongFragmentShader.spv";
-            meshRenderer->SetTexture(texture);
-            meshRenderer->SetSpecularMap(specularMap);
+            meshRenderer->texture = texture;
+            meshRenderer->metalnessMap = specularMap;
             meshRenderer->shininess = 32.0f;
             meshRenderer->ambient = Mathlib::Vec4(0.1f, 0.1f, 0.1f, 1.f);
             meshRenderer->diffuse = Mathlib::Vec4(0.5f, 0.5f, 0.5f, 1.f);
@@ -301,7 +301,7 @@ Scene* GraphicsApplication::SetupSimplePlaneScene()
     MeshRenderer* objMeshRenderer = obj->GetComponent<MeshRenderer>();
     objMeshRenderer->shininess = 32.0f;
     //meshRenderer->fragmentShaderFilePath = "Resources/Shaders/TextureFragmentShader.spv";
-    objMeshRenderer->SetTexture(RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Red.jpg"));
+    objMeshRenderer->texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Red.jpg");
 
     Mathlib::Transform obj2Transform;
     obj2Transform.position = Mathlib::Vec3(0.f, 13.f, 15.0f);
@@ -317,7 +317,7 @@ Scene* GraphicsApplication::SetupSimplePlaneScene()
     MeshRenderer* obj2MeshRenderer = obj2->GetComponent<MeshRenderer>();
     obj2MeshRenderer->shininess = 32.0f;
     //meshRenderer->fragmentShaderFilePath = "Resources/Shaders/TextureFragmentShader.spv";
-    obj2MeshRenderer->SetTexture(RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Red.jpg"));
+    obj2MeshRenderer->texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Red.jpg");
 
     Mathlib::Transform lightTransform;
     lightTransform.position = Mathlib::Vec3(0.f, 0.0f, -15.f);
@@ -352,12 +352,14 @@ Scene* GraphicsApplication::SetupSimpleCubeScene()
     camera->fov = 90.f;
 
     Mesh* sphere = RessourceManager::GetInstance()->LoadMesh("Resources/Models/Sphere.obj");
-    Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Red.jpg");
-    Texture* specularMap = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/DefaultSpecular.jpg");
+    Texture* wallTexture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Wall/albedo.png");
+    Texture* wallMetalnessMap = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Wall/metallic.png");
+    Texture* wallRoughnessMap = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Wall/roughness.png");
+    Texture* wallAoMap = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Wall/ao.png");
 
     /*Cube 1*/
     Mathlib::Transform transform; 
-    transform.position = Mathlib::Vec3(0.f, 0.f, 0.0f);
+    transform.position = Mathlib::Vec3(-1.f, 0.f, 0.0f);
     transform.scale = Mathlib::Vec3(0.02f, 0.02f, 0.02f);
 
     GameObjectCreateInfo createinfo;
@@ -368,46 +370,57 @@ Scene* GraphicsApplication::SetupSimpleCubeScene()
     GameObject* obj = scene->AddGameObject(createinfo);
 
     MeshRenderer* meshRenderer = obj->GetComponent<MeshRenderer>();
-    meshRenderer->SetMesh(sphere);
-    meshRenderer->SetTexture(texture);
+    meshRenderer->mesh = sphere;
+    meshRenderer->texture = wallTexture;
+    meshRenderer->metalnessMap = wallMetalnessMap;
+    meshRenderer->roughnessMap = wallRoughnessMap;
+    meshRenderer->ambientOcclusionMap = wallAoMap;
+    meshRenderer->fragmentShaderFilePath = "Resources/Shaders/PBRFragmentShader.spv";
     meshRenderer->shininess = 32.0f;
-    meshRenderer->fragmentShaderFilePath = "Resources/Shaders/BlinnPhongFragmentShader.spv";
     meshRenderer->ambient = Mathlib::Vec4(0.1f, 0.1f, 0.1f, 1.f);
     meshRenderer->diffuse = Mathlib::Vec4(0.4f, 0.4f, 0.4f, 1.f);
     meshRenderer->specular = Mathlib::Vec4(0.8f, 0.8f, 0.8f, 1.f);
 
-    /*RotatorComponent* rotator = obj->AddComponent<RotatorComponent>();
-    rotator->rotationAxis = ROTATION_AXIS::Y;*/
+    RotatorComponent* rotator = obj->AddComponent<RotatorComponent>();
+    rotator->rotationAxis = ROTATION_AXIS::Y;
 
-    ///*cube 2*/
+    /*cube 2*/
 
-    //Mathlib::Transform transform2;
-    //transform2.position = Mathlib::Vec3(1.f, 0.f, 0.0f);
-    //transform2.scale = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
-    ////transform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 273.f, 0.f));
+    Mathlib::Transform transform2;
+    transform2.position = Mathlib::Vec3(1.f, 0.f, 0.0f);
+    transform2.scale = Mathlib::Vec3(0.02f, 0.02f, 0.02f);
 
-    //GameObjectCreateInfo createinfo2;
-    //createinfo2.transform = transform2;
-    //createinfo2.parent = nullptr;
-    //createinfo2.name = "Cube_2";
+    GameObjectCreateInfo createinfo2;
+    createinfo2.transform = transform2;
+    createinfo2.parent = nullptr;
+    createinfo2.name = "Cube_2";
 
-    //GameObject* obj2 = scene->AddGameObject(createinfo2);
+    GameObject* obj2 = scene->AddGameObject(createinfo2);
 
-    //MeshRenderer* meshRenderer2 = obj2->GetComponent<MeshRenderer>();
-    //meshRenderer2->SetTexture(texture);
-    //meshRenderer2->shininess = 32.0f;
-    //meshRenderer2->fragmentShaderFilePath = "Resources/Shaders/BlinnPhongFragmentShader.spv";
-    //meshRenderer2->ambient = Mathlib::Vec4(0.1f, 0.1f, 0.1f, 1.f);
-    //meshRenderer2->diffuse = Mathlib::Vec4(0.5f, 0.5f, 0.5f, 1.f);
-    //meshRenderer2->specular = Mathlib::Vec4(1.0f, 1.0f, 1.0f, 1.f);
+    Texture* ironTexture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Rusted_iron/albedo.png");
+    Texture* ironMetalnessMap = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Rusted_iron/metallic.png");
+    Texture* ironRoughnessMap = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Rusted_iron/roughness.png");
+    Texture* ironAoMap = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Rusted_iron/ao.png");
 
-    //RotatorComponent* rotator2 = obj2->AddComponent<RotatorComponent>();
-    //rotator2->rotationAxis = ROTATION_AXIS::Y;
+    MeshRenderer* meshRenderer2 = obj2->GetComponent<MeshRenderer>();
+    meshRenderer2->mesh = sphere;
+    meshRenderer2->texture = ironTexture;
+    meshRenderer2->metalnessMap = ironMetalnessMap;
+    meshRenderer2->roughnessMap = ironRoughnessMap;
+    meshRenderer2->ambientOcclusionMap = ironAoMap;
+    meshRenderer2->fragmentShaderFilePath = "Resources/Shaders/PBRFragmentShader.spv";
+    meshRenderer2->shininess = 32.0f;
+    meshRenderer2->ambient = Mathlib::Vec4(0.1f, 0.1f, 0.1f, 1.f);
+    meshRenderer2->diffuse = Mathlib::Vec4(0.5f, 0.5f, 0.5f, 1.f);
+    meshRenderer2->specular = Mathlib::Vec4(1.0f, 1.0f, 1.0f, 1.f);
+
+    RotatorComponent* rotator2 = obj2->AddComponent<RotatorComponent>();
+    rotator2->rotationAxis = ROTATION_AXIS::Y;
 
     /*light 1*/
     Mathlib::Transform transform4;
-    transform4.position = Mathlib::Vec3(3.f, 0.0f, -3.f);
-    transform4.scale = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
+    transform4.position = Mathlib::Vec3(0.f, 0.0f, -1.f);
+    transform4.scale = Mathlib::Vec3(0.01f, 0.01f, 0.01f);
 
     GameObjectCreateInfo createinfo4;
     createinfo4.transform = transform4;
@@ -419,9 +432,10 @@ Scene* GraphicsApplication::SetupSimpleCubeScene()
     PointLight* lightComponent4 = light4->AddComponent<PointLight>();
     lightComponent4->color = Mathlib::Vec3(1.0f, 1.0f, 1.f);
     lightComponent4->range = 30.f;
+    lightComponent4->intensity = 1.f;
 
     MeshRenderer* meshRenderer4 = light4->GetComponent<MeshRenderer>();
-    meshRenderer4->enable = false;
+    meshRenderer4->enable = true;
     meshRenderer4->fragmentShaderFilePath = "Resources/Shaders/TextureFragmentShader.spv";
 
     return scene;

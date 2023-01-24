@@ -72,9 +72,11 @@ GameObject* Scene::AddGameObject(GameObjectCreateInfo _createInfo)
 	Mesh* mesh = RessourceManager::GetInstance()->LoadMesh("Resources/Models/cube.obj");
 	Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/White.jpg");
 	MeshRenderer* meshRenderer = gao->AddComponent<MeshRenderer>();
-	meshRenderer->SetMesh(mesh);
-	meshRenderer->SetTexture(texture);
-	meshRenderer->SetSpecularMap(texture);
+	meshRenderer->mesh = mesh;
+	meshRenderer->texture = texture;
+	meshRenderer->metalnessMap = texture;
+	meshRenderer->roughnessMap = texture;
+	meshRenderer->ambientOcclusionMap = texture;
 	meshRenderer->vertexShaderFilePath = "Resources/Shaders/VertexShader.spv";
 	meshRenderer->fragmentShaderFilePath = "Resources/Shaders/BlinnPhongFragmentShader.spv";
 

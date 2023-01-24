@@ -15,12 +15,13 @@ namespace RenderEngine::Core
 {
     class MeshRenderer : public Component
     {
-    private:
+    public:
+
         Mesh* mesh;
         Texture* texture;
-        Texture* specularMap;
-
-    public:
+        Texture* metalnessMap;
+        Texture* roughnessMap;
+        Texture* ambientOcclusionMap;
 
         std::string vertexShaderFilePath;
         std::string fragmentShaderFilePath;
@@ -38,15 +39,6 @@ namespace RenderEngine::Core
         void Initialize();
         void Start();
         void Update();
-
-        Mesh* GetMesh();
-        void SetMesh(Mesh* _mesh);
-
-        Texture* GetTexture();
-        void SetTexture(Texture* _texture);
-        
-        Texture* GetSpecularMap();
-        void SetSpecularMap(Texture* _specularMap);
     };
 }
 

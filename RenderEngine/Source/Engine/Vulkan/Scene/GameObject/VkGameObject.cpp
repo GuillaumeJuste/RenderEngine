@@ -90,12 +90,12 @@ DescriptorDataList VkGameObject::GenerateDefaultFragmentShaderDescriptorSet(Desc
 	textureBufferData.texture = &createInfo.textureData->vkTexture;
 	datalist.Add(textureBufferData);
 
-	DescriptorData specularBufferData{};
-	specularBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	specularBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	specularBufferData.binding = 1;
-	specularBufferData.texture = &createInfo.specularMap->vkTexture;
-	datalist.Add(specularBufferData);
+	DescriptorData metalnessMapBufferData{};
+	metalnessMapBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	metalnessMapBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+	metalnessMapBufferData.binding = 1;
+	metalnessMapBufferData.texture = &createInfo.metalnessMap->vkTexture;
+	datalist.Add(metalnessMapBufferData);
 
 	DescriptorData materialBufferData{};
 	materialBufferData.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -124,6 +124,20 @@ DescriptorDataList VkGameObject::GenerateDefaultFragmentShaderDescriptorSet(Desc
 	spotLightBufferData.binding = 5;
 	spotLightBufferData.buffer = _spotLightsBuffer;
 	datalist.Add(spotLightBufferData);
+
+	DescriptorData roughnessMapBufferData{};
+	roughnessMapBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	roughnessMapBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+	roughnessMapBufferData.binding = 6;
+	roughnessMapBufferData.texture = &createInfo.roughnessMap->vkTexture;
+	datalist.Add(roughnessMapBufferData);
+
+	DescriptorData aoMapBufferData{};
+	aoMapBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	aoMapBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+	aoMapBufferData.binding = 7;
+	aoMapBufferData.texture = &createInfo.aoMap->vkTexture;
+	datalist.Add(aoMapBufferData);
 
 	return datalist;
 }
@@ -166,7 +180,7 @@ void VkGameObject::Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const
 			{
 				vkCmdBindDescriptorSets(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.GetGraphicsPipelineLayout(), index, 1, &descriptorSets[index].GetFrameDescriptorSet(_currentFrame), 0, nullptr);
 			}
-			vkCmdDrawIndexed(_commandBuffer, static_cast<uint32_t>(meshRenderer->GetMesh()->indices.size()), 1, 0, 0, 0);
+			vkCmdDrawIndexed(_commandBuffer, static_cast<uint32_t>(meshRenderer->mesh->indices.size()), 1, 0, 0, 0);
 		}
 	}
 }

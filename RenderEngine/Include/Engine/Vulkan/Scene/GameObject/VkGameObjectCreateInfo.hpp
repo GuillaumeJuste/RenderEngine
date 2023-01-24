@@ -33,7 +33,9 @@ namespace RenderEngine::Engine::Vulkan
 
 		MeshData* meshData;
 		TextureData* textureData;
-		TextureData* specularMap;
+		TextureData* metalnessMap;
+		TextureData* roughnessMap;
+		TextureData* aoMap;
 
 		RenderEngine::Core::GameObject* gameObject = nullptr;
 
