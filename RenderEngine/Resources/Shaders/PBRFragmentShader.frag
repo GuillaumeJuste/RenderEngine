@@ -66,12 +66,19 @@ layout (set = 1,binding = 5) buffer SpotLightData
 	SpotLight lights[];
 } spotLightsBuffer;
 
-
 layout(location = 0) out vec4 outColor;
 
 float roughness = 0.2;
 
 const float PI = 3.14159265359;
+
+struct Light
+{
+	vec3 color;
+	vec3 direction;
+	vec3 radiance;
+};
+
 
 // _N : normal
 // _H : halfwayDirection
@@ -93,6 +100,13 @@ float GeometrySchlickGGX(float _NdotV, float _roughness);
 // _roughness : material roughness
 float GeometrySmith(vec3 _N, vec3 _V, vec3 _L, float _roughness);
 
+float ComputeAttenuation(float _distance, float _lightRange);
+vec3 ComputePointLightLighting(PointLight _light, vec3 _normal, vec3 _viewDirection, vec3 _albdeo, float _metalness, float _roughness, vec3 _F0);
+vec3 ComputeDirectionalLightLighting(DirectionalLight _light, vec3 _normal, vec3 _viewDirection, vec3 _albdeo, float _metalness, float _roughness, vec3 _F0);
+vec3 ComputeSpotLightLighting(SpotLight _light, vec3 _normal, vec3 _viewDirection, vec3 _albdeo, float _metalness, float _roughness, vec3 _F0);
+
+vec3 ComputeLighting(Light _light, vec3 _normal, vec3 _viewDirection, vec3 _albdeo, float _metalness, float _roughness, vec3 _F0);
+
 void main() 
 {
 	vec3 albedo = texture(albedoSampler, fsIn.fragTexCoord.xy).xyz;
@@ -113,40 +127,20 @@ void main()
     {
 		if(pointLightsBuffer.lights[i].enable == true)
 		{
-			vec3 lightDirection = normalize(pointLightsBuffer.lights[i].position - fsIn.fragPos);
-			vec3 halfwayDirection = normalize(viewDirection + lightDirection);
-
-			float distance = length(pointLightsBuffer.lights[i].position - fsIn.fragPos);
-			float attenuation = 1.0 / (distance * distance);
-			vec3 radiance = pointLightsBuffer.lights[i].color * pointLightsBuffer.lights[i].intensity * attenuation;
-
-			float D = DistributionGGX(normal, halfwayDirection, roughness);
-			vec3 F = FresnelSchlick(halfwayDirection, viewDirection, F0);
-			float G = GeometrySmith(normal, viewDirection, lightDirection, roughness);
-
-			vec3 numerator    = D * F * G; 
-			float denominator = 4.0 * max(dot(normal, viewDirection), 0.0) * max(dot(normal, lightDirection), 0.0) + 0.0001; // + 0.0001 to prevent divide by zero
-			vec3 specular = numerator / denominator;
-
-			// kS is equal to Fresnel
-			vec3 kS = F;
-			// for energy conservation, the diffuse and specular light can't
-			// be above 1.0 (unless the surface emits light); to preserve this
-			// relationship the diffuse component (kD) should equal 1.0 - kS.
-			vec3 kD = vec3(1.0) - kS;
-			// multiply kD by the inverse metalness such that only non-metals 
-			// have diffuse lighting, or a linear blend if partly metal (pure metals
-			// have no diffuse light).
-			kD *= 1.0 - metalness;	  
-
-			// scale light by NdotL
-			float NdotL = max(dot(normal, lightDirection), 0.0);  
-
-			// add to outgoing radiance Lo
-			Lo += (kD * albedo / PI + specular) * radiance * NdotL;
+			Lo += ComputePointLightLighting(pointLightsBuffer.lights[i], normal, viewDirection, albedo, metalness, roughness, F0);
 		}
-//		if(pointLightsBuffer.lights[i].enable == true)
-//			Lo += ComputePointLightLighting(pointLightsBuffer.lights[i],normal, viewDirection, albedo, metalness, roughness, ao, F0);
+	}
+
+	for(int i = 0; i < directionalLightsBuffer.lights.length(); i++)
+	{
+		if(directionalLightsBuffer.lights[i].enable == true)
+			Lo += ComputeDirectionalLightLighting(directionalLightsBuffer.lights[i], normal, viewDirection, albedo, metalness, roughness, F0);
+	}
+
+	for(int i = 0; i < spotLightsBuffer.lights.length(); i++)
+  	{
+		if(spotLightsBuffer.lights[i].enable == true)
+			Lo += ComputeSpotLightLighting(spotLightsBuffer.lights[i], normal, viewDirection, albedo, metalness, roughness, F0);
 	}
 
 	vec3 ambient = vec3(0.01) * albedo * ao;
@@ -156,6 +150,77 @@ void main()
 	color  = color  / (color  + vec3(1.0));
 
 	outColor = vec4(color , 1.0);
+}
+
+vec3 ComputePointLightLighting(PointLight _light, vec3 _normal, vec3 _viewDirection, vec3 _albdeo, float _metalness, float _roughness, vec3 _F0)
+{
+	Light light;
+	light.color = _light.color;
+	light.direction = normalize(_light.position - fsIn.fragPos);
+
+	float distance = length(_light.position - fsIn.fragPos);
+	float attenuation = ComputeAttenuation(distance, _light.range);
+	light.radiance = _light.color * _light.intensity * attenuation;
+
+	return ComputeLighting(light, _normal, _viewDirection, _albdeo, _metalness, _roughness, _F0);
+}
+
+vec3 ComputeDirectionalLightLighting(DirectionalLight _light, vec3 _normal, vec3 _viewDirection, vec3 _albdeo, float _metalness, float _roughness, vec3 _F0)
+{
+	Light light;
+	light.color = _light.color;
+	light.direction = normalize(-_light.direction);
+	light.radiance = _light.color * _light.intensity;
+
+	return ComputeLighting(light, _normal, _viewDirection, _albdeo, _metalness, _roughness, _F0);
+}
+
+vec3 ComputeSpotLightLighting(SpotLight _light, vec3 _normal, vec3 _viewDirection, vec3 _albdeo, float _metalness, float _roughness, vec3 _F0)
+{
+	Light light;
+	light.color = _light.color;
+	light.direction = normalize(_light.position - fsIn.fragPos);
+	float lightTheta = dot(light.direction, normalize(-_light.direction));
+	
+	if(lightTheta > _light.cutOff) 
+	{
+		float distance = length(_light.position - fsIn.fragPos);
+		float attenuation = ComputeAttenuation(distance, _light.range);
+		light.radiance = _light.color * _light.intensity * attenuation;
+
+		return ComputeLighting(light, _normal, _viewDirection, _albdeo, _metalness, _roughness, _F0);
+	}
+	return vec3(0.0);
+}
+
+vec3 ComputeLighting(Light _light, vec3 _normal, vec3 _viewDirection, vec3 _albdeo, float _metalness, float _roughness, vec3 _F0)
+{
+	vec3 halfwayDirection = normalize(_viewDirection + _light.direction);
+
+	float D = DistributionGGX(_normal, halfwayDirection, _roughness);
+	vec3 F = FresnelSchlick(halfwayDirection, _viewDirection, _F0);
+	float G = GeometrySmith(_normal, _viewDirection, _light.direction, _roughness);
+
+	vec3 numerator    = D * F * G; 
+	float denominator = 4.0 * max(dot(_normal, _viewDirection), 0.0) * max(dot(_normal, _light.direction), 0.0) + 0.0001; // + 0.0001 to prevent divide by zero
+	vec3 specular = numerator / denominator;
+
+	// kS is equal to Fresnel
+	vec3 kS = F;
+	// for energy conservation, the diffuse and specular light can't
+	// be above 1.0 (unless the surface emits light); to preserve this
+	// relationship the diffuse component (kD) should equal 1.0 - kS.
+	vec3 kD = vec3(1.0) - kS;
+	// multiply kD by the inverse metalness such that only non-metals 
+	// have diffuse lighting, or a linear blend if partly metal (pure metals
+	// have no diffuse light).
+	kD *= 1.0 - _metalness;	  
+
+	// scale light by NdotL
+	float NdotL = max(dot(_normal, _light.direction), 0.0);  
+
+	// add to outgoing radiance Lo
+	return (kD * _albdeo / PI + specular) * _light.radiance * NdotL;
 }
 
 float DistributionGGX(vec3 _N, vec3 _H, float _roughness)
@@ -193,4 +258,11 @@ float GeometrySmith(vec3 _N, vec3 _V, vec3 _L, float _roughness)
     float ggx2 = GeometrySchlickGGX(NdotL, _roughness);
 	
     return ggx1 * ggx2;
+}
+
+float ComputeAttenuation(float _distance, float _lightRange)
+{
+	float linear = 4.5 / _lightRange;
+	float quadratic = 75.0 / (_lightRange * _lightRange);
+	return 1.0 / (1.0 + linear * _distance + quadratic * (_distance * _distance));
 }
