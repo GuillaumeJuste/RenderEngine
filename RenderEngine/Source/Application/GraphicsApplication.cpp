@@ -160,14 +160,19 @@ Scene* GraphicsApplication::SetupIlluminationScene()
     Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/container.png");
     Texture* specularMap = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/container_specular.png");
 
+    Mesh* sphere = RessourceManager::GetInstance()->LoadMesh("Resources/Models/Sphere.obj");
+    Texture* ironTexture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Rusted_iron/albedo.png");
+    Texture* ironMetalnessMap = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Rusted_iron/metallic.png");
+    Texture* ironRoughnessMap = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Rusted_iron/roughness.png");
+    Texture* ironAoMap = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Rusted_iron/ao.png");
+
     for (int width = 0; width < 5; width++)
     {
         for (int height = 0; height < 5; height++)
         {
             Mathlib::Transform transform;
             transform.position = Mathlib::Vec3(-4.f + (width * 2.f), -4.f + (height * 2.f), 0.0f);
-            transform.scale = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
-            transform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 0.f, 0.f));
+            transform.scale = Mathlib::Vec3(0.02f, 0.02f, 0.02f);
 
             GameObjectCreateInfo createinfo;
             createinfo.transform = transform;
@@ -177,13 +182,16 @@ Scene* GraphicsApplication::SetupIlluminationScene()
             GameObject* obj = scene->AddGameObject(createinfo);
 
             MeshRenderer* meshRenderer = obj->GetComponent<MeshRenderer>();
-            meshRenderer->fragmentShaderFilePath = "Resources/Shaders/BlinnPhongFragmentShader.spv";
-            meshRenderer->texture = texture;
-            meshRenderer->metalnessMap = specularMap;
+            meshRenderer->mesh = sphere;
+            meshRenderer->texture = ironTexture;
+            meshRenderer->metalnessMap = ironMetalnessMap;
+            meshRenderer->roughnessMap = ironRoughnessMap;
+            meshRenderer->ambientOcclusionMap = ironAoMap;
+            meshRenderer->fragmentShaderFilePath = "Resources/Shaders/PBRFragmentShader.spv";
             meshRenderer->shininess = 32.0f;
-            meshRenderer->ambient = Mathlib::Vec4(0.1f, 0.1f, 0.1f, 1.f);
-            meshRenderer->diffuse = Mathlib::Vec4(0.5f, 0.5f, 0.5f, 1.f);
-            meshRenderer->specular = Mathlib::Vec4(1.0f, 1.0f, 1.0f, 1.f);
+            meshRenderer->ambient = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
+            meshRenderer->diffuse = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
+            meshRenderer->specular = Mathlib::Vec3(1.0f, 1.0f, 1.0f);
 
             RotatorComponent* rotator = obj->AddComponent<RotatorComponent>();
             rotator->rotationAxis = ROTATION_AXIS::Y;
@@ -193,7 +201,7 @@ Scene* GraphicsApplication::SetupIlluminationScene()
     /* light 2 */
 
     Mathlib::Transform transform2;
-    transform2.position = Mathlib::Vec3(-5.5f, 0.0f, 0.f);
+    transform2.position = Mathlib::Vec3(-5.5f, 0.0f, -1.f);
     transform2.scale = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
 
     GameObjectCreateInfo createinfo2;
@@ -205,7 +213,7 @@ Scene* GraphicsApplication::SetupIlluminationScene()
 
     PointLight* lightComponent = light2->AddComponent<PointLight>();
     lightComponent->color = Mathlib::Vec3(1.0f, 0.00f, 0.0f);
-    lightComponent->range = 40.f;
+    lightComponent->range = 20.f;
 
     MeshRenderer* meshRenderer1 = light2->GetComponent<MeshRenderer>();
     meshRenderer1->fragmentShaderFilePath = "Resources/Shaders/TextureFragmentShader.spv";
@@ -213,7 +221,7 @@ Scene* GraphicsApplication::SetupIlluminationScene()
     /* light 3 */
 
     Mathlib::Transform transform3;
-    transform3.position = Mathlib::Vec3(5.5f, 0.0f, 0.f);
+    transform3.position = Mathlib::Vec3(5.5f, 0.0f, -1.f);
     transform3.scale = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
 
     GameObjectCreateInfo createinfo3;
@@ -410,9 +418,9 @@ Scene* GraphicsApplication::SetupSimpleCubeScene()
     meshRenderer2->ambientOcclusionMap = ironAoMap;
     meshRenderer2->fragmentShaderFilePath = "Resources/Shaders/PBRFragmentShader.spv";
     meshRenderer2->shininess = 32.0f;
-    meshRenderer2->ambient = Mathlib::Vec4(0.1f, 0.1f, 0.1f, 1.f);
-    meshRenderer2->diffuse = Mathlib::Vec4(0.5f, 0.5f, 0.5f, 1.f);
-    meshRenderer2->specular = Mathlib::Vec4(1.0f, 1.0f, 1.0f, 1.f);
+    meshRenderer2->ambient = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
+    meshRenderer2->diffuse = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
+    meshRenderer2->specular = Mathlib::Vec3(1.0f, 1.0f, 1.0f);
 
     RotatorComponent* rotator2 = obj2->AddComponent<RotatorComponent>();
     rotator2->rotationAxis = ROTATION_AXIS::Y;
@@ -443,7 +451,7 @@ Scene* GraphicsApplication::SetupSimpleCubeScene()
 
 void GraphicsApplication::MainLoop()
 {
-    Scene* scene = SetupSimpleCubeScene();
+    Scene* scene = SetupIlluminationScene();
 
     scene->Initialize();
     scene->Start();

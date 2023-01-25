@@ -14,14 +14,6 @@ layout(set = 1, binding = 1) uniform sampler2D metalnessMapSampler;
 layout(set = 1, binding = 6) uniform sampler2D roughnessMapSampler;
 layout(set = 1, binding = 7) uniform sampler2D aoMapSampler;
 
-layout(set = 1, binding = 2) uniform MaterialBufferObject 
-{
-	float shininess;
-	vec4 Ka;
-	vec4 Kd;
-	vec4 Ks;
-} material;
-
 struct PointLight
 {
 	bool enable;
@@ -265,4 +257,7 @@ float ComputeAttenuation(float _distance, float _lightRange)
 	float linear = 4.5 / _lightRange;
 	float quadratic = 75.0 / (_lightRange * _lightRange);
 	return 1.0 / (1.0 + linear * _distance + quadratic * (_distance * _distance));
+	
+	// quadratic attenuation
+	//return 1.0 / (_distance * _distance);
 }
