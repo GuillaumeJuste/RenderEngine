@@ -9,7 +9,7 @@
 namespace RenderEngine::Core
 {
     /**
-     * @brief Mesh class implementation
+     * @brief Texture class implementation
     */
     struct Texture
     {
@@ -19,7 +19,7 @@ namespace RenderEngine::Core
         int height;
         int imageSize;
 
-        std::vector<char> pixels;
+        char* pixels;
 
         Texture() = default;
         ~Texture() = default;

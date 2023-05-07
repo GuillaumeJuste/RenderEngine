@@ -16,13 +16,14 @@ void Image::InitializeImage(ImageVkCreateInfo _imageCreateInfo, Image* _output)
     imageInfo.extent.height = _imageCreateInfo.height;
     imageInfo.extent.depth = 1;
     imageInfo.mipLevels = 1;
-    imageInfo.arrayLayers = 1;
+    imageInfo.arrayLayers = _imageCreateInfo.arrayLayers > 0 ? _imageCreateInfo.arrayLayers : 1;
     imageInfo.format = _imageCreateInfo.format;
     imageInfo.tiling = _imageCreateInfo.tiling;
     imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     imageInfo.usage = _imageCreateInfo.usage;
     imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
     imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    imageInfo.flags = _imageCreateInfo.imageFlags;
 
     if (vkCreateImage(_imageCreateInfo.logicalDevice, &imageInfo, nullptr, &_output->image) != VK_SUCCESS)
     {

@@ -18,35 +18,43 @@ void VkTexture::InitializeVkTexture(const VkTextureVkCreateInfo& _vkTextureCreat
 	stagingBufferCreateInfo.logicalDevice = _vkTextureCreateInfo.logicalDevice;
 	stagingBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 	stagingBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-	stagingBufferCreateInfo.bufferSize = _vkTextureCreateInfo.texture->imageSize;
+	stagingBufferCreateInfo.bufferSize = _vkTextureCreateInfo.textures[0]->imageSize * _vkTextureCreateInfo.textures.size();
 
 	BufferObject::InitializeBufferObject(stagingBufferCreateInfo, &stagingBuffer);
 
+	/*std::vector<char> images;
+	for (size_t i = 0; i < _vkTextureCreateInfo.textures.size(); i++)
+	{
+		images.insert(images.end(), _vkTextureCreateInfo.textures[i]->pixels.begin(), _vkTextureCreateInfo.textures[i]->pixels.end());
+	}*/
+
 	void* data;
 	vkMapMemory(_vkTextureCreateInfo.logicalDevice, stagingBuffer.GetVkBufferMemory(), 0, stagingBuffer.GetBufferSize(), 0, &data);
-	memcpy(data, _vkTextureCreateInfo.texture->pixels.data(), stagingBuffer.GetBufferSize());
+	memcpy(data, _vkTextureCreateInfo.textures[0]->pixels, stagingBuffer.GetBufferSize());
 	vkUnmapMemory(_vkTextureCreateInfo.logicalDevice, stagingBuffer.GetVkBufferMemory());
 
 	ImageVkCreateInfo imageCreateInfo{};
 	imageCreateInfo.physicalDevice = _vkTextureCreateInfo.physicalDevice;
 	imageCreateInfo.logicalDevice = _vkTextureCreateInfo.logicalDevice;
-	imageCreateInfo.width = static_cast<uint32_t>(_vkTextureCreateInfo.texture->width);
-	imageCreateInfo.height = static_cast<uint32_t>(_vkTextureCreateInfo.texture->height);
+	imageCreateInfo.width = static_cast<uint32_t>(_vkTextureCreateInfo.textures[0]->width);
+	imageCreateInfo.height = static_cast<uint32_t>(_vkTextureCreateInfo.textures[0]->height);
 	imageCreateInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
 	imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-	imageCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+	imageCreateInfo.usage = _vkTextureCreateInfo.usage;
 	imageCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 	imageCreateInfo.commandPool = _vkTextureCreateInfo.commandPool;
 	imageCreateInfo.graphicsQueue = _vkTextureCreateInfo.graphicsQueue;
+	imageCreateInfo.arrayLayers = _vkTextureCreateInfo.textures.size();
+	imageCreateInfo.imageFlags = _vkTextureCreateInfo.imageFlags;
 	Image::InitializeImage(imageCreateInfo, &_output->image);
 
 	_output->image.TransitionImageLayout(VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-	_output->CopyBufferToImage(stagingBuffer.GetVkBuffer(), static_cast<uint32_t>(_vkTextureCreateInfo.texture->width), static_cast<uint32_t>(_vkTextureCreateInfo.texture->height));
+	_output->CopyBufferToImage(stagingBuffer.GetVkBuffer(), static_cast<uint32_t>(imageCreateInfo.width), static_cast<uint32_t>(imageCreateInfo.height));
 	_output->image.TransitionImageLayout(VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
 	stagingBuffer.Cleanup();
 
-	_output->CreateImageView();
+	_output->CreateImageView(_vkTextureCreateInfo.imageViewType, _vkTextureCreateInfo.textures.size());
 
 	_output->CreateSampler();
 }
@@ -84,13 +92,15 @@ void VkTexture::CopyBufferToImage(VkBuffer _buffer, uint32_t _width, uint32_t _h
 	CommandBuffer::EndSingleTimeCommands(createInfo.logicalDevice, createInfo.commandPool, createInfo.graphicsQueue, commandBuffer);
 }
 
-void VkTexture::CreateImageView()
+void VkTexture::CreateImageView(VkImageViewType _imageViewType, uint32_t _layerCount)
 {
 	ImageViewVkCreateInfo imageViewCreateInfo;
 	imageViewCreateInfo.logicalDevice = createInfo.logicalDevice;
 	imageViewCreateInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
 	imageViewCreateInfo.aspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
 	imageViewCreateInfo.image = image.GetVkImage();
+	imageViewCreateInfo.layerCount = _layerCount;
+	imageViewCreateInfo.viewType = _imageViewType;
 	ImageView::InitializeImageView(imageViewCreateInfo, &imageView);
 }
 

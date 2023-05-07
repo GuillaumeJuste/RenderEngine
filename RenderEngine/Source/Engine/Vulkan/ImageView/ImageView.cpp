@@ -14,13 +14,13 @@ void ImageView::InitializeImageView(ImageViewVkCreateInfo _imageViewCreateInfo, 
     VkImageViewCreateInfo viewInfo{};
     viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
     viewInfo.image = _imageViewCreateInfo.image;
-    viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    viewInfo.viewType = _imageViewCreateInfo.viewType;
     viewInfo.format = _imageViewCreateInfo.format;
     viewInfo.subresourceRange.aspectMask = _imageViewCreateInfo.aspectFlags;
     viewInfo.subresourceRange.baseMipLevel = 0;
     viewInfo.subresourceRange.levelCount = 1;
     viewInfo.subresourceRange.baseArrayLayer = 0;
-    viewInfo.subresourceRange.layerCount = 1;
+    viewInfo.subresourceRange.layerCount = _imageViewCreateInfo.layerCount;
 
     ;
     if (vkCreateImageView(_imageViewCreateInfo.logicalDevice, &viewInfo, nullptr, &_output->imageView) != VK_SUCCESS) {

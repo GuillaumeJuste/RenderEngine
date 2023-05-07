@@ -31,7 +31,7 @@ void DepthBuffer::InitializeDepthBuffer(const DepthBufferVkCreateInfo& _createIn
     ImageViewVkCreateInfo createInfo;
     createInfo.logicalDevice = _createInfo.logicalDevice;
     createInfo.format = depthFormat;
-    createInfo.aspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
+    createInfo.aspectFlags = VK_IMAGE_ASPECT_DEPTH_BIT;
     createInfo.image = _output->depthImage.GetVkImage();
     ImageView::InitializeImageView(createInfo, &_output->depthImageView);
 }

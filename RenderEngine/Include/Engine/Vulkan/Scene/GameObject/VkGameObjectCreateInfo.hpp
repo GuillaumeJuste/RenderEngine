@@ -5,10 +5,6 @@
 
 #include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Core/Object/GameObject/GameObject.hpp"
-#include "Engine/Vulkan/CommandPool/CommandPool.hpp"
-#include "Engine/Vulkan/Descriptor/Layout/DescriptorSetLayout.hpp"
-#include "Engine/Vulkan/Descriptor/Pool/DescriptorPool.hpp"
-#include "Engine/Vulkan/GraphicsPipeline/GraphicsPipeline.hpp"
 #include "Engine/Vulkan/SwapChain/SwapChain.hpp"
 #include "Engine/Vulkan/RenderPass/RenderPass.hpp"
 #include "Engine/Vulkan/Scene/Data/MeshData.hpp"

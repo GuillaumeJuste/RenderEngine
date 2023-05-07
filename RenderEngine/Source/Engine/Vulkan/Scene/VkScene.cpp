@@ -25,6 +25,8 @@ VkScene::VkScene(const VkSceneCreateInfo& _createInfo) :
 
 	DescriptorBuffer::InitializeDescriptorBuffer(cameraBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &cameraBuffer);
 
+	//CreateSkybox();
+
 	CreateVkGameObjects(gaoCreateInfo, createInfo.scene->GetSceneRoot().GetChildrens());
 
 	CreateLightBuffer();
@@ -297,8 +299,7 @@ void VkScene::CreateIndexBufferObject(RenderEngine::Core::Mesh* _mesh, MeshData*
 	stagingBufferObject.Cleanup();
 }
 
-
-TextureData* VkScene::LoadTexture(RenderEngine::Core::Texture* _texture)
+TextureData* VkScene::LoadTexture(RenderEngine::Core::Texture* _texture, uint32_t _imageArrayLayers, VkImageCreateFlags _imageFlags)
 {
 	TextureData* textureData = GetTexture(_texture);
 
@@ -306,9 +307,22 @@ TextureData* VkScene::LoadTexture(RenderEngine::Core::Texture* _texture)
 		return textureData;
 
 	TextureData* newTexture = new TextureData();
-	newTexture->texture = _texture;
-	CreateVkTexture(_texture, newTexture);
+	
+	VkTextureVkCreateInfo textCreateInfo{};
+	textCreateInfo.logicalDevice = createInfo.logicalDevice;
+	textCreateInfo.physicalDevice = createInfo.physicalDevice;
+	textCreateInfo.graphicsQueue = createInfo.graphicsQueue;
+	textCreateInfo.commandPool = createInfo.commandPool;
+	textCreateInfo.textures.push_back(_texture);
+	textCreateInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
+	textCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+	textCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+	textCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+	textCreateInfo.imageFlags = _imageFlags;
+	textCreateInfo.imageViewType = VK_IMAGE_VIEW_TYPE_2D;
 
+	VkTexture::InitializeVkTexture(textCreateInfo, &newTexture->vkTexture);
+	
 	sceneTextures.push_back(newTexture);
 	return newTexture;
 }
@@ -326,24 +340,44 @@ TextureData* VkScene::GetTexture(RenderEngine::Core::Texture* _texture)
 	return nullptr;
 }
 
-void VkScene::CreateVkTexture(RenderEngine::Core::Texture* _texture, TextureData* _output)
+void VkScene::CreateSkybox()
 {
+	skybox.meshData = LoadMesh(createInfo.scene->skybox.mesh);
+
 	VkTextureVkCreateInfo textCreateInfo{};
 	textCreateInfo.logicalDevice = createInfo.logicalDevice;
 	textCreateInfo.physicalDevice = createInfo.physicalDevice;
 	textCreateInfo.graphicsQueue = createInfo.graphicsQueue;
 	textCreateInfo.commandPool = createInfo.commandPool;
-	textCreateInfo.texture = _texture;
+	textCreateInfo.textures.push_back(createInfo.scene->skybox.front);
+	textCreateInfo.textures.push_back(createInfo.scene->skybox.back);
+	textCreateInfo.textures.push_back(createInfo.scene->skybox.left);
+	textCreateInfo.textures.push_back(createInfo.scene->skybox.right);
+	textCreateInfo.textures.push_back(createInfo.scene->skybox.top);
+	textCreateInfo.textures.push_back(createInfo.scene->skybox.bottom);
+
 	textCreateInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
 	textCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
 	textCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 	textCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+	textCreateInfo.imageFlags = VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
+	textCreateInfo.imageViewType = VK_IMAGE_VIEW_TYPE_CUBE;
 
-	VkTexture::InitializeVkTexture(textCreateInfo, &_output->vkTexture);
+	VkTexture::InitializeVkTexture(textCreateInfo, &skybox.texture);
+
+	VkSkyboxCreateInfo skyboxCreateInfo{};
+	skyboxCreateInfo.physicalDevice = createInfo.physicalDevice;
+	skyboxCreateInfo.logicalDevice = createInfo.logicalDevice;
+	skyboxCreateInfo.renderpass = createInfo.renderpass;
+	skyboxCreateInfo.swapchain = createInfo.swapchain;
+
+	skybox.InitializeSkybox(skyboxCreateInfo, &cameraBuffer);
 }
+
 
 void VkScene::Draw(VkCommandBuffer _commandBuffer, int _currentFrame) 
 {
+	//skybox.Draw(_commandBuffer, _currentFrame);
 	for (std::forward_list<VkGameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{
 		it->Draw(_commandBuffer, _currentFrame);

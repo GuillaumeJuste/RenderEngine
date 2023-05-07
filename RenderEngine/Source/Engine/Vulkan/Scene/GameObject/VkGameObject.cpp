@@ -55,7 +55,7 @@ void VkGameObject::CreateDescriptorBufferObjects()
 	materialBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 	materialBufferCreateInfo.bufferSize = sizeof(Material);
 
-	DescriptorBuffer::InitializeDescriptorBuffer(uniformBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &materialBufferObject);
+	DescriptorBuffer::InitializeDescriptorBuffer(materialBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &materialBufferObject);
 }
 
 DescriptorDataList VkGameObject::GenerateDefaultVertexShaderDescriptorSet(DescriptorBuffer* _cameraBuffer)

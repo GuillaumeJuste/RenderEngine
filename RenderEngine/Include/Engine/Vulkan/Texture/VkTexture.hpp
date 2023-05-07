@@ -20,7 +20,7 @@ namespace RenderEngine::Engine::Vulkan
 		ImageView imageView;
 		VkSampler sampler;
 
-		void CreateImageView();
+		void CreateImageView(VkImageViewType _imageViewType, uint32_t _layerCount);
 		void CreateSampler();
 		void CopyBufferToImage(VkBuffer _buffer, uint32_t _width, uint32_t _height);
 

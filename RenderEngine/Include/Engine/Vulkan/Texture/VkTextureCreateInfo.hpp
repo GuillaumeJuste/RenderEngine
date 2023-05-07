@@ -22,12 +22,16 @@ namespace RenderEngine::Engine::Vulkan
 		/// command pool
 		CommandPool* commandPool;
 
-		RenderEngine::Core::Texture* texture;
+		std::vector<RenderEngine::Core::Texture*> textures;
 
 		VkFormat format;
 		VkImageTiling tiling;
 		VkImageUsageFlags usage; 
 		VkMemoryPropertyFlags properties;
+
+		VkImageCreateFlags imageFlags;
+
+		VkImageViewType imageViewType;
 
 		/// default constructor
 		VkTextureVkCreateInfo() = default;

@@ -23,6 +23,14 @@ Scene::Scene()
 	mainCameraCreateInfo.name = "mainCamera";
 	mainCameraCreateInfo.parent = &rootObject;
 
+	skybox.mesh = RessourceManager::GetInstance()->LoadMesh("Resources/Models/Cube.gltf");
+	skybox.front = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Skybox/front.jpg");
+	skybox.back = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Skybox/back.jpg");
+	skybox.left = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Skybox/left.jpg");
+	skybox.right = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Skybox/right.jpg");
+	skybox.top = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Skybox/top.jpg");
+	skybox.bottom = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Skybox/bottom.jpg");
+
 	GameObject::InitializeGameObject(mainCameraCreateInfo, &mainCamera);
 }
 
@@ -77,8 +85,8 @@ GameObject* Scene::AddGameObject(GameObjectCreateInfo _createInfo)
 	meshRenderer->metalnessMap = texture;
 	meshRenderer->roughnessMap = texture;
 	meshRenderer->ambientOcclusionMap = texture;
-	meshRenderer->vertexShaderFilePath = "Resources/Shaders/VertexShader.spv";
-	meshRenderer->fragmentShaderFilePath = "Resources/Shaders/BlinnPhongFragmentShader.spv";
+	meshRenderer->vertexShaderFilePath = "Resources/Shaders/VertexShader.vert.spv";
+	meshRenderer->fragmentShaderFilePath = "Resources/Shaders/BlinnPhongFragmentShader.frag.spv";
 
 	return gao;
 }

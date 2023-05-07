@@ -21,6 +21,10 @@ namespace RenderEngine::Engine::Vulkan
 		/// swapchain images format 
 		VkFormat format = VK_FORMAT_UNDEFINED;
 
+		VkImageViewType viewType = VK_IMAGE_VIEW_TYPE_2D;
+
+		uint32_t layerCount = 1;
+
 		VkImageAspectFlags aspectFlags;
 
 		ImageViewVkCreateInfo() = default;

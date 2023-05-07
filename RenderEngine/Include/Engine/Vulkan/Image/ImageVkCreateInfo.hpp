@@ -23,6 +23,8 @@ namespace RenderEngine::Engine::Vulkan
 		VkMemoryPropertyFlags properties;
 		VkQueue graphicsQueue;
 		CommandPool* commandPool;
+		VkImageCreateFlags imageFlags;
+		uint32_t arrayLayers;
 
 		/// default constructor
 		ImageVkCreateInfo() = default;

@@ -3,6 +3,7 @@
 #include <assimp/postprocess.h>
 
 #include <stdexcept>
+#include <cstring>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
@@ -137,7 +138,8 @@ Texture* RessourceManager::LoadTexture(std::string _filePath)
 	newTexture->imageSize = newTexture->width * newTexture->height * 4;
 	newTexture->filePath = _filePath;
 
-	newTexture->pixels.assign(data, data + newTexture->imageSize);
+	newTexture->pixels = reinterpret_cast<char*>(stbi__malloc(6u * newTexture->imageSize));
+	std::memmove(newTexture->pixels, data, newTexture->imageSize * sizeof(char));
 
 	stbi_image_free(data);
 

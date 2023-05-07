@@ -8,6 +8,8 @@
 #include "Engine/Vulkan/Scene/GameObject/VkGameObjectCreateInfo.hpp"
 #include "Engine/Vulkan/Scene/GameObject/VkGameObject.hpp"
 
+#include "Engine/Vulkan/Scene/Skybox/VkSkybox.hpp"
+
 #include "Engine/Vulkan/Scene/Data/MeshData.hpp"
 #include "Engine/Vulkan/Scene/Data/TextureData.hpp"
 #include "Engine/Vulkan/Descriptor/Buffer/DescriptorBuffer.hpp"
@@ -42,6 +44,7 @@ namespace RenderEngine::Engine::Vulkan
 		std::vector<VkPointLight> scenePointLights;
 		std::vector<VkDirectionalLight> sceneDirectionalLights;
 		std::vector<VkSpotLight> sceneSpotLights;
+		VkSkybox skybox;
 
 		void CreateVkGameObjects(VkGameObjectCreateInfo _createInfo, std::vector<GameObject*> _childrens);
 
@@ -56,10 +59,10 @@ namespace RenderEngine::Engine::Vulkan
 		void CreateVertexBufferObject(RenderEngine::Core::Mesh* _mesh, MeshData* _output);
 		void CreateIndexBufferObject(RenderEngine::Core::Mesh* _mesh, MeshData* _output);
 
-		TextureData* LoadTexture(RenderEngine::Core::Texture* _texture);
+		TextureData* LoadTexture(RenderEngine::Core::Texture* _texture, uint32_t _imageArrayLayers = 1, VkImageCreateFlags _imageFlags = 0);
 		TextureData* GetTexture(RenderEngine::Core::Texture* _texture);
 
-		void CreateVkTexture(RenderEngine::Core::Texture* _texture, TextureData* _output);
+		void CreateSkybox();
 
 	public:
 		VkScene() = default;

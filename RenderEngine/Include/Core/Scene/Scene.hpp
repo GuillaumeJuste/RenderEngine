@@ -6,10 +6,10 @@
 #include "Core/Object/GameObject/GameObject.hpp"
 #include "Core/Object/GameObject/GameObjectCreateInfo.hpp"
 #include "Core/Object/GameObject/Camera/Camera.hpp"
+#include "Core/Scene/Skybox.hpp"
 
 #include <string>
 #include <list>
-
 
 namespace RenderEngine::Core
 {
@@ -32,12 +32,12 @@ namespace RenderEngine::Core
         Camera mainCamera;
 
     public:
-
         /**
         * @brief scene name
         */
         std::string name;
 
+        Skybox skybox;
 
         Scene();
         ~Scene() = default;
