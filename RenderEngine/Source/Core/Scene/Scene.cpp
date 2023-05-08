@@ -1,7 +1,8 @@
 #include "Core/Scene/Scene.hpp"
-#include "Core/RessourceManager/RessourceManager.hpp"
+#include "ResourceManager/ResourceManager.hpp"
 #include "Core/Components/MeshRenderer/MeshRenderer.hpp"
 
+using namespace RenderEngine;
 using namespace RenderEngine::Core;
 
 Scene::Scene()
@@ -23,13 +24,13 @@ Scene::Scene()
 	mainCameraCreateInfo.name = "mainCamera";
 	mainCameraCreateInfo.parent = &rootObject;
 
-	skybox.mesh = RessourceManager::GetInstance()->LoadMesh("Resources/Engine/Models/cube.obj");
-	skybox.front = RessourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/Skybox/front.jpg");
-	skybox.back = RessourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/Skybox/back.jpg");
-	skybox.left = RessourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/Skybox/left.jpg");
-	skybox.right = RessourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/Skybox/right.jpg");
-	skybox.top = RessourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/Skybox/top.jpg");
-	skybox.bottom = RessourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/Skybox/bottom.jpg");
+	skybox.mesh = ResourceManager::GetInstance()->LoadMesh("Resources/Engine/Models/cube.obj");
+	skybox.front = ResourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/Skybox/front.jpg");
+	skybox.back = ResourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/Skybox/back.jpg");
+	skybox.left = ResourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/Skybox/left.jpg");
+	skybox.right = ResourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/Skybox/right.jpg");
+	skybox.top = ResourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/Skybox/top.jpg");
+	skybox.bottom = ResourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/Skybox/bottom.jpg");
 
 	GameObject::InitializeGameObject(mainCameraCreateInfo, &mainCamera);
 }
@@ -77,8 +78,8 @@ GameObject* Scene::AddGameObject(GameObjectCreateInfo _createInfo)
 
 	GameObject::InitializeGameObject(_createInfo, gao);
 
-	Mesh* mesh = RessourceManager::GetInstance()->LoadMesh("Resources/Engine/Models/cube.obj");
-	Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/White.jpg");
+	Mesh* mesh = ResourceManager::GetInstance()->LoadMesh("Resources/Engine/Models/cube.obj");
+	Texture* texture = ResourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/White.jpg");
 	MeshRenderer* meshRenderer = gao->AddComponent<MeshRenderer>();
 	meshRenderer->mesh = mesh;
 	meshRenderer->texture = texture;

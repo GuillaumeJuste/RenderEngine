@@ -1,6 +1,6 @@
-#include "Core/RessourceManager/Texture.hpp"
+#include "ResourceManager/Assets/Texture/Texture.hpp"
 
-using namespace RenderEngine::Core;
+using namespace RenderEngine::Assets;
 
 bool Texture::operator==(const Texture& _rhs) const
 {

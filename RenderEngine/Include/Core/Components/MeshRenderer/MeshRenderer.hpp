@@ -4,12 +4,13 @@
 #define RENDERENGINE_MESHRENDERER
 
 #include "Core/Components/Component.hpp"
-#include "Core/RessourceManager/Mesh.hpp"
-#include "Core/RessourceManager/Texture.hpp"
+#include "ResourceManager/Assets/Mesh/Mesh.hpp"
+#include "ResourceManager/Assets/Texture/Texture.hpp"
 #include "Engine/Base/Enum/PolygonDrawMode.hpp"
 #include "Engine/Base/Enum/FrontFace.hpp"
 
 using namespace RenderEngine::Engine::Base;
+using namespace RenderEngine::Assets;
 
 namespace RenderEngine::Core
 {

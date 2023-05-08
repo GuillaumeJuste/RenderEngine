@@ -3,11 +3,10 @@
 #ifndef RENDERENGINE_MESH
 #define RENDERENGINE_MESH
 
-#include "Core/Object/Object.hpp"
-#include "Core/Vertrex/Vertex.hpp"
+#include "ResourceManager/Assets/Mesh/Vertex.hpp"
 #include <vector>
 
-namespace RenderEngine::Core
+namespace RenderEngine::Assets
 {
     /**
      * @brief Mesh class implementation

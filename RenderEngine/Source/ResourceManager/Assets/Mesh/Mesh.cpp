@@ -1,6 +1,6 @@
-#include "Core/RessourceManager/Mesh.hpp"
+#include "ResourceManager/Assets/Mesh/Mesh.hpp"
 
-using namespace RenderEngine::Core;
+using namespace RenderEngine::Assets;
 
 bool Mesh::operator==(const Mesh& _rhs) const
 {

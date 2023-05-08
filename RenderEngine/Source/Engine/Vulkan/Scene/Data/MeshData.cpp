@@ -2,7 +2,7 @@
 
 using namespace RenderEngine::Engine::Vulkan;
 
-bool MeshData::operator==(RenderEngine::Core::Mesh* _mesh) const
+bool MeshData::operator==(RenderEngine::Assets::Mesh* _mesh) const
 {
 	return mesh == _mesh;
 }

@@ -3,8 +3,10 @@
 #ifndef RENDERENGINE_SKYBOX
 #define RENDERENGINE_SKYBOX
 
-#include "Core/RessourceManager/Texture.hpp"
-#include "Core/RessourceManager/Mesh.hpp"
+#include "ResourceManager/Assets/Texture/Texture.hpp"
+#include "ResourceManager/Assets/Mesh/Mesh.hpp"
+
+using namespace RenderEngine::Assets;
 
 namespace RenderEngine::Core
 {

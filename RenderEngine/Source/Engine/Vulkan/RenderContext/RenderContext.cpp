@@ -1,10 +1,10 @@
 #include "Engine/Vulkan/RenderContext/RenderContext.hpp"
 
 #include <iostream>
-#include "Core/Vertrex/Vertex.hpp"
+#include "ResourceManager/Assets/Mesh/Vertex.hpp"
 
 using namespace RenderEngine::Engine::Vulkan;
-using namespace RenderEngine::Core;
+using namespace RenderEngine::Assets;
 
 void RenderContext::InitalizeRenderContext(const RenderContextVkCreateInfo& _createInfo, RenderContext* _output)
 {

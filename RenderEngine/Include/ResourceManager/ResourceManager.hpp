@@ -5,33 +5,26 @@
 
 #include <string>
 #include <forward_list>
-#include "Core/RessourceManager/Mesh.hpp"
-#include "Core/RessourceManager/Texture.hpp"
+#include "ResourceManager/Assets/Mesh/Mesh.hpp"
+#include "ResourceManager/Assets/Texture/Texture.hpp"
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
+using namespace RenderEngine::Assets;
 
-namespace RenderEngine::Core
+namespace RenderEngine
 {
-    class RessourceManager
+    class ResourceManager
     {
     private:
-        Assimp::Importer importer;
-
         std::forward_list<Mesh> meshes;
         std::forward_list<Texture> textures;
 
-        RessourceManager() = default;
-
-        std::string CheckFilePath(const std::string _filePath);
-
-        void ProcessMesh(const aiScene* _scene, Mesh* _output);
+        ResourceManager() = default;
 
     public:
-        RessourceManager(RessourceManager& other) = delete;
-        void operator=(const RessourceManager&) = delete;
+        ResourceManager(ResourceManager& other) = delete;
+        void operator=(const ResourceManager&) = delete;
 
-        static RessourceManager* GetInstance();
+        static ResourceManager* GetInstance();
 
         Mesh* LoadMesh(std::string _filePath);
         Mesh* LoadMesh(std::vector<Vertex> _vertices, std::vector<uint16_t> _indices);

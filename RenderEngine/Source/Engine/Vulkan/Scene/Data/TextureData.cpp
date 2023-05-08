@@ -2,7 +2,7 @@
 
 using namespace RenderEngine::Engine::Vulkan;
 
-bool TextureData::operator==(RenderEngine::Core::Texture* _texture) const
+bool TextureData::operator==(RenderEngine::Assets::Texture* _texture) const
 {
 	return texture == _texture;
 }

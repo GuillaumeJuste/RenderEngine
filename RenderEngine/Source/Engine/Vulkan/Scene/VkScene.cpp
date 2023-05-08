@@ -207,7 +207,7 @@ void VkScene::CreateLightBuffer()
 	DescriptorBuffer::InitializeDescriptorBuffer(spotLightsBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &spotLightsBuffer);
 }
 
-MeshData* VkScene::LoadMesh(RenderEngine::Core::Mesh* _mesh)
+MeshData* VkScene::LoadMesh(RenderEngine::Assets::Mesh* _mesh)
 {
 	MeshData* meshData = GetMesh(_mesh);
 
@@ -223,7 +223,7 @@ MeshData* VkScene::LoadMesh(RenderEngine::Core::Mesh* _mesh)
 	return newMesh;
 }
 
-MeshData* VkScene::GetMesh(RenderEngine::Core::Mesh* _mesh)
+MeshData* VkScene::GetMesh(RenderEngine::Assets::Mesh* _mesh)
 {
 	for (std::vector<MeshData*>::iterator it = sceneMeshes.begin(); it != sceneMeshes.end(); ++it)
 	{
@@ -235,7 +235,7 @@ MeshData* VkScene::GetMesh(RenderEngine::Core::Mesh* _mesh)
 	return nullptr;
 }
 
-void VkScene::CreateVertexBufferObject(RenderEngine::Core::Mesh* _mesh, MeshData* _output)
+void VkScene::CreateVertexBufferObject(RenderEngine::Assets::Mesh* _mesh, MeshData* _output)
 {
 	std::vector<Vertex> vertices = _mesh->vertices;
 
@@ -267,7 +267,7 @@ void VkScene::CreateVertexBufferObject(RenderEngine::Core::Mesh* _mesh, MeshData
 	stagingBufferObject.Cleanup();
 }
 
-void VkScene::CreateIndexBufferObject(RenderEngine::Core::Mesh* _mesh, MeshData* _output)
+void VkScene::CreateIndexBufferObject(RenderEngine::Assets::Mesh* _mesh, MeshData* _output)
 {
 	std::vector<uint16_t> indices = _mesh->indices;
 
@@ -299,7 +299,7 @@ void VkScene::CreateIndexBufferObject(RenderEngine::Core::Mesh* _mesh, MeshData*
 	stagingBufferObject.Cleanup();
 }
 
-TextureData* VkScene::LoadTexture(RenderEngine::Core::Texture* _texture, uint32_t _imageArrayLayers, VkImageCreateFlags _imageFlags)
+TextureData* VkScene::LoadTexture(RenderEngine::Assets::Texture* _texture, uint32_t _imageArrayLayers, VkImageCreateFlags _imageFlags)
 {
 	TextureData* textureData = GetTexture(_texture);
 
@@ -327,7 +327,7 @@ TextureData* VkScene::LoadTexture(RenderEngine::Core::Texture* _texture, uint32_
 	return newTexture;
 }
 
-TextureData* VkScene::GetTexture(RenderEngine::Core::Texture* _texture)
+TextureData* VkScene::GetTexture(RenderEngine::Assets::Texture* _texture)
 {
 	for (std::vector<TextureData*>::iterator it = sceneTextures.begin(); it != sceneTextures.end(); ++it)
 	{

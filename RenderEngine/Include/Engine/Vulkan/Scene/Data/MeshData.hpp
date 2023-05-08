@@ -4,13 +4,13 @@
 #define RENDERENGINE_MESHDATA
 
 #include "Engine/Vulkan/BufferObject/BufferObject.hpp"
-#include "Core/RessourceManager/Mesh.hpp"
+#include "ResourceManager/Assets/Mesh/Mesh.hpp"
 
 namespace RenderEngine::Engine::Vulkan
 {
 	struct MeshData
 	{
-		RenderEngine::Core::Mesh* mesh = nullptr;
+		RenderEngine::Assets::Mesh* mesh = nullptr;
 
 		BufferObject vertexBufferObject;
 		BufferObject indexBufferObject;
@@ -18,7 +18,7 @@ namespace RenderEngine::Engine::Vulkan
 		/// default constructor
 		MeshData() = default;
 
-		bool operator==(RenderEngine::Core::Mesh* _mesh) const;
+		bool operator==(RenderEngine::Assets::Mesh* _mesh) const;
 
 		void Cleanup();
 	};

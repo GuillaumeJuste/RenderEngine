@@ -5,9 +5,9 @@
 
 #include <string>
 #include <vector>
-#include "Core/RessourceManager/Texture.hpp"
+#include "ResourceManager/Assets/Texture/Texture.hpp"
 
-namespace RenderEngine::Core
+namespace RenderEngine::Assets
 {
     /**
      * @brief CubeMap struct implementation

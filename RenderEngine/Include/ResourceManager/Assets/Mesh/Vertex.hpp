@@ -6,7 +6,7 @@
 #include "Mathlib/Mathlib/Include/Space/Vec3.hpp"
 #include "Mathlib/Mathlib/Include/Space/Vec4.hpp"
 
-namespace RenderEngine::Core
+namespace RenderEngine::Assets
 {
     /**
      * @brief Vertex data storing struct

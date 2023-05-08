@@ -54,13 +54,13 @@ namespace RenderEngine::Engine::Vulkan
 		void CreateLightBuffer();
 
 
-		MeshData* LoadMesh(RenderEngine::Core::Mesh* _mesh);
-		MeshData* GetMesh(RenderEngine::Core::Mesh* _mesh);
-		void CreateVertexBufferObject(RenderEngine::Core::Mesh* _mesh, MeshData* _output);
-		void CreateIndexBufferObject(RenderEngine::Core::Mesh* _mesh, MeshData* _output);
+		MeshData* LoadMesh(RenderEngine::Assets::Mesh* _mesh);
+		MeshData* GetMesh(RenderEngine::Assets::Mesh* _mesh);
+		void CreateVertexBufferObject(RenderEngine::Assets::Mesh* _mesh, MeshData* _output);
+		void CreateIndexBufferObject(RenderEngine::Assets::Mesh* _mesh, MeshData* _output);
 
-		TextureData* LoadTexture(RenderEngine::Core::Texture* _texture, uint32_t _imageArrayLayers = 1, VkImageCreateFlags _imageFlags = 0);
-		TextureData* GetTexture(RenderEngine::Core::Texture* _texture);
+		TextureData* LoadTexture(RenderEngine::Assets::Texture* _texture, uint32_t _imageArrayLayers = 1, VkImageCreateFlags _imageFlags = 0);
+		TextureData* GetTexture(RenderEngine::Assets::Texture* _texture);
 
 		void CreateSkybox();
 

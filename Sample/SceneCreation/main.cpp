@@ -6,7 +6,7 @@
 #include "Engine/Vulkan/VulkanContext/VulkanContext.hpp"
 #include "Window/Glfw/Window.hpp"
 #include "Core/Scene/SceneManager.hpp"
-#include "Core/RessourceManager/RessourceManager.hpp"
+#include "ResourceManager/ResourceManager.hpp"
 #include "Core/Object/GameObject/GameObject.hpp"
 #include "Core/Components/MeshRenderer/MeshRenderer.hpp"
 #include "Core/Components/Light/PointLight.hpp"
@@ -18,7 +18,7 @@
 #include<Mathlib/Mathlib/Include/Misc/Math.hpp>
 
 using namespace RenderEngine::Engine::Base;
-using namespace RenderEngine::Core;
+using namespace RenderEngine;
 
 /**
 * @brief Window for engine rendering
@@ -42,7 +42,7 @@ IRenderContext* renderContext;
 
 SceneManager sceneManager;
 
-RessourceManager* ressourceManager;
+ResourceManager* resourceManager;
 
 using namespace RenderEngine;
 using namespace RenderEngine::Engine::Vulkan;
@@ -117,10 +117,10 @@ Scene* SetupTestScene()
     cameraTransform.position = Mathlib::Vec3(0.0f, 0.0f, -10.0f);
     camera->SetLocalTransform(cameraTransform);
 
-    Mesh* mesh = RessourceManager::GetInstance()->LoadMesh("Resources/Sample/SceneCreation/Models/viking_room.obj");
+    Mesh* mesh = resourceManager->LoadMesh("Resources/Sample/SceneCreation/Models/viking_room.obj");
 
-    Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/viking_room.png");
-    Texture* texture2 = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/texture.jpg");
+    Texture* texture = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/viking_room.png");
+    Texture* texture2 = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/texture.jpg");
 
     Mathlib::Transform transform;
     transform.position = Mathlib::Vec3(0.f, .0f, 0.f);
@@ -183,14 +183,14 @@ Scene* SetupIlluminationScene()
     camera->SetLocalTransform(cameraTransform);
     camera->fov = 90.f;
 
-    Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/container.png");
-    Texture* specularMap = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/container_specular.png");
+    Texture* texture = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/container.png");
+    Texture* specularMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/container_specular.png");
 
-    Mesh* sphere = RessourceManager::GetInstance()->LoadMesh("Resources/Sample/SceneCreation/Models/Sphere.obj");
-    Texture* ironTexture = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/albedo.png");
-    Texture* ironMetalnessMap = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/metallic.png");
-    Texture* ironRoughnessMap = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/roughness.png");
-    Texture* ironAoMap = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/ao.png");
+    Mesh* sphere = resourceManager->LoadMesh("Resources/Sample/SceneCreation/Models/Sphere.obj");
+    Texture* ironTexture = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/albedo.png");
+    Texture* ironMetalnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/metallic.png");
+    Texture* ironRoughnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/roughness.png");
+    Texture* ironAoMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/ao.png");
 
     for (int width = 0; width < 5; width++)
     {
@@ -339,7 +339,7 @@ Scene* SetupSimplePlaneScene()
     MeshRenderer* objMeshRenderer = obj->GetComponent<MeshRenderer>();
     objMeshRenderer->shininess = 32.0f;
     //meshRenderer->fragmentShaderFilePath = "Resources/Engine/Shaders/TextureFragmentShader.spv";
-    objMeshRenderer->texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Red.jpg");
+    objMeshRenderer->texture = resourceManager->LoadTexture("Resources/Textures/Red.jpg");
 
     Mathlib::Transform obj2Transform;
     obj2Transform.position = Mathlib::Vec3(0.f, 13.f, 15.0f);
@@ -355,7 +355,7 @@ Scene* SetupSimplePlaneScene()
     MeshRenderer* obj2MeshRenderer = obj2->GetComponent<MeshRenderer>();
     obj2MeshRenderer->shininess = 32.0f;
     //meshRenderer->fragmentShaderFilePath = "Resources/Engine/Shaders/TextureFragmentShader.spv";
-    obj2MeshRenderer->texture = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Red.jpg");
+    obj2MeshRenderer->texture = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Red.jpg");
 
     Mathlib::Transform lightTransform;
     lightTransform.position = Mathlib::Vec3(0.f, 0.0f, -15.f);
@@ -389,11 +389,11 @@ Scene* SetupSimpleCubeScene()
     camera->SetLocalTransform(cameraTransform);
     camera->fov = 90.f;
 
-    Mesh* sphere = RessourceManager::GetInstance()->LoadMesh("Resources/Sample/SceneCreation/Models/Sphere.obj");
-    Texture* wallTexture = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/albedo.png");
-    Texture* wallMetalnessMap = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/metallic.png");
-    Texture* wallRoughnessMap = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/roughness.png");
-    Texture* wallAoMap = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/ao.png");
+    Mesh* sphere = resourceManager->LoadMesh("Resources/Sample/SceneCreation/Models/Sphere.obj");
+    Texture* wallTexture = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/albedo.png");
+    Texture* wallMetalnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/metallic.png");
+    Texture* wallRoughnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/roughness.png");
+    Texture* wallAoMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/ao.png");
 
     /*Cube 1*/
     Mathlib::Transform transform;
@@ -435,10 +435,10 @@ Scene* SetupSimpleCubeScene()
 
     GameObject* obj2 = scene->AddGameObject(createinfo2);
 
-    Texture* ironTexture = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/albedo.png");
-    Texture* ironMetalnessMap = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/metallic.png");
-    Texture* ironRoughnessMap = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/roughness.png");
-    Texture* ironAoMap = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/ao.png");
+    Texture* ironTexture = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/albedo.png");
+    Texture* ironMetalnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/metallic.png");
+    Texture* ironRoughnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/roughness.png");
+    Texture* ironAoMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/ao.png");
 
     MeshRenderer* meshRenderer2 = obj2->GetComponent<MeshRenderer>();
     meshRenderer2->mesh = sphere;
@@ -505,7 +505,7 @@ void Cleanup()
 void Run()
 {
     InitWindow();
-    ressourceManager = RessourceManager::GetInstance();
+    resourceManager = ResourceManager::GetInstance();
     InitEngine();
     MainLoop();
     Cleanup();

@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-namespace RenderEngine::Core
+namespace RenderEngine::Assets
 {
     /**
      * @brief Texture class implementation
