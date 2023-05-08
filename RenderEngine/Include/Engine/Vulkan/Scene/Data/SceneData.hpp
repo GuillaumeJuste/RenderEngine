@@ -4,21 +4,21 @@
 #define RENDERENGINE_SCENEDATA
 
 #include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
-#include "Core/Scene/Scene.hpp"
+#include "SceneGraph/Scene/Scene.hpp"
 #include "Engine/Vulkan/Scene/VkScene.hpp"
 
 namespace RenderEngine::Engine::Vulkan
 {
 	struct SceneData
 	{
-		RenderEngine::Core::Scene* scene;
+		RenderEngine::SceneGraph::Scene* scene;
 
 		VkScene vkScene;
 
 		/// default constructor
 		SceneData() = default;
 
-		bool operator==(RenderEngine::Core::Scene* _scene);
+		bool operator==(RenderEngine::SceneGraph::Scene* _scene);
 	};
 }
 

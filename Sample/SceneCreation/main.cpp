@@ -5,13 +5,13 @@
 #include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Engine/Vulkan/VulkanContext/VulkanContext.hpp"
 #include "Window/Glfw/Window.hpp"
-#include "Core/Scene/SceneManager.hpp"
+#include "SceneGraph/Scene/SceneManager.hpp"
 #include "ResourceManager/ResourceManager.hpp"
-#include "Core/Object/GameObject/GameObject.hpp"
-#include "Core/Components/MeshRenderer/MeshRenderer.hpp"
-#include "Core/Components/Light/PointLight.hpp"
-#include "Core/Components/Light/DirectionalLight.hpp"
-#include "Core/Components/Light/SpotLight.hpp"
+#include "SceneGraph/Object/GameObject/GameObject.hpp"
+#include "SceneGraph/Components/MeshRenderer/MeshRenderer.hpp"
+#include "SceneGraph/Components/Light/PointLight.hpp"
+#include "SceneGraph/Components/Light/DirectionalLight.hpp"
+#include "SceneGraph/Components/Light/SpotLight.hpp"
 #include "Component/RotatorComponent.hpp"
 #include <iostream>
 
@@ -46,7 +46,6 @@ ResourceManager* resourceManager;
 
 using namespace RenderEngine;
 using namespace RenderEngine::Engine::Vulkan;
-using namespace RenderEngine::Core;
 using namespace RenderEngine::Window;
 
 void InitWindow()

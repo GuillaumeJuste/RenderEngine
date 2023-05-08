@@ -110,7 +110,7 @@ namespace RenderEngine::Engine::Vulkan
 		*/
 		void FrameBufferResizedCallback();
 
-		VkScene* WasSceneLoaded(RenderEngine::Core::Scene* _scene);
+		VkScene* WasSceneLoaded(RenderEngine::SceneGraph::Scene* _scene);
 
 	public:
 		/// default constructor
@@ -126,9 +126,9 @@ namespace RenderEngine::Engine::Vulkan
 		*/
 		static void InitalizeRenderContext(const RenderContextVkCreateInfo& _createInfo, RenderContext* _output);
 
-		void DrawScene(RenderEngine::Core::Scene* _scene);
+		void DrawScene(RenderEngine::SceneGraph::Scene* _scene);
 
-		VkScene* LoadScene(RenderEngine::Core::Scene* _scene);
+		VkScene* LoadScene(RenderEngine::SceneGraph::Scene* _scene);
 
 		/**
 		 * @brief clean up vulkan classes

@@ -3,7 +3,7 @@
 #ifndef ROTATORCOMPONENT
 #define ROTATORCOMPONENT
 
-#include "Core/Components/Component.hpp"
+#include "SceneGraph/Components/Component.hpp"
 
 
 enum class ROTATION_AXIS
@@ -13,7 +13,7 @@ enum class ROTATION_AXIS
     Z
 };
 
-class RotatorComponent : public RenderEngine::Core::Component
+class RotatorComponent : public RenderEngine::SceneGraph::Component
 {
 private:
     float currentRotation = 0;

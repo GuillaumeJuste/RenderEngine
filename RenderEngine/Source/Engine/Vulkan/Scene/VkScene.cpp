@@ -1,11 +1,11 @@
 #include "Engine/Vulkan/Scene/VkScene.hpp"
 #include "Engine/Vulkan/Scene/GameObject/VkGameObjectCreateInfo.hpp"
 #include "Engine/Vulkan/UniformBuffer/UniformBufferData.hpp"
-#include "Core/Scene/Scene.hpp"
-#include "Core/Object/GameObject/Camera/Camera.hpp"
+#include "SceneGraph/Scene/Scene.hpp"
+#include "SceneGraph/Object/GameObject/Camera/Camera.hpp"
 
 using namespace RenderEngine::Engine::Vulkan;
-using namespace RenderEngine::Core;
+using namespace RenderEngine::SceneGraph;
 
 VkScene::VkScene(const VkSceneCreateInfo& _createInfo) :
 	createInfo{ _createInfo }

@@ -4,7 +4,7 @@
 #define RENDERENGINE_VKGAMEOBJECTCREATEINFO
 
 #include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
-#include "Core/Object/GameObject/GameObject.hpp"
+#include "SceneGraph/Object/GameObject/GameObject.hpp"
 #include "Engine/Vulkan/SwapChain/SwapChain.hpp"
 #include "Engine/Vulkan/RenderPass/RenderPass.hpp"
 #include "Engine/Vulkan/Scene/Data/MeshData.hpp"
@@ -33,7 +33,7 @@ namespace RenderEngine::Engine::Vulkan
 		TextureData* roughnessMap;
 		TextureData* aoMap;
 
-		RenderEngine::Core::GameObject* gameObject = nullptr;
+		RenderEngine::SceneGraph::GameObject* gameObject = nullptr;
 
 		/// default constructor
 		VkGameObjectCreateInfo() = default;

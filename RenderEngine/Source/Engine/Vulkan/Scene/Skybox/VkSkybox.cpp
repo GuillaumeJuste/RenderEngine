@@ -10,7 +10,7 @@ void VkSkybox::InitializeSkybox(const VkSkyboxCreateInfo& _createInfo, Descripto
 
 void VkSkybox::CreateGraphicsPipeline(DescriptorBuffer* _cameraBuffer)
 {
-	RenderEngine::Core::MeshRenderer meshRenderer;
+	RenderEngine::SceneGraph::MeshRenderer meshRenderer;
 	meshRenderer.vertexShaderFilePath = "Resources/Shaders/Skybox.vert.spv";
 	meshRenderer.fragmentShaderFilePath = "Resources/Shaders/Skybox.frag.spv";
 	meshRenderer.drawMode = PolygonDrawMode::FILL;

@@ -6,7 +6,7 @@
 #include "Engine/Vulkan/Shader/Shader.hpp"
 #include "Engine/Vulkan/RenderPass/RenderPass.hpp"
 
-#include "Core/Components/MeshRenderer/MeshRenderer.hpp"
+#include "SceneGraph/Components/MeshRenderer/MeshRenderer.hpp"
 #include "Engine/Vulkan/Descriptor/Set/DescriptorDataList.hpp"
 
 using namespace RenderEngine::Engine::Base;
@@ -30,7 +30,7 @@ namespace RenderEngine::Engine::Vulkan
 		/// renderpass
 		RenderPass* renderPass;
 
-		RenderEngine::Core::MeshRenderer* meshRenderer;
+		RenderEngine::SceneGraph::MeshRenderer* meshRenderer;
 
 		std::vector<DescriptorDataList> descriptorDatas;
 

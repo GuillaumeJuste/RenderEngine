@@ -9,7 +9,7 @@
 #include "Engine/Vulkan/Descriptor/Pool/DescriptorPool.hpp"
 #include "Engine/Vulkan/SwapChain/SwapChain.hpp"
 #include "Engine/Vulkan/RenderPass/RenderPass.hpp"
-#include "Core/Scene/Scene.hpp"
+#include "SceneGraph/Scene/Scene.hpp"
 
 namespace RenderEngine::Engine::Vulkan
 {
@@ -34,7 +34,7 @@ namespace RenderEngine::Engine::Vulkan
 
 		RenderPass* renderpass;
 
-		RenderEngine::Core::Scene* scene;
+		RenderEngine::SceneGraph::Scene* scene;
 
 		/// default constructor
 		VkSceneCreateInfo() = default;

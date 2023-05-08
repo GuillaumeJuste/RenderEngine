@@ -123,7 +123,7 @@ void RenderContext::FrameBufferResizedCallback()
 	frameBufferWasResized = true;
 }
 
-void RenderContext::DrawScene(RenderEngine::Core::Scene* _scene)
+void RenderContext::DrawScene(RenderEngine::SceneGraph::Scene* _scene)
 {
 	VkScene* vkScene = WasSceneLoaded(_scene);
 
@@ -199,7 +199,7 @@ void RenderContext::DrawScene(RenderEngine::Core::Scene* _scene)
 	currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
 
-VkScene* RenderContext::LoadScene(RenderEngine::Core::Scene* _scene)
+VkScene* RenderContext::LoadScene(RenderEngine::SceneGraph::Scene* _scene)
 {
 	SceneData* data = &scenesData.emplace_front();
 	data->scene = _scene;
@@ -218,7 +218,7 @@ VkScene* RenderContext::LoadScene(RenderEngine::Core::Scene* _scene)
 	return &data->vkScene;
 }
 
-VkScene* RenderContext::WasSceneLoaded(RenderEngine::Core::Scene* _scene)
+VkScene* RenderContext::WasSceneLoaded(RenderEngine::SceneGraph::Scene* _scene)
 {
 	for (std::forward_list<SceneData>::iterator it = scenesData.begin(); it != scenesData.end(); ++it)
 	{

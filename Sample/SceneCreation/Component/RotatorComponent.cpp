@@ -1,5 +1,5 @@
 #include "RotatorComponent.hpp"
-#include "Core/Object/GameObject/GameObject.hpp"
+#include "SceneGraph/Object/GameObject/GameObject.hpp"
 #include "Transform/Transform.hpp"
 
 
@@ -16,7 +16,6 @@ void RotatorComponent::Start()
 void RotatorComponent::Update()
 {
 	Mathlib::Transform transform = gameObject->GetLocalTransform();
-
 
 	switch (rotationAxis)
 	{
