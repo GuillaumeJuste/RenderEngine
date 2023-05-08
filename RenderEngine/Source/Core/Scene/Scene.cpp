@@ -23,13 +23,13 @@ Scene::Scene()
 	mainCameraCreateInfo.name = "mainCamera";
 	mainCameraCreateInfo.parent = &rootObject;
 
-	skybox.mesh = RessourceManager::GetInstance()->LoadMesh("Resources/Models/Cube.gltf");
-	skybox.front = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Skybox/front.jpg");
-	skybox.back = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Skybox/back.jpg");
-	skybox.left = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Skybox/left.jpg");
-	skybox.right = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Skybox/right.jpg");
-	skybox.top = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Skybox/top.jpg");
-	skybox.bottom = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Skybox/bottom.jpg");
+	skybox.mesh = RessourceManager::GetInstance()->LoadMesh("Resources/Engine/Models/cube.obj");
+	skybox.front = RessourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/Skybox/front.jpg");
+	skybox.back = RessourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/Skybox/back.jpg");
+	skybox.left = RessourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/Skybox/left.jpg");
+	skybox.right = RessourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/Skybox/right.jpg");
+	skybox.top = RessourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/Skybox/top.jpg");
+	skybox.bottom = RessourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/Skybox/bottom.jpg");
 
 	GameObject::InitializeGameObject(mainCameraCreateInfo, &mainCamera);
 }
@@ -77,16 +77,16 @@ GameObject* Scene::AddGameObject(GameObjectCreateInfo _createInfo)
 
 	GameObject::InitializeGameObject(_createInfo, gao);
 
-	Mesh* mesh = RessourceManager::GetInstance()->LoadMesh("Resources/Models/cube.obj");
-	Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/White.jpg");
+	Mesh* mesh = RessourceManager::GetInstance()->LoadMesh("Resources/Engine/Models/cube.obj");
+	Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/White.jpg");
 	MeshRenderer* meshRenderer = gao->AddComponent<MeshRenderer>();
 	meshRenderer->mesh = mesh;
 	meshRenderer->texture = texture;
 	meshRenderer->metalnessMap = texture;
 	meshRenderer->roughnessMap = texture;
 	meshRenderer->ambientOcclusionMap = texture;
-	meshRenderer->vertexShaderFilePath = "Resources/Shaders/VertexShader.vert.spv";
-	meshRenderer->fragmentShaderFilePath = "Resources/Shaders/BlinnPhongFragmentShader.frag.spv";
+	meshRenderer->vertexShaderFilePath = "Resources/Engine/Shaders/VertexShader.vert.spv";
+	meshRenderer->fragmentShaderFilePath = "Resources/Engine/Shaders/BlinnPhongFragmentShader.frag.spv";
 
 	return gao;
 }

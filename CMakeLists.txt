@@ -3,7 +3,7 @@
 #
 cmake_minimum_required (VERSION 3.8)
 
-project ("RenderEngine")
+#project ("RenderEngine")
 
 # Set output folders
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Lib)    # .lib / .a
@@ -15,4 +15,5 @@ set (CMAKE_CXX_STANDARD 17)
 
 # Include sub-projects.
 add_subdirectory (RenderEngine)
+add_subdirectory (Sample)
 add_subdirectory(ThirdParty)

@@ -23,6 +23,8 @@ namespace RenderEngine::Core
 
         RessourceManager() = default;
 
+        std::string CheckFilePath(const std::string _filePath);
+
         void ProcessMesh(const aiScene* _scene, Mesh* _output);
 
     public:

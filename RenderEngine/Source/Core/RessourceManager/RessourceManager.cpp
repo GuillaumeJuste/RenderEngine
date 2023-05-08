@@ -4,6 +4,7 @@
 
 #include <stdexcept>
 #include <cstring>
+#include <filesystem>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
@@ -16,6 +17,27 @@ RessourceManager* RessourceManager::GetInstance()
 {
 	static RessourceManager instance;
 	return &instance;
+}
+
+std::string RessourceManager::CheckFilePath(const std::string _filePath)
+{
+	std::string output;
+
+	std::filesystem::path path = _filePath;
+	if (path.is_absolute()) 
+	{
+		return _filePath;
+	}
+	if (path.is_relative())
+	{
+		std::filesystem::path exePath = std::filesystem::current_path();
+		output = exePath.string();
+		size_t pos = output.find("RenderEngine\\Build");
+		output.erase(pos + 13);
+		output.append(_filePath);
+		std::replace(output.begin(), output.end(), '/', '\\');
+		return output;
+	}
 }
 
 Mesh* RessourceManager::LoadMesh(std::string _filePath)

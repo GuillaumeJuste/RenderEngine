@@ -1,5 +1,4 @@
 #include "Window/Glfw/Window.hpp"
-#include "Application/GraphicsApplication.hpp"
 
 #include <iostream>
 

@@ -3,14 +3,26 @@
 #
 cmake_minimum_required (VERSION 3.8)
 
+# === Projects ===
+
+project(RenderEngine)
+
+add_library(RenderEngine STATIC)
+
+file(GLOB_RECURSE SOURCES_PUBLIC "Include/*")
+target_sources(RenderEngine PUBLIC ${SOURCES_PUBLIC})
+
+file(GLOB_RECURSE SOURCES_PRIVATE "Source/*")
+target_sources(RenderEngine PRIVATE ${SOURCES_PRIVATE})
+
 # Input
 file(GLOB_RECURSE SOURCES "Source/*")
 
 # Add source to this project's executable.
-add_executable (RenderEngine ${SOURCES})
+#add_library(RenderEngine SHARED ${SOURCES})
+#add_executable (RenderEngine ${SOURCES})
 target_include_directories(RenderEngine PUBLIC Include)
 target_include_directories(RenderEngine PUBLIC Resources)
-target_compile_definitions(RenderEngine PRIVATE GLFW_INCLUDE_VULKAN)
 target_compile_definitions(RenderEngine PRIVATE VK_USE_PLATFORM_WIN32_KHR)
 target_compile_definitions(RenderEngine PRIVATE GLFW_EXPOSE_NATIVE_WIN32)
 target_compile_definitions(RenderEngine PRIVATE NOMINMAX)
@@ -29,15 +41,18 @@ target_link_libraries(RenderEngine PUBLIC assimp)
 # Add STB library
 target_link_directories(RenderEngine PUBLIC ${CMAKE_SOURCE_DIR}/ThirdParty/Gitmodules/stb) 
 
+#find_package(Vulkan REQUIRED)
+#if(Vulkan_FOUND)
+#	message(STATUS "Successfully located the Vulkan SDK: ${Vulkan_INCLUDE_DIRS}")	
+#	include_directories(${Vulkan_INCLUDE_DIRS})
+#	target_link_libraries(RenderEngine PUBLIC ${Vulkan_LIBRARIES} )
+#else()
+#	message(STATUS "Failed to locate Vulkan SDK")
+#endif()
 
-find_package(Vulkan REQUIRED)
-if(Vulkan_FOUND)
-	message(STATUS "Successfully located the Vulkan SDK: ${Vulkan_INCLUDE_DIRS}")	
-	include_directories(${Vulkan_INCLUDE_DIRS})
-	target_link_libraries(RenderEngine PUBLIC ${Vulkan_LIBRARIES} )
-else()
-	message(STATUS "Failed to locate Vulkan SDK")
-endif()
+# Vulkan.
+find_package(Vulkan REQUIRED FATAL_ERROR)
+target_link_libraries(RenderEngine PUBLIC Vulkan::Vulkan)
 
 #compile shaders
 if(WIN32)

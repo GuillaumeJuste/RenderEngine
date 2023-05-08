@@ -1,4 +1,4 @@
-#include "Application/CustomComponents/RotatorComponent.hpp"
+#include "RotatorComponent.hpp"
 #include "Core/Object/GameObject/GameObject.hpp"
 #include "Transform/Transform.hpp"
 

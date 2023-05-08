@@ -22,11 +22,11 @@ void VkTexture::InitializeVkTexture(const VkTextureVkCreateInfo& _vkTextureCreat
 
 	BufferObject::InitializeBufferObject(stagingBufferCreateInfo, &stagingBuffer);
 
-	/*std::vector<char> images;
-	for (size_t i = 0; i < _vkTextureCreateInfo.textures.size(); i++)
-	{
-		images.insert(images.end(), _vkTextureCreateInfo.textures[i]->pixels.begin(), _vkTextureCreateInfo.textures[i]->pixels.end());
-	}*/
+	//std::vector<char> images;
+	//for (size_t i = 0; i < _vkTextureCreateInfo.textures.size(); i++)
+	//{
+	//	images.insert(images.end(), _vkTextureCreateInfo.textures[i]->pixels.begin(), _vkTextureCreateInfo.textures[i]->pixels.end());
+	//}
 
 	void* data;
 	vkMapMemory(_vkTextureCreateInfo.logicalDevice, stagingBuffer.GetVkBufferMemory(), 0, stagingBuffer.GetBufferSize(), 0, &data);

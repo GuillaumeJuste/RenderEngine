@@ -1,71 +1,71 @@
-#include "Application/GraphicsApplication.hpp"
+#include <iostream>
+#include <stdexcept>
+#include <cstdlib>
+
+#include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
+#include "Engine/Vulkan/VulkanContext/VulkanContext.hpp"
+#include "Window/Glfw/Window.hpp"
+#include "Core/Scene/SceneManager.hpp"
+#include "Core/RessourceManager/RessourceManager.hpp"
 #include "Core/Object/GameObject/GameObject.hpp"
 #include "Core/Components/MeshRenderer/MeshRenderer.hpp"
 #include "Core/Components/Light/PointLight.hpp"
 #include "Core/Components/Light/DirectionalLight.hpp"
 #include "Core/Components/Light/SpotLight.hpp"
-#include "Application/CustomComponents/RotatorComponent.hpp"
+#include "Component/RotatorComponent.hpp"
 #include <iostream>
 
 #include<Mathlib/Mathlib/Include/Misc/Math.hpp>
 
+using namespace RenderEngine::Engine::Base;
+using namespace RenderEngine::Core;
+
+/**
+* @brief Window for engine rendering
+*/
+GLFW::Window* window;
+
+/**
+ * @brief vulkan context
+*/
+RenderEngine::Engine::Vulkan::VulkanContext vulkanContext;
+
+/**
+ * @brief device used to render scene
+*/
+IDeviceContext* deviceContext;
+
+/**
+ * @brief render context to render scene
+*/
+IRenderContext* renderContext;
+
+SceneManager sceneManager;
+
+RessourceManager* ressourceManager;
 
 using namespace RenderEngine;
 using namespace RenderEngine::Engine::Vulkan;
 using namespace RenderEngine::Core;
 using namespace RenderEngine::Window;
 
-void GraphicsApplication::Run()
-{
-    InitWindow();
-    ressourceManager = RessourceManager::GetInstance();
-    InitEngine();
-    MainLoop();
-    Cleanup();
-}
-
-void GraphicsApplication::InitWindow()
+void InitWindow()
 {
     std::cout << "[Initialize] Window" << std::endl;
     window = new GLFW::Window(1024, 720, "Render Engine");
 }
 
-void GraphicsApplication::InitEngine()
-{
-    std::cout << "[Initialize] Vulkan" << std::endl;
-    IEngineInstanceCreateInfo instanceCreateInfo {};
-    instanceCreateInfo.applicationName = "RenderEngine";
-    instanceCreateInfo.applicationVersion = Mathlib::Vec3(1.f, 0.f, 0.f);
-    instanceCreateInfo.engineName = "VulkanRenderer";
-    instanceCreateInfo.engineVersion = Mathlib::Vec3(1.f , 0.f, 0.f);
-    vulkanContext.InitializeInstance(instanceCreateInfo);
-
-    IDeviceContextCreateInfo deviceCreateInfo {};
-    deviceCreateInfo.window = window;
-    deviceContext = vulkanContext.CreateDeviceContext(deviceCreateInfo);
-    std::vector<std::string> deviceNames = deviceContext->QueryAvailblePhysicalDevices();
-    deviceContext->InitializeDeviceContext(UserSelectPhysicalDevice(deviceNames));
-
-    SwapChainCommandBufferCreateInfo CBCreateInfo{};
-    CBCreateInfo.customViewport = false;
-    CBCreateInfo.customScissor = false;
-
-    IRenderContextCreateInfo renderContextCreateInfo {};
-    renderContextCreateInfo.swapChainCommandBufferCreateInfo = &CBCreateInfo;
-    renderContext = deviceContext->CreateRenderContext(renderContextCreateInfo);
-}
-
-std::string GraphicsApplication::UserSelectPhysicalDevice(std::vector<std::string> _physicalDevicesNames)
+std::string UserSelectPhysicalDevice(std::vector<std::string> _physicalDevicesNames)
 {
     size_t size = _physicalDevicesNames.size();
-    
 
-    if(size == 0)
+
+    if (size == 0)
         throw std::runtime_error("No GPU listed");
 
-    else if(size == 1)
+    else if (size == 1)
         return _physicalDevicesNames[0];
-    
+
     std::cout << "Pick GPU for rendering :" << std::endl;
 
     for (int i = 0; i < size; i++)
@@ -81,7 +81,33 @@ std::string GraphicsApplication::UserSelectPhysicalDevice(std::vector<std::strin
     return _physicalDevicesNames[gpuIndex];
 }
 
-Scene* GraphicsApplication::SetupTestScene()
+void InitEngine()
+{
+    std::cout << "[Initialize] Vulkan" << std::endl;
+    IEngineInstanceCreateInfo instanceCreateInfo{};
+    instanceCreateInfo.applicationName = "RenderEngine";
+    instanceCreateInfo.applicationVersion = Mathlib::Vec3(1.f, 0.f, 0.f);
+    instanceCreateInfo.engineName = "VulkanRenderer";
+    instanceCreateInfo.engineVersion = Mathlib::Vec3(1.f, 0.f, 0.f);
+    vulkanContext.InitializeInstance(instanceCreateInfo);
+
+    IDeviceContextCreateInfo deviceCreateInfo{};
+    deviceCreateInfo.window = window;
+    deviceContext = vulkanContext.CreateDeviceContext(deviceCreateInfo);
+    std::vector<std::string> deviceNames = deviceContext->QueryAvailblePhysicalDevices();
+    deviceContext->InitializeDeviceContext(UserSelectPhysicalDevice(deviceNames));
+
+    SwapChainCommandBufferCreateInfo CBCreateInfo{};
+    CBCreateInfo.customViewport = false;
+    CBCreateInfo.customScissor = false;
+
+    IRenderContextCreateInfo renderContextCreateInfo{};
+    renderContextCreateInfo.swapChainCommandBufferCreateInfo = &CBCreateInfo;
+    renderContext = deviceContext->CreateRenderContext(renderContextCreateInfo);
+}
+
+
+Scene* SetupTestScene()
 {
     Scene* scene = sceneManager.AddScene();
     scene->name = "test_scene_1";
@@ -91,10 +117,10 @@ Scene* GraphicsApplication::SetupTestScene()
     cameraTransform.position = Mathlib::Vec3(0.0f, 0.0f, -10.0f);
     camera->SetLocalTransform(cameraTransform);
 
-    Mesh* mesh = RessourceManager::GetInstance()->LoadMesh("Resources/Models/viking_room.obj");
+    Mesh* mesh = RessourceManager::GetInstance()->LoadMesh("Resources/Sample/SceneCreation/Models/viking_room.obj");
 
-    Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/viking_room.png");
-    Texture* texture2 = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/texture.jpg");
+    Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/viking_room.png");
+    Texture* texture2 = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/texture.jpg");
 
     Mathlib::Transform transform;
     transform.position = Mathlib::Vec3(0.f, .0f, 0.f);
@@ -111,7 +137,7 @@ Scene* GraphicsApplication::SetupTestScene()
     MeshRenderer* meshRenderer = obj->GetComponent<MeshRenderer>();
     meshRenderer->mesh = mesh;
     meshRenderer->texture = texture;
-    meshRenderer->fragmentShaderFilePath = "Resources/Shaders/TextureFragmentShader.frag.spv";
+    meshRenderer->fragmentShaderFilePath = "Resources/Engine/Shaders/TextureFragmentShader.frag.spv";
 
     Mathlib::Transform transform2;
     transform2.position = Mathlib::Vec3(2.f, 3.0f, 2.f);
@@ -145,7 +171,7 @@ Scene* GraphicsApplication::SetupTestScene()
     return scene;
 }
 
-Scene* GraphicsApplication::SetupIlluminationScene()
+Scene* SetupIlluminationScene()
 {
     Scene* scene = sceneManager.AddScene();
     scene->name = "test_scene_illumination";
@@ -157,14 +183,14 @@ Scene* GraphicsApplication::SetupIlluminationScene()
     camera->SetLocalTransform(cameraTransform);
     camera->fov = 90.f;
 
-    Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/container.png");
-    Texture* specularMap = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/container_specular.png");
+    Texture* texture = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/container.png");
+    Texture* specularMap = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/container_specular.png");
 
-    Mesh* sphere = RessourceManager::GetInstance()->LoadMesh("Resources/Models/Sphere.obj");
-    Texture* ironTexture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Rusted_iron/albedo.png");
-    Texture* ironMetalnessMap = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Rusted_iron/metallic.png");
-    Texture* ironRoughnessMap = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Rusted_iron/roughness.png");
-    Texture* ironAoMap = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Rusted_iron/ao.png");
+    Mesh* sphere = RessourceManager::GetInstance()->LoadMesh("Resources/Sample/SceneCreation/Models/Sphere.obj");
+    Texture* ironTexture = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/albedo.png");
+    Texture* ironMetalnessMap = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/metallic.png");
+    Texture* ironRoughnessMap = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/roughness.png");
+    Texture* ironAoMap = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/ao.png");
 
     for (int width = 0; width < 5; width++)
     {
@@ -189,7 +215,7 @@ Scene* GraphicsApplication::SetupIlluminationScene()
                 meshRenderer->metalnessMap = ironMetalnessMap;
                 meshRenderer->roughnessMap = ironRoughnessMap;
                 meshRenderer->ambientOcclusionMap = ironAoMap;
-                meshRenderer->fragmentShaderFilePath = "Resources/Shaders/PBRFragmentShader.spv";
+                meshRenderer->fragmentShaderFilePath = "Resources/Engine/Shaders/PBRFragmentShader.spv";
                 meshRenderer->shininess = 32.0f;
                 meshRenderer->ambient = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
                 meshRenderer->diffuse = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
@@ -220,7 +246,7 @@ Scene* GraphicsApplication::SetupIlluminationScene()
     lightComponent->intensity = 3.f;
 
     MeshRenderer* meshRenderer1 = light2->GetComponent<MeshRenderer>();
-    meshRenderer1->fragmentShaderFilePath = "Resources/Shaders/TextureFragmentShader.spv";
+    meshRenderer1->fragmentShaderFilePath = "Resources/Engine/Shaders/TextureFragmentShader.spv";
 
     ///* light 3 */
 
@@ -240,7 +266,7 @@ Scene* GraphicsApplication::SetupIlluminationScene()
     //lightComponent3->range = 25.f;
 
     //MeshRenderer* meshRenderer3 = light3->GetComponent<MeshRenderer>();
-    //meshRenderer3->fragmentShaderFilePath = "Resources/Shaders/TextureFragmentShader.spv";
+    //meshRenderer3->fragmentShaderFilePath = "Resources/Engine/Shaders/TextureFragmentShader.spv";
 
     ///* light 4 */
 
@@ -260,7 +286,7 @@ Scene* GraphicsApplication::SetupIlluminationScene()
 
     //MeshRenderer* meshRenderer4 = light4->GetComponent<MeshRenderer>();
     //meshRenderer4->enable = false;
-    //meshRenderer4->fragmentShaderFilePath = "Resources/Shaders/TextureFragmentShader.spv";
+    //meshRenderer4->fragmentShaderFilePath = "Resources/Engine/Shaders/TextureFragmentShader.spv";
 
     ///* light 5 */
 
@@ -282,12 +308,12 @@ Scene* GraphicsApplication::SetupIlluminationScene()
 
     //MeshRenderer* meshRenderer5 = light5->GetComponent<MeshRenderer>();
     //meshRenderer5->enable = false;
-    //meshRenderer5->fragmentShaderFilePath = "Resources/Shaders/TextureFragmentShader.spv";
+    //meshRenderer5->fragmentShaderFilePath = "Resources/Engine/Shaders/TextureFragmentShader.spv";
 
     return scene;
 }
 
-Scene* GraphicsApplication::SetupSimplePlaneScene()
+Scene* SetupSimplePlaneScene()
 {
     Scene* scene = sceneManager.AddScene();
     scene->name = "test_scene_simple_plane";
@@ -312,7 +338,7 @@ Scene* GraphicsApplication::SetupSimplePlaneScene()
 
     MeshRenderer* objMeshRenderer = obj->GetComponent<MeshRenderer>();
     objMeshRenderer->shininess = 32.0f;
-    //meshRenderer->fragmentShaderFilePath = "Resources/Shaders/TextureFragmentShader.spv";
+    //meshRenderer->fragmentShaderFilePath = "Resources/Engine/Shaders/TextureFragmentShader.spv";
     objMeshRenderer->texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Red.jpg");
 
     Mathlib::Transform obj2Transform;
@@ -328,8 +354,8 @@ Scene* GraphicsApplication::SetupSimplePlaneScene()
 
     MeshRenderer* obj2MeshRenderer = obj2->GetComponent<MeshRenderer>();
     obj2MeshRenderer->shininess = 32.0f;
-    //meshRenderer->fragmentShaderFilePath = "Resources/Shaders/TextureFragmentShader.spv";
-    obj2MeshRenderer->texture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Red.jpg");
+    //meshRenderer->fragmentShaderFilePath = "Resources/Engine/Shaders/TextureFragmentShader.spv";
+    obj2MeshRenderer->texture = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Red.jpg");
 
     Mathlib::Transform lightTransform;
     lightTransform.position = Mathlib::Vec3(0.f, 0.0f, -15.f);
@@ -351,7 +377,7 @@ Scene* GraphicsApplication::SetupSimplePlaneScene()
     return scene;
 }
 
-Scene* GraphicsApplication::SetupSimpleCubeScene()
+Scene* SetupSimpleCubeScene()
 {
     Scene* scene = sceneManager.AddScene();
     scene->name = "test_scene_simple_cube";
@@ -363,14 +389,14 @@ Scene* GraphicsApplication::SetupSimpleCubeScene()
     camera->SetLocalTransform(cameraTransform);
     camera->fov = 90.f;
 
-    Mesh* sphere = RessourceManager::GetInstance()->LoadMesh("Resources/Models/Sphere.obj");
-    Texture* wallTexture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Wall/albedo.png");
-    Texture* wallMetalnessMap = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Wall/metallic.png");
-    Texture* wallRoughnessMap = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Wall/roughness.png");
-    Texture* wallAoMap = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Wall/ao.png");
+    Mesh* sphere = RessourceManager::GetInstance()->LoadMesh("Resources/Sample/SceneCreation/Models/Sphere.obj");
+    Texture* wallTexture = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/albedo.png");
+    Texture* wallMetalnessMap = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/metallic.png");
+    Texture* wallRoughnessMap = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/roughness.png");
+    Texture* wallAoMap = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/ao.png");
 
     /*Cube 1*/
-    Mathlib::Transform transform; 
+    Mathlib::Transform transform;
     transform.position = Mathlib::Vec3(-1.f, 0.f, 0.0f);
     transform.scale = Mathlib::Vec3(0.02f, 0.02f, 0.02f);
 
@@ -387,7 +413,7 @@ Scene* GraphicsApplication::SetupSimpleCubeScene()
     meshRenderer->metalnessMap = wallMetalnessMap;
     meshRenderer->roughnessMap = wallRoughnessMap;
     meshRenderer->ambientOcclusionMap = wallAoMap;
-    meshRenderer->fragmentShaderFilePath = "Resources/Shaders/BlinnPhongFragmentShader.frag.spv";
+    meshRenderer->fragmentShaderFilePath = "Resources/Engine/Shaders/BlinnPhongFragmentShader.frag.spv";
     meshRenderer->shininess = 32.0f;
     meshRenderer->ambient = Mathlib::Vec4(0.1f, 0.1f, 0.1f, 1.f);
     meshRenderer->diffuse = Mathlib::Vec4(0.4f, 0.4f, 0.4f, 1.f);
@@ -409,10 +435,10 @@ Scene* GraphicsApplication::SetupSimpleCubeScene()
 
     GameObject* obj2 = scene->AddGameObject(createinfo2);
 
-    Texture* ironTexture = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Rusted_iron/albedo.png");
-    Texture* ironMetalnessMap = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Rusted_iron/metallic.png");
-    Texture* ironRoughnessMap = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Rusted_iron/roughness.png");
-    Texture* ironAoMap = RessourceManager::GetInstance()->LoadTexture("Resources/Textures/Rusted_iron/ao.png");
+    Texture* ironTexture = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/albedo.png");
+    Texture* ironMetalnessMap = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/metallic.png");
+    Texture* ironRoughnessMap = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/roughness.png");
+    Texture* ironAoMap = RessourceManager::GetInstance()->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/ao.png");
 
     MeshRenderer* meshRenderer2 = obj2->GetComponent<MeshRenderer>();
     meshRenderer2->mesh = sphere;
@@ -420,7 +446,7 @@ Scene* GraphicsApplication::SetupSimpleCubeScene()
     meshRenderer2->metalnessMap = ironMetalnessMap;
     meshRenderer2->roughnessMap = ironRoughnessMap;
     meshRenderer2->ambientOcclusionMap = ironAoMap;
-    meshRenderer2->fragmentShaderFilePath = "Resources/Shaders/BlinnPhongFragmentShader.frag.spv";
+    meshRenderer2->fragmentShaderFilePath = "Resources/Engine/Shaders/BlinnPhongFragmentShader.frag.spv";
     meshRenderer2->shininess = 32.0f;
     meshRenderer2->ambient = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
     meshRenderer2->diffuse = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
@@ -448,12 +474,12 @@ Scene* GraphicsApplication::SetupSimpleCubeScene()
 
     MeshRenderer* meshRenderer4 = light4->GetComponent<MeshRenderer>();
     meshRenderer4->enable = true;
-    meshRenderer4->fragmentShaderFilePath = "Resources/Shaders/TextureFragmentShader.frag.spv";
+    meshRenderer4->fragmentShaderFilePath = "Resources/Engine/Shaders/TextureFragmentShader.frag.spv";
 
     return scene;
 }
 
-void GraphicsApplication::MainLoop()
+void MainLoop()
 {
     Scene* scene = SetupSimpleCubeScene();
 
@@ -468,10 +494,33 @@ void GraphicsApplication::MainLoop()
     deviceContext->WaitDeviceIdle();
 }
 
-void GraphicsApplication::Cleanup()
+void Cleanup()
 {
     vulkanContext.Cleanup();
 
     window->Cleanup();
     delete window;
+}
+
+void Run()
+{
+    InitWindow();
+    ressourceManager = RessourceManager::GetInstance();
+    InitEngine();
+    MainLoop();
+    Cleanup();
+}
+
+
+int main() 
+{
+    try {
+        Run();
+    }
+    catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
 }
