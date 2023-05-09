@@ -6,11 +6,11 @@
 #include "SceneGraph/Components/Component.hpp"
 #include "ResourceManager/Assets/Mesh/Mesh.hpp"
 #include "ResourceManager/Assets/Texture/Texture.hpp"
-#include "Engine/Base/Enum/PolygonDrawMode.hpp"
-#include "Engine/Base/Enum/FrontFace.hpp"
+#include "Rendering/Base/Enum/PolygonDrawMode.hpp"
+#include "Rendering/Base/Enum/FrontFace.hpp"
 
-using namespace RenderEngine::Engine::Base;
 using namespace RenderEngine::Assets;
+using namespace RenderEngine::Rendering;
 
 namespace RenderEngine::SceneGraph
 {

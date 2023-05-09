@@ -2,8 +2,7 @@
 #include <stdexcept>
 #include <cstdlib>
 
-#include "Engine/Vulkan/Misc/VulkanBaseInclude.hpp"
-#include "Engine/Vulkan/VulkanContext/VulkanContext.hpp"
+#include "Rendering/Vulkan/VulkanContext/VulkanContext.hpp"
 #include "Window/Glfw/Window.hpp"
 #include "SceneGraph/Scene/SceneManager.hpp"
 #include "ResourceManager/ResourceManager.hpp"
@@ -17,7 +16,7 @@
 
 #include<Mathlib/Mathlib/Include/Misc/Math.hpp>
 
-using namespace RenderEngine::Engine::Base;
+using namespace RenderEngine::Rendering;
 using namespace RenderEngine;
 
 /**
@@ -28,7 +27,7 @@ GLFW::Window* window;
 /**
  * @brief vulkan context
 */
-RenderEngine::Engine::Vulkan::VulkanContext vulkanContext;
+RenderEngine::Rendering::VulkanContext vulkanContext;
 
 /**
  * @brief device used to render scene
@@ -45,7 +44,7 @@ SceneManager sceneManager;
 ResourceManager* resourceManager;
 
 using namespace RenderEngine;
-using namespace RenderEngine::Engine::Vulkan;
+using namespace RenderEngine::Rendering;
 using namespace RenderEngine::Window;
 
 void InitWindow()
