@@ -27,7 +27,7 @@ Mesh* ResourceManager::LoadMesh(std::string _filePath)
 	Mesh tmp;
 	if (AssimpWrapper::LoadMesh(_filePath, tmp))
 	{
-		Mesh* newMesh = &meshes.emplace_front(tmp);
+		Mesh* newMesh = meshes.AddAsset(_filePath, tmp);
 		newMesh->filePath = _filePath;
 
 		return newMesh;
@@ -36,36 +36,14 @@ Mesh* ResourceManager::LoadMesh(std::string _filePath)
 	return nullptr;
 }
 
-Mesh* ResourceManager::LoadMesh(std::vector<Vertex> _vertices, std::vector<uint16_t> _indices)
+Mesh* ResourceManager::GetMesh(std::string _filePath)
 {
-	Mesh* newMesh = &meshes.emplace_front();
-	newMesh->vertices = _vertices;
-	newMesh->indices = _indices;
-
-	return newMesh;
-}
-
-Mesh* ResourceManager::GetMesh(std::string _filepath)
-{
-	for (std::forward_list<Mesh>::iterator it = meshes.begin(); it != meshes.end(); ++it)
-	{
-		if (it->filePath == _filepath)
-			return &(*it);
-	}
-	return nullptr;
+	return meshes.GetAsset(_filePath);
 }
 
 bool ResourceManager::DeleteMesh(Mesh* _mesh)
 {
-	for (std::forward_list<Mesh>::iterator it = meshes.begin(); it != meshes.end(); ++it)
-	{
-		if (&(*it) == _mesh)
-		{
-			meshes.remove(*it);
-			return true;
-		}
-	}
-	return false;
+	return meshes.RemoveAsset(_mesh->filePath);
 }
 
 
@@ -78,7 +56,7 @@ Texture* ResourceManager::LoadTexture(std::string _filePath)
 	Texture tmp;
 	if (StbiWrapper::LoadTexture(_filePath, tmp))
 	{
-		Texture* newTexture = &textures.emplace_front(tmp);
+		Texture* newTexture = textures.AddAsset(_filePath, tmp);
 		newTexture->filePath = _filePath;
 
 		return newTexture;
@@ -89,23 +67,10 @@ Texture* ResourceManager::LoadTexture(std::string _filePath)
 
 Texture* ResourceManager::GetTexture(std::string _filePath)
 {
-	for (std::forward_list<Texture>::iterator it = textures.begin(); it != textures.end(); ++it)
-	{
-		if (it->filePath == _filePath)
-			return &(*it);
-	}
-	return nullptr;
+	return textures.GetAsset(_filePath);
 }
 
 bool ResourceManager::DeleteTexture(Texture* _texture)
 {
-	for (std::forward_list<Texture>::iterator it = textures.begin(); it != textures.end(); ++it)
-	{
-		if (&(*it) == _texture)
-		{
-			textures.remove(*it);
-			return true;
-		}
-	}
-	return false;
+	return textures.RemoveAsset(_texture->filePath);
 }

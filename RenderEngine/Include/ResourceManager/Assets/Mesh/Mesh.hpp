@@ -3,6 +3,7 @@
 #ifndef RENDERENGINE_MESH
 #define RENDERENGINE_MESH
 
+#include "ResourceManager/Assets/IAsset.hpp"
 #include "ResourceManager/Assets/Mesh/Vertex.hpp"
 #include <vector>
 
@@ -11,7 +12,7 @@ namespace RenderEngine::Assets
     /**
      * @brief Mesh class implementation
     */
-    struct Mesh
+    struct Mesh : public IAsset
     {
         /**
         * @brief mesh list of vertices
@@ -24,8 +25,6 @@ namespace RenderEngine::Assets
         std::vector<uint16_t> indices;
 
         std::string name;
-
-        std::string filePath;
 
         Mesh() = default;
         ~Mesh() = default;

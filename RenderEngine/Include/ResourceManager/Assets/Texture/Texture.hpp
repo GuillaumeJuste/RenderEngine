@@ -3,7 +3,7 @@
 #ifndef RENDERENGINE_TEXTURE
 #define RENDERENGINE_TEXTURE
 
-#include <string>
+#include "ResourceManager/Assets/IAsset.hpp"
 #include <vector>
 
 namespace RenderEngine::Assets
@@ -11,9 +11,9 @@ namespace RenderEngine::Assets
     /**
      * @brief Texture class implementation
     */
-    struct Texture
+    struct Texture : public IAsset
     {
-        std::string filePath;
+        using IAsset::IAsset;
 
         int width;
         int height;
