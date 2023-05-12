@@ -230,14 +230,14 @@ VkScene* RenderContext::WasSceneLoaded(RenderEngine::SceneGraph::Scene* _scene)
 	return nullptr;
 }
 
-bool RenderContext::CreateMesh(const RenderEngine::Assets::RawMesh& _input, RenderEngine::Assets::Mesh& _output)
+bool RenderContext::CreateMesh(const RenderEngine::Assets::RawMesh& _input, RenderEngine::Assets::Mesh* _output)
 {
 	CreateVertexBufferObject(_input, _output);
 	CreateIndexBufferObject(_input, _output);
 	return true;
 }
 
-void RenderContext::CreateVertexBufferObject(const RenderEngine::Assets::RawMesh& _input, RenderEngine::Assets::Mesh& _output)
+void RenderContext::CreateVertexBufferObject(const RenderEngine::Assets::RawMesh& _input, RenderEngine::Assets::Mesh* _output)
 {
 	BufferObject stagingBufferObject;
 	BufferObjectVkCreateInfo stagingBufferCreateInfo;
@@ -268,10 +268,10 @@ void RenderContext::CreateVertexBufferObject(const RenderEngine::Assets::RawMesh
 	stagingBufferObject.CopyBuffer(VBO, commandPool, graphicsQueue, stagingBufferCreateInfo.bufferSize);
 	stagingBufferObject.Clean();
 
-	_output.vertexBuffer = VBO;
+	_output->vertexBuffer = VBO;
 }
 
-void RenderContext::CreateIndexBufferObject(const RenderEngine::Assets::RawMesh& _input, RenderEngine::Assets::Mesh& _output)
+void RenderContext::CreateIndexBufferObject(const RenderEngine::Assets::RawMesh& _input, RenderEngine::Assets::Mesh* _output)
 {
 	BufferObject stagingBufferObject;
 	BufferObjectVkCreateInfo stagingBufferCreateInfo;
@@ -302,7 +302,30 @@ void RenderContext::CreateIndexBufferObject(const RenderEngine::Assets::RawMesh&
 	stagingBufferObject.CopyBuffer(IBO, commandPool, graphicsQueue, stagingBufferCreateInfo.bufferSize);
 	stagingBufferObject.Clean();
 
-	_output.indexBuffer = IBO;
+	_output->indexBuffer = IBO;
+}
+
+bool RenderContext::CreateTexture(const RenderEngine::Assets::RawTexture& _input, RenderEngine::Assets::Texture* _output)
+{
+	VkTextureVkCreateInfo textCreateInfo{};
+	textCreateInfo.logicalDevice = logicalDevice;
+	textCreateInfo.physicalDevice = physicalDevice;
+	textCreateInfo.graphicsQueue = graphicsQueue;
+	textCreateInfo.commandPool = commandPool;
+	textCreateInfo.texture = _input;
+	textCreateInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
+	textCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+	textCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+	textCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+	textCreateInfo.imageFlags = 0;
+	textCreateInfo.imageViewType = VK_IMAGE_VIEW_TYPE_2D;
+
+	VkTexture* vkTexture = new VkTexture();
+
+	VkTexture::InitializeVkTexture(textCreateInfo, vkTexture);
+
+	_output->iTexture = vkTexture;
+	return true;
 }
 
 void RenderContext::Cleanup()

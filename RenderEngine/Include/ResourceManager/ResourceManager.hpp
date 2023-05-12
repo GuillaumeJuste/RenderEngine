@@ -33,7 +33,7 @@ namespace RenderEngine
 
         Texture* LoadTexture(std::string _filePath);
         Texture* GetTexture(std::string _filePath);
-        bool DeleteTexture(Texture* _texture);
+        bool UnloadTexture(Texture* _texture);
 
         void Clean();
     };

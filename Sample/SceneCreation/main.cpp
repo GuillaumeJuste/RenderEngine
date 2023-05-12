@@ -375,7 +375,7 @@ Scene* SetupSimplePlaneScene()
     return scene;
 }
 
-Scene* SetupSimpleCubeScene()
+Scene* SetupSphereScene()
 {
     Scene* scene = sceneManager->AddScene();
     scene->name = "test_scene_simple_cube";
@@ -411,7 +411,7 @@ Scene* SetupSimpleCubeScene()
     meshRenderer->metalnessMap = wallMetalnessMap;
     meshRenderer->roughnessMap = wallRoughnessMap;
     meshRenderer->ambientOcclusionMap = wallAoMap;
-    meshRenderer->fragmentShaderFilePath = "Resources/Engine/Shaders/BlinnPhongFragmentShader.frag.spv";
+    meshRenderer->fragmentShaderFilePath = "Resources/Engine/Shaders/PBRFragmentShader.frag.spv";
     meshRenderer->shininess = 32.0f;
     meshRenderer->ambient = Mathlib::Vec4(0.1f, 0.1f, 0.1f, 1.f);
     meshRenderer->diffuse = Mathlib::Vec4(0.4f, 0.4f, 0.4f, 1.f);
@@ -444,7 +444,7 @@ Scene* SetupSimpleCubeScene()
     meshRenderer2->metalnessMap = ironMetalnessMap;
     meshRenderer2->roughnessMap = ironRoughnessMap;
     meshRenderer2->ambientOcclusionMap = ironAoMap;
-    meshRenderer2->fragmentShaderFilePath = "Resources/Engine/Shaders/BlinnPhongFragmentShader.frag.spv";
+    meshRenderer2->fragmentShaderFilePath = "Resources/Engine/Shaders/PBRFragmentShader.frag.spv";
     meshRenderer2->shininess = 32.0f;
     meshRenderer2->ambient = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
     meshRenderer2->diffuse = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
@@ -479,7 +479,7 @@ Scene* SetupSimpleCubeScene()
 
 void MainLoop()
 {
-    Scene* scene = SetupSimpleCubeScene();
+    Scene* scene = SetupSphereScene();
 
     scene->Initialize();
     scene->Start();

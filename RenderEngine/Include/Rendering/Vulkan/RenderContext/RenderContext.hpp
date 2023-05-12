@@ -111,8 +111,8 @@ namespace RenderEngine::Rendering
 
 		VkScene* WasSceneLoaded(RenderEngine::SceneGraph::Scene* _scene);
 
-		void CreateVertexBufferObject(const RenderEngine::Assets::RawMesh& _input, RenderEngine::Assets::Mesh& _output);
-		void CreateIndexBufferObject(const RenderEngine::Assets::RawMesh& _input, RenderEngine::Assets::Mesh& _output);
+		void CreateVertexBufferObject(const RenderEngine::Assets::RawMesh& _input, RenderEngine::Assets::Mesh* _output);
+		void CreateIndexBufferObject(const RenderEngine::Assets::RawMesh& _input, RenderEngine::Assets::Mesh* _output);
 
 	public:
 		/// default constructor
@@ -132,7 +132,8 @@ namespace RenderEngine::Rendering
 
 		VkScene* LoadScene(RenderEngine::SceneGraph::Scene* _scene);
 
-		bool CreateMesh(const RenderEngine::Assets::RawMesh& _input, RenderEngine::Assets::Mesh& _output);
+		bool CreateMesh(const RenderEngine::Assets::RawMesh& _input, RenderEngine::Assets::Mesh* _output);
+		bool CreateTexture(const RenderEngine::Assets::RawTexture& _input, RenderEngine::Assets::Texture* _output);
 
 		/**
 		 * @brief clean up vulkan classes

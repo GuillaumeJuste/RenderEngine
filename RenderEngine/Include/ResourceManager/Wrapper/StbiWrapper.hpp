@@ -3,7 +3,7 @@
 #ifndef RENDERENGINE_STBIWRAPPER
 #define RENDERENGINE_STBIWRAPPER
 
-#include "ResourceManager/Assets/Texture/Texture.hpp"
+#include "ResourceManager/Assets/Texture/RawTexture.hpp"
 using namespace RenderEngine::Assets;
 
 namespace RenderEngine::Wrapper
@@ -15,7 +15,7 @@ namespace RenderEngine::Wrapper
 
     public:
 
-        static bool LoadTexture(const std::string& _filePath, Texture& _output);
+        static bool LoadTexture(const std::string& _filePath, RawTexture& _output);
     };
 }
 

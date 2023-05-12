@@ -86,61 +86,64 @@ DescriptorDataList VkGameObject::GenerateDefaultFragmentShaderDescriptorSet(Desc
 {
 	DescriptorDataList datalist{};
 
-	DescriptorData textureBufferData{};
-	textureBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	textureBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	textureBufferData.binding = 0;
-	textureBufferData.texture = &createInfo.textureData->vkTexture;
-	datalist.Add(textureBufferData);
+	if (meshRenderer != nullptr)
+	{
+		DescriptorData textureBufferData{};
+		textureBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		textureBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+		textureBufferData.binding = 0;
+		textureBufferData.texture = dynamic_cast<VkTexture*>(meshRenderer->texture->iTexture);
+		datalist.Add(textureBufferData);
 
-	DescriptorData metalnessMapBufferData{};
-	metalnessMapBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	metalnessMapBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	metalnessMapBufferData.binding = 1;
-	metalnessMapBufferData.texture = &createInfo.metalnessMap->vkTexture;
-	datalist.Add(metalnessMapBufferData);
+		DescriptorData metalnessMapBufferData{};
+		metalnessMapBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		metalnessMapBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+		metalnessMapBufferData.binding = 1;
+		metalnessMapBufferData.texture = dynamic_cast<VkTexture*>(meshRenderer->metalnessMap->iTexture);
+		datalist.Add(metalnessMapBufferData);
+
+		DescriptorData roughnessMapBufferData{};
+		roughnessMapBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		roughnessMapBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+		roughnessMapBufferData.binding = 2;
+		roughnessMapBufferData.texture = dynamic_cast<VkTexture*>(meshRenderer->roughnessMap->iTexture);
+		datalist.Add(roughnessMapBufferData);
+
+		DescriptorData aoMapBufferData{};
+		aoMapBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		aoMapBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+		aoMapBufferData.binding = 3;
+		aoMapBufferData.texture = dynamic_cast<VkTexture*>(meshRenderer->ambientOcclusionMap->iTexture);
+		datalist.Add(aoMapBufferData);
+	}
 
 	DescriptorData materialBufferData{};
 	materialBufferData.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	materialBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	materialBufferData.binding = 2;
+	materialBufferData.binding = 4;
 	materialBufferData.buffer = &materialBufferObject;
 	datalist.Add(materialBufferData);
 
 	DescriptorData pointLightBufferData{};
 	pointLightBufferData.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 	pointLightBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	pointLightBufferData.binding = 3;
+	pointLightBufferData.binding = 5;
 	pointLightBufferData.buffer = _pointLightsBuffer;
 	datalist.Add(pointLightBufferData);
 
 	DescriptorData directionalLightBufferData{};
 	directionalLightBufferData.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 	directionalLightBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	directionalLightBufferData.binding = 4;
+	directionalLightBufferData.binding = 6;
 	directionalLightBufferData.buffer = _directionalLightsBuffer;
 	datalist.Add(directionalLightBufferData);
 
 	DescriptorData spotLightBufferData{};
 	spotLightBufferData.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 	spotLightBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	spotLightBufferData.binding = 5;
+	spotLightBufferData.binding = 7;
 	spotLightBufferData.buffer = _spotLightsBuffer;
 	datalist.Add(spotLightBufferData);
-
-	DescriptorData roughnessMapBufferData{};
-	roughnessMapBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	roughnessMapBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	roughnessMapBufferData.binding = 6;
-	roughnessMapBufferData.texture = &createInfo.roughnessMap->vkTexture;
-	datalist.Add(roughnessMapBufferData);
-
-	DescriptorData aoMapBufferData{};
-	aoMapBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	aoMapBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	aoMapBufferData.binding = 7;
-	aoMapBufferData.texture = &createInfo.aoMap->vkTexture;
-	datalist.Add(aoMapBufferData);
 
 	return datalist;
 }

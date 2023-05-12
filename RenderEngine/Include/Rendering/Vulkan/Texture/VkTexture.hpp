@@ -7,10 +7,11 @@
 #include "Rendering/Vulkan/Texture/VkTextureCreateInfo.hpp"
 #include "Rendering/Vulkan/ImageView/ImageView.hpp"
 #include "Rendering/Vulkan/Image/Image.hpp"
+#include "Rendering/Base/Interface/Primitive/ITexture.hpp"
 
 namespace RenderEngine::Rendering
 {
-	class VkTexture
+	class VkTexture : public ITexture
 	{
 	private:
 
@@ -33,7 +34,7 @@ namespace RenderEngine::Rendering
 		/**
 		 * @brief clean up vulkan classes
 		*/
-		void Cleanup();
+		void Clean();
 
 		VkImageView GetImageView() const;
 		VkSampler GetSampler() const;

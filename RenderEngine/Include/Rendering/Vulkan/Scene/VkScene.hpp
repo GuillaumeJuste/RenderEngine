@@ -10,8 +10,6 @@
 
 #include "Rendering/Vulkan/Scene/Skybox/VkSkybox.hpp"
 
-#include "Rendering/Vulkan/Scene/Data/MeshData.hpp"
-#include "Rendering/Vulkan/Scene/Data/TextureData.hpp"
 #include "Rendering/Vulkan/Descriptor/Buffer/DescriptorBuffer.hpp"
 #include "Rendering/Vulkan/Scene/Light/VkPointLight.hpp"
 #include "Rendering/Vulkan/Scene/Light/VkDirectionalLight.hpp"
@@ -39,7 +37,6 @@ namespace RenderEngine::Rendering
 
 		std::forward_list<VkGameObject> gameObjects;
 
-		std::vector<TextureData*> sceneTextures;
 		std::vector<VkPointLight> scenePointLights;
 		std::vector<VkDirectionalLight> sceneDirectionalLights;
 		std::vector<VkSpotLight> sceneSpotLights;
@@ -51,9 +48,6 @@ namespace RenderEngine::Rendering
 		std::vector<DirectionalLightData> GenerateDirectionalLightsData();
 		std::vector<SpotLightData> GenerateSpotLightsData();
 		void CreateLightBuffer();
-
-		TextureData* LoadTexture(RenderEngine::Assets::Texture* _texture, uint32_t _imageArrayLayers = 1, VkImageCreateFlags _imageFlags = 0);
-		TextureData* GetTexture(RenderEngine::Assets::Texture* _texture);
 
 		void CreateSkybox();
 

@@ -26,13 +26,11 @@ Mesh* ResourceManager::LoadMesh(std::string _filePath)
 	RawMesh rawMesh;
 	if (AssimpWrapper::LoadMesh(_filePath, rawMesh))
 	{
-		Mesh tmp;
-		renderContext->CreateMesh(rawMesh, tmp);
-		Mesh* newMesh = meshManager.Add(_filePath, tmp);
+		Mesh* newMesh = new Mesh();
+		renderContext->CreateMesh(rawMesh, newMesh);
+		meshManager.Add(_filePath, newMesh);
 		newMesh->filePath = _filePath;
 		newMesh->indiceCount = rawMesh.indices.size();
-		tmp.vertexBuffer = nullptr;
-		tmp.indexBuffer = nullptr;
 
 		return newMesh;
 	}
@@ -57,11 +55,17 @@ Texture* ResourceManager::LoadTexture(std::string _filePath)
 	if (texture != nullptr)
 		return texture;
 
-	Texture tmp;
-	if (StbiWrapper::LoadTexture(_filePath, tmp))
+	RawTexture rawTexture;
+	rawTexture.textureCount = 1;
+	if (StbiWrapper::LoadTexture(_filePath, rawTexture))
 	{
-		Texture* newTexture = textureManager.Add(_filePath, tmp);
+		Texture* newTexture = new Texture();
+		renderContext->CreateTexture(rawTexture, newTexture);
+		textureManager.Add(_filePath, newTexture);
 		newTexture->filePath = _filePath;
+		newTexture->height = rawTexture.height;
+		newTexture->width = rawTexture.width;
+		newTexture->imageSize = rawTexture.imageSize;
 
 		return newTexture;
 	}
@@ -74,7 +78,7 @@ Texture* ResourceManager::GetTexture(std::string _filePath)
 	return textureManager.Get(_filePath);
 }
 
-bool ResourceManager::DeleteTexture(Texture* _texture)
+bool ResourceManager::UnloadTexture(Texture* _texture)
 {
 	return textureManager.Unload(_texture->filePath);
 }

@@ -18,33 +18,27 @@ void VkTexture::InitializeVkTexture(const VkTextureVkCreateInfo& _vkTextureCreat
 	stagingBufferCreateInfo.logicalDevice = _vkTextureCreateInfo.logicalDevice;
 	stagingBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 	stagingBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-	stagingBufferCreateInfo.bufferSize = _vkTextureCreateInfo.textures[0]->imageSize * _vkTextureCreateInfo.textures.size();
+	stagingBufferCreateInfo.bufferSize = _vkTextureCreateInfo.texture.imageSize * _vkTextureCreateInfo.texture.textureCount;
 
 	BufferObject::InitializeBufferObject(stagingBufferCreateInfo, &stagingBuffer);
 
-	//std::vector<char> images;
-	//for (size_t i = 0; i < _vkTextureCreateInfo.textures.size(); i++)
-	//{
-	//	images.insert(images.end(), _vkTextureCreateInfo.textures[i]->pixels.begin(), _vkTextureCreateInfo.textures[i]->pixels.end());
-	//}
-
 	void* data;
 	vkMapMemory(_vkTextureCreateInfo.logicalDevice, stagingBuffer.GetVkBufferMemory(), 0, stagingBuffer.GetBufferSize(), 0, &data);
-	memcpy(data, _vkTextureCreateInfo.textures[0]->pixels, stagingBuffer.GetBufferSize());
+	memcpy(data, _vkTextureCreateInfo.texture.pixels, stagingBuffer.GetBufferSize());
 	vkUnmapMemory(_vkTextureCreateInfo.logicalDevice, stagingBuffer.GetVkBufferMemory());
 
 	ImageVkCreateInfo imageCreateInfo{};
 	imageCreateInfo.physicalDevice = _vkTextureCreateInfo.physicalDevice;
 	imageCreateInfo.logicalDevice = _vkTextureCreateInfo.logicalDevice;
-	imageCreateInfo.width = static_cast<uint32_t>(_vkTextureCreateInfo.textures[0]->width);
-	imageCreateInfo.height = static_cast<uint32_t>(_vkTextureCreateInfo.textures[0]->height);
+	imageCreateInfo.width = static_cast<uint32_t>(_vkTextureCreateInfo.texture.width);
+	imageCreateInfo.height = static_cast<uint32_t>(_vkTextureCreateInfo.texture.height);
 	imageCreateInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
 	imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
 	imageCreateInfo.usage = _vkTextureCreateInfo.usage;
 	imageCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 	imageCreateInfo.commandPool = _vkTextureCreateInfo.commandPool;
 	imageCreateInfo.graphicsQueue = _vkTextureCreateInfo.graphicsQueue;
-	imageCreateInfo.arrayLayers = _vkTextureCreateInfo.textures.size();
+	imageCreateInfo.arrayLayers = _vkTextureCreateInfo.texture.textureCount;
 	imageCreateInfo.imageFlags = _vkTextureCreateInfo.imageFlags;
 	Image::InitializeImage(imageCreateInfo, &_output->image);
 
@@ -54,7 +48,7 @@ void VkTexture::InitializeVkTexture(const VkTextureVkCreateInfo& _vkTextureCreat
 
 	stagingBuffer.Clean();
 
-	_output->CreateImageView(_vkTextureCreateInfo.imageViewType, _vkTextureCreateInfo.textures.size());
+	_output->CreateImageView(_vkTextureCreateInfo.imageViewType, _vkTextureCreateInfo.texture.textureCount);
 
 	_output->CreateSampler();
 }
@@ -134,7 +128,7 @@ void VkTexture::CreateSampler()
 	}
 }
 
-void VkTexture::Cleanup()
+void VkTexture::Clean()
 {
 	vkDestroySampler(createInfo.logicalDevice, sampler, nullptr);
 	imageView.Cleanup();

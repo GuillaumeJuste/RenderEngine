@@ -2,12 +2,11 @@
 
 using namespace RenderEngine::Assets;
 
-bool Texture::operator==(const Texture& _rhs) const
+Texture::~Texture()
 {
-	return filePath == _rhs.filePath;
-}
-
-void Texture::Clean()
-{
-
+	if (iTexture != nullptr)
+	{
+		iTexture->Clean();
+		delete iTexture;
+	}
 }

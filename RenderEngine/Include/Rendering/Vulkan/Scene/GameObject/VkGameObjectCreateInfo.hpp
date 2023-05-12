@@ -7,8 +7,6 @@
 #include "SceneGraph/Object/GameObject/GameObject.hpp"
 #include "Rendering/Vulkan/SwapChain/SwapChain.hpp"
 #include "Rendering/Vulkan/RenderPass/RenderPass.hpp"
-#include "Rendering/Vulkan/Scene/Data/MeshData.hpp"
-#include "Rendering/Vulkan/Scene/Data/TextureData.hpp"
 
 namespace RenderEngine::Rendering
 {
@@ -26,11 +24,6 @@ namespace RenderEngine::Rendering
 		SwapChain* swapchain;
 
 		RenderPass* renderpass;
-
-		TextureData* textureData;
-		TextureData* metalnessMap;
-		TextureData* roughnessMap;
-		TextureData* aoMap;
 
 		RenderEngine::SceneGraph::GameObject* gameObject = nullptr;
 

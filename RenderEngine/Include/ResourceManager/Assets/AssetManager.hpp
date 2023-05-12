@@ -14,10 +14,10 @@ namespace RenderEngine::Assets
 	private:
 		std::unordered_map<std::string, T*> assetsMap;
 	public:
-		// constructor taking load function on construction
-		// copy constructor cleaning unordered map before updating itself
+		AssetManager() = default;
+		AssetManager(const AssetManager& _copy) = delete;
 
-		T* Add(std::string filePath, const T& _asset);
+		void Add(std::string filePath, T* _asset);
 		T* Get(const std::string _filePath) const;
 		bool Unload(const std::string _filePath);
 		void Clean();

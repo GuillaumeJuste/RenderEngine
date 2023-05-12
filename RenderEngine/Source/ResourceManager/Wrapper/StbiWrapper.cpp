@@ -7,7 +7,7 @@
 
 using namespace RenderEngine::Wrapper;
 
-bool StbiWrapper::LoadTexture(const std::string& _filePath, Texture& _output)
+bool StbiWrapper::LoadTexture(const std::string& _filePath, RawTexture& _output)
 {
 	int texWidth, texHeight, texChannels;
 

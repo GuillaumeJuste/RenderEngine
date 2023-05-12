@@ -4,14 +4,14 @@ using namespace RenderEngine::Assets;
 
 Mesh::~Mesh()
 {
-	Clean();
-}
-
-void Mesh::Clean()
-{
-	if(vertexBuffer != nullptr)
+	if (vertexBuffer != nullptr)
+	{
 		vertexBuffer->Clean();
-	
+		delete vertexBuffer;
+	}
 	if (indexBuffer != nullptr)
+	{
 		indexBuffer->Clean();
+		delete indexBuffer;
+	}
 }

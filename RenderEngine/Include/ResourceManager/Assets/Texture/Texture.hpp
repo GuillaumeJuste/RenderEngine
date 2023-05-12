@@ -4,7 +4,7 @@
 #define RENDERENGINE_TEXTURE
 
 #include "ResourceManager/Assets/IAsset.hpp"
-#include <vector>
+#include "Rendering/Base/Interface/Primitive/ITexture.hpp"
 
 namespace RenderEngine::Assets
 {
@@ -13,20 +13,14 @@ namespace RenderEngine::Assets
     */
     struct Texture : public IAsset
     {
-        using IAsset::IAsset;
-
         int width;
         int height;
         int imageSize;
 
-        char* pixels;
+        RenderEngine::Rendering::ITexture* iTexture;
 
         Texture() = default;
-        ~Texture() = default;
-
-        bool operator==(const Texture& _rhs) const;
-
-        void Clean();
+        ~Texture();
     };
 }
 

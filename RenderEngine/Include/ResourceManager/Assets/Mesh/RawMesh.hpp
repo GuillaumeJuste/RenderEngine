@@ -28,8 +28,6 @@ namespace RenderEngine::Assets
 
         RawMesh() = default;
         ~RawMesh() = default;
-
-        void Clean() {};
     };
 }
 

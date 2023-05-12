@@ -4,7 +4,7 @@
 #define RENDERENGINE_VKTEXURECREATEINFO
 
 #include "Rendering/Vulkan/CommandPool/CommandPool.hpp"
-#include "ResourceManager/Assets/Texture/Texture.hpp"
+#include "ResourceManager/Assets/Texture/RawTexture.hpp"
 
 namespace RenderEngine::Rendering
 {
@@ -22,7 +22,7 @@ namespace RenderEngine::Rendering
 		/// command pool
 		CommandPool* commandPool;
 
-		std::vector<RenderEngine::Assets::Texture*> textures;
+		RenderEngine::Assets::RawTexture texture;
 
 		VkFormat format;
 		VkImageTiling tiling;

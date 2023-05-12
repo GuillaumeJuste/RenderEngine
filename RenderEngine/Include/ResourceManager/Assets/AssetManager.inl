@@ -1,12 +1,9 @@
 namespace RenderEngine::Assets
 {
 	template <typename T>
-	T* AssetManager<T>::Add(std::string filePath, const T& _asset)
+	void AssetManager<T>::Add(std::string filePath, T* _asset)
 	{
-		//TODO fix memory leak on unload / object delete
-		T* assetPointer = new T(_asset);
-		assetsMap[filePath] = assetPointer;
-		return assetPointer;
+		assetsMap[filePath] = _asset;
 	}
 
 	template <typename T>

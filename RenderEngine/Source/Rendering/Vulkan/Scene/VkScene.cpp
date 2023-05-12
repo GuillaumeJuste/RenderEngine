@@ -43,15 +43,6 @@ void VkScene::CreateVkGameObjects(VkGameObjectCreateInfo _createInfo, std::vecto
 	{
 		_createInfo.gameObject = (*it);
 
-		MeshRenderer* meshRenderer = _createInfo.gameObject->GetComponent<MeshRenderer>();
-		if (meshRenderer != nullptr)
-		{
-			_createInfo.textureData = LoadTexture(meshRenderer->texture);
-			_createInfo.metalnessMap = LoadTexture(meshRenderer->metalnessMap);
-			_createInfo.roughnessMap = LoadTexture(meshRenderer->roughnessMap);
-			_createInfo.aoMap = LoadTexture(meshRenderer->ambientOcclusionMap);
-		}
-
 		gameObjects.push_front(VkGameObject(_createInfo));
 
 		CreateVkGameObjects(_createInfo, (*it)->GetChildrens());
@@ -206,50 +197,9 @@ void VkScene::CreateLightBuffer()
 	DescriptorBuffer::InitializeDescriptorBuffer(spotLightsBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &spotLightsBuffer);
 }
 
-TextureData* VkScene::LoadTexture(RenderEngine::Assets::Texture* _texture, uint32_t _imageArrayLayers, VkImageCreateFlags _imageFlags)
-{
-	TextureData* textureData = GetTexture(_texture);
-
-	if (textureData != nullptr)
-		return textureData;
-
-	TextureData* newTexture = new TextureData();
-	
-	VkTextureVkCreateInfo textCreateInfo{};
-	textCreateInfo.logicalDevice = createInfo.logicalDevice;
-	textCreateInfo.physicalDevice = createInfo.physicalDevice;
-	textCreateInfo.graphicsQueue = createInfo.graphicsQueue;
-	textCreateInfo.commandPool = createInfo.commandPool;
-	textCreateInfo.textures.push_back(_texture);
-	textCreateInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
-	textCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-	textCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
-	textCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-	textCreateInfo.imageFlags = _imageFlags;
-	textCreateInfo.imageViewType = VK_IMAGE_VIEW_TYPE_2D;
-
-	VkTexture::InitializeVkTexture(textCreateInfo, &newTexture->vkTexture);
-	
-	sceneTextures.push_back(newTexture);
-	return newTexture;
-}
-
-TextureData* VkScene::GetTexture(RenderEngine::Assets::Texture* _texture)
-{
-	for (std::vector<TextureData*>::iterator it = sceneTextures.begin(); it != sceneTextures.end(); ++it)
-	{
-		if (**it == _texture)
-		{
-			return (*it);
-		}
-	}
-
-	return nullptr;
-}
-
 void VkScene::CreateSkybox()
 {
-	VkTextureVkCreateInfo textCreateInfo{};
+	/*VkTextureVkCreateInfo textCreateInfo{};
 	textCreateInfo.logicalDevice = createInfo.logicalDevice;
 	textCreateInfo.physicalDevice = createInfo.physicalDevice;
 	textCreateInfo.graphicsQueue = createInfo.graphicsQueue;
@@ -268,15 +218,15 @@ void VkScene::CreateSkybox()
 	textCreateInfo.imageFlags = VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
 	textCreateInfo.imageViewType = VK_IMAGE_VIEW_TYPE_CUBE;
 
-	VkTexture::InitializeVkTexture(textCreateInfo, &skybox.texture);
+	VkTexture::InitializeVkTexture(textCreateInfo, &skybox.texture);*/
 
-	VkSkyboxCreateInfo skyboxCreateInfo{};
-	skyboxCreateInfo.physicalDevice = createInfo.physicalDevice;
-	skyboxCreateInfo.logicalDevice = createInfo.logicalDevice;
-	skyboxCreateInfo.renderpass = createInfo.renderpass;
-	skyboxCreateInfo.swapchain = createInfo.swapchain;
+	//VkSkyboxCreateInfo skyboxCreateInfo{};
+	//skyboxCreateInfo.physicalDevice = createInfo.physicalDevice;
+	//skyboxCreateInfo.logicalDevice = createInfo.logicalDevice;
+	//skyboxCreateInfo.renderpass = createInfo.renderpass;
+	//skyboxCreateInfo.swapchain = createInfo.swapchain;
 
-	skybox.InitializeSkybox(skyboxCreateInfo, &cameraBuffer);
+	//skybox.InitializeSkybox(skyboxCreateInfo, &cameraBuffer);
 }
 
 
@@ -325,11 +275,5 @@ void VkScene::Cleanup()
 	for (std::forward_list<VkGameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{
 		(*it).Cleanup();
-	}
-
-	for (std::vector<TextureData*>::iterator it = sceneTextures.begin(); it != sceneTextures.end(); ++it)
-	{
-		(*it)->Cleanup();
-		delete (*it);
 	}
 }

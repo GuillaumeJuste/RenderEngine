@@ -3,7 +3,6 @@
 #ifndef RENDERENGINE_VKSKYBOX
 #define RENDERENGINE_VKSKYBOX
 
-#include "Rendering/Vulkan/Scene/Data/MeshData.hpp"
 #include "Rendering/Vulkan/Texture/VkTexture.hpp"
 #include "Rendering/Vulkan/Scene/Skybox/VkSkyboxCreateInfo.hpp"
 #include "Rendering/Vulkan/Descriptor/Buffer/DescriptorBuffer.hpp"
@@ -14,27 +13,27 @@ namespace RenderEngine::Rendering
 {
 	class VkSkybox
 	{
-	private:
+	//private:
 
-		VkSkyboxCreateInfo createInfo;
-		GraphicsPipeline graphicsPipeline;
-		std::vector<DescriptorSet> descriptorSets;
+	//	VkSkyboxCreateInfo createInfo;
+	//	GraphicsPipeline graphicsPipeline;
+	//	std::vector<DescriptorSet> descriptorSets;
 
-		void CreateGraphicsPipeline(DescriptorBuffer* _cameraBuffer);
+	//	void CreateGraphicsPipeline(DescriptorBuffer* _cameraBuffer);
 
-		DescriptorDataList GenerateDefaultVertexShaderDescriptorSet(DescriptorBuffer* _cameraBuffer);
+	//	DescriptorDataList GenerateDefaultVertexShaderDescriptorSet(DescriptorBuffer* _cameraBuffer);
 
-		DescriptorDataList GenerateDefaultFragmentShaderDescriptorSet();
+	//	DescriptorDataList GenerateDefaultFragmentShaderDescriptorSet();
 
-		void CreateDescriptorSet(std::vector<DescriptorDataList> _descriptorDatas);
-	public:
-		MeshData* meshData;
-		VkTexture texture;
+	//	void CreateDescriptorSet(std::vector<DescriptorDataList> _descriptorDatas);
+	//public:
+	//	//MeshData* meshData;
+	//	VkTexture texture;
 
-		void InitializeSkybox(const VkSkyboxCreateInfo& _createInfo, DescriptorBuffer* _cameraBuffer);
-		void Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const;
-		/// default constructor
-		VkSkybox() = default;
+	//	void InitializeSkybox(const VkSkyboxCreateInfo& _createInfo, DescriptorBuffer* _cameraBuffer);
+	//	void Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const;
+	//	/// default constructor
+	//	VkSkybox() = default;
 	};
 }
 

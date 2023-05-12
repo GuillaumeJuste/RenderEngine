@@ -11,8 +11,8 @@ layout(location = 0) in DataBlock
 
 layout(set = 1, binding = 0) uniform sampler2D albedoSampler;
 layout(set = 1, binding = 1) uniform sampler2D metalnessMapSampler;
-layout(set = 1, binding = 6) uniform sampler2D roughnessMapSampler;
-layout(set = 1, binding = 7) uniform sampler2D aoMapSampler;
+layout(set = 1, binding = 2) uniform sampler2D roughnessMapSampler;
+layout(set = 1, binding = 3) uniform sampler2D aoMapSampler;
 
 struct PointLight
 {
@@ -23,7 +23,7 @@ struct PointLight
 	float range;
 };
 
-layout (set = 1,binding = 3) buffer PointLightData
+layout (set = 1,binding = 5) buffer PointLightData
 {
 	PointLight lights[];
 } pointLightsBuffer;
@@ -36,7 +36,7 @@ struct DirectionalLight
 	float intensity;
 };
 
-layout (set = 1,binding = 4) buffer DirectionalLightData
+layout (set = 1,binding = 6) buffer DirectionalLightData
 {
 	DirectionalLight lights[];
 } directionalLightsBuffer;
@@ -53,7 +53,7 @@ struct SpotLight
 	
 };
 
-layout (set = 1,binding = 5) buffer SpotLightData
+layout (set = 1,binding = 7) buffer SpotLightData
 {
 	SpotLight lights[];
 } spotLightsBuffer;

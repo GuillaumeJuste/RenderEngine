@@ -12,7 +12,7 @@ layout(location = 0) in DataBlock
 layout(set = 1, binding = 0) uniform sampler2D albedoSampler;
 layout(set = 1, binding = 1) uniform sampler2D metalnessSampler;
 
-layout(set = 1, binding = 2) uniform MaterialBufferObject 
+layout(set = 1, binding = 4) uniform MaterialBufferObject 
 {
 	float shininess;
 	vec3 Ka;
@@ -29,7 +29,7 @@ struct PointLight
 	float range;
 };
 
-layout (set = 1,binding = 3) buffer PointLightData
+layout (set = 1,binding = 5) buffer PointLightData
 {
 	PointLight lights[];
 } pointLightsBuffer;
@@ -42,7 +42,7 @@ struct DirectionalLight
 	float intensity;
 };
 
-layout (set = 1,binding = 4) buffer DirectionalLightData
+layout (set = 1,binding = 6) buffer DirectionalLightData
 {
 	DirectionalLight lights[];
 } directionalLightsBuffer;
@@ -59,7 +59,7 @@ struct SpotLight
 	
 };
 
-layout (set = 1,binding = 5) buffer SpotLightData
+layout (set = 1,binding = 7) buffer SpotLightData
 {
 	SpotLight lights[];
 } spotLightsBuffer;
