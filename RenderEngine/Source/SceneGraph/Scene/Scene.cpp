@@ -1,10 +1,12 @@
 #include "SceneGraph/Scene/Scene.hpp"
 #include "ResourceManager/ResourceManager.hpp"
 #include "SceneGraph/Components/MeshRenderer/MeshRenderer.hpp"
+#include "ResourceManager/ResourceManager.hpp"
 
 using namespace RenderEngine::SceneGraph;
 
-Scene::Scene()
+Scene::Scene(RenderEngine::ResourceManager* _resourceManager) :
+	resourceManager{ _resourceManager }
 {
 	GameObjectCreateInfo rootCreateInfo{};
 	rootCreateInfo.name = "root";
@@ -22,14 +24,6 @@ Scene::Scene()
 	GameObjectCreateInfo mainCameraCreateInfo{};
 	mainCameraCreateInfo.name = "mainCamera";
 	mainCameraCreateInfo.parent = &rootObject;
-
-	skybox.mesh = ResourceManager::GetInstance()->LoadMesh("Resources/Engine/Models/cube.obj");
-	skybox.front = ResourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/Skybox/front.jpg");
-	skybox.back = ResourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/Skybox/back.jpg");
-	skybox.left = ResourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/Skybox/left.jpg");
-	skybox.right = ResourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/Skybox/right.jpg");
-	skybox.top = ResourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/Skybox/top.jpg");
-	skybox.bottom = ResourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/Skybox/bottom.jpg");
 
 	GameObject::InitializeGameObject(mainCameraCreateInfo, &mainCamera);
 }
@@ -77,8 +71,8 @@ GameObject* Scene::AddGameObject(GameObjectCreateInfo _createInfo)
 
 	GameObject::InitializeGameObject(_createInfo, gao);
 
-	Mesh* mesh = ResourceManager::GetInstance()->LoadMesh("Resources/Engine/Models/cube.obj");
-	Texture* texture = ResourceManager::GetInstance()->LoadTexture("Resources/Engine/Textures/White.jpg");
+	Mesh* mesh = resourceManager->LoadMesh("Resources/Engine/Models/cube.obj");
+	Texture* texture = resourceManager->LoadTexture("Resources/Engine/Textures/White.jpg");
 	MeshRenderer* meshRenderer = gao->AddComponent<MeshRenderer>();
 	meshRenderer->mesh = mesh;
 	meshRenderer->texture = texture;
@@ -87,6 +81,8 @@ GameObject* Scene::AddGameObject(GameObjectCreateInfo _createInfo)
 	meshRenderer->ambientOcclusionMap = texture;
 	meshRenderer->vertexShaderFilePath = "Resources/Engine/Shaders/VertexShader.vert.spv";
 	meshRenderer->fragmentShaderFilePath = "Resources/Engine/Shaders/BlinnPhongFragmentShader.frag.spv";
+
+	mainCamera.SetParent(&rootObject);
 
 	return gao;
 }

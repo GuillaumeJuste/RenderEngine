@@ -14,6 +14,9 @@ VkGameObject::VkGameObject(const VkGameObjectCreateInfo& _createInfo) :
 {
 	meshRenderer = createInfo.gameObject->GetComponent<MeshRenderer>();
 	
+	VBO = dynamic_cast<BufferObject*>(meshRenderer->mesh->vertexBuffer);
+	IBO = dynamic_cast<BufferObject*>(meshRenderer->mesh->indexBuffer);
+
 	CreateDescriptorBufferObjects();
 }
 
@@ -168,11 +171,11 @@ void VkGameObject::Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const
 		{
 			vkCmdBindPipeline(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.GetGraphicsPipeline());
 
-			VkBuffer vertexBuffers[] = { createInfo.meshData->vertexBufferObject.GetVkBuffer() };
+			VkBuffer vertexBuffers[] = { VBO->GetVkBuffer() };
 			VkDeviceSize offsets[] = { 0 };
 			vkCmdBindVertexBuffers(_commandBuffer, 0, 1, vertexBuffers, offsets);
 
-			vkCmdBindIndexBuffer(_commandBuffer, createInfo.meshData->indexBufferObject.GetVkBuffer(), 0, VK_INDEX_TYPE_UINT16);
+			vkCmdBindIndexBuffer(_commandBuffer, IBO->GetVkBuffer(), 0, VK_INDEX_TYPE_UINT16);
 			
 			size_t descrtiptorSetCount = descriptorSets.size();
 
@@ -180,7 +183,7 @@ void VkGameObject::Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const
 			{
 				vkCmdBindDescriptorSets(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.GetGraphicsPipelineLayout(), index, 1, &descriptorSets[index].GetFrameDescriptorSet(_currentFrame), 0, nullptr);
 			}
-			vkCmdDrawIndexed(_commandBuffer, static_cast<uint32_t>(meshRenderer->mesh->indices.size()), 1, 0, 0, 0);
+			vkCmdDrawIndexed(_commandBuffer, static_cast<uint32_t>(meshRenderer->mesh->indiceCount), 1, 0, 0, 0);
 		}
 	}
 }

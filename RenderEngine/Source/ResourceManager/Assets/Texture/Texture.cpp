@@ -6,3 +6,8 @@ bool Texture::operator==(const Texture& _rhs) const
 {
 	return filePath == _rhs.filePath;
 }
+
+void Texture::Clean()
+{
+
+}

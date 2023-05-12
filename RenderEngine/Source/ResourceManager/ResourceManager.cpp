@@ -12,10 +12,9 @@ using namespace RenderEngine;
 using namespace RenderEngine::Wrapper;
 
 
-ResourceManager* ResourceManager::GetInstance()
+ResourceManager::ResourceManager(IRenderContext* _renderContext) :
+	renderContext { _renderContext }
 {
-	static ResourceManager instance;
-	return &instance;
 }
 
 Mesh* ResourceManager::LoadMesh(std::string _filePath)
@@ -24,11 +23,16 @@ Mesh* ResourceManager::LoadMesh(std::string _filePath)
 	if (mesh != nullptr)
 		return mesh;
 
-	Mesh tmp;
-	if (AssimpWrapper::LoadMesh(_filePath, tmp))
+	RawMesh rawMesh;
+	if (AssimpWrapper::LoadMesh(_filePath, rawMesh))
 	{
-		Mesh* newMesh = meshes.AddAsset(_filePath, tmp);
+		Mesh tmp;
+		renderContext->CreateMesh(rawMesh, tmp);
+		Mesh* newMesh = meshManager.Add(_filePath, tmp);
 		newMesh->filePath = _filePath;
+		newMesh->indiceCount = rawMesh.indices.size();
+		tmp.vertexBuffer = nullptr;
+		tmp.indexBuffer = nullptr;
 
 		return newMesh;
 	}
@@ -38,12 +42,12 @@ Mesh* ResourceManager::LoadMesh(std::string _filePath)
 
 Mesh* ResourceManager::GetMesh(std::string _filePath)
 {
-	return meshes.GetAsset(_filePath);
+	return meshManager.Get(_filePath);
 }
 
-bool ResourceManager::DeleteMesh(Mesh* _mesh)
+bool ResourceManager::UnloadMesh(Mesh* _mesh)
 {
-	return meshes.RemoveAsset(_mesh->filePath);
+	return meshManager.Unload(_mesh->filePath);
 }
 
 
@@ -56,7 +60,7 @@ Texture* ResourceManager::LoadTexture(std::string _filePath)
 	Texture tmp;
 	if (StbiWrapper::LoadTexture(_filePath, tmp))
 	{
-		Texture* newTexture = textures.AddAsset(_filePath, tmp);
+		Texture* newTexture = textureManager.Add(_filePath, tmp);
 		newTexture->filePath = _filePath;
 
 		return newTexture;
@@ -67,10 +71,16 @@ Texture* ResourceManager::LoadTexture(std::string _filePath)
 
 Texture* ResourceManager::GetTexture(std::string _filePath)
 {
-	return textures.GetAsset(_filePath);
+	return textureManager.Get(_filePath);
 }
 
 bool ResourceManager::DeleteTexture(Texture* _texture)
 {
-	return textures.RemoveAsset(_texture->filePath);
+	return textureManager.Unload(_texture->filePath);
+}
+
+void ResourceManager::Clean()
+{
+	meshManager.Clean();
+	textureManager.Clean();
 }

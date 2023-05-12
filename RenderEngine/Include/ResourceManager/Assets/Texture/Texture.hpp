@@ -25,6 +25,8 @@ namespace RenderEngine::Assets
         ~Texture() = default;
 
         bool operator==(const Texture& _rhs) const;
+
+        void Clean();
     };
 }
 

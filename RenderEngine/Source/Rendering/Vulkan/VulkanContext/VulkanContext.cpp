@@ -157,5 +157,4 @@ void VulkanContext::Cleanup()
     }
 
     vkDestroyInstance(instance, nullptr);
-    std::cout << "[Cleaned] Vulkan Context" << std::endl;
 }

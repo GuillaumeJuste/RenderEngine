@@ -125,8 +125,6 @@ void SwapChainCommandBuffer::Cleanup()
 	vkDestroySemaphore(logicalDevice, imageAvailableSemaphore, nullptr);
 	vkDestroySemaphore(logicalDevice, renderFinishedSemaphore, nullptr);
 	vkDestroyFence(logicalDevice, inFlightFence, nullptr);
-
-	std::cout << "[Cleaned] SwapChainCommandBuffer" << std::endl;
 }
 
 const VkSemaphore& SwapChainCommandBuffer::GetImageAvailableSemaphore() const

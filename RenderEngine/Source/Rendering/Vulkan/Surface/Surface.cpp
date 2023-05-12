@@ -21,8 +21,6 @@ void Surface::InitializeSurface(const VkInstance& _instance, GLFW::Window* _wind
 void Surface::Cleanup()
 {
 	vkDestroySurfaceKHR(instance, vkSurface, nullptr);
-	
-	std::cout << "[Cleaned] Surface" << std::endl;
 }
 
 const VkSurfaceKHR& Surface::GetVkSurface() const

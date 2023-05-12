@@ -39,7 +39,6 @@ namespace RenderEngine::Rendering
 
 		std::forward_list<VkGameObject> gameObjects;
 
-		std::vector<MeshData*> sceneMeshes;
 		std::vector<TextureData*> sceneTextures;
 		std::vector<VkPointLight> scenePointLights;
 		std::vector<VkDirectionalLight> sceneDirectionalLights;
@@ -52,12 +51,6 @@ namespace RenderEngine::Rendering
 		std::vector<DirectionalLightData> GenerateDirectionalLightsData();
 		std::vector<SpotLightData> GenerateSpotLightsData();
 		void CreateLightBuffer();
-
-
-		MeshData* LoadMesh(RenderEngine::Assets::Mesh* _mesh);
-		MeshData* GetMesh(RenderEngine::Assets::Mesh* _mesh);
-		void CreateVertexBufferObject(RenderEngine::Assets::Mesh* _mesh, MeshData* _output);
-		void CreateIndexBufferObject(RenderEngine::Assets::Mesh* _mesh, MeshData* _output);
 
 		TextureData* LoadTexture(RenderEngine::Assets::Texture* _texture, uint32_t _imageArrayLayers = 1, VkImageCreateFlags _imageFlags = 0);
 		TextureData* GetTexture(RenderEngine::Assets::Texture* _texture);

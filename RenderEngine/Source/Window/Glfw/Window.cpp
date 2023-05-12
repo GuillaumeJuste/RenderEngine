@@ -27,7 +27,6 @@ void Window::Cleanup()
     glfwDestroyWindow(glfwWindow);
 
     glfwTerminate();
-    std::cout << "[Cleaned] Window" << std::endl;
 }
 
 GLFWwindow* Window::GetGLFWWindow()

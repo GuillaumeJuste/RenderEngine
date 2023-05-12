@@ -27,7 +27,6 @@ namespace RenderEngine::Rendering
 
 		RenderPass* renderpass;
 
-		MeshData* meshData;
 		TextureData* textureData;
 		TextureData* metalnessMap;
 		TextureData* roughnessMap;

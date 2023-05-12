@@ -31,7 +31,6 @@ void ImageView::InitializeImageView(ImageViewVkCreateInfo _imageViewCreateInfo, 
 void ImageView::Cleanup()
 {
 	vkDestroyImageView(logicalDevice, imageView, nullptr);
-	std::cout << "[Cleaned] Image View" << std::endl;
 }
 
 const VkImageView& ImageView::GetImageView() const

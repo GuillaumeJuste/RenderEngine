@@ -46,7 +46,6 @@ void VkScene::CreateVkGameObjects(VkGameObjectCreateInfo _createInfo, std::vecto
 		MeshRenderer* meshRenderer = _createInfo.gameObject->GetComponent<MeshRenderer>();
 		if (meshRenderer != nullptr)
 		{
-			_createInfo.meshData = LoadMesh(meshRenderer->mesh);
 			_createInfo.textureData = LoadTexture(meshRenderer->texture);
 			_createInfo.metalnessMap = LoadTexture(meshRenderer->metalnessMap);
 			_createInfo.roughnessMap = LoadTexture(meshRenderer->roughnessMap);
@@ -207,98 +206,6 @@ void VkScene::CreateLightBuffer()
 	DescriptorBuffer::InitializeDescriptorBuffer(spotLightsBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &spotLightsBuffer);
 }
 
-MeshData* VkScene::LoadMesh(RenderEngine::Assets::Mesh* _mesh)
-{
-	MeshData* meshData = GetMesh(_mesh);
-
-	if (meshData != nullptr)
-		return meshData;
-
-	MeshData* newMesh = new MeshData();
-	newMesh->mesh = _mesh;
-	CreateVertexBufferObject(_mesh, newMesh);
-	CreateIndexBufferObject(_mesh, newMesh);
-
-	sceneMeshes.push_back(newMesh);
-	return newMesh;
-}
-
-MeshData* VkScene::GetMesh(RenderEngine::Assets::Mesh* _mesh)
-{
-	for (std::vector<MeshData*>::iterator it = sceneMeshes.begin(); it != sceneMeshes.end(); ++it)
-	{
-		if ((*it)->mesh == _mesh)
-		{
-			return (*it);
-		}
-	}
-	return nullptr;
-}
-
-void VkScene::CreateVertexBufferObject(RenderEngine::Assets::Mesh* _mesh, MeshData* _output)
-{
-	std::vector<Vertex> vertices = _mesh->vertices;
-
-	BufferObject stagingBufferObject;
-	BufferObjectVkCreateInfo stagingBufferCreateInfo;
-	stagingBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
-	stagingBufferCreateInfo.logicalDevice = createInfo.logicalDevice;
-	stagingBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-	stagingBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-	stagingBufferCreateInfo.bufferSize = sizeof(vertices[0]) * vertices.size();
-
-	BufferObject::InitializeBufferObject(stagingBufferCreateInfo, &stagingBufferObject);
-
-	void* data;
-	vkMapMemory(createInfo.logicalDevice, stagingBufferObject.GetVkBufferMemory(), 0, stagingBufferCreateInfo.bufferSize, 0, &data);
-	memcpy(data, vertices.data(), (size_t)stagingBufferCreateInfo.bufferSize);
-	vkUnmapMemory(createInfo.logicalDevice, stagingBufferObject.GetVkBufferMemory());
-
-	BufferObjectVkCreateInfo vertexBuffeCreateInfo;
-	vertexBuffeCreateInfo.physicalDevice = createInfo.physicalDevice;
-	vertexBuffeCreateInfo.logicalDevice = createInfo.logicalDevice;
-	vertexBuffeCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-	vertexBuffeCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-	vertexBuffeCreateInfo.bufferSize = stagingBufferCreateInfo.bufferSize;
-
-	BufferObject::InitializeBufferObject(vertexBuffeCreateInfo, &_output->vertexBufferObject);
-
-	stagingBufferObject.CopyBuffer(&_output->vertexBufferObject, createInfo.commandPool, createInfo.graphicsQueue, stagingBufferCreateInfo.bufferSize);
-	stagingBufferObject.Cleanup();
-}
-
-void VkScene::CreateIndexBufferObject(RenderEngine::Assets::Mesh* _mesh, MeshData* _output)
-{
-	std::vector<uint16_t> indices = _mesh->indices;
-
-	BufferObject stagingBufferObject;
-	BufferObjectVkCreateInfo stagingBufferCreateInfo;
-	stagingBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
-	stagingBufferCreateInfo.logicalDevice = createInfo.logicalDevice;
-	stagingBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-	stagingBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-	stagingBufferCreateInfo.bufferSize = sizeof(indices[0]) * indices.size();
-
-	BufferObject::InitializeBufferObject(stagingBufferCreateInfo, &stagingBufferObject);
-
-	void* data;
-	vkMapMemory(createInfo.logicalDevice, stagingBufferObject.GetVkBufferMemory(), 0, stagingBufferCreateInfo.bufferSize, 0, &data);
-	memcpy(data, indices.data(), (size_t)stagingBufferCreateInfo.bufferSize);
-	vkUnmapMemory(createInfo.logicalDevice, stagingBufferObject.GetVkBufferMemory());
-
-	BufferObjectVkCreateInfo indexBufferCreateInfo;
-	indexBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
-	indexBufferCreateInfo.logicalDevice = createInfo.logicalDevice;
-	indexBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
-	indexBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-	indexBufferCreateInfo.bufferSize = stagingBufferCreateInfo.bufferSize;
-
-	BufferObject::InitializeBufferObject(indexBufferCreateInfo, &_output->indexBufferObject);
-
-	stagingBufferObject.CopyBuffer(&_output->indexBufferObject, createInfo.commandPool, createInfo.graphicsQueue, stagingBufferCreateInfo.bufferSize);
-	stagingBufferObject.Cleanup();
-}
-
 TextureData* VkScene::LoadTexture(RenderEngine::Assets::Texture* _texture, uint32_t _imageArrayLayers, VkImageCreateFlags _imageFlags)
 {
 	TextureData* textureData = GetTexture(_texture);
@@ -342,8 +249,6 @@ TextureData* VkScene::GetTexture(RenderEngine::Assets::Texture* _texture)
 
 void VkScene::CreateSkybox()
 {
-	skybox.meshData = LoadMesh(createInfo.scene->skybox.mesh);
-
 	VkTextureVkCreateInfo textCreateInfo{};
 	textCreateInfo.logicalDevice = createInfo.logicalDevice;
 	textCreateInfo.physicalDevice = createInfo.physicalDevice;
@@ -420,12 +325,6 @@ void VkScene::Cleanup()
 	for (std::forward_list<VkGameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{
 		(*it).Cleanup();
-	}
-
-	for (std::vector<MeshData*>::iterator it = sceneMeshes.begin(); it != sceneMeshes.end(); ++it)
-	{
-		(*it)->Cleanup();
-		delete (*it);
 	}
 
 	for (std::vector<TextureData*>::iterator it = sceneTextures.begin(); it != sceneTextures.end(); ++it)

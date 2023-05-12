@@ -16,7 +16,7 @@ void DescriptorBuffer::InitializeDescriptorBuffer(const BufferObjectVkCreateInfo
 void DescriptorBuffer::Cleanup()
 {
 	for (std::vector<BufferObject>::iterator it = bufferObjects.begin(); it != bufferObjects.end(); ++it)
-		it->Cleanup();
+		it->Clean();
 }
 
 const BufferObject& DescriptorBuffer::operator[](size_t _index)

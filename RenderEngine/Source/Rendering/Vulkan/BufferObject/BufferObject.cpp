@@ -66,10 +66,8 @@ const VkDeviceSize& BufferObject::GetBufferSize() const
 	return bufferSize;
 }
 
-void BufferObject::Cleanup()
+void BufferObject::Clean()
 {
 	vkDestroyBuffer(logicalDevice, buffer, nullptr);
 	vkFreeMemory(logicalDevice, bufferMemory, nullptr);
-
-	std::cout << "[Cleaned] Buffer Object" << std::endl;
 }

@@ -6,6 +6,7 @@
 #include "Rendering/Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Rendering/Vulkan/BufferObject/BufferObjectVkCreateInfo.hpp"
 #include "Rendering/Vulkan/CommandPool/CommandPool.hpp"
+#include "Rendering/Base/Interface/Primitive/IBuffer.hpp"
 
 namespace RenderEngine::Rendering
 {
@@ -13,7 +14,7 @@ namespace RenderEngine::Rendering
 	 * @brief Buffer Object class
 	 * Hold data that will be sent to the GPU for computation and/or render
 	*/
-	class BufferObject
+	class BufferObject : public IBuffer
 	{
 	private:
 		/**
@@ -92,7 +93,7 @@ namespace RenderEngine::Rendering
 		/**
 		 * @brief cleanup function
 		*/
-		void Cleanup();
+		void Clean();
 	};
 
 }

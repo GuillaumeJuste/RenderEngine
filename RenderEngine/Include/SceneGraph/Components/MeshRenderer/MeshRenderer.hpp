@@ -8,6 +8,7 @@
 #include "ResourceManager/Assets/Texture/Texture.hpp"
 #include "Rendering/Base/Enum/PolygonDrawMode.hpp"
 #include "Rendering/Base/Enum/FrontFace.hpp"
+#include "Mathlib/Mathlib/Include/Space/Vec3.hpp"
 
 using namespace RenderEngine::Assets;
 using namespace RenderEngine::Rendering;

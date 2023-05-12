@@ -27,5 +27,4 @@ const VkCommandPool& CommandPool::GetCommandPool() const
 void CommandPool::Cleanup()
 {
 	vkDestroyCommandPool(logicalDevice, commandPool, nullptr);
-	std::cout << "[Cleaned] Command Pool" << std::endl;
 }

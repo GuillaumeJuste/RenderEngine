@@ -39,7 +39,7 @@ IDeviceContext* deviceContext;
 */
 IRenderContext* renderContext;
 
-SceneManager sceneManager;
+SceneManager* sceneManager;
 
 ResourceManager* resourceManager;
 
@@ -107,7 +107,7 @@ void InitEngine()
 
 Scene* SetupTestScene()
 {
-    Scene* scene = sceneManager.AddScene();
+    Scene* scene = sceneManager->AddScene();
     scene->name = "test_scene_1";
 
     Camera* camera = scene->GetCamera();
@@ -171,7 +171,7 @@ Scene* SetupTestScene()
 
 Scene* SetupIlluminationScene()
 {
-    Scene* scene = sceneManager.AddScene();
+    Scene* scene = sceneManager->AddScene();
     scene->name = "test_scene_illumination";
 
     Camera* camera = scene->GetCamera();
@@ -313,7 +313,7 @@ Scene* SetupIlluminationScene()
 
 Scene* SetupSimplePlaneScene()
 {
-    Scene* scene = sceneManager.AddScene();
+    Scene* scene = sceneManager->AddScene();
     scene->name = "test_scene_simple_plane";
 
     Camera* camera = scene->GetCamera();
@@ -377,7 +377,7 @@ Scene* SetupSimplePlaneScene()
 
 Scene* SetupSimpleCubeScene()
 {
-    Scene* scene = sceneManager.AddScene();
+    Scene* scene = sceneManager->AddScene();
     scene->name = "test_scene_simple_cube";
 
     Camera* camera = scene->GetCamera();
@@ -494,8 +494,10 @@ void MainLoop()
 
 void Cleanup()
 {
+    delete sceneManager;
+    resourceManager->Clean();
+    delete resourceManager;
     vulkanContext.Cleanup();
-
     window->Cleanup();
     delete window;
 }
@@ -503,8 +505,9 @@ void Cleanup()
 void Run()
 {
     InitWindow();
-    resourceManager = ResourceManager::GetInstance();
     InitEngine();
+    resourceManager = new ResourceManager(renderContext);
+    sceneManager = new SceneManager(resourceManager);
     MainLoop();
     Cleanup();
 }

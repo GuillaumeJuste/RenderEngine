@@ -24,6 +24,8 @@ namespace RenderEngine::Rendering
 		VkGameObjectCreateInfo createInfo;
 
 		MeshRenderer* meshRenderer = nullptr;
+		BufferObject* VBO = nullptr;
+		BufferObject* IBO = nullptr;
 
 		GraphicsPipeline graphicsPipeline;
 

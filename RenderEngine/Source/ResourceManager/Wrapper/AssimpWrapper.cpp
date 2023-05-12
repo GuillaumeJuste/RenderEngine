@@ -8,7 +8,7 @@ using namespace RenderEngine::Wrapper;
 
 Assimp::Importer AssimpWrapper::importer = Assimp::Importer();
 
-bool AssimpWrapper::ProcessMesh(const aiScene* _scene, Mesh& _output)
+bool AssimpWrapper::ProcessMesh(const aiScene* _scene, RawMesh& _output)
 {
 	if (_scene->HasMeshes())
 	{
@@ -52,7 +52,7 @@ bool AssimpWrapper::ProcessMesh(const aiScene* _scene, Mesh& _output)
 	return false;
 }
 
-bool AssimpWrapper::LoadMesh(const std::string& _filePath, Mesh& _output)
+bool AssimpWrapper::LoadMesh(const std::string& _filePath, RawMesh& _output)
 {
 	const aiScene* scene = importer.ReadFile(_filePath,
 		aiProcess_CalcTangentSpace |

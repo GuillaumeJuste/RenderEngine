@@ -13,6 +13,8 @@ namespace RenderEngine::Assets
 		std::string filePath;
 
 		bool operator==(const IAsset& _rhs) const;
+
+		virtual void Clean() = 0;
 	};
 }
 

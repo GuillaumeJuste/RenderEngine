@@ -80,19 +80,19 @@ void VkSkybox::CreateDescriptorSet(std::vector<DescriptorDataList> _descriptorDa
 
 void VkSkybox::Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const
 {
-	vkCmdBindPipeline(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.GetGraphicsPipeline());
-	
-	VkBuffer vertexBuffers[] = { meshData->vertexBufferObject.GetVkBuffer() };
-	VkDeviceSize offsets[] = { 0 };
-	vkCmdBindVertexBuffers(_commandBuffer, 0, 1, vertexBuffers, offsets);
-	
-	vkCmdBindIndexBuffer(_commandBuffer, meshData->indexBufferObject.GetVkBuffer(), 0, VK_INDEX_TYPE_UINT16);
-	
-	size_t descrtiptorSetCount = descriptorSets.size();
-	
-	for (int index = 0; index < descrtiptorSetCount; index++)
-	{
-		vkCmdBindDescriptorSets(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.GetGraphicsPipelineLayout(), index, 1, &descriptorSets[index].GetFrameDescriptorSet(_currentFrame), 0, nullptr);
-	}
-	vkCmdDrawIndexed(_commandBuffer, static_cast<uint32_t>(meshData->mesh->indices.size()), 1, 0, 0, 0);
+	//vkCmdBindPipeline(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.GetGraphicsPipeline());
+	//
+	//VkBuffer vertexBuffers[] = { meshData->vertexBufferObject.GetVkBuffer() };
+	//VkDeviceSize offsets[] = { 0 };
+	//vkCmdBindVertexBuffers(_commandBuffer, 0, 1, vertexBuffers, offsets);
+	//
+	//vkCmdBindIndexBuffer(_commandBuffer, meshData->indexBufferObject.GetVkBuffer(), 0, VK_INDEX_TYPE_UINT16);
+	//
+	//size_t descrtiptorSetCount = descriptorSets.size();
+	//
+	//for (int index = 0; index < descrtiptorSetCount; index++)
+	//{
+	//	vkCmdBindDescriptorSets(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.GetGraphicsPipelineLayout(), index, 1, &descriptorSets[index].GetFrameDescriptorSet(_currentFrame), 0, nullptr);
+	//}
+	//vkCmdDrawIndexed(_commandBuffer, static_cast<uint32_t>(meshData->mesh->indices.size()), 1, 0, 0, 0);
 }

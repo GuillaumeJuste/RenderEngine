@@ -7,6 +7,11 @@
 
 #include <forward_list>
 
+namespace RenderEngine
+{
+    class ResourceManager;
+}
+
 namespace RenderEngine::SceneGraph
 {
     /**
@@ -15,11 +20,12 @@ namespace RenderEngine::SceneGraph
     class SceneManager
     {
     private:
+        RenderEngine::ResourceManager* resourceManager;
 
         std::forward_list<Scene> scenes;
 
     public:
-        SceneManager() = default;
+        SceneManager(RenderEngine::ResourceManager* _resourceManager);
         ~SceneManager() = default;
 
         Scene* AddScene();

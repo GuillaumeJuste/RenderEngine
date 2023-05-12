@@ -70,7 +70,6 @@ void RenderPass::InitializeRenderPass(const RenderPassVkCreateInfo& _createInfo,
 void RenderPass::Cleanup()
 {
     vkDestroyRenderPass(logicalDevice, renderPass, nullptr);
-    std::cout << "[Cleaned] Render Pass" << std::endl;
 }
 
 const VkRenderPass& RenderPass::GetRenderPass() const

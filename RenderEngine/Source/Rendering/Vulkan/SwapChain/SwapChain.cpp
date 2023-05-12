@@ -172,7 +172,6 @@ void SwapChain::Cleanup()
 		imageViews[i].Cleanup();
 	}
 	vkDestroySwapchainKHR(logicalDevice, vkSwapChain, nullptr);
-	std::cout << "[Cleaned] Swap Chain" << std::endl;
 }
 
 const VkSwapchainKHR& SwapChain::GetVKSwapChain() const

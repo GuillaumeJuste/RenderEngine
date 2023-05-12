@@ -52,7 +52,7 @@ void VkTexture::InitializeVkTexture(const VkTextureVkCreateInfo& _vkTextureCreat
 	_output->CopyBufferToImage(stagingBuffer.GetVkBuffer(), static_cast<uint32_t>(imageCreateInfo.width), static_cast<uint32_t>(imageCreateInfo.height));
 	_output->image.TransitionImageLayout(VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
-	stagingBuffer.Cleanup();
+	stagingBuffer.Clean();
 
 	_output->CreateImageView(_vkTextureCreateInfo.imageViewType, _vkTextureCreateInfo.textures.size());
 

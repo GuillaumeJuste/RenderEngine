@@ -2,7 +2,16 @@
 
 using namespace RenderEngine::Assets;
 
-bool Mesh::operator==(const Mesh& _rhs) const
+Mesh::~Mesh()
 {
-	return name == _rhs.name && filePath == _rhs.filePath;
+	Clean();
+}
+
+void Mesh::Clean()
+{
+	if(vertexBuffer != nullptr)
+		vertexBuffer->Clean();
+	
+	if (indexBuffer != nullptr)
+		indexBuffer->Clean();
 }

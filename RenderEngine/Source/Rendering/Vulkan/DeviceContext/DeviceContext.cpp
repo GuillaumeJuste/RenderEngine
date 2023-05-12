@@ -281,5 +281,4 @@ void DeviceContext::Cleanup()
 	commandPool.Cleanup();
 
 	vkDestroyDevice(logicalDevice, nullptr);
-	std::cout << "[Cleaned] Device Context" << std::endl;
 }

@@ -17,9 +17,10 @@ namespace RenderEngine::Assets
 		// constructor taking load function on construction
 		// copy constructor cleaning unordered map before updating itself
 
-		T* AddAsset(std::string filePath, const T& _asset);
-		T* GetAsset(const std::string _filePath) const;
-		bool RemoveAsset(const std::string _filePath);
+		T* Add(std::string filePath, const T& _asset);
+		T* Get(const std::string _filePath) const;
+		bool Unload(const std::string _filePath);
+		void Clean();
 	};
 }
 

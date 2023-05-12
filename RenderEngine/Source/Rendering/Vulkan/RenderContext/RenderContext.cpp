@@ -230,6 +230,81 @@ VkScene* RenderContext::WasSceneLoaded(RenderEngine::SceneGraph::Scene* _scene)
 	return nullptr;
 }
 
+bool RenderContext::CreateMesh(const RenderEngine::Assets::RawMesh& _input, RenderEngine::Assets::Mesh& _output)
+{
+	CreateVertexBufferObject(_input, _output);
+	CreateIndexBufferObject(_input, _output);
+	return true;
+}
+
+void RenderContext::CreateVertexBufferObject(const RenderEngine::Assets::RawMesh& _input, RenderEngine::Assets::Mesh& _output)
+{
+	BufferObject stagingBufferObject;
+	BufferObjectVkCreateInfo stagingBufferCreateInfo;
+	stagingBufferCreateInfo.physicalDevice = physicalDevice;
+	stagingBufferCreateInfo.logicalDevice = logicalDevice;
+	stagingBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+	stagingBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+	stagingBufferCreateInfo.bufferSize = sizeof(_input.vertices[0]) * _input.vertices.size();
+
+	BufferObject::InitializeBufferObject(stagingBufferCreateInfo, &stagingBufferObject);
+
+	void* data;
+	vkMapMemory(logicalDevice, stagingBufferObject.GetVkBufferMemory(), 0, stagingBufferCreateInfo.bufferSize, 0, &data);
+	memcpy(data, _input.vertices.data(), (size_t)stagingBufferCreateInfo.bufferSize);
+	vkUnmapMemory(logicalDevice, stagingBufferObject.GetVkBufferMemory());
+
+	BufferObjectVkCreateInfo vertexBuffeCreateInfo;
+	vertexBuffeCreateInfo.physicalDevice = physicalDevice;
+	vertexBuffeCreateInfo.logicalDevice = logicalDevice;
+	vertexBuffeCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+	vertexBuffeCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+	vertexBuffeCreateInfo.bufferSize = stagingBufferCreateInfo.bufferSize;
+
+	BufferObject* VBO = new BufferObject();
+
+	BufferObject::InitializeBufferObject(vertexBuffeCreateInfo, VBO);
+
+	stagingBufferObject.CopyBuffer(VBO, commandPool, graphicsQueue, stagingBufferCreateInfo.bufferSize);
+	stagingBufferObject.Clean();
+
+	_output.vertexBuffer = VBO;
+}
+
+void RenderContext::CreateIndexBufferObject(const RenderEngine::Assets::RawMesh& _input, RenderEngine::Assets::Mesh& _output)
+{
+	BufferObject stagingBufferObject;
+	BufferObjectVkCreateInfo stagingBufferCreateInfo;
+	stagingBufferCreateInfo.physicalDevice = physicalDevice;
+	stagingBufferCreateInfo.logicalDevice = logicalDevice;
+	stagingBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+	stagingBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+	stagingBufferCreateInfo.bufferSize = sizeof(_input.indices[0]) * _input.indices.size();
+
+	BufferObject::InitializeBufferObject(stagingBufferCreateInfo, &stagingBufferObject);
+
+	void* data;
+	vkMapMemory(logicalDevice, stagingBufferObject.GetVkBufferMemory(), 0, stagingBufferCreateInfo.bufferSize, 0, &data);
+	memcpy(data, _input.indices.data(), (size_t)stagingBufferCreateInfo.bufferSize);
+	vkUnmapMemory(logicalDevice, stagingBufferObject.GetVkBufferMemory());
+
+	BufferObjectVkCreateInfo indexBufferCreateInfo;
+	indexBufferCreateInfo.physicalDevice = physicalDevice;
+	indexBufferCreateInfo.logicalDevice = logicalDevice;
+	indexBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
+	indexBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+	indexBufferCreateInfo.bufferSize = stagingBufferCreateInfo.bufferSize;
+
+	BufferObject* IBO = new BufferObject();
+
+	BufferObject::InitializeBufferObject(indexBufferCreateInfo, IBO);
+
+	stagingBufferObject.CopyBuffer(IBO, commandPool, graphicsQueue, stagingBufferCreateInfo.bufferSize);
+	stagingBufferObject.Clean();
+
+	_output.indexBuffer = IBO;
+}
+
 void RenderContext::Cleanup()
 {
 	for (std::forward_list<SceneData>::iterator it = scenesData.begin(); it != scenesData.end(); ++it)
@@ -246,5 +321,4 @@ void RenderContext::Cleanup()
 	depthBuffer.Cleanup();
 	renderPass.Cleanup();
 	swapChain.Cleanup();
-	std::cout << "[Cleaned] Render Context" << std::endl;
 }

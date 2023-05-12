@@ -38,7 +38,6 @@ void FrameBuffer::Cleanup()
 	{
 		vkDestroyFramebuffer(logicalDevice, framebuffer, nullptr);
 	}
-	std::cout << "[Cleaned] Frame Buffer" << std::endl;
 }
 
 const std::vector<VkFramebuffer>& FrameBuffer::GetFrameBuffers() const

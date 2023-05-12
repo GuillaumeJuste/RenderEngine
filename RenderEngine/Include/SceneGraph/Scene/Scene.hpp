@@ -11,6 +11,11 @@
 #include <string>
 #include <list>
 
+namespace RenderEngine
+{
+    class ResourceManager;
+}
+
 namespace RenderEngine::SceneGraph
 {
     /**
@@ -31,6 +36,8 @@ namespace RenderEngine::SceneGraph
 
         Camera mainCamera;
 
+        RenderEngine::ResourceManager* resourceManager;
+
     public:
         /**
         * @brief scene name
@@ -39,7 +46,8 @@ namespace RenderEngine::SceneGraph
 
         Skybox skybox;
 
-        Scene();
+        Scene() = default;
+        Scene(RenderEngine::ResourceManager* _resourceManager);
         ~Scene() = default;
 
         void Initialize();

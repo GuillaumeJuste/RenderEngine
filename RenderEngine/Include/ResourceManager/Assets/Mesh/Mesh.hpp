@@ -4,8 +4,7 @@
 #define RENDERENGINE_MESH
 
 #include "ResourceManager/Assets/IAsset.hpp"
-#include "ResourceManager/Assets/Mesh/Vertex.hpp"
-#include <vector>
+#include "Rendering/Base/Interface/Primitive/IBuffer.hpp"
 
 namespace RenderEngine::Assets
 {
@@ -14,22 +13,15 @@ namespace RenderEngine::Assets
     */
     struct Mesh : public IAsset
     {
-        /**
-        * @brief mesh list of vertices
-       */
-        std::vector<Vertex> vertices;
+        RenderEngine::Rendering::IBuffer* indexBuffer;
+        RenderEngine::Rendering::IBuffer* vertexBuffer;
 
-        /**
-         * @brief mesh list of indices
-        */
-        std::vector<uint16_t> indices;
-
-        std::string name;
+        size_t indiceCount;
 
         Mesh() = default;
-        ~Mesh() = default;
+        ~Mesh();
 
-        bool operator==(const Mesh& _rhs) const;
+        void Clean();
     };
 }
 

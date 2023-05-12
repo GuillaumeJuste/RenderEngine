@@ -9,6 +9,6 @@ bool MeshData::operator==(RenderEngine::Assets::Mesh* _mesh) const
 
 void MeshData::Cleanup()
 {
-	vertexBufferObject.Cleanup();
-	indexBufferObject.Cleanup();
+	vertexBufferObject.Clean();
+	indexBufferObject.Clean();
 }

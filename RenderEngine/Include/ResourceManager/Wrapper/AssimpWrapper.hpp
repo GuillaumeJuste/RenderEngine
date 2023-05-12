@@ -3,7 +3,7 @@
 #ifndef RENDERENGINE_ASSIMPWRAPPER
 #define RENDERENGINE_ASSIMPWRAPPER
 
-#include "ResourceManager/Assets/Mesh/Mesh.hpp"
+#include "ResourceManager/Assets/Mesh/RawMesh.hpp"
 using namespace RenderEngine::Assets;
 
 #include <assimp/Importer.hpp>
@@ -18,10 +18,10 @@ namespace RenderEngine::Wrapper
 
         AssimpWrapper() = default;
 
-        static bool ProcessMesh(const aiScene* _scene, Mesh& _output);
+        static bool ProcessMesh(const aiScene* _scene, RawMesh& _output);
 
     public:
-        static bool LoadMesh(const std::string& _filePath, Mesh& _output);
+        static bool LoadMesh(const std::string& _filePath, RawMesh& _output);
     };
 }
 

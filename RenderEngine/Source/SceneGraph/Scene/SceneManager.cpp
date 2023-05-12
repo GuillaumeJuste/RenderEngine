@@ -1,10 +1,17 @@
 #include "SceneGraph/Scene/SceneManager.hpp"
+#include "ResourceManager/ResourceManager.hpp"
 
 using namespace RenderEngine::SceneGraph;
 
+SceneManager::SceneManager(RenderEngine::ResourceManager* _resourceManager) :
+    resourceManager{ _resourceManager }
+{
+
+}
+
 Scene* SceneManager::AddScene()
 {
-    return &scenes.emplace_front();
+    return &scenes.emplace_front(Scene(resourceManager));
 }
 
 Scene* SceneManager::GetScene(std::string _name)
