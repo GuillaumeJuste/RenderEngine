@@ -67,8 +67,6 @@ bool AssimpWrapper::LoadMesh(const std::string& _filePath, RawMesh& _output)
 
 	if (ProcessMesh(scene, _output))
 	{
-		_output.filePath = _filePath;
-
 		return true;
 	}
 	return false;

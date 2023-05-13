@@ -7,6 +7,8 @@
 #include <forward_list>
 #include "ResourceManager/Assets/Mesh/Mesh.hpp"
 #include "ResourceManager/Assets/Texture/Texture.hpp"
+#include "ResourceManager/Assets/Shader/Shader.hpp"
+#include "ResourceManager/Assets/Shader/RawShader.hpp"
 #include "ResourceManager/Assets/AssetManager.hpp"
 #include "Rendering/Base/Interface/IRenderContext.hpp"
 
@@ -22,7 +24,9 @@ namespace RenderEngine
         
         AssetManager<Mesh> meshManager;
         AssetManager<Texture> textureManager;
+        AssetManager<Shader> shaderManager;
 
+        bool ReadShaderFile(const std::string& _shaderFilePath, RawShader& _output);
 
     public:
         ResourceManager(IRenderContext* _renderContext);
@@ -34,6 +38,10 @@ namespace RenderEngine
         Texture* LoadTexture(std::string _filePath);
         Texture* GetTexture(std::string _filePath);
         bool UnloadTexture(Texture* _texture);
+
+        Shader* LoadShader(std::string _filePath, SHADER_STAGE _shaderStage);
+        Shader* GetShader(std::string _filePath);
+        bool UnloadShader(Shader* _texture);
 
         void Clean();
     };

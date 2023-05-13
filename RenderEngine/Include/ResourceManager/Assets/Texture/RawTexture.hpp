@@ -3,17 +3,15 @@
 #ifndef RENDERENGINE_RAWTEXTURE
 #define RENDERENGINE_RAWTEXTURE
 
-#include "ResourceManager/Assets/IAsset.hpp"
+#include <string>
 
 namespace RenderEngine::Assets
 {
     /**
      * @brief Texture class implementation
     */
-    struct RawTexture : public IAsset
+    struct RawTexture
     {
-        using IAsset::IAsset;
-
         int width;
         int height;
         int imageSize;

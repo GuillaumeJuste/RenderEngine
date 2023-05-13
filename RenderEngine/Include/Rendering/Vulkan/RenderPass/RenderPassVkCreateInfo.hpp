@@ -3,7 +3,6 @@
 #ifndef RENDERENGINE_RENDERPASSVKCREATEINFO
 #define RENDERENGINE_RENDERPASSVKCREATEINFO
 
-#include "Rendering/Vulkan/Shader/Shader.hpp"
 #include "Rendering/Vulkan/DepthBuffer/DepthBuffer.hpp"
 
 namespace RenderEngine::Rendering

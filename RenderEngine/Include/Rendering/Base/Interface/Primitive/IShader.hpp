@@ -1,11 +1,11 @@
 #pragma once
 
-#ifndef RENDERENGINE_IBUFFER
-#define RENDERENGINE_IBUFFER
+#ifndef RENDERENGINE_ISHADER
+#define RENDERENGINE_ISHADER
 
 namespace RenderEngine::Rendering
 {
-	class IBuffer
+	class IShader
 	{
 	public:
 		virtual void Clean() = 0;

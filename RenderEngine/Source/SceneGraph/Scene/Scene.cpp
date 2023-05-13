@@ -79,8 +79,8 @@ GameObject* Scene::AddGameObject(GameObjectCreateInfo _createInfo)
 	meshRenderer->metalnessMap = texture;
 	meshRenderer->roughnessMap = texture;
 	meshRenderer->ambientOcclusionMap = texture;
-	meshRenderer->vertexShaderFilePath = "Resources/Engine/Shaders/VertexShader.vert.spv";
-	meshRenderer->fragmentShaderFilePath = "Resources/Engine/Shaders/BlinnPhongFragmentShader.frag.spv";
+	meshRenderer->vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/VertexShader.vert.spv", VERTEX);
+	meshRenderer->fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/BlinnPhongFragmentShader.frag.spv", FRAGMENT);
 
 	mainCamera.SetParent(&rootObject);
 

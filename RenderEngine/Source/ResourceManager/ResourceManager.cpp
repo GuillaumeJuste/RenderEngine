@@ -2,11 +2,9 @@
 #include "ResourceManager/Wrapper/AssimpWrapper.hpp"
 #include "ResourceManager/Wrapper/StbiWrapper.hpp"
 
-#include <assimp/postprocess.h>
-
 #include <stdexcept>
 #include <cstring>
-#include <filesystem>
+#include <fstream>
 
 using namespace RenderEngine;
 using namespace RenderEngine::Wrapper;
@@ -15,6 +13,25 @@ using namespace RenderEngine::Wrapper;
 ResourceManager::ResourceManager(IRenderContext* _renderContext) :
 	renderContext { _renderContext }
 {
+}
+
+bool ResourceManager::ReadShaderFile(const std::string& _shaderFilePath, RawShader& _output)
+{
+	std::ifstream file(_shaderFilePath, std::ios::ate | std::ios::binary);
+
+	if (!file.is_open()) {
+		return false;
+	}
+
+	size_t fileSize = (size_t)file.tellg();
+	_output.shaderCode = std::vector<char>(fileSize);
+
+	file.seekg(0);
+	file.read(_output.shaderCode.data(), fileSize);
+
+	file.close();
+
+	return true;
 }
 
 Mesh* ResourceManager::LoadMesh(std::string _filePath)
@@ -28,9 +45,9 @@ Mesh* ResourceManager::LoadMesh(std::string _filePath)
 	{
 		Mesh* newMesh = new Mesh();
 		renderContext->CreateMesh(rawMesh, newMesh);
-		meshManager.Add(_filePath, newMesh);
 		newMesh->filePath = _filePath;
 		newMesh->indiceCount = rawMesh.indices.size();
+		meshManager.Add(_filePath, newMesh);
 
 		return newMesh;
 	}
@@ -48,7 +65,6 @@ bool ResourceManager::UnloadMesh(Mesh* _mesh)
 	return meshManager.Unload(_mesh->filePath);
 }
 
-
 Texture* ResourceManager::LoadTexture(std::string _filePath)
 {
 	Texture* texture = GetTexture(_filePath);
@@ -61,11 +77,11 @@ Texture* ResourceManager::LoadTexture(std::string _filePath)
 	{
 		Texture* newTexture = new Texture();
 		renderContext->CreateTexture(rawTexture, newTexture);
-		textureManager.Add(_filePath, newTexture);
 		newTexture->filePath = _filePath;
 		newTexture->height = rawTexture.height;
 		newTexture->width = rawTexture.width;
 		newTexture->imageSize = rawTexture.imageSize;
+		textureManager.Add(_filePath, newTexture);
 
 		return newTexture;
 	}
@@ -83,8 +99,41 @@ bool ResourceManager::UnloadTexture(Texture* _texture)
 	return textureManager.Unload(_texture->filePath);
 }
 
+Shader* ResourceManager::LoadShader(std::string _filePath, SHADER_STAGE _shaderStage)
+{
+	Shader* shader = GetShader(_filePath);
+	if (shader != nullptr)
+		return shader;
+
+	RawShader rawShader;
+	if (ReadShaderFile(_filePath, rawShader))
+	{
+		Shader* newShader = new Shader();
+		rawShader.stage = _shaderStage;
+		renderContext->CreateShader(rawShader, newShader);
+		newShader->filePath = _filePath;
+		newShader->stage = _shaderStage;
+		shaderManager.Add(_filePath, newShader);
+
+		return newShader;
+	}
+
+	return nullptr;
+}
+
+Shader* ResourceManager::GetShader(std::string _filePath)
+{
+	return shaderManager.Get(_filePath);
+}
+
+bool ResourceManager::UnloadShader(Shader* _texture)
+{
+	return shaderManager.Unload(_texture->filePath);
+}
+
 void ResourceManager::Clean()
 {
 	meshManager.Clean();
 	textureManager.Clean();
+	shaderManager.Clean();
 }

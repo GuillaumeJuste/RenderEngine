@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include "ResourceManager/Assets/Mesh/Vertex.hpp"
+#include "Rendering/Vulkan/Shader/VkShaderCreateInfo.hpp"
+#include "Rendering/Vulkan/Shader/VkShader.hpp"
 
 using namespace RenderEngine::Rendering;
 using namespace RenderEngine::Assets;
@@ -325,6 +327,20 @@ bool RenderContext::CreateTexture(const RenderEngine::Assets::RawTexture& _input
 	VkTexture::InitializeVkTexture(textCreateInfo, vkTexture);
 
 	_output->iTexture = vkTexture;
+	return true;
+}
+
+bool RenderContext::CreateShader(const RenderEngine::Assets::RawShader& _input, RenderEngine::Assets::Shader* _output)
+{
+	VkShaderCreateInfo shaderCreateInfo{};
+	shaderCreateInfo.rawShader = _input;
+	shaderCreateInfo.device = logicalDevice;
+
+	VkShader* vkShader = new VkShader();
+
+	VkShader::CreateVkShader(shaderCreateInfo, vkShader);
+	_output->iShader = vkShader;
+
 	return true;
 }
 

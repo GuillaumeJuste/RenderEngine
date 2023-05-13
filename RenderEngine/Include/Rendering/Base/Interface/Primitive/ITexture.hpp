@@ -8,7 +8,7 @@ namespace RenderEngine::Rendering
 	class ITexture
 	{
 	public:
-		virtual void Clean() {};
+		virtual void Clean() = 0;
 	};
 }
 

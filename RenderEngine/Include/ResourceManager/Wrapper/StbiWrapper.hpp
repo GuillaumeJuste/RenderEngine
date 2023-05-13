@@ -4,6 +4,8 @@
 #define RENDERENGINE_STBIWRAPPER
 
 #include "ResourceManager/Assets/Texture/RawTexture.hpp"
+#include <string>
+
 using namespace RenderEngine::Assets;
 
 namespace RenderEngine::Wrapper

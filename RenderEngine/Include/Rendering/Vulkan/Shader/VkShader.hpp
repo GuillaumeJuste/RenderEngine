@@ -1,17 +1,18 @@
 #pragma once
 
-#ifndef RENDERENGINE_SHADER
-#define RENDERENGINE_SHADER
+#ifndef RENDERENGINE_VKSHADER
+#define RENDERENGINE_VKSHADER
 
 #include "Rendering/Vulkan/Misc/VulkanBaseInclude.hpp"
-#include "Rendering/Vulkan/Shader/ShaderVkCreateInfo.hpp"
+#include "Rendering/Vulkan/Shader/VkShaderCreateInfo.hpp"
+#include "Rendering/Base/Interface/Primitive/IShader.hpp"
 
 namespace RenderEngine::Rendering
 {
 	/**
 	 * @brief Class to manage creation and usage of a shader
 	*/
-	class Shader
+	class VkShader : public IShader
 	{
 	private:
 
@@ -27,31 +28,26 @@ namespace RenderEngine::Rendering
 		/// shader stage info
 		VkPipelineShaderStageCreateInfo shaderStageInfo;
 
-		/**
-		 * @brief Read shader file path
-		 * @param _shaderFilePath file path
-		 * @return shader content
-		*/
-		static std::vector<char> ReadShaderFile(const std::string& _shaderFilePath);
+		static VkShaderStageFlagBits EnumToVkFlag(RenderEngine::Assets::SHADER_STAGE _stage);
 
 	public:
 		/// default constructor
-		Shader() = default;
+		VkShader() = default;
 
 		/// default destructor
-		~Shader() = default;
+		~VkShader() = default;
 
 		/**
 		 * @brief Create shader
 		 * @param _createInfo shader create info
 		 * @param _output shader to initilize
 		*/
-		static void CreateShader(ShaderVkCreateInfo _createInfo, Shader* _output);
+		static void CreateVkShader(VkShaderCreateInfo _createInfo, VkShader* _output);
 		
 		/**
 		 * @brief Clean up vulkan classes
 		*/
-		void Cleanup();
+		void Clean();
 
 		/// Get shader module
 		const VkShaderModule& GetShaderModule() const;

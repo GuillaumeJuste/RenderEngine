@@ -14,9 +14,10 @@ void GraphicsPipeline::InitalizeGraphicsPipeline(const GraphicsPipelineVkCreateI
 	_output->swapChainExtent = _createInfo.swapChainExtent;
     _output->renderPass = _createInfo.renderPass;
 	
-    _output->CreateShaders(_createInfo.meshRenderer->vertexShaderFilePath, _createInfo.meshRenderer->fragmentShaderFilePath);
+    _output->vertexShader = dynamic_cast<VkShader*>(_createInfo.meshRenderer->vertexShader->iShader);
+    _output->fragmentShader = dynamic_cast<VkShader*>(_createInfo.meshRenderer->fragmentShader->iShader);
 
-    VkPipelineShaderStageCreateInfo shaderStages[] = { _output->vertexShader.GetShaderStageInfo(), _output->fragmentShader.GetShaderStageInfo() };
+    VkPipelineShaderStageCreateInfo shaderStages[] = { _output->vertexShader->GetShaderStageInfo(), _output->fragmentShader->GetShaderStageInfo() };
 
     VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
     vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -166,15 +167,6 @@ std::array<VkVertexInputAttributeDescription, 3> GraphicsPipeline::GetVertexAttr
     return attributeDescriptions;
 }
 
-void GraphicsPipeline::CreateShaders(const std::string& _vertexShaderFilePath, const std::string& _fragmentShaderFilePath)
-{
-    ShaderVkCreateInfo vertexShaderCreateInfo(VK_SHADER_STAGE_VERTEX_BIT, _vertexShaderFilePath, logicalDevice);
-    ShaderVkCreateInfo fragmentShaderCreateInfo(VK_SHADER_STAGE_FRAGMENT_BIT, _fragmentShaderFilePath, logicalDevice);
-
-    Shader::CreateShader(vertexShaderCreateInfo, &vertexShader);
-    Shader::CreateShader(fragmentShaderCreateInfo, &fragmentShader);
-}
-
 void GraphicsPipeline::CreateDescriptorPool(std::vector<DescriptorDataList> _descriptorSetDatas)
 {
     size_t descrtiptorSetCount = _descriptorSetDatas.size();
@@ -202,8 +194,6 @@ void GraphicsPipeline::Cleanup()
         descriptorSetLayout[index].Cleanup();
 
     }
-    vertexShader.Cleanup();
-	fragmentShader.Cleanup(); 
 }
 
 const VkPipeline& GraphicsPipeline::GetGraphicsPipeline() const

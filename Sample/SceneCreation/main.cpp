@@ -135,7 +135,7 @@ Scene* SetupTestScene()
     MeshRenderer* meshRenderer = obj->GetComponent<MeshRenderer>();
     meshRenderer->mesh = mesh;
     meshRenderer->texture = texture;
-    meshRenderer->fragmentShaderFilePath = "Resources/Engine/Shaders/TextureFragmentShader.frag.spv";
+    meshRenderer->fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/TextureFragmentShader.frag.spv", FRAGMENT);
 
     Mathlib::Transform transform2;
     transform2.position = Mathlib::Vec3(2.f, 3.0f, 2.f);
@@ -213,7 +213,7 @@ Scene* SetupIlluminationScene()
                 meshRenderer->metalnessMap = ironMetalnessMap;
                 meshRenderer->roughnessMap = ironRoughnessMap;
                 meshRenderer->ambientOcclusionMap = ironAoMap;
-                meshRenderer->fragmentShaderFilePath = "Resources/Engine/Shaders/PBRFragmentShader.spv";
+                meshRenderer->fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/PBRFragmentShader.spv", FRAGMENT);
                 meshRenderer->shininess = 32.0f;
                 meshRenderer->ambient = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
                 meshRenderer->diffuse = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
@@ -244,7 +244,7 @@ Scene* SetupIlluminationScene()
     lightComponent->intensity = 3.f;
 
     MeshRenderer* meshRenderer1 = light2->GetComponent<MeshRenderer>();
-    meshRenderer1->fragmentShaderFilePath = "Resources/Engine/Shaders/TextureFragmentShader.spv";
+    meshRenderer1->fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/TextureFragmentShader.spv", FRAGMENT);
 
     ///* light 3 */
 
@@ -388,6 +388,7 @@ Scene* SetupSphereScene()
     camera->fov = 90.f;
 
     Mesh* sphere = resourceManager->LoadMesh("Resources/Sample/SceneCreation/Models/Sphere.obj");
+    Shader* fragShader = resourceManager->LoadShader("Resources/Engine/Shaders/PBRFragmentShader.frag.spv", FRAGMENT);
     Texture* wallTexture = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/albedo.png");
     Texture* wallMetalnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/metallic.png");
     Texture* wallRoughnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/roughness.png");
@@ -411,7 +412,7 @@ Scene* SetupSphereScene()
     meshRenderer->metalnessMap = wallMetalnessMap;
     meshRenderer->roughnessMap = wallRoughnessMap;
     meshRenderer->ambientOcclusionMap = wallAoMap;
-    meshRenderer->fragmentShaderFilePath = "Resources/Engine/Shaders/PBRFragmentShader.frag.spv";
+    meshRenderer->fragmentShader = fragShader;
     meshRenderer->shininess = 32.0f;
     meshRenderer->ambient = Mathlib::Vec4(0.1f, 0.1f, 0.1f, 1.f);
     meshRenderer->diffuse = Mathlib::Vec4(0.4f, 0.4f, 0.4f, 1.f);
@@ -444,7 +445,7 @@ Scene* SetupSphereScene()
     meshRenderer2->metalnessMap = ironMetalnessMap;
     meshRenderer2->roughnessMap = ironRoughnessMap;
     meshRenderer2->ambientOcclusionMap = ironAoMap;
-    meshRenderer2->fragmentShaderFilePath = "Resources/Engine/Shaders/PBRFragmentShader.frag.spv";
+    meshRenderer2->fragmentShader = fragShader;
     meshRenderer2->shininess = 32.0f;
     meshRenderer2->ambient = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
     meshRenderer2->diffuse = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
@@ -472,7 +473,7 @@ Scene* SetupSphereScene()
 
     MeshRenderer* meshRenderer4 = light4->GetComponent<MeshRenderer>();
     meshRenderer4->enable = true;
-    meshRenderer4->fragmentShaderFilePath = "Resources/Engine/Shaders/TextureFragmentShader.frag.spv";
+    meshRenderer4->fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/TextureFragmentShader.frag.spv", FRAGMENT);
 
     return scene;
 }

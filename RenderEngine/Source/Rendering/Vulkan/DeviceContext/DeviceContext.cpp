@@ -5,7 +5,6 @@
 #include <iostream>
 
 #include "Rendering/Vulkan/SwapChain/SwapChainVkCreateInfo.hpp"
-#include "Rendering/Vulkan/Shader/Shader.hpp"
 #include "Rendering/Vulkan/SwapChain/SwapChain.hpp"
 #include "Rendering/Vulkan/RenderContext/RenderContextVkCreateInfo.hpp"
 

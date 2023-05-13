@@ -22,7 +22,6 @@ bool StbiWrapper::LoadTexture(const std::string& _filePath, RawTexture& _output)
 	_output.height = texHeight;
 
 	_output.imageSize = _output.width * _output.height * 4;
-	_output.filePath = _filePath;
 
 	_output.pixels = reinterpret_cast<char*>(stbi__malloc(_output.imageSize));
 	std::memmove(_output.pixels, data, _output.imageSize * sizeof(char));

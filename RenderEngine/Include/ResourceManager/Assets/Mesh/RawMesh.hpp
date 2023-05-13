@@ -3,7 +3,6 @@
 #ifndef RENDERENGINE_RAWMESH
 #define RENDERENGINE_RAWMESH
 
-#include "ResourceManager/Assets/IAsset.hpp"
 #include "ResourceManager/Assets/Mesh/Vertex.hpp"
 #include <vector>
 
@@ -12,7 +11,7 @@ namespace RenderEngine::Assets
     /**
      * @brief Mesh class implementation
     */
-    struct RawMesh : public IAsset
+    struct RawMesh
     {
         /**
         * @brief mesh list of vertices

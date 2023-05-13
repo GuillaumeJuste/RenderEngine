@@ -7,6 +7,7 @@
 #include "Rendering/Vulkan/Descriptor/Layout/DescriptorSetLayout.hpp"
 #include "Rendering/Vulkan/Descriptor/Pool/DescriptorPool.hpp"
 #include "Rendering/Vulkan/Descriptor/Set/DescriptorDataList.hpp"
+#include "Rendering/Vulkan/Shader/VkShader.hpp"
 
 namespace RenderEngine::Rendering
 {
@@ -21,10 +22,10 @@ namespace RenderEngine::Rendering
 		VkDevice logicalDevice;
 
 		/// vertex shader
-		Shader vertexShader;
+		VkShader* vertexShader;
 
 		/// fragment shader
-		Shader fragmentShader;
+		VkShader* fragmentShader;
 
 		/// swapchain extent
 		VkExtent2D swapChainExtent;
@@ -55,8 +56,6 @@ namespace RenderEngine::Rendering
 		 * @return Vertex struct attribute description
 		*/
 		static std::array<VkVertexInputAttributeDescription, 3> GetVertexAttributeDescriptions();
-
-		void CreateShaders(const std::string& _vertexShaderFilePath, const std::string& _fragmentShaderFilePath);
 
 		void CreateDescriptorPool(std::vector<DescriptorDataList> _descriptorSetDatas);
 

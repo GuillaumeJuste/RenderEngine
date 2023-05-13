@@ -3,9 +3,8 @@
 #ifndef RENDERENGINE_GRAPHICSPIPELINEVKCREATEINFO
 #define RENDERENGINE_GRAPHICSPIPELINEVKCREATEINFO
 
-#include "Rendering/Vulkan/Shader/Shader.hpp"
 #include "Rendering/Vulkan/RenderPass/RenderPass.hpp"
-
+#include "Rendering/Vulkan/Shader/VkShader.hpp"
 #include "SceneGraph/Components/MeshRenderer/MeshRenderer.hpp"
 #include "Rendering/Vulkan/Descriptor/Set/DescriptorDataList.hpp"
 
