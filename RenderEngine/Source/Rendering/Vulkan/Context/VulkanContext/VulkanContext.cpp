@@ -1,9 +1,9 @@
-#include "Rendering/Vulkan/VulkanContext/VulkanContext.hpp"
+#include "Rendering/Vulkan/Context/VulkanContext/VulkanContext.hpp"
 
 #include <stdexcept>
 #include <iostream>
 
-#include "Rendering/Vulkan/DeviceContext/DeviceContextVkCreateInfo.hpp"
+#include "Rendering/Vulkan/Context/DeviceContext/DeviceContextVkCreateInfo.hpp"
 
 using namespace RenderEngine::Window;
 using namespace RenderEngine::Rendering;

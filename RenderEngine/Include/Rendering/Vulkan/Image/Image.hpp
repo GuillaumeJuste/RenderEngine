@@ -9,7 +9,7 @@
 namespace RenderEngine::Rendering
 {
 	/**
-	 * @brief Class to manage creation and usage of Vulkan ImageView
+	 * @brief Class to manage creation and usage of Vulkan Image
 	*/
 	class Image
 	{
@@ -30,7 +30,7 @@ namespace RenderEngine::Rendering
 		~Image() = default;
 
 		/**
-		 * @brief Initiliaze ImageView
+		 * @brief Initiliaze Image
 		 * @param _imageViewCreateInfo image view create info
 		 * @param _output ImageView to initialize
 		*/

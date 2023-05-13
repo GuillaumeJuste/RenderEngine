@@ -5,12 +5,12 @@
 
 #include "Rendering/Base/Interface/IDeviceContext.hpp"
 #include "Rendering/Base/Interface/IRenderContext.hpp"
-#include "Rendering/Vulkan/DeviceContext/DeviceContextVkCreateInfo.hpp"
-#include "Rendering/Vulkan/DeviceContext/QueueFamilyIndices.hpp"
+#include "Rendering/Vulkan/Context/DeviceContext/DeviceContextVkCreateInfo.hpp"
+#include "Rendering/Vulkan/Context/DeviceContext/QueueFamilyIndices.hpp"
 #include "Rendering/Vulkan/SwapChain/SwapChainSupportDetails.hpp"
 #include "Rendering/Vulkan/Surface/Surface.hpp"
-#include "Rendering/Vulkan/RenderContext/RenderContext.hpp"
-#include "Rendering/Vulkan/DeviceContext/PhysicalDeviceProperties.hpp"
+#include "Rendering/Vulkan/Context/RenderContext/RenderContext.hpp"
+#include "Rendering/Vulkan/Context/DeviceContext/PhysicalDeviceProperties.hpp"
 #include "Rendering/Vulkan/CommandPool/CommandPool.hpp"
 
 #include <forward_list>

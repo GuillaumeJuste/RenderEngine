@@ -6,7 +6,7 @@
 #include "Rendering/Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Rendering/Vulkan/Surface/Surface.hpp"
 #include "Rendering/Vulkan/WindowProperties/WindowProperties.hpp"
-#include "Rendering/Vulkan/DeviceContext/QueueFamilyIndices.hpp"
+#include "Rendering/Vulkan/Context/DeviceContext/QueueFamilyIndices.hpp"
 #include "Rendering/Base/CreateInfo/IRenderContextCreateInfo.hpp"
 #include "Rendering/Vulkan/CommandPool/CommandPool.hpp"
 

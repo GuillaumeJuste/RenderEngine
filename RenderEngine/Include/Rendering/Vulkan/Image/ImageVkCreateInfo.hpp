@@ -9,7 +9,7 @@
 namespace RenderEngine::Rendering
 {
 	/**
-	* @brief struct holding data for ImageView Initialization
+	* @brief struct holding data for Image Initialization
 	*/
 	struct ImageVkCreateInfo
 	{

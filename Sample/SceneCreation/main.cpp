@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include <cstdlib>
 
-#include "Rendering/Vulkan/VulkanContext/VulkanContext.hpp"
+#include "Rendering/Vulkan/Context/VulkanContext/VulkanContext.hpp"
 #include "Window/Glfw/Window.hpp"
 #include "SceneGraph/Scene/SceneManager.hpp"
 #include "ResourceManager/ResourceManager.hpp"

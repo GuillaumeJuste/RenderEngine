@@ -5,7 +5,7 @@
 
 #include "Rendering/Base/Interface/IRenderContext.hpp"
 
-#include "Rendering/Vulkan/RenderContext/RenderContextVkCreateInfo.hpp"
+#include "Rendering/Vulkan/Context/RenderContext/RenderContextVkCreateInfo.hpp"
 #include "Rendering/Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Rendering/Vulkan/Surface/Surface.hpp"
 #include "Rendering/Vulkan/SwapChain/SwapChain.hpp"

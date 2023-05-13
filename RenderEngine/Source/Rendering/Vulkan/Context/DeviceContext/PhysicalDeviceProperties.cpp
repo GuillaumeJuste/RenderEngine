@@ -1,4 +1,4 @@
-#include "Rendering/Vulkan/DeviceContext/PhysicalDeviceProperties.hpp"
+#include "Rendering/Vulkan/Context/DeviceContext/PhysicalDeviceProperties.hpp"
 
 using namespace RenderEngine::Rendering;
 

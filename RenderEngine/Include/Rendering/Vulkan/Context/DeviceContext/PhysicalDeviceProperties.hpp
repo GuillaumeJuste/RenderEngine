@@ -4,7 +4,7 @@
 #define RENDERENGINE_PHYSICALDEVICEPROPERTIES
 
 #include "Rendering/Vulkan/Misc/VulkanBaseInclude.hpp"
-#include "Rendering/Vulkan/DeviceContext/QueueFamilyIndices.hpp"
+#include "Rendering/Vulkan/Context/DeviceContext/QueueFamilyIndices.hpp"
 
 
 namespace RenderEngine::Rendering

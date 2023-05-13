@@ -7,7 +7,7 @@
 #include "Rendering/Base/Interface/IDeviceContext.hpp"
 
 #include "Rendering/Vulkan/Misc/VulkanBaseInclude.hpp"
-#include "Rendering/Vulkan/DeviceContext/DeviceContext.hpp"
+#include "Rendering/Vulkan/Context/DeviceContext/DeviceContext.hpp"
 #include "Rendering/Vulkan/Debugger/DebugMessenger.hpp"
 #include "Rendering/Vulkan/WindowProperties/WindowProperties.hpp"
 

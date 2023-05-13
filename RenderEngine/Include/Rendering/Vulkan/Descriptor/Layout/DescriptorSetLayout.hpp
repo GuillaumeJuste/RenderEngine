@@ -10,7 +10,7 @@
 namespace RenderEngine::Rendering
 {
 	/**
-	 * @brief Class to manage creation and usage of Vulkan ImageView
+	 * @brief Class to manage creation and usage of Vulkan DescriptorSetLayout
 	*/
 	class DescriptorSetLayout
 	{

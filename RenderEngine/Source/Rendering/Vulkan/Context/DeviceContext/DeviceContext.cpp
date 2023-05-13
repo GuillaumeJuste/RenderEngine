@@ -1,4 +1,4 @@
-#include "Rendering/Vulkan/DeviceContext/DeviceContext.hpp"
+#include "Rendering/Vulkan/Context/DeviceContext/DeviceContext.hpp"
 
 #include <stdexcept>
 #include <set>
@@ -6,7 +6,7 @@
 
 #include "Rendering/Vulkan/SwapChain/SwapChainVkCreateInfo.hpp"
 #include "Rendering/Vulkan/SwapChain/SwapChain.hpp"
-#include "Rendering/Vulkan/RenderContext/RenderContextVkCreateInfo.hpp"
+#include "Rendering/Vulkan/Context/RenderContext/RenderContextVkCreateInfo.hpp"
 
 
 using namespace RenderEngine::Rendering;
