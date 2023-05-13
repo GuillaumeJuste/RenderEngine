@@ -15,6 +15,7 @@ namespace RenderEngine::Assets
         int width;
         int height;
         int imageSize;
+        int channels;
 
         uint32_t textureCount;
 

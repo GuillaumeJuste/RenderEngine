@@ -9,24 +9,19 @@ using namespace RenderEngine::Wrapper;
 
 bool StbiWrapper::LoadTexture(const std::string& _filePath, RawTexture& _output)
 {
-	int texWidth, texHeight, texChannels;
+	_output.pixels = reinterpret_cast<char*>(stbi_load(_filePath.c_str(), &_output.width, &_output.height, &_output.channels, STBI_rgb_alpha));
 
-	char* data = reinterpret_cast<char*>(stbi_load(_filePath.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha));
-
-	if (!data)
+	if (!_output.pixels)
 	{
 		return false;
 	}
 
-	_output.width = texWidth;
-	_output.height = texHeight;
-
 	_output.imageSize = _output.width * _output.height * 4;
 
-	_output.pixels = reinterpret_cast<char*>(stbi__malloc(_output.imageSize));
-	std::memmove(_output.pixels, data, _output.imageSize * sizeof(char));
-
-	stbi_image_free(data);
-
 	return true;
+}
+
+void StbiWrapper::FreeImage(char* image)
+{
+	stbi_image_free(image);
 }

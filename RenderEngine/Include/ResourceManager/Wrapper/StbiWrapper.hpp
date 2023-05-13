@@ -18,6 +18,8 @@ namespace RenderEngine::Wrapper
     public:
 
         static bool LoadTexture(const std::string& _filePath, RawTexture& _output);
+
+        static void FreeImage(char* image);
     };
 }
 

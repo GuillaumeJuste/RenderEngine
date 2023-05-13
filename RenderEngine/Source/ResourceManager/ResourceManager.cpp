@@ -83,6 +83,8 @@ Texture* ResourceManager::LoadTexture(std::string _filePath)
 		newTexture->imageSize = rawTexture.imageSize;
 		textureManager.Add(_filePath, newTexture);
 
+		StbiWrapper::FreeImage(rawTexture.pixels);
+
 		return newTexture;
 	}
 
