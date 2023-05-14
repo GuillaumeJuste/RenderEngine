@@ -47,7 +47,7 @@ namespace RenderEngine::Rendering
 		std::vector<PointLightData> GeneratePointLightsData();
 		std::vector<DirectionalLightData> GenerateDirectionalLightsData();
 		std::vector<SpotLightData> GenerateSpotLightsData();
-		void CreateLightBuffer();
+		void CreateLightBuffer(size_t _pointLightCount, size_t _directionalLightCount, size_t _spotLightCount);
 
 		void CreateSkybox();
 

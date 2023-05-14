@@ -41,6 +41,7 @@ VkShaderStageFlagBits VkShader::EnumToVkFlag(RenderEngine::Assets::SHADER_STAGE 
     case RenderEngine::Assets::GEOMETRY:
         return VK_SHADER_STAGE_GEOMETRY_BIT;
     }
+    return VK_SHADER_STAGE_VERTEX_BIT;
 }
 
 void VkShader::Clean()

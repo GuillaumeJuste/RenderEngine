@@ -25,16 +25,13 @@ VkScene::VkScene(const VkSceneCreateInfo& _createInfo) :
 
 	DescriptorBuffer::InitializeDescriptorBuffer(cameraBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &cameraBuffer);
 
+	CreateLightBuffer(minimumLightCount, minimumLightCount, minimumLightCount);
+
 	//CreateSkybox();
 
 	CreateVkGameObjects(gaoCreateInfo, createInfo.scene->GetSceneRoot().GetChildrens());
 
-	CreateLightBuffer();
-
-	for (std::forward_list<VkGameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
-	{
-		it->CreateGraphicsPipeline(&cameraBuffer, &pointLightsBuffer, &directionalLightsBuffer, &spotLightsBuffer);
-	}
+	CreateLightBuffer(scenePointLights.size(), sceneDirectionalLights.size(), sceneSpotLights.size());
 }
 
 void VkScene::CreateVkGameObjects(VkGameObjectCreateInfo _createInfo, std::vector<GameObject*> _childrens)
@@ -43,7 +40,9 @@ void VkScene::CreateVkGameObjects(VkGameObjectCreateInfo _createInfo, std::vecto
 	{
 		_createInfo.gameObject = (*it);
 
-		gameObjects.push_front(VkGameObject(_createInfo));
+		VkGameObject* gao = &gameObjects.emplace_front(VkGameObject(_createInfo));
+
+		gao->CreateGraphicsPipeline(&cameraBuffer, &pointLightsBuffer, &directionalLightsBuffer, &spotLightsBuffer);
 
 		CreateVkGameObjects(_createInfo, (*it)->GetChildrens());
 
@@ -154,47 +153,46 @@ std::vector<SpotLightData> VkScene::GenerateSpotLightsData()
 	return lightsdata;
 }
 
-void VkScene::CreateLightBuffer()
+void VkScene::CreateLightBuffer(size_t _pointLightCount, size_t _directionalLightCount, size_t _spotLightCount)
 {
-	std::vector<PointLightData> pointLightsdata = GeneratePointLightsData();
+	size_t pointLightBufferSize = sizeof(PointLightData) * _pointLightCount;
+	if (pointLightBufferSize > pointLightsBuffer.GetBufferSize())
+	{
+		BufferObjectVkCreateInfo pointLightsBufferCreateInfo;
+		pointLightsBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
+		pointLightsBufferCreateInfo.logicalDevice = createInfo.logicalDevice;
+		pointLightsBufferCreateInfo.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+		pointLightsBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+		pointLightsBufferCreateInfo.bufferSize = pointLightBufferSize;
 
-	size_t pointLightCount = pointLightsdata.size() > minimumLightCount ? pointLightsdata.size() : minimumLightCount;
+		DescriptorBuffer::InitializeDescriptorBuffer(pointLightsBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &pointLightsBuffer);
+	}
 
-	BufferObjectVkCreateInfo pointLightsBufferCreateInfo;
-	pointLightsBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
-	pointLightsBufferCreateInfo.logicalDevice = createInfo.logicalDevice;
-	pointLightsBufferCreateInfo.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
-	pointLightsBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-	pointLightsBufferCreateInfo.bufferSize = sizeof(PointLightData) * pointLightCount;
-
-	DescriptorBuffer::InitializeDescriptorBuffer(pointLightsBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &pointLightsBuffer);
-
-
-	std::vector<DirectionalLightData> directionalLightsdata = GenerateDirectionalLightsData();
-
-	size_t directionalLightCount = directionalLightsdata.size() > minimumLightCount ? directionalLightsdata.size() : minimumLightCount;
-
+	size_t directionalLightBufferSize = sizeof(DirectionalLightData) * _directionalLightCount;
+	if (directionalLightBufferSize > directionalLightsBuffer.GetBufferSize())
+	{
 	BufferObjectVkCreateInfo directionalLightsBufferCreateInfo;
 	directionalLightsBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
 	directionalLightsBufferCreateInfo.logicalDevice = createInfo.logicalDevice;
 	directionalLightsBufferCreateInfo.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
 	directionalLightsBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-	directionalLightsBufferCreateInfo.bufferSize = sizeof(DirectionalLightData) * directionalLightCount;
+	directionalLightsBufferCreateInfo.bufferSize = directionalLightBufferSize;
 
 	DescriptorBuffer::InitializeDescriptorBuffer(directionalLightsBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &directionalLightsBuffer);
+	}
 
-	std::vector<SpotLightData> spotLightsdata = GenerateSpotLightsData();
+	size_t spotLightBufferSize = sizeof(SpotLightData) * _spotLightCount;
+	if (spotLightBufferSize > spotLightsBuffer.GetBufferSize())
+	{
+		BufferObjectVkCreateInfo spotLightsBufferCreateInfo;
+		spotLightsBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
+		spotLightsBufferCreateInfo.logicalDevice = createInfo.logicalDevice;
+		spotLightsBufferCreateInfo.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+		spotLightsBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+		spotLightsBufferCreateInfo.bufferSize = spotLightBufferSize;
 
-	size_t spotLightCount = spotLightsdata.size() > minimumLightCount ? spotLightsdata.size() : minimumLightCount;
-
-	BufferObjectVkCreateInfo spotLightsBufferCreateInfo;
-	spotLightsBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
-	spotLightsBufferCreateInfo.logicalDevice = createInfo.logicalDevice;
-	spotLightsBufferCreateInfo.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
-	spotLightsBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-	spotLightsBufferCreateInfo.bufferSize = sizeof(SpotLightData) * spotLightCount;
-
-	DescriptorBuffer::InitializeDescriptorBuffer(spotLightsBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &spotLightsBuffer);
+		DescriptorBuffer::InitializeDescriptorBuffer(spotLightsBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &spotLightsBuffer);
+	}
 }
 
 void VkScene::CreateSkybox()

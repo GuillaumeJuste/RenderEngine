@@ -6,6 +6,7 @@ void DescriptorBuffer::InitializeDescriptorBuffer(const BufferObjectVkCreateInfo
 {
 	_output->logicalDevice = _createInfo.logicalDevice;
 	_output->bufferObjects.resize(_frameCount);
+	_output->bufferSize = _createInfo.bufferSize;
 
 	for (size_t i = 0; i < _frameCount; i++)
 	{
@@ -22,4 +23,9 @@ void DescriptorBuffer::Cleanup()
 const BufferObject& DescriptorBuffer::operator[](size_t _index)
 {
 	return bufferObjects[_index];
+}
+
+const size_t& DescriptorBuffer::GetBufferSize() const
+{
+	return bufferSize;
 }

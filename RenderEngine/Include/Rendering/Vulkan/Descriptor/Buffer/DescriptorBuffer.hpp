@@ -14,7 +14,9 @@ namespace RenderEngine::Rendering
 	{
 	private:
 		VkDevice logicalDevice = VK_NULL_HANDLE;
-	
+		
+		size_t bufferSize = 0;
+
 		std::vector<BufferObject> bufferObjects;
 	public:
 
@@ -32,6 +34,8 @@ namespace RenderEngine::Rendering
 		void Cleanup();
 
 		const BufferObject& operator[](size_t _index);
+
+		const size_t& GetBufferSize() const;
 	};
 
 }

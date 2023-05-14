@@ -16,7 +16,7 @@ namespace RenderEngine::Rendering
 	private:
 
 		/// logical device
-		VkDevice logicalDevice;
+		VkDevice logicalDevice = nullptr;
 		
 		///Framebuffers
 		std::vector<VkFramebuffer> framebuffers;
