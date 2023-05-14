@@ -4,7 +4,6 @@
 #define RENDERENGINE_FRAMEBUFFERVKCREATEINFO
 
 #include "Rendering/Vulkan/RenderPass/RenderPass.hpp"
-#include "Rendering/Vulkan/ImageView/ImageView.hpp"
 #include "Rendering/Vulkan/DepthBuffer/DepthBuffer.hpp"
 
 #include <vector>
@@ -23,7 +22,7 @@ namespace RenderEngine::Rendering
 		RenderPass* renderPass;
 		
 		/// image view
-		std::vector<ImageView> imageViews;
+		std::vector<VkImageView> imageViews;
 		
 		/// swapchain image count
 		size_t swapChainImageCount;

@@ -25,6 +25,8 @@ namespace RenderEngine::Rendering
 		CommandPool* commandPool;
 		VkImageCreateFlags imageFlags;
 		uint32_t arrayLayers;
+		VkImageViewType imageViewType;
+		VkImageAspectFlags imageViewAspectFlags;
 
 		/// default constructor
 		ImageVkCreateInfo() = default;

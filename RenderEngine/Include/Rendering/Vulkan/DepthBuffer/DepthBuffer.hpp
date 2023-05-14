@@ -5,7 +5,6 @@
 
 #include "Rendering/Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Rendering/Vulkan/DepthBuffer/DepthBufferVkCreateInfo.hpp"
-#include "Rendering/Vulkan/ImageView/ImageView.hpp"
 #include "Rendering/Vulkan/Image/Image.hpp"
 
 #include <vector>
@@ -22,7 +21,6 @@ namespace RenderEngine::Rendering
 		VkDevice logicalDevice;
 
 		Image depthImage;
-		ImageView depthImageView;
 
 		VkFormat FindSupportedFormat(const std::vector<VkFormat>& _candidates, VkImageTiling _tiling, VkFormatFeatureFlags _features);
 

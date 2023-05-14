@@ -40,6 +40,8 @@ void VkTexture::InitializeVkTexture(const VkTextureVkCreateInfo& _vkTextureCreat
 	imageCreateInfo.graphicsQueue = _vkTextureCreateInfo.graphicsQueue;
 	imageCreateInfo.arrayLayers = _vkTextureCreateInfo.texture.textureCount;
 	imageCreateInfo.imageFlags = _vkTextureCreateInfo.imageFlags;
+	imageCreateInfo.imageViewType = _vkTextureCreateInfo.imageViewType;
+	imageCreateInfo.imageViewAspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
 	Image::InitializeImage(imageCreateInfo, &_output->image);
 
 	_output->image.TransitionImageLayout(VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
@@ -47,8 +49,6 @@ void VkTexture::InitializeVkTexture(const VkTextureVkCreateInfo& _vkTextureCreat
 	_output->image.TransitionImageLayout(VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
 	stagingBuffer.Clean();
-
-	_output->CreateImageView(_vkTextureCreateInfo.imageViewType, _vkTextureCreateInfo.texture.textureCount);
 
 	_output->CreateSampler();
 }
@@ -86,18 +86,6 @@ void VkTexture::CopyBufferToImage(VkBuffer _buffer, uint32_t _width, uint32_t _h
 	CommandBuffer::EndSingleTimeCommands(createInfo.logicalDevice, createInfo.commandPool, createInfo.graphicsQueue, commandBuffer);
 }
 
-void VkTexture::CreateImageView(VkImageViewType _imageViewType, uint32_t _layerCount)
-{
-	ImageViewVkCreateInfo imageViewCreateInfo;
-	imageViewCreateInfo.logicalDevice = createInfo.logicalDevice;
-	imageViewCreateInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
-	imageViewCreateInfo.aspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
-	imageViewCreateInfo.image = image.GetVkImage();
-	imageViewCreateInfo.layerCount = _layerCount;
-	imageViewCreateInfo.viewType = _imageViewType;
-	ImageView::InitializeImageView(imageViewCreateInfo, &imageView);
-}
-
 void VkTexture::CreateSampler()
 {
 	VkSamplerCreateInfo samplerInfo{};
@@ -131,13 +119,12 @@ void VkTexture::CreateSampler()
 void VkTexture::Clean()
 {
 	vkDestroySampler(createInfo.logicalDevice, sampler, nullptr);
-	imageView.Cleanup();
 	image.Cleanup();
 }
 
 VkImageView VkTexture::GetImageView() const
 {
-	return imageView.GetImageView();
+	return image.GetImageView();
 }
 
 VkSampler VkTexture::GetSampler() const

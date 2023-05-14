@@ -17,9 +17,12 @@ namespace RenderEngine::Rendering
 		ImageVkCreateInfo createInfo;
 
 		VkImage image;
+		VkImageView imageView;
 		VkDeviceMemory imageMemory;
 		
 		bool HasStencilComponent(VkFormat _format);
+
+		void CreateImageView();
 
 	public:
 
@@ -32,9 +35,9 @@ namespace RenderEngine::Rendering
 		/**
 		 * @brief Initiliaze Image
 		 * @param _imageViewCreateInfo image view create info
-		 * @param _output ImageView to initialize
+		 * @param _output Image to initialize
 		*/
-		static void InitializeImage(ImageVkCreateInfo _imageCreateInfo, Image* _output);
+		static void InitializeImage(const ImageVkCreateInfo& _imageCreateInfo, Image* _output);
 		void TransitionImageLayout(VkFormat _format, VkImageLayout _oldLayout, VkImageLayout _newLayout);
 
 		/**
@@ -44,6 +47,7 @@ namespace RenderEngine::Rendering
 
 		const VkImage& GetVkImage() const;
 		const VkDeviceMemory& GetVkImageMemory() const;
+		const VkImageView& Image::GetImageView() const;
 	};
 
 }

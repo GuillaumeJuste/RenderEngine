@@ -6,7 +6,6 @@
 #include "Rendering/Vulkan/Misc/VulkanBaseInclude.hpp"
 
 #include "Rendering/Vulkan/Surface/Surface.hpp"
-#include "Rendering/Vulkan/ImageView/ImageView.hpp"
 #include "Rendering/Vulkan/SwapChain/SwapChainVkCreateInfo.hpp"
 #include "Rendering/Vulkan/SwapChain/SwapChainSupportDetails.hpp"
 #include "Utils/Event/Event.hpp"
@@ -34,14 +33,14 @@ namespace RenderEngine::Rendering
 		/// swapchain Images
 		std::vector<VkImage> images;
 		
+		/// Image view
+		std::vector<VkImageView> imageViews;
+
 		/// swapchain image format
 		VkFormat imageFormat;
 
 		/// swapchain extent
 		VkExtent2D extent;
-
-		/// Image view
-		std::vector<ImageView> imageViews;
 
 		/**
 		 * @brief Create Swapchain
@@ -106,7 +105,7 @@ namespace RenderEngine::Rendering
 		const VkFormat& GetImageFormat() const;
 		
 		/// Get swapchain imageview
-		const std::vector<ImageView>& GetImageViews() const;
+		const std::vector<VkImageView>& GetImageViews() const;
 		
 		/// Get swapchain image count
 		size_t GetImageCount() const;

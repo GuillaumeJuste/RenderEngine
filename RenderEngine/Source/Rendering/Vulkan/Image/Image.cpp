@@ -5,9 +5,9 @@
 
 using namespace RenderEngine::Rendering;
 
-void Image::InitializeImage(ImageVkCreateInfo _imageCreateInfo, Image* _output)
+void Image::InitializeImage(const ImageVkCreateInfo& _imageCreateInfo, Image* _output)
 {
-	_output->createInfo = _imageCreateInfo;
+    _output->createInfo = _imageCreateInfo;
 
     VkImageCreateInfo imageInfo{};
     imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -43,6 +43,8 @@ void Image::InitializeImage(ImageVkCreateInfo _imageCreateInfo, Image* _output)
     }
 
     vkBindImageMemory(_imageCreateInfo.logicalDevice, _output->image, _output->imageMemory, 0);
+
+    _output->CreateImageView();
 }
 
 void Image::TransitionImageLayout(VkFormat _format, VkImageLayout _oldLayout, VkImageLayout _newLayout)
@@ -117,8 +119,28 @@ bool Image::HasStencilComponent(VkFormat _format)
     return _format == VK_FORMAT_D32_SFLOAT_S8_UINT || _format == VK_FORMAT_D24_UNORM_S8_UINT;
 }
 
+void Image::CreateImageView()
+{
+    VkImageViewCreateInfo viewInfo{};
+    viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    viewInfo.viewType = createInfo.imageViewType;
+    viewInfo.format = createInfo.format;
+    viewInfo.subresourceRange.aspectMask = createInfo.imageViewAspectFlags;
+    viewInfo.subresourceRange.baseMipLevel = 0;
+    viewInfo.subresourceRange.levelCount = 1;
+    viewInfo.subresourceRange.baseArrayLayer = 0;
+    viewInfo.subresourceRange.layerCount = createInfo.arrayLayers;
+    viewInfo.image = image;
+
+    if (vkCreateImageView(createInfo.logicalDevice, &viewInfo, nullptr, &imageView) != VK_SUCCESS)
+    {
+        throw std::runtime_error("failed to create texture image view!");
+    }
+}
+
 void Image::Cleanup()
 {
+    vkDestroyImageView(createInfo.logicalDevice, imageView, nullptr);
     vkDestroyImage(createInfo.logicalDevice, image, nullptr);
     vkFreeMemory(createInfo.logicalDevice, imageMemory, nullptr);
 }
@@ -131,4 +153,9 @@ const VkImage& Image::GetVkImage() const
 const VkDeviceMemory& Image::GetVkImageMemory() const
 {
     return imageMemory;
+}
+
+const VkImageView& Image::GetImageView() const
+{
+    return imageView;
 }

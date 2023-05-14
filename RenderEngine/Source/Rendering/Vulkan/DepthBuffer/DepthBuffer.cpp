@@ -23,17 +23,14 @@ void DepthBuffer::InitializeDepthBuffer(const DepthBufferVkCreateInfo& _createIn
     imageCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
     imageCreateInfo.commandPool = _createInfo.commandPool;
     imageCreateInfo.graphicsQueue = _createInfo.graphicsQueue;
+    imageCreateInfo.imageViewType = VK_IMAGE_VIEW_TYPE_2D;
+    imageCreateInfo.imageViewAspectFlags = VK_IMAGE_ASPECT_DEPTH_BIT;
+    imageCreateInfo.arrayLayers = 1;
 
     Image::InitializeImage(imageCreateInfo, &_output->depthImage);
 
     _output->depthImage.TransitionImageLayout(depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 
-    ImageViewVkCreateInfo createInfo;
-    createInfo.logicalDevice = _createInfo.logicalDevice;
-    createInfo.format = depthFormat;
-    createInfo.aspectFlags = VK_IMAGE_ASPECT_DEPTH_BIT;
-    createInfo.image = _output->depthImage.GetVkImage();
-    ImageView::InitializeImageView(createInfo, &_output->depthImageView);
 }
 
 VkFormat DepthBuffer::FindSupportedFormat(const std::vector<VkFormat>& _candidates, VkImageTiling _tiling, VkFormatFeatureFlags _features)
@@ -67,7 +64,6 @@ VkFormat DepthBuffer::FindDepthFormat()
 
 void DepthBuffer::Cleanup()
 {
-    depthImageView.Cleanup();
     depthImage.Cleanup();
 }
 
@@ -78,5 +74,5 @@ const VkImage& DepthBuffer::GetVkImage() const
 
 const VkImageView& DepthBuffer::GetVkImageView() const
 {
-    return depthImageView.GetImageView();
+    return depthImage.GetImageView();
 }

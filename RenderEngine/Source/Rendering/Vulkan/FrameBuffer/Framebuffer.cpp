@@ -13,7 +13,7 @@ void FrameBuffer::InitializeFrameBuffer(const FrameBufferVkCreateInfo& _frameBuf
 
 	for (size_t i = 0; i < _frameBufferCreateInfo.swapChainImageCount; i++) {
 		std::array<VkImageView, 2> attachments = {
-			_frameBufferCreateInfo.imageViews[i].GetImageView(),
+			_frameBufferCreateInfo.imageViews[i],
 			_frameBufferCreateInfo.depthBuffer->GetVkImageView()
 		};
 

@@ -5,7 +5,6 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "Rendering/Vulkan/ImageView/ImageViewVkCreateInfo.hpp"
 #include "Mathlib/Mathlib/Include/Misc/Math.hpp"
 
 using namespace RenderEngine::Rendering;
@@ -80,20 +79,26 @@ void SwapChain::CreateVkSwapChain(const SwapChainVkCreateInfo& _swapChainCreateI
 
 void SwapChain::CreateImageView()
 {
-	ImageViewVkCreateInfo createInfo;
-	createInfo.logicalDevice = logicalDevice;
-	createInfo.format = imageFormat;
-	createInfo.aspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
+	VkImageViewCreateInfo viewInfo{};
+	viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+	viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+	viewInfo.format = imageFormat;
+	viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	viewInfo.subresourceRange.baseMipLevel = 0;
+	viewInfo.subresourceRange.levelCount = 1;
+	viewInfo.subresourceRange.baseArrayLayer = 0;
+	viewInfo.subresourceRange.layerCount = 1;
 
 	imageViews.resize(images.size());
 
 	for (int i = 0; i < images.size(); i++)
 	{
-		createInfo.image = images[i];
-		ImageView::InitializeImageView(createInfo, &imageViews[i]);
+		viewInfo.image = images[i];
+		if (vkCreateImageView(logicalDevice, &viewInfo, nullptr, &imageViews[i]) != VK_SUCCESS)
+		{
+			throw std::runtime_error("failed to create texture image view!");
+		}
 	}
-	
-
 }
 
 SwapChainSupportDetails SwapChain::QuerySwapChainSupport(const VkPhysicalDevice& _device, const Surface& _surface)
@@ -169,7 +174,7 @@ void SwapChain::Cleanup()
 {
 	for (int i = 0; i < images.size(); i++)
 	{
-		imageViews[i].Cleanup();
+		vkDestroyImageView(logicalDevice, imageViews[i], nullptr);
 	}
 	vkDestroySwapchainKHR(logicalDevice, vkSwapChain, nullptr);
 }
@@ -189,7 +194,7 @@ const VkFormat& SwapChain::GetImageFormat() const
 	return imageFormat;
 }
 
-const std::vector<ImageView>& SwapChain::GetImageViews() const
+const std::vector<VkImageView>& SwapChain::GetImageViews() const
 {
 	return imageViews;
 }
