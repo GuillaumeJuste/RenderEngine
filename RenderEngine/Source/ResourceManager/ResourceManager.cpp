@@ -1,6 +1,7 @@
 #include "ResourceManager/ResourceManager.hpp"
 #include "ResourceManager/Wrapper/AssimpWrapper.hpp"
 #include "ResourceManager/Wrapper/StbiWrapper.hpp"
+#include "ResourceManager/Assets/Cubemap/RawCubemap.hpp"
 
 #include <stdexcept>
 #include <cstring>
@@ -133,9 +134,46 @@ bool ResourceManager::UnloadShader(Shader* _texture)
 	return shaderManager.Unload(_texture->filePath);
 }
 
+Cubemap* ResourceManager::LoadCubemap(CubemapImportInfos _filePaths)
+{
+	Cubemap* cubemap = GetCubemap(_filePaths);
+	if (cubemap != nullptr)
+		return cubemap;
+
+	RawCubemap rawCubemap;
+	rawCubemap.textureCount = 6;
+	if (StbiWrapper::LoadCubemap(_filePaths, rawCubemap))
+	{
+		Cubemap* newCubemap = new Cubemap();
+		renderContext->CreateCubemap(rawCubemap, newCubemap);
+		newCubemap->filePath = _filePaths.pathes[0];
+		newCubemap->height = rawCubemap.height;
+		newCubemap->width = rawCubemap.width;
+		newCubemap->imageSize = rawCubemap.imageSize;
+		cubemapManager.Add(_filePaths.pathes[0], newCubemap);
+
+		StbiWrapper::FreeImage(rawCubemap.pixels);
+
+		return newCubemap;
+	}
+
+	return nullptr;
+}
+
+Cubemap* ResourceManager::GetCubemap(const CubemapImportInfos& _filePaths)
+{
+	return cubemapManager.Get(_filePaths.pathes[0]);
+}
+
+bool ResourceManager::UnloadCubemap(Cubemap* _cubemap)
+{
+	return cubemapManager.Unload(_cubemap->filePath);
+}
+
 void ResourceManager::Clean()
 {
 	meshManager.Clean();
 	textureManager.Clean();
 	shaderManager.Clean();
+	cubemapManager.Clean();
 }

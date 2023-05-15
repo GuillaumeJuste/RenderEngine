@@ -12,4 +12,5 @@ layout(location = 0) out vec4 outColor;
 void main() 
 {
 	outColor = texture(samplerCubeMap, vsIn.UVW);
+	//outColor = vec4(vsIn.UVW.z);
 }

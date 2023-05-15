@@ -9,6 +9,8 @@
 #include "ResourceManager/Assets/Texture/Texture.hpp"
 #include "ResourceManager/Assets/Shader/Shader.hpp"
 #include "ResourceManager/Assets/Shader/RawShader.hpp"
+#include "ResourceManager/Assets/Cubemap/CubemapImportInfos.hpp"
+#include "ResourceManager/Assets/Cubemap/Cubemap.hpp"
 #include "ResourceManager/Assets/AssetManager.hpp"
 #include "Rendering/Base/Interface/IRenderContext.hpp"
 
@@ -25,6 +27,7 @@ namespace RenderEngine
         AssetManager<Mesh> meshManager;
         AssetManager<Texture> textureManager;
         AssetManager<Shader> shaderManager;
+        AssetManager<Cubemap> cubemapManager;
 
         bool ReadShaderFile(const std::string& _shaderFilePath, RawShader& _output);
 
@@ -42,6 +45,10 @@ namespace RenderEngine
         Shader* LoadShader(std::string _filePath, SHADER_STAGE _shaderStage);
         Shader* GetShader(std::string _filePath);
         bool UnloadShader(Shader* _texture);
+
+        Cubemap* LoadCubemap(CubemapImportInfos _filePaths);
+        Cubemap* GetCubemap(const CubemapImportInfos& _filePaths);
+        bool UnloadCubemap(Cubemap* _cubemap);
 
         void Clean();
     };

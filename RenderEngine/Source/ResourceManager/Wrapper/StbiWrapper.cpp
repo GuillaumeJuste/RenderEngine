@@ -16,8 +16,45 @@ bool StbiWrapper::LoadTexture(const std::string& _filePath, RawTexture& _output)
 		return false;
 	}
 
-	_output.imageSize = _output.width * _output.height * 4;
+	_output.channels = 4;
 
+	_output.imageSize = _output.width * _output.height * _output.channels;
+
+	return true;
+}
+
+bool StbiWrapper::LoadCubemap(const CubemapImportInfos& _importInfos, RawCubemap& _output)
+{
+	char* data[6]{};
+
+	// Load textures.
+	for (size_t i = 0; i < 6; ++i)
+	{
+		data[i] = reinterpret_cast<char*>(stbi_load(_importInfos.pathes[i].c_str(),
+			&_output.width,
+			&_output.height,
+			&_output.channels,
+			STBI_rgb_alpha
+		));
+
+		if (!data[i])
+		{
+			return false;
+		}
+	}
+
+	_output.channels = 4;
+
+	_output.imageSize = _output.width * _output.height * _output.channels;
+
+	_output.pixels = reinterpret_cast<char*>(stbi__malloc(6u * _output.imageSize));
+
+	for (size_t i = 0; i < 6; ++i)
+	{
+		std::memmove(_output.pixels + i * _output.imageSize, data[i], _output.imageSize);
+
+		FreeImage(data[i]);
+	}
 	return true;
 }
 

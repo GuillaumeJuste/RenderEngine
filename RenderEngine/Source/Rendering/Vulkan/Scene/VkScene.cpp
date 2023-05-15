@@ -27,7 +27,7 @@ VkScene::VkScene(const VkSceneCreateInfo& _createInfo) :
 
 	CreateLightBuffer(minimumLightCount, minimumLightCount, minimumLightCount);
 
-	//CreateSkybox();
+	CreateSkybox();
 
 	CreateVkGameObjects(gaoCreateInfo, createInfo.scene->GetSceneRoot().GetChildrens());
 
@@ -197,44 +197,25 @@ void VkScene::CreateLightBuffer(size_t _pointLightCount, size_t _directionalLigh
 
 void VkScene::CreateSkybox()
 {
-	/*VkTextureVkCreateInfo textCreateInfo{};
-	textCreateInfo.logicalDevice = createInfo.logicalDevice;
-	textCreateInfo.physicalDevice = createInfo.physicalDevice;
-	textCreateInfo.graphicsQueue = createInfo.graphicsQueue;
-	textCreateInfo.commandPool = createInfo.commandPool;
-	textCreateInfo.textures.push_back(createInfo.scene->skybox.front);
-	textCreateInfo.textures.push_back(createInfo.scene->skybox.back);
-	textCreateInfo.textures.push_back(createInfo.scene->skybox.left);
-	textCreateInfo.textures.push_back(createInfo.scene->skybox.right);
-	textCreateInfo.textures.push_back(createInfo.scene->skybox.top);
-	textCreateInfo.textures.push_back(createInfo.scene->skybox.bottom);
+	skybox.skybox = &createInfo.scene->skybox;
 
-	textCreateInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
-	textCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-	textCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
-	textCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-	textCreateInfo.imageFlags = VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
-	textCreateInfo.imageViewType = VK_IMAGE_VIEW_TYPE_CUBE;
+	VkSkyboxCreateInfo skyboxCreateInfo{};
+	skyboxCreateInfo.physicalDevice = createInfo.physicalDevice;
+	skyboxCreateInfo.logicalDevice = createInfo.logicalDevice;
+	skyboxCreateInfo.renderpass = createInfo.renderpass;
+	skyboxCreateInfo.swapchain = createInfo.swapchain;
 
-	VkTexture::InitializeVkTexture(textCreateInfo, &skybox.texture);*/
-
-	//VkSkyboxCreateInfo skyboxCreateInfo{};
-	//skyboxCreateInfo.physicalDevice = createInfo.physicalDevice;
-	//skyboxCreateInfo.logicalDevice = createInfo.logicalDevice;
-	//skyboxCreateInfo.renderpass = createInfo.renderpass;
-	//skyboxCreateInfo.swapchain = createInfo.swapchain;
-
-	//skybox.InitializeSkybox(skyboxCreateInfo, &cameraBuffer);
+	skybox.InitializeSkybox(skyboxCreateInfo, &cameraBuffer);
 }
 
 
 void VkScene::Draw(VkCommandBuffer _commandBuffer, int _currentFrame) 
 {
-	//skybox.Draw(_commandBuffer, _currentFrame);
 	for (std::forward_list<VkGameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{
 		it->Draw(_commandBuffer, _currentFrame);
 	}
+	skybox.Draw(_commandBuffer, _currentFrame);
 }
 
 void VkScene::Update(size_t _currentframe)
@@ -269,6 +250,8 @@ void VkScene::Cleanup()
 	pointLightsBuffer.Cleanup();
 	directionalLightsBuffer.Cleanup();
 	spotLightsBuffer.Cleanup();
+
+	skybox.Clean();
 
 	for (std::forward_list<VkGameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{

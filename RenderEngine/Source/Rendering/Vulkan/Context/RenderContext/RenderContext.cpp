@@ -344,6 +344,29 @@ bool RenderContext::CreateShader(const RenderEngine::Assets::RawShader& _input, 
 	return true;
 }
 
+bool RenderContext::CreateCubemap(const RenderEngine::Assets::RawCubemap& _input, RenderEngine::Assets::Cubemap* _output)
+{
+	VkTextureVkCreateInfo textCreateInfo{};
+	textCreateInfo.logicalDevice = logicalDevice;
+	textCreateInfo.physicalDevice = physicalDevice;
+	textCreateInfo.graphicsQueue = graphicsQueue;
+	textCreateInfo.commandPool = commandPool;
+	textCreateInfo.texture = _input;
+	textCreateInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
+	textCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+	textCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+	textCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+	textCreateInfo.imageFlags = VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
+	textCreateInfo.imageViewType = VK_IMAGE_VIEW_TYPE_CUBE;
+
+	VkTexture* vkTexture = new VkTexture();
+
+	VkTexture::InitializeVkTexture(textCreateInfo, vkTexture);
+
+	_output->iTexture = vkTexture;
+	return true;
+}
+
 void RenderContext::Cleanup()
 {
 	for (std::forward_list<SceneData>::iterator it = scenesData.begin(); it != scenesData.end(); ++it)

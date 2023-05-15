@@ -3,8 +3,9 @@
 #ifndef RENDERENGINE_SKYBOX
 #define RENDERENGINE_SKYBOX
 
-#include "ResourceManager/Assets/Texture/Texture.hpp"
+#include "ResourceManager/Assets/Cubemap/Cubemap.hpp"
 #include "ResourceManager/Assets/Mesh/Mesh.hpp"
+#include "ResourceManager/Assets/Shader/Shader.hpp"
 
 using namespace RenderEngine::Assets;
 
@@ -16,12 +17,10 @@ namespace RenderEngine::SceneGraph
     struct Skybox
     {
         Mesh* mesh;
-        Texture* front;
-        Texture* back;
-        Texture* top;
-        Texture* bottom;
-        Texture* right;
-        Texture* left;
+        Cubemap* cubemap;
+
+        Shader* vertexShader;
+        Shader* fragmentShader;
     };
 }
 #endif

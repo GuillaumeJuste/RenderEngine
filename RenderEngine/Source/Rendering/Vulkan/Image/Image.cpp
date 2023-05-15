@@ -61,7 +61,7 @@ void Image::TransitionImageLayout(VkFormat _format, VkImageLayout _oldLayout, Vk
     barrier.subresourceRange.baseMipLevel = 0;
     barrier.subresourceRange.levelCount = 1;
     barrier.subresourceRange.baseArrayLayer = 0;
-    barrier.subresourceRange.layerCount = 1;
+    barrier.subresourceRange.layerCount = createInfo.arrayLayers;
 
     VkPipelineStageFlags sourceStage;
     VkPipelineStageFlags destinationStage;

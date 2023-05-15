@@ -17,7 +17,10 @@ layout(location = 0) out DataBlock
 void main() 
 {
 	vsOut.UVW = inPosition;
-	vsOut.UVW.xy *= -1.0;
 
-	gl_Position = cbo.proj * cbo.invView * vec4(inPosition.xyz, 1.0);
+	//gl_Position = cbo.proj * cbo.invView * vec4(inPosition.xyz, 1.0);
+
+	mat4 staticView = mat4(mat3(cbo.invView)); // Remove camera translation.
+	gl_Position = cbo.proj * staticView * vec4(inPosition, 1.0);
+	gl_Position = gl_Position.xyww;
 }

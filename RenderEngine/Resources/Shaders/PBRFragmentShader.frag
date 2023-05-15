@@ -142,6 +142,7 @@ void main()
 	color  = color  / (color  + vec3(1.0));
 
 	outColor = vec4(color , 1.0);
+	//outColor = vec4(fsIn.fragPos.z);
 }
 
 vec3 ComputePointLightLighting(PointLight _light, vec3 _normal, vec3 _viewDirection, vec3 _albdeo, float _metalness, float _roughness, vec3 _F0)

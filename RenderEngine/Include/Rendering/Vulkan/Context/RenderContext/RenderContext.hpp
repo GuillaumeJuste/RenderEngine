@@ -135,6 +135,7 @@ namespace RenderEngine::Rendering
 		bool CreateMesh(const RenderEngine::Assets::RawMesh& _input, RenderEngine::Assets::Mesh* _output);
 		bool CreateTexture(const RenderEngine::Assets::RawTexture& _input, RenderEngine::Assets::Texture* _output);
 		bool CreateShader(const RenderEngine::Assets::RawShader& _input, RenderEngine::Assets::Shader* _output);
+		bool CreateCubemap(const RenderEngine::Assets::RawCubemap& _input, RenderEngine::Assets::Cubemap* _output);
 
 		/**
 		 * @brief clean up vulkan classes

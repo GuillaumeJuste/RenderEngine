@@ -26,6 +26,19 @@ Scene::Scene(RenderEngine::ResourceManager* _resourceManager) :
 	mainCameraCreateInfo.parent = &rootObject;
 
 	GameObject::InitializeGameObject(mainCameraCreateInfo, &mainCamera);
+
+	skybox.mesh = resourceManager->LoadMesh("Resources/Engine/Models/cube.obj");
+	CubemapImportInfos importInfos("Resources/Engine/Textures/Skybox/right.jpg",
+		"Resources/Engine/Textures/Skybox/left.jpg",
+		"Resources/Engine/Textures/Skybox/top.jpg",
+		"Resources/Engine/Textures/Skybox/bottom.jpg",
+		"Resources/Engine/Textures/Skybox/front.jpg",
+		"Resources/Engine/Textures/Skybox/back.jpg");
+
+	skybox.cubemap = resourceManager->LoadCubemap(importInfos);
+
+	skybox.vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/Skybox.vert.spv", VERTEX);
+	skybox.fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/Skybox.frag.spv", FRAGMENT);
 }
 
 void Scene::Initialize()
