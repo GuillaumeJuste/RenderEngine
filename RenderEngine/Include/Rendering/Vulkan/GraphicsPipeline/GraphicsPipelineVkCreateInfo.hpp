@@ -31,6 +31,10 @@ namespace RenderEngine::Rendering
 
 		std::vector<DescriptorDataList> descriptorDatas;
 
+		bool writeDepthBuffer = true;
+
+		VkCullModeFlagBits culling_mode = VK_CULL_MODE_BACK_BIT;
+
 		/// default constructor
 		GraphicsPipelineVkCreateInfo() = default;
 	};

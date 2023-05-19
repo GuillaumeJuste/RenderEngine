@@ -475,6 +475,9 @@ Scene* SetupSphereScene()
     meshRenderer4->enable = true;
     meshRenderer4->fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/TextureFragmentShader.frag.spv", FRAGMENT);
 
+    RotatorComponent* rotator2 = scene->GetCamera()->AddComponent<RotatorComponent>();
+    rotator2->rotationAxis = ROTATION_AXIS::Y;
+
     return scene;
 }
 

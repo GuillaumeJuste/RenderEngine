@@ -28,6 +28,7 @@ void main() {
 
     vsOut.fragTexCoord = inTexCoord;
     vsOut.fragPos = vec3( ubo.model * vec4(inPosition, 1.0));
+    //vsOut.fragPos = vec3(gl_Position);
     vsOut.interpNormal = mat3(transpose(inverse(ubo.model))) * inNormal;  
     vsOut.cameraPos = cbo.cameraPos;
 }
