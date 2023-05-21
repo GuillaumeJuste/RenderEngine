@@ -383,7 +383,7 @@ Scene* SetupSphereScene()
     Camera* camera = scene->GetCamera();
     Mathlib::Transform cameraTransform;
     cameraTransform.position = Mathlib::Vec3(0.0f, 0.0f, -2.f);
-    cameraTransform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 0.f, 0.f));
+    cameraTransform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 180.f, 0.f));
     camera->SetLocalTransform(cameraTransform);
     camera->fov = 90.f;
 
@@ -457,7 +457,7 @@ Scene* SetupSphereScene()
     /*light 1*/
     Mathlib::Transform transform4;
     transform4.position = Mathlib::Vec3(0.f, 0.0f, -1.f);
-    transform4.scale = Mathlib::Vec3(0.01f, 0.01f, 0.01f);
+    transform4.scale = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
 
     GameObjectCreateInfo createinfo4;
     createinfo4.transform = transform4;
@@ -475,8 +475,8 @@ Scene* SetupSphereScene()
     meshRenderer4->enable = true;
     meshRenderer4->fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/TextureFragmentShader.frag.spv", FRAGMENT);
 
-    RotatorComponent* rotator2 = scene->GetCamera()->AddComponent<RotatorComponent>();
-    rotator2->rotationAxis = ROTATION_AXIS::Y;
+    /*RotatorComponent* rotator2 = scene->GetCamera()->AddComponent<RotatorComponent>();
+    rotator2->rotationAxis = ROTATION_AXIS::Y;*/
 
     return scene;
 }

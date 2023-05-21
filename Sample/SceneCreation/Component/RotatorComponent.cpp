@@ -10,7 +10,21 @@ void RotatorComponent::Initialize()
 
 void RotatorComponent::Start()
 {
-
+	Mathlib::Quat initialRotation = gameObject->GetLocalTransform().rotation;
+	switch (rotationAxis)
+	{
+	case ROTATION_AXIS::X:
+		currentRotation = initialRotation.Euler().X;
+		break;
+	case ROTATION_AXIS::Y:
+		currentRotation = initialRotation.Euler().Y;
+		break;
+	case ROTATION_AXIS::Z:
+		currentRotation = initialRotation.Euler().Z;
+		break;
+	default:
+		break;
+	}
 }
 
 void RotatorComponent::Update()

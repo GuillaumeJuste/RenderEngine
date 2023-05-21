@@ -43,6 +43,7 @@ Scene::Scene(RenderEngine::ResourceManager* _resourceManager) :
 
 void Scene::Initialize()
 {
+	mainCamera.Initialize();
 	for (std::list<GameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{
 		it->Initialize();
@@ -51,6 +52,7 @@ void Scene::Initialize()
 
 void Scene::Start()
 {
+	mainCamera.Start();
 	for (std::list<GameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{
 		it->Start();
