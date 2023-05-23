@@ -58,6 +58,8 @@ layout (set = 1,binding = 7) buffer SpotLightData
 	SpotLight lights[];
 } spotLightsBuffer;
 
+layout(set = 1, binding = 8) uniform samplerCube skyboxSampler;
+
 layout(location = 0) out vec4 outColor;
 
 float roughness = 0.2;

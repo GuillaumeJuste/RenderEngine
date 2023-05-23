@@ -42,7 +42,7 @@ void VkScene::CreateVkGameObjects(VkGameObjectCreateInfo _createInfo, std::vecto
 
 		VkGameObject* gao = &gameObjects.emplace_front(VkGameObject(_createInfo));
 
-		gao->CreateGraphicsPipeline(&cameraBuffer, &pointLightsBuffer, &directionalLightsBuffer, &spotLightsBuffer);
+		gao->CreateGraphicsPipeline(&cameraBuffer, &pointLightsBuffer, &directionalLightsBuffer, &spotLightsBuffer, skybox.GetCubemap());
 
 		CreateVkGameObjects(_createInfo, (*it)->GetChildrens());
 
@@ -224,7 +224,7 @@ void VkScene::Update(size_t _currentframe)
 	VkExtent2D extent = createInfo.swapchain->GetExtent();
 
 	CameraBufferData cameraBufferdata{};
-	cameraBufferdata.invView = camera->GetViewMatrix().Transpose();
+	cameraBufferdata.invView = camera->GetInvViewMatrix().Transpose();
 	cameraBufferdata.proj = camera->GetProjectionMatrix((float)extent.width / (float)extent.height).Transpose();
 	cameraBufferdata.cameraPos = camera->GetWorldTransform().position;
 	cameraBuffer.CopyDataToBuffer<CameraBufferData>((int)_currentframe, &cameraBufferdata, sizeof(CameraBufferData));

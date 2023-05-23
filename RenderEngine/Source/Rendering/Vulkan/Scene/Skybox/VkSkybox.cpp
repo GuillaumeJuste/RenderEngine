@@ -7,10 +7,11 @@ using namespace RenderEngine::Rendering;
 void VkSkybox::InitializeSkybox(const VkSkyboxCreateInfo& _createInfo, DescriptorBuffer* _cameraBuffer)
 {
 	createInfo = _createInfo;
-	CreateGraphicsPipeline(_cameraBuffer);
-
 	vbo = dynamic_cast<BufferObject*>(skybox->mesh->vertexBuffer);
 	ibo = dynamic_cast<BufferObject*>(skybox->mesh->indexBuffer);
+	cubemap = dynamic_cast<VkTexture*>(skybox->cubemap->iTexture); 
+	
+	CreateGraphicsPipeline(_cameraBuffer);
 }
 
 void VkSkybox::CreateGraphicsPipeline(DescriptorBuffer* _cameraBuffer)
@@ -61,7 +62,7 @@ DescriptorDataList VkSkybox::GenerateDefaultFragmentShaderDescriptorSet()
 	textureBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 	textureBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 	textureBufferData.binding = 0;
-	textureBufferData.texture = dynamic_cast<VkTexture*>(skybox->cubemap->iTexture);
+	textureBufferData.texture = cubemap;
 	datalist.Add(textureBufferData);
 
 	return datalist;
@@ -107,4 +108,9 @@ void VkSkybox::Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const
 void VkSkybox::Clean()
 {
 	graphicsPipeline.Cleanup();
+}
+
+VkTexture* VkSkybox::GetCubemap() const
+{
+	return cubemap;
 }

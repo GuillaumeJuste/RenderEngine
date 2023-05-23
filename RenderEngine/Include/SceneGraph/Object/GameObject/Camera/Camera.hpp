@@ -28,7 +28,7 @@ namespace RenderEngine::SceneGraph
         ~Camera() = default;
 
         Mathlib::Mat4 GetProjectionMatrix(float _windowAspectRatio) const;
-        Mathlib::Mat4 GetViewMatrix() const;
+        Mathlib::Mat4 GetInvViewMatrix() const;
     };
 }
 
