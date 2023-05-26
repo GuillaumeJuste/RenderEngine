@@ -4,6 +4,7 @@
 #define RENDERENGINE_SKYBOX
 
 #include "ResourceManager/Assets/Cubemap/Cubemap.hpp"
+#include "ResourceManager/Assets/Texture/Texture.hpp"
 #include "ResourceManager/Assets/Mesh/Mesh.hpp"
 #include "ResourceManager/Assets/Shader/Shader.hpp"
 
@@ -18,6 +19,9 @@ namespace RenderEngine::SceneGraph
     {
         Mesh* mesh;
         Cubemap* cubemap;
+        Cubemap* irradianceMap;
+        Cubemap* prefilterMap;
+        Texture* BRDFlut;
 
         Shader* vertexShader;
         Shader* fragmentShader;

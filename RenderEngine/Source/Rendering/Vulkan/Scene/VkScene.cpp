@@ -29,6 +29,14 @@ VkScene::VkScene(const VkSceneCreateInfo& _createInfo) :
 
 	CreateSkybox();
 
+	gaoCreateInfo.cameraBuffer = &cameraBuffer;
+	gaoCreateInfo.pointLightsBuffer = &pointLightsBuffer;
+	gaoCreateInfo.directionalLightsBuffer = &directionalLightsBuffer;
+	gaoCreateInfo.spotLightsBuffer = &spotLightsBuffer;
+	gaoCreateInfo.irradianceMap = skybox.GetIrradianceCubeMap();
+	gaoCreateInfo.prefilterMap = skybox.GetPrefilterCubemap();
+	gaoCreateInfo.BRDFlut = skybox.GetBRDFlut();
+
 	CreateVkGameObjects(gaoCreateInfo, createInfo.scene->GetSceneRoot().GetChildrens());
 
 	CreateLightBuffer(scenePointLights.size(), sceneDirectionalLights.size(), sceneSpotLights.size());
@@ -41,8 +49,6 @@ void VkScene::CreateVkGameObjects(VkGameObjectCreateInfo _createInfo, std::vecto
 		_createInfo.gameObject = (*it);
 
 		VkGameObject* gao = &gameObjects.emplace_front(VkGameObject(_createInfo));
-
-		gao->CreateGraphicsPipeline(&cameraBuffer, &pointLightsBuffer, &directionalLightsBuffer, &spotLightsBuffer, skybox.GetCubemap());
 
 		CreateVkGameObjects(_createInfo, (*it)->GetChildrens());
 

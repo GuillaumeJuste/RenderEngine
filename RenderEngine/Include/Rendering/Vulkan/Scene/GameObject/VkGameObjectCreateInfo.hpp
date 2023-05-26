@@ -7,6 +7,8 @@
 #include "SceneGraph/Object/GameObject/GameObject.hpp"
 #include "Rendering/Vulkan/SwapChain/SwapChain.hpp"
 #include "Rendering/Vulkan/RenderPass/RenderPass.hpp"
+#include "Rendering/Vulkan/Descriptor/Buffer/DescriptorBuffer.hpp"
+#include "Rendering/Vulkan/Texture/VkTexture.hpp"
 
 namespace RenderEngine::Rendering
 {
@@ -26,6 +28,14 @@ namespace RenderEngine::Rendering
 		RenderPass* renderpass;
 
 		RenderEngine::SceneGraph::GameObject* gameObject = nullptr;
+
+		DescriptorBuffer* cameraBuffer;
+		DescriptorBuffer* pointLightsBuffer;
+		DescriptorBuffer* directionalLightsBuffer;
+		DescriptorBuffer* spotLightsBuffer;
+		VkTexture* irradianceMap;
+		VkTexture* prefilterMap;
+		VkTexture* BRDFlut;
 
 		/// default constructor
 		VkGameObjectCreateInfo() = default;

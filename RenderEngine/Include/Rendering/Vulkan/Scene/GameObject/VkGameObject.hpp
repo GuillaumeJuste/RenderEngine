@@ -35,20 +35,20 @@ namespace RenderEngine::Rendering
 
 		std::vector<DescriptorSet> descriptorSets;
 
-		DescriptorDataList GenerateDefaultVertexShaderDescriptorSet(DescriptorBuffer* _cameraBuffer);
+		DescriptorDataList GenerateDefaultVertexShaderDescriptorSet();
 
-		DescriptorDataList GenerateDefaultFragmentShaderDescriptorSet(DescriptorBuffer* _pointLightsBuffer, DescriptorBuffer* _directionalLightsBuffer, DescriptorBuffer* _spotLightsBuffer, VkTexture* _skybox);
+		DescriptorDataList GenerateDefaultFragmentShaderDescriptorSet();
 
 		void CreateDescriptorSet(std::vector<DescriptorDataList> _descriptorDatas);
 
 		void CreateDescriptorBufferObjects();
 
+		void CreateGraphicsPipeline();
 
 	public:
 		VkGameObject(const VkGameObjectCreateInfo& _createInfo);
 		~VkGameObject() = default;
 
-		void CreateGraphicsPipeline(DescriptorBuffer* _cameraBuffer, DescriptorBuffer* _pointLightsBuffer, DescriptorBuffer* _directionalLightsBuffer, DescriptorBuffer* _spotLightsBuffer, VkTexture* _skybox);
 
 		void Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const;
 

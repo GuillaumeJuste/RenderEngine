@@ -9,7 +9,10 @@ void VkSkybox::InitializeSkybox(const VkSkyboxCreateInfo& _createInfo, Descripto
 	createInfo = _createInfo;
 	vbo = dynamic_cast<BufferObject*>(skybox->mesh->vertexBuffer);
 	ibo = dynamic_cast<BufferObject*>(skybox->mesh->indexBuffer);
-	cubemap = dynamic_cast<VkTexture*>(skybox->cubemap->iTexture); 
+	cubemap = dynamic_cast<VkTexture*>(skybox->cubemap->iTexture);
+	irradiance = dynamic_cast<VkTexture*>(skybox->irradianceMap->iTexture);
+	prefilter = dynamic_cast<VkTexture*>(skybox->prefilterMap->iTexture);
+	BRDFlut = dynamic_cast<VkTexture*>(skybox->BRDFlut->iTexture);
 	
 	CreateGraphicsPipeline(_cameraBuffer);
 }
@@ -113,4 +116,19 @@ void VkSkybox::Clean()
 VkTexture* VkSkybox::GetCubemap() const
 {
 	return cubemap;
+}
+
+VkTexture* VkSkybox::GetIrradianceCubeMap() const
+{
+	return irradiance;
+}
+
+VkTexture* VkSkybox::GetPrefilterCubemap() const
+{
+	return prefilter;
+}
+
+VkTexture* VkSkybox::GetBRDFlut() const
+{
+	return BRDFlut;
 }

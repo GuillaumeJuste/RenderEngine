@@ -58,7 +58,9 @@ layout (set = 1,binding = 7) buffer SpotLightData
 	SpotLight lights[];
 } spotLightsBuffer;
 
-layout(set = 1, binding = 8) uniform samplerCube skyboxSampler;
+layout(set = 1, binding = 8) uniform samplerCube irradianceSampler;
+layout(set = 1, binding = 9) uniform samplerCube prefilterSampler;
+layout(set = 1, binding = 10) uniform sampler2D BRDFlutSampler;
 
 layout(location = 0) out vec4 outColor;
 
@@ -82,7 +84,7 @@ float DistributionGGX(vec3 _N, vec3 _H, float _roughness);
 // _H : halfwayDirection
 // _V : viewDirection
 // _F0 : reflectance at normal incidence
-vec3 FresnelSchlick(vec3 _H, vec3 _V, vec3 _F0);
+vec3 FresnelSchlickRoughness(float _cosTheta, vec3 _F0, float _roughness);
 
 // _NdotV : normal and  view dot product
 // _roughness : material roughness
@@ -110,6 +112,7 @@ void main()
 
 	vec3 normal = normalize(fsIn.interpNormal);
     vec3 viewDirection = normalize(fsIn.cameraPos - fsIn.fragPos);
+	vec3 reflection = reflect(-viewDirection, normal); 
 
 	// calculate reflectance at normal incidence;
 	vec3 F0 = vec3(0.04); 
@@ -137,14 +140,23 @@ void main()
 			Lo += ComputeSpotLightLighting(spotLightsBuffer.lights[i], normal, viewDirection, albedo, metalness, roughness, F0);
 	}
 
-	vec3 ambient = vec3(0.01) * albedo * ao;
-    
+	vec3 kS = FresnelSchlickRoughness(max(dot(normal, viewDirection), 0.0), F0, roughness);
+    vec3 kD = 1.0 - kS;
+    kD *= 1.0 - metalness;	  
+    vec3 irradiance = texture(irradianceSampler, normal).rgb;
+    vec3 diffuse = irradiance * albedo;
+
+    vec3 prefilteredColor = texture(prefilterSampler, reflection).rgb;    
+    vec2 brdf  = texture(BRDFlutSampler, vec2(max(dot(normal, viewDirection), 0.0), roughness)).rg;
+    vec3 specular = prefilteredColor * (kS * brdf.x + brdf.y);
+
+    vec3 ambient = (kD * diffuse + specular) * ao;
+
     vec3 color = ambient + Lo;
 
 	color  = color  / (color  + vec3(1.0));
 
 	outColor = vec4(color , 1.0);
-	//outColor = vec4(fsIn.fragPos.z);
 }
 
 vec3 ComputePointLightLighting(PointLight _light, vec3 _normal, vec3 _viewDirection, vec3 _albdeo, float _metalness, float _roughness, vec3 _F0)
@@ -193,22 +205,15 @@ vec3 ComputeLighting(Light _light, vec3 _normal, vec3 _viewDirection, vec3 _albd
 	vec3 halfwayDirection = normalize(_viewDirection + _light.direction);
 
 	float D = DistributionGGX(_normal, halfwayDirection, _roughness);
-	vec3 F = FresnelSchlick(halfwayDirection, _viewDirection, _F0);
+	vec3 F = FresnelSchlickRoughness(max(dot(halfwayDirection, _viewDirection), 0.0), _F0, _roughness);
 	float G = GeometrySmith(_normal, _viewDirection, _light.direction, _roughness);
 
 	vec3 numerator    = D * F * G; 
 	float denominator = 4.0 * max(dot(_normal, _viewDirection), 0.0) * max(dot(_normal, _light.direction), 0.0) + 0.0001; // + 0.0001 to prevent divide by zero
 	vec3 specular = numerator / denominator;
 
-	// kS is equal to Fresnel
 	vec3 kS = F;
-	// for energy conservation, the diffuse and specular light can't
-	// be above 1.0 (unless the surface emits light); to preserve this
-	// relationship the diffuse component (kD) should equal 1.0 - kS.
 	vec3 kD = vec3(1.0) - kS;
-	// multiply kD by the inverse metalness such that only non-metals 
-	// have diffuse lighting, or a linear blend if partly metal (pure metals
-	// have no diffuse light).
 	kD *= 1.0 - _metalness;	  
 
 	// scale light by NdotL
@@ -232,9 +237,9 @@ float DistributionGGX(vec3 _N, vec3 _H, float _roughness)
     return nom / denom;
 }
 
-vec3 FresnelSchlick(vec3 _H, vec3 _V, vec3 _F0)
+vec3 FresnelSchlickRoughness(float _cosTheta, vec3 _F0, float _roughness)
 {
-    return _F0 + (1.0 - _F0) * pow(1.0 - clamp(dot(_H, _V), 0.0, 1.0), 5.0);
+    return _F0 + (max(vec3(1.0 - _roughness), _F0) - _F0) * pow(clamp(1.0 - _cosTheta, 0.0, 1.0), 5.0);
 }
 
 float GeometrySchlickGGX(float _NdotV, float _roughness)

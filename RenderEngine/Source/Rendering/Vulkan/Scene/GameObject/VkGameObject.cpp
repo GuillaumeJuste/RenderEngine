@@ -18,9 +18,11 @@ VkGameObject::VkGameObject(const VkGameObjectCreateInfo& _createInfo) :
 	IBO = dynamic_cast<BufferObject*>(meshRenderer->mesh->indexBuffer);
 
 	CreateDescriptorBufferObjects();
+
+	CreateGraphicsPipeline();
 }
 
-void VkGameObject::CreateGraphicsPipeline(DescriptorBuffer* _cameraBuffer, DescriptorBuffer* _pointLightsBuffer, DescriptorBuffer* _directionalLightsBuffer, DescriptorBuffer* _spotLightsBuffer, VkTexture* _skybox)
+void VkGameObject::CreateGraphicsPipeline()
 {
 	if (meshRenderer != nullptr)
 	{
@@ -31,8 +33,8 @@ void VkGameObject::CreateGraphicsPipeline(DescriptorBuffer* _cameraBuffer, Descr
 		gpCreateInfo.swapChainImageFormat = createInfo.swapchain->GetImageFormat();
 		gpCreateInfo.meshRenderer = meshRenderer;
 
-		gpCreateInfo.descriptorDatas.push_back(GenerateDefaultVertexShaderDescriptorSet(_cameraBuffer));
-		gpCreateInfo.descriptorDatas.push_back(GenerateDefaultFragmentShaderDescriptorSet(_pointLightsBuffer, _directionalLightsBuffer, _spotLightsBuffer, _skybox));
+		gpCreateInfo.descriptorDatas.push_back(GenerateDefaultVertexShaderDescriptorSet());
+		gpCreateInfo.descriptorDatas.push_back(GenerateDefaultFragmentShaderDescriptorSet());
 
 		GraphicsPipeline::InitalizeGraphicsPipeline(gpCreateInfo, &graphicsPipeline);
 
@@ -61,7 +63,7 @@ void VkGameObject::CreateDescriptorBufferObjects()
 	DescriptorBuffer::InitializeDescriptorBuffer(materialBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &materialBufferObject);
 }
 
-DescriptorDataList VkGameObject::GenerateDefaultVertexShaderDescriptorSet(DescriptorBuffer* _cameraBuffer)
+DescriptorDataList VkGameObject::GenerateDefaultVertexShaderDescriptorSet()
 {
 	DescriptorDataList datalist{};
 
@@ -76,13 +78,13 @@ DescriptorDataList VkGameObject::GenerateDefaultVertexShaderDescriptorSet(Descri
 	cameraBufferData.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	cameraBufferData.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 	cameraBufferData.binding = 1;
-	cameraBufferData.buffer = _cameraBuffer;
+	cameraBufferData.buffer = createInfo.cameraBuffer;
 	datalist.Add(cameraBufferData);
 
 	return datalist;
 }
 
-DescriptorDataList VkGameObject::GenerateDefaultFragmentShaderDescriptorSet(DescriptorBuffer* _pointLightsBuffer, DescriptorBuffer* _directionalLightsBuffer, DescriptorBuffer* _spotLightsBuffer, VkTexture* _skybox)
+DescriptorDataList VkGameObject::GenerateDefaultFragmentShaderDescriptorSet()
 {
 	DescriptorDataList datalist{};
 
@@ -128,29 +130,43 @@ DescriptorDataList VkGameObject::GenerateDefaultFragmentShaderDescriptorSet(Desc
 	pointLightBufferData.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 	pointLightBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 	pointLightBufferData.binding = 5;
-	pointLightBufferData.buffer = _pointLightsBuffer;
+	pointLightBufferData.buffer = createInfo.pointLightsBuffer;
 	datalist.Add(pointLightBufferData);
 
 	DescriptorData directionalLightBufferData{};
 	directionalLightBufferData.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 	directionalLightBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 	directionalLightBufferData.binding = 6;
-	directionalLightBufferData.buffer = _directionalLightsBuffer;
+	directionalLightBufferData.buffer = createInfo.directionalLightsBuffer;
 	datalist.Add(directionalLightBufferData);
 
 	DescriptorData spotLightBufferData{};
 	spotLightBufferData.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 	spotLightBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 	spotLightBufferData.binding = 7;
-	spotLightBufferData.buffer = _spotLightsBuffer;
+	spotLightBufferData.buffer = createInfo.spotLightsBuffer;
 	datalist.Add(spotLightBufferData);
 
-	DescriptorData skyboxBufferData{};
-	skyboxBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	skyboxBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	skyboxBufferData.binding = 8;
-	skyboxBufferData.texture = _skybox;
-	datalist.Add(skyboxBufferData);
+	DescriptorData irradianceBufferData{};
+	irradianceBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	irradianceBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+	irradianceBufferData.binding = 8;
+	irradianceBufferData.texture = createInfo.irradianceMap;
+	datalist.Add(irradianceBufferData);
+
+	DescriptorData prefilterBufferData{};
+	prefilterBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	prefilterBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+	prefilterBufferData.binding = 9;
+	prefilterBufferData.texture = createInfo.prefilterMap;
+	datalist.Add(prefilterBufferData);
+
+	DescriptorData brdflutBufferData{};
+	brdflutBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	brdflutBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+	brdflutBufferData.binding = 10;
+	brdflutBufferData.texture = createInfo.BRDFlut;
+	datalist.Add(brdflutBufferData);
 
 	return datalist;
 }

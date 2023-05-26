@@ -22,6 +22,9 @@ namespace RenderEngine::Rendering
 		BufferObject* vbo;
 		BufferObject* ibo;
 		VkTexture* cubemap;
+		VkTexture* irradiance;
+		VkTexture* prefilter;
+		VkTexture* BRDFlut;
 
 		void CreateGraphicsPipeline(DescriptorBuffer* _cameraBuffer);
 
@@ -41,6 +44,9 @@ namespace RenderEngine::Rendering
 		void Clean();
 
 		VkTexture* GetCubemap() const;
+		VkTexture* GetIrradianceCubeMap() const;
+		VkTexture* GetPrefilterCubemap() const;
+		VkTexture* GetBRDFlut() const;
 	};
 }
 
