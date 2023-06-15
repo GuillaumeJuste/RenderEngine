@@ -16,6 +16,7 @@ namespace RenderEngine::Assets
         int width;
         int height;
         int imageSize;
+        uint32_t mipLevels;
 
         RenderEngine::Rendering::ITexture* iTexture;
 

@@ -36,6 +36,7 @@ VkScene::VkScene(const VkSceneCreateInfo& _createInfo) :
 	gaoCreateInfo.irradianceMap = skybox.GetIrradianceCubeMap();
 	gaoCreateInfo.prefilterMap = skybox.GetPrefilterCubemap();
 	gaoCreateInfo.BRDFlut = skybox.GetBRDFlut();
+	gaoCreateInfo.skyboxMap = skybox.GetCubemap();
 
 	CreateVkGameObjects(gaoCreateInfo, createInfo.scene->GetSceneRoot().GetChildrens());
 

@@ -168,6 +168,13 @@ DescriptorDataList VkGameObject::GenerateDefaultFragmentShaderDescriptorSet()
 	brdflutBufferData.texture = createInfo.BRDFlut;
 	datalist.Add(brdflutBufferData);
 
+	DescriptorData skyboxBufferData{};
+	skyboxBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	skyboxBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+	skyboxBufferData.binding = 11;
+	skyboxBufferData.texture = createInfo.skyboxMap;
+	datalist.Add(skyboxBufferData);
+
 	return datalist;
 }
 

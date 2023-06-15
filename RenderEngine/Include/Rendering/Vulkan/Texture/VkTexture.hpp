@@ -20,7 +20,6 @@ namespace RenderEngine::Rendering
 		VkSampler sampler;
 
 		void CreateSampler();
-		void CopyBufferToImage(VkBuffer _buffer, uint32_t _width, uint32_t _height);
 
 	public:
 		VkTexture() = default;

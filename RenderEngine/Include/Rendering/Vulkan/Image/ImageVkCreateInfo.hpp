@@ -24,10 +24,10 @@ namespace RenderEngine::Rendering
 		VkQueue graphicsQueue;
 		CommandPool* commandPool;
 		VkImageCreateFlags imageFlags;
-		uint32_t arrayLayers;
+		uint32_t textureCount;
 		VkImageViewType imageViewType;
 		VkImageAspectFlags imageViewAspectFlags;
-
+		uint32_t mipLevels;
 		/// default constructor
 		ImageVkCreateInfo() = default;
 	};

@@ -23,7 +23,6 @@ namespace RenderEngine::Rendering
 		bool HasStencilComponent(VkFormat _format);
 
 		void CreateImageView();
-
 	public:
 
 		/// default constructor
@@ -39,6 +38,8 @@ namespace RenderEngine::Rendering
 		*/
 		static void InitializeImage(const ImageVkCreateInfo& _imageCreateInfo, Image* _output);
 		void TransitionImageLayout(VkFormat _format, VkImageLayout _oldLayout, VkImageLayout _newLayout);
+		void CopyBufferToImage(VkBuffer _buffer);
+		void GenerateMipmaps(VkFormat _format);
 
 		/**
 		 * @brief clean up vulkan classes

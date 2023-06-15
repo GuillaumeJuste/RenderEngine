@@ -1,6 +1,7 @@
 #include "ResourceManager/Wrapper/StbiWrapper.hpp"
 
 #include <stdexcept>
+#include <cmath>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
@@ -19,6 +20,8 @@ bool StbiWrapper::LoadTexture(const std::string& _filePath, RawTexture& _output)
 	_output.channels = 4;
 
 	_output.imageSize = _output.width * _output.height * _output.channels;
+
+	_output.mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(_output.width, _output.height)))) + 1;
 
 	return true;
 }
@@ -48,6 +51,8 @@ bool StbiWrapper::LoadCubemap(const CubemapImportInfos& _importInfos, RawCubemap
 	_output.imageSize = _output.width * _output.height * _output.channels;
 
 	_output.pixels = reinterpret_cast<char*>(stbi__malloc(6u * _output.imageSize));
+
+	_output.mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(_output.width, _output.height)))) + 1;
 
 	for (size_t i = 0; i < 6; ++i)
 	{

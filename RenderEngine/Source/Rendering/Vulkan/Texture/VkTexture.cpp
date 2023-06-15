@@ -38,52 +38,24 @@ void VkTexture::InitializeVkTexture(const VkTextureVkCreateInfo& _vkTextureCreat
 	imageCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 	imageCreateInfo.commandPool = _vkTextureCreateInfo.commandPool;
 	imageCreateInfo.graphicsQueue = _vkTextureCreateInfo.graphicsQueue;
-	imageCreateInfo.arrayLayers = _vkTextureCreateInfo.texture.textureCount;
+	imageCreateInfo.textureCount = _vkTextureCreateInfo.texture.textureCount;
 	imageCreateInfo.imageFlags = _vkTextureCreateInfo.imageFlags;
 	imageCreateInfo.imageViewType = _vkTextureCreateInfo.imageViewType;
 	imageCreateInfo.imageViewAspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
+	imageCreateInfo.mipLevels = _vkTextureCreateInfo.texture.mipLevels;
 	Image::InitializeImage(imageCreateInfo, &_output->image);
 
 	_output->image.TransitionImageLayout(VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-	_output->CopyBufferToImage(stagingBuffer.GetVkBuffer(), static_cast<uint32_t>(imageCreateInfo.width), static_cast<uint32_t>(imageCreateInfo.height));
-	_output->image.TransitionImageLayout(VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+	_output->image.CopyBufferToImage(stagingBuffer.GetVkBuffer());
+
+	if(_vkTextureCreateInfo.texture.mipLevels > 1)
+		_output->image.GenerateMipmaps(VK_FORMAT_R8G8B8A8_SRGB);
+	else
+		_output->image.TransitionImageLayout(VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
 	stagingBuffer.Clean();
 
 	_output->CreateSampler();
-}
-
-void VkTexture::CopyBufferToImage(VkBuffer _buffer, uint32_t _width, uint32_t _height)
-{
-	VkCommandBuffer commandBuffer = CommandBuffer::BeginSingleTimeCommands(createInfo.logicalDevice, createInfo.commandPool);
-
-	VkBufferImageCopy region{};
-	region.bufferOffset = 0;
-	region.bufferRowLength = 0;
-	region.bufferImageHeight = 0;
-
-	region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-	region.imageSubresource.mipLevel = 0;
-	region.imageSubresource.baseArrayLayer = 0;
-	region.imageSubresource.layerCount = createInfo.texture.textureCount;
-
-	region.imageOffset = { 0, 0, 0 };
-	region.imageExtent = {
-		_width,
-		_height,
-		1
-	};
-
-	vkCmdCopyBufferToImage(
-		commandBuffer,
-		_buffer,
-		image.GetVkImage(),
-		VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-		1,
-		&region
-	);
-
-	CommandBuffer::EndSingleTimeCommands(createInfo.logicalDevice, createInfo.commandPool, createInfo.graphicsQueue, commandBuffer);
 }
 
 void VkTexture::CreateSampler()
@@ -108,7 +80,7 @@ void VkTexture::CreateSampler()
 	samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
 	samplerInfo.mipLodBias = 0.0f;
 	samplerInfo.minLod = 0.0f;
-	samplerInfo.maxLod = 0.0f;
+	samplerInfo.maxLod = static_cast<float>(createInfo.texture.mipLevels);
 
 	if (vkCreateSampler(createInfo.logicalDevice, &samplerInfo, nullptr, &sampler) != VK_SUCCESS) 
 	{

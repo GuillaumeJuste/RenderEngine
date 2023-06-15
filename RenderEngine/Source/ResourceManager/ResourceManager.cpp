@@ -82,6 +82,7 @@ Texture* ResourceManager::LoadTexture(std::string _filePath)
 		newTexture->height = rawTexture.height;
 		newTexture->width = rawTexture.width;
 		newTexture->imageSize = rawTexture.imageSize;
+		newTexture->mipLevels = rawTexture.mipLevels;
 		textureManager.Add(_filePath, newTexture);
 
 		StbiWrapper::FreeImage(rawTexture.pixels);
@@ -149,6 +150,7 @@ Cubemap* ResourceManager::LoadCubemap(CubemapImportInfos _filePaths)
 		newCubemap->filePath = _filePaths.pathes[0];
 		newCubemap->height = rawCubemap.height;
 		newCubemap->width = rawCubemap.width;
+		newCubemap->mipLevels = rawCubemap.mipLevels;
 		newCubemap->imageSize = rawCubemap.imageSize;
 		cubemapManager.Add(_filePaths.pathes[0], newCubemap);
 

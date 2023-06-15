@@ -33,6 +33,7 @@ namespace RenderEngine::Rendering
 		DescriptorBuffer* pointLightsBuffer;
 		DescriptorBuffer* directionalLightsBuffer;
 		DescriptorBuffer* spotLightsBuffer;
+		VkTexture* skyboxMap;
 		VkTexture* irradianceMap;
 		VkTexture* prefilterMap;
 		VkTexture* BRDFlut;

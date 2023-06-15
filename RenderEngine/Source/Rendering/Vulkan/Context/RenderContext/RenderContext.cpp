@@ -317,7 +317,7 @@ bool RenderContext::CreateTexture(const RenderEngine::Assets::RawTexture& _input
 	textCreateInfo.texture = _input;
 	textCreateInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
 	textCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-	textCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+	textCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 	textCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 	textCreateInfo.imageFlags = 0;
 	textCreateInfo.imageViewType = VK_IMAGE_VIEW_TYPE_2D;
@@ -354,7 +354,7 @@ bool RenderContext::CreateCubemap(const RenderEngine::Assets::RawCubemap& _input
 	textCreateInfo.texture = _input;
 	textCreateInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
 	textCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-	textCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+	textCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 	textCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 	textCreateInfo.imageFlags = VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
 	textCreateInfo.imageViewType = VK_IMAGE_VIEW_TYPE_CUBE;
