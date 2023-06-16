@@ -106,6 +106,22 @@ void DeviceContext::PickPhysicalDevice(std::string _physicalDeviceName)
 	}
 }
 
+VkSampleCountFlagBits DeviceContext::GetMaxUsableSampleCount(const VkPhysicalDevice& _device)
+{
+	VkPhysicalDeviceProperties physicalDeviceProperties;
+	vkGetPhysicalDeviceProperties(_device, &physicalDeviceProperties);
+
+	VkSampleCountFlags counts = physicalDeviceProperties.limits.framebufferColorSampleCounts & physicalDeviceProperties.limits.framebufferDepthSampleCounts;
+	if (counts & VK_SAMPLE_COUNT_64_BIT) { return VK_SAMPLE_COUNT_64_BIT; }
+	if (counts & VK_SAMPLE_COUNT_32_BIT) { return VK_SAMPLE_COUNT_32_BIT; }
+	if (counts & VK_SAMPLE_COUNT_16_BIT) { return VK_SAMPLE_COUNT_16_BIT; }
+	if (counts & VK_SAMPLE_COUNT_8_BIT) { return VK_SAMPLE_COUNT_8_BIT; }
+	if (counts & VK_SAMPLE_COUNT_4_BIT) { return VK_SAMPLE_COUNT_4_BIT; }
+	if (counts & VK_SAMPLE_COUNT_2_BIT) { return VK_SAMPLE_COUNT_2_BIT; }
+
+	return VK_SAMPLE_COUNT_1_BIT;
+}
+
 bool DeviceContext::IsDeviceSuitable(PhysicalDeviceProperties* _properties)
 {
 	VkPhysicalDeviceProperties properties;
@@ -131,6 +147,7 @@ bool DeviceContext::IsDeviceSuitable(PhysicalDeviceProperties* _properties)
 	{
 		_properties->properties = properties;
 		_properties->queueFamilyIndices = queueFamilyIndices;
+		_properties->msaaSamples = GetMaxUsableSampleCount(_properties->physicalDevice);
 		return true;
 	}
 
@@ -251,9 +268,8 @@ IRenderContext* DeviceContext::CreateRenderContext(const IRenderContextCreateInf
 	createInfo.renderContextCreateInfo = _createInfo;
 	createInfo.instance = instance;
 	createInfo.windowProperties = windowProperties;
-	createInfo.physicalDevice = physicalDevice;
+	createInfo.physicalDeviceProperties = physicalDeviceProperties;
 	createInfo.logicalDevice = logicalDevice;
-	createInfo.queueFamilyIndices = physicalDeviceProperties.queueFamilyIndices;
 	createInfo.graphicsQueue = graphicsQueue;
 	createInfo.presentQueue = presentQueue;
 	createInfo.commandPool = &commandPool;

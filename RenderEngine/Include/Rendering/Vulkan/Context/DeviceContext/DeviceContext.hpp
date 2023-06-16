@@ -97,6 +97,8 @@ namespace RenderEngine::Rendering
 		*/
 		void PickPhysicalDevice(std::string _physicalDeviceName);
 
+		VkSampleCountFlagBits GetMaxUsableSampleCount(const VkPhysicalDevice& _device);
+
 		/**
 		 * @brief create logical device
 		*/

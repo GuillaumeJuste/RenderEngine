@@ -35,6 +35,8 @@ namespace RenderEngine::Rendering
 
 		VkCullModeFlagBits culling_mode = VK_CULL_MODE_BACK_BIT;
 
+		VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT;
+
 		/// default constructor
 		GraphicsPipelineVkCreateInfo() = default;
 	};

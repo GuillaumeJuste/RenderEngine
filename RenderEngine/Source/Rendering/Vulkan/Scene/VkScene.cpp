@@ -15,6 +15,7 @@ VkScene::VkScene(const VkSceneCreateInfo& _createInfo) :
 	gaoCreateInfo.logicalDevice = _createInfo.logicalDevice;
 	gaoCreateInfo.renderpass = _createInfo.renderpass;
 	gaoCreateInfo.swapchain = _createInfo.swapchain;
+	gaoCreateInfo.samples = _createInfo.samples;
 
 	BufferObjectVkCreateInfo cameraBufferCreateInfo;
 	cameraBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
@@ -211,6 +212,7 @@ void VkScene::CreateSkybox()
 	skyboxCreateInfo.logicalDevice = createInfo.logicalDevice;
 	skyboxCreateInfo.renderpass = createInfo.renderpass;
 	skyboxCreateInfo.swapchain = createInfo.swapchain;
+	skyboxCreateInfo.samples = createInfo.samples;
 
 	skybox.InitializeSkybox(skyboxCreateInfo, &cameraBuffer);
 }

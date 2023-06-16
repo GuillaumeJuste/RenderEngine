@@ -21,6 +21,8 @@ namespace RenderEngine::Rendering
 		VkQueue graphicsQueue;
 		CommandPool* commandPool;
 
+		VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT;
+
 		/// default constructor
 		DepthBufferVkCreateInfo() = default;
 	};

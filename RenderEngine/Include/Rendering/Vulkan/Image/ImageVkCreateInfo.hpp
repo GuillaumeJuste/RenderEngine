@@ -28,6 +28,7 @@ namespace RenderEngine::Rendering
 		VkImageViewType imageViewType;
 		VkImageAspectFlags imageViewAspectFlags;
 		uint32_t mipLevels;
+		VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT;
 		/// default constructor
 		ImageVkCreateInfo() = default;
 	};

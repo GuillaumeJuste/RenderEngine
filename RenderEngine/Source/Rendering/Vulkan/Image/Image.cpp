@@ -21,7 +21,7 @@ void Image::InitializeImage(const ImageVkCreateInfo& _imageCreateInfo, Image* _o
     imageInfo.tiling = _imageCreateInfo.tiling;
     imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     imageInfo.usage = _imageCreateInfo.usage;
-    imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+    imageInfo.samples = _imageCreateInfo.samples;
     imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
     imageInfo.flags = _imageCreateInfo.imageFlags;
 

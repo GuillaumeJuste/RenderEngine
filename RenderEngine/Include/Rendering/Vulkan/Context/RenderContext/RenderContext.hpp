@@ -36,7 +36,7 @@ namespace RenderEngine::Rendering
 		bool frameBufferWasResized = false;
 
 		/// physical device
-		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+		PhysicalDeviceProperties physicalDeviceProperties;
 		
 		/// logical device
 		VkDevice logicalDevice;
@@ -63,6 +63,8 @@ namespace RenderEngine::Rendering
 		FrameBuffer frameBuffer;
 		
 		DepthBuffer depthBuffer;
+
+		Image colorImage;
 		
 		///command buffers
 		std::vector<SwapChainCommandBuffer> commandBuffers;
@@ -86,6 +88,8 @@ namespace RenderEngine::Rendering
 		 * @brief Create Framebuffer
 		*/
 		void CreateFrameBuffer();
+
+		void createColorResources();
 
 		void CreateDepthBuffer();
 

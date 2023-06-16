@@ -29,6 +29,8 @@ namespace RenderEngine::Rendering
 		*/
 		VkPhysicalDeviceProperties properties;
 
+		VkSampleCountFlagBits msaaSamples = VK_SAMPLE_COUNT_1_BIT;
+
 		/// default constructor
 		PhysicalDeviceProperties() = default;
 		

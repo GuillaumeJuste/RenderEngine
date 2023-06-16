@@ -34,6 +34,7 @@ void VkSkybox::CreateGraphicsPipeline(DescriptorBuffer* _cameraBuffer)
 	gpCreateInfo.meshRenderer = &meshRenderer;
 	gpCreateInfo.writeDepthBuffer = VK_FALSE;
 	gpCreateInfo.culling_mode = VK_CULL_MODE_FRONT_BIT;
+	gpCreateInfo.samples = createInfo.samples;
 
 	gpCreateInfo.descriptorDatas.push_back(GenerateDefaultVertexShaderDescriptorSet(_cameraBuffer));
 	gpCreateInfo.descriptorDatas.push_back(GenerateDefaultFragmentShaderDescriptorSet());

@@ -17,6 +17,8 @@ namespace RenderEngine::Rendering
 		/// physical device
 		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 
+		VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT;
+
 		/// logical device
 		VkDevice logicalDevice;
 

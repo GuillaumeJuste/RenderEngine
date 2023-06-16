@@ -12,9 +12,9 @@ void RenderContext::InitalizeRenderContext(const RenderContextVkCreateInfo& _cre
 {
 	_output->instance = _createInfo.instance;
 	_output->windowProperties = _createInfo.windowProperties;
-	_output->physicalDevice = _createInfo.physicalDevice;
+	_output->physicalDeviceProperties = _createInfo.physicalDeviceProperties;
 	_output->logicalDevice = _createInfo.logicalDevice;
-	_output->queueFamilyIndices = _createInfo.queueFamilyIndices;
+	_output->queueFamilyIndices = _createInfo.physicalDeviceProperties.queueFamilyIndices;
 	_output->graphicsQueue = _createInfo.graphicsQueue;
 	_output->presentQueue = _createInfo.presentQueue;
 	_output->commandPool = _createInfo.commandPool;
@@ -22,6 +22,7 @@ void RenderContext::InitalizeRenderContext(const RenderContextVkCreateInfo& _cre
 	_output->windowProperties->window->FramebufferResizeEvent.Add(_output, &RenderContext::FrameBufferResizedCallback);
 
 	_output->CreateSwapChain();
+	_output->createColorResources();
 	_output->CreateDepthBuffer();
 	_output->CreateRenderPass();
 	_output->CreateFrameBuffer();
@@ -31,7 +32,7 @@ void RenderContext::InitalizeRenderContext(const RenderContextVkCreateInfo& _cre
 void RenderContext::CreateSwapChain()
 {
 	SwapChainVkCreateInfo createInfo;
-	createInfo.physicalDevice = physicalDevice;
+	createInfo.physicalDevice = physicalDeviceProperties.physicalDevice;
 	createInfo.logicalDevice = logicalDevice;
 	createInfo.windowProperties = windowProperties;
 	createInfo.queueFamilyIndices = queueFamilyIndices;
@@ -45,6 +46,7 @@ void RenderContext::CreateRenderPass()
 	createInfo.logicalDevice = logicalDevice;
 	createInfo.swapChainImageFormat = swapChain.GetImageFormat();
 	createInfo.depthBuffer = &depthBuffer;
+	createInfo.samples = physicalDeviceProperties.msaaSamples;
 
 	RenderPass::InitializeRenderPass(createInfo, &renderPass);
 }
@@ -58,18 +60,44 @@ void RenderContext::CreateFrameBuffer()
 	createInfo.swapChainImageCount = swapChain.GetImageCount();
 	createInfo.swapChainExtent = swapChain.GetExtent();
 	createInfo.depthBuffer = &depthBuffer;
+	createInfo.colorImage = &colorImage;
 
 	FrameBuffer::InitializeFrameBuffer(createInfo, &frameBuffer);
+}
+
+void RenderContext::createColorResources()
+{
+	VkFormat colorFormat = swapChain.GetImageFormat();
+
+	ImageVkCreateInfo imageCreateInfo{};
+	imageCreateInfo.physicalDevice = physicalDeviceProperties.physicalDevice;
+	imageCreateInfo.logicalDevice = logicalDevice;
+	imageCreateInfo.width = static_cast<uint32_t>(swapChain.GetExtent().width);
+	imageCreateInfo.height = static_cast<uint32_t>(swapChain.GetExtent().height);
+	imageCreateInfo.format = colorFormat;
+	imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+	imageCreateInfo.usage = VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+	imageCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+	imageCreateInfo.commandPool = commandPool;
+	imageCreateInfo.graphicsQueue = graphicsQueue;
+	imageCreateInfo.textureCount = 1;
+	imageCreateInfo.imageFlags = 0;
+	imageCreateInfo.imageViewType = VK_IMAGE_VIEW_TYPE_2D;
+	imageCreateInfo.imageViewAspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
+	imageCreateInfo.mipLevels = 1;
+	imageCreateInfo.samples = physicalDeviceProperties.msaaSamples;
+	Image::InitializeImage(imageCreateInfo, &colorImage);
 }
 
 void RenderContext::CreateDepthBuffer()
 {
 	DepthBufferVkCreateInfo createInfo{};
-	createInfo.physicalDevice = physicalDevice;
+	createInfo.physicalDevice = physicalDeviceProperties.physicalDevice;
 	createInfo.logicalDevice = logicalDevice;
 	createInfo.commandPool = commandPool;
 	createInfo.graphicsQueue = graphicsQueue;
 	createInfo.swapChainExtent = swapChain.GetExtent();
+	createInfo.samples = physicalDeviceProperties.msaaSamples;
 	
 	DepthBuffer::InitializeDepthBuffer(createInfo, &depthBuffer);
 }
@@ -94,6 +122,8 @@ void RenderContext::CreateCommandBuffer(const SwapChainCommandBufferCreateInfo& 
 
 void RenderContext::CleanUpSwapChain()
 {
+	depthBuffer.Cleanup();
+	colorImage.Cleanup();
 	frameBuffer.Cleanup();
 	swapChain.Cleanup();
 }
@@ -112,6 +142,8 @@ void RenderContext::RecreateSwapChain()
 	CleanUpSwapChain();
 
 	CreateSwapChain();
+
+	createColorResources();
 
 	CreateDepthBuffer();
 
@@ -210,7 +242,8 @@ VkScene* RenderContext::LoadScene(RenderEngine::SceneGraph::Scene* _scene)
 	createInfo.commandPool = commandPool;
 	createInfo.graphicsQueue = graphicsQueue;
 	createInfo.logicalDevice = logicalDevice;
-	createInfo.physicalDevice = physicalDevice;
+	createInfo.physicalDevice = physicalDeviceProperties.physicalDevice;
+	createInfo.samples = physicalDeviceProperties.msaaSamples;
 	createInfo.renderpass = &renderPass;
 	createInfo.swapchain = &swapChain;
 	createInfo.scene = _scene;
@@ -243,7 +276,7 @@ void RenderContext::CreateVertexBufferObject(const RenderEngine::Assets::RawMesh
 {
 	BufferObject stagingBufferObject;
 	BufferObjectVkCreateInfo stagingBufferCreateInfo;
-	stagingBufferCreateInfo.physicalDevice = physicalDevice;
+	stagingBufferCreateInfo.physicalDevice = physicalDeviceProperties.physicalDevice;
 	stagingBufferCreateInfo.logicalDevice = logicalDevice;
 	stagingBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 	stagingBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
@@ -257,7 +290,7 @@ void RenderContext::CreateVertexBufferObject(const RenderEngine::Assets::RawMesh
 	vkUnmapMemory(logicalDevice, stagingBufferObject.GetVkBufferMemory());
 
 	BufferObjectVkCreateInfo vertexBuffeCreateInfo;
-	vertexBuffeCreateInfo.physicalDevice = physicalDevice;
+	vertexBuffeCreateInfo.physicalDevice = physicalDeviceProperties.physicalDevice;
 	vertexBuffeCreateInfo.logicalDevice = logicalDevice;
 	vertexBuffeCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 	vertexBuffeCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
@@ -277,7 +310,7 @@ void RenderContext::CreateIndexBufferObject(const RenderEngine::Assets::RawMesh&
 {
 	BufferObject stagingBufferObject;
 	BufferObjectVkCreateInfo stagingBufferCreateInfo;
-	stagingBufferCreateInfo.physicalDevice = physicalDevice;
+	stagingBufferCreateInfo.physicalDevice = physicalDeviceProperties.physicalDevice;
 	stagingBufferCreateInfo.logicalDevice = logicalDevice;
 	stagingBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 	stagingBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
@@ -291,7 +324,7 @@ void RenderContext::CreateIndexBufferObject(const RenderEngine::Assets::RawMesh&
 	vkUnmapMemory(logicalDevice, stagingBufferObject.GetVkBufferMemory());
 
 	BufferObjectVkCreateInfo indexBufferCreateInfo;
-	indexBufferCreateInfo.physicalDevice = physicalDevice;
+	indexBufferCreateInfo.physicalDevice = physicalDeviceProperties.physicalDevice;
 	indexBufferCreateInfo.logicalDevice = logicalDevice;
 	indexBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
 	indexBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
@@ -311,7 +344,7 @@ bool RenderContext::CreateTexture(const RenderEngine::Assets::RawTexture& _input
 {
 	VkTextureVkCreateInfo textCreateInfo{};
 	textCreateInfo.logicalDevice = logicalDevice;
-	textCreateInfo.physicalDevice = physicalDevice;
+	textCreateInfo.physicalDevice = physicalDeviceProperties.physicalDevice;
 	textCreateInfo.graphicsQueue = graphicsQueue;
 	textCreateInfo.commandPool = commandPool;
 	textCreateInfo.texture = _input;
@@ -348,7 +381,7 @@ bool RenderContext::CreateCubemap(const RenderEngine::Assets::RawCubemap& _input
 {
 	VkTextureVkCreateInfo textCreateInfo{};
 	textCreateInfo.logicalDevice = logicalDevice;
-	textCreateInfo.physicalDevice = physicalDevice;
+	textCreateInfo.physicalDevice = physicalDeviceProperties.physicalDevice;
 	textCreateInfo.graphicsQueue = graphicsQueue;
 	textCreateInfo.commandPool = commandPool;
 	textCreateInfo.texture = _input;
@@ -381,6 +414,7 @@ void RenderContext::Cleanup()
 	}
 	frameBuffer.Cleanup();
 	depthBuffer.Cleanup();
+	colorImage.Cleanup();
 	renderPass.Cleanup();
 	swapChain.Cleanup();
 }

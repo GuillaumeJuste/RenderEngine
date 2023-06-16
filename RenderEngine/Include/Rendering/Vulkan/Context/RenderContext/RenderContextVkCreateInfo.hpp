@@ -9,6 +9,7 @@
 #include "Rendering/Vulkan/Context/DeviceContext/QueueFamilyIndices.hpp"
 #include "Rendering/Base/CreateInfo/IRenderContextCreateInfo.hpp"
 #include "Rendering/Vulkan/CommandPool/CommandPool.hpp"
+#include "Rendering/Vulkan/Context/DeviceContext/PhysicalDeviceProperties.hpp"
 
 namespace RenderEngine::Rendering
 {
@@ -26,14 +27,11 @@ namespace RenderEngine::Rendering
 		WindowProperties* windowProperties;
 
 		/// physical device
-		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+		PhysicalDeviceProperties physicalDeviceProperties;
 		
 		/// logical device
 		VkDevice logicalDevice;
 
-		/// queue family indices
-		QueueFamilyIndices queueFamilyIndices;
-		
 		/// graphics queue
 		VkQueue graphicsQueue;
 		

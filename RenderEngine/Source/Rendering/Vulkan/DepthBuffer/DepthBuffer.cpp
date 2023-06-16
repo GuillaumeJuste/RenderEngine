@@ -27,6 +27,8 @@ void DepthBuffer::InitializeDepthBuffer(const DepthBufferVkCreateInfo& _createIn
     imageCreateInfo.imageViewAspectFlags = VK_IMAGE_ASPECT_DEPTH_BIT;
     imageCreateInfo.textureCount = 1;
     imageCreateInfo.mipLevels = 1;
+    imageCreateInfo.samples = _createInfo.samples;
+
 
     Image::InitializeImage(imageCreateInfo, &_output->depthImage);
 

@@ -20,6 +20,8 @@ namespace RenderEngine::Rendering
 
 		DepthBuffer* depthBuffer;
 
+		VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT;
+
 		RenderPassVkCreateInfo() = default;
 	};
 }

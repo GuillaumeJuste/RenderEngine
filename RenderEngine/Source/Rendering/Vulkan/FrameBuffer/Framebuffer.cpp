@@ -12,9 +12,10 @@ void FrameBuffer::InitializeFrameBuffer(const FrameBufferVkCreateInfo& _frameBuf
 	_output->framebuffers.resize(_frameBufferCreateInfo.swapChainImageCount);
 
 	for (size_t i = 0; i < _frameBufferCreateInfo.swapChainImageCount; i++) {
-		std::array<VkImageView, 2> attachments = {
-			_frameBufferCreateInfo.imageViews[i],
-			_frameBufferCreateInfo.depthBuffer->GetVkImageView()
+		std::array<VkImageView, 3> attachments = {
+			_frameBufferCreateInfo.colorImage->GetImageView(),
+			_frameBufferCreateInfo.depthBuffer->GetVkImageView(),
+			_frameBufferCreateInfo.imageViews[i]
 		};
 
 		VkFramebufferCreateInfo framebufferInfo{};
