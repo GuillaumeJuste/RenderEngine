@@ -27,7 +27,7 @@ void VulkanContext::CreateInstance(const IEngineInstanceCreateInfo& _createinfo)
     appInfo.applicationVersion = VK_MAKE_VERSION(_createinfo.applicationVersion.X, _createinfo.applicationVersion.Y, _createinfo.applicationVersion.Z);
     appInfo.pEngineName = _createinfo.engineName.c_str();
     appInfo.engineVersion = VK_MAKE_VERSION(_createinfo.engineVersion.X, _createinfo.engineVersion.Y, _createinfo.engineVersion.Z);
-    appInfo.apiVersion = VK_API_VERSION_1_0;
+    appInfo.apiVersion = VK_API_VERSION_1_1;
 
     VkInstanceCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;

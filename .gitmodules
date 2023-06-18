@@ -6,7 +6,7 @@
 	url = https://github.com/GuillaumeJuste/Mathlib.git
 [submodule "ThirdParty/Gitmodules/assimp"]
 	path = ThirdParty/Gitmodules/assimp
-	url = https://github.com/assimp/assimp
+	url = https://github.com/assimp/assimp.git
 [submodule "ThirdParty/Gitmodules/stb"]
 	path = ThirdParty/Gitmodules/stb
 	url = https://github.com/nothings/stb.git
