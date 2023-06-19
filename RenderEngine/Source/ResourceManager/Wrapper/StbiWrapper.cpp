@@ -8,7 +8,7 @@
 
 using namespace RenderEngine::Wrapper;
 
-bool StbiWrapper::LoadTexture(const std::string& _filePath, RawTexture& _output)
+bool StbiWrapper::LoadTexture(const std::string& _filePath, bool _computeMipmap, RawTexture& _output)
 {
 	_output.pixels = reinterpret_cast<char*>(stbi_load(_filePath.c_str(), &_output.width, &_output.height, &_output.channels, STBI_rgb_alpha));
 
@@ -21,12 +21,13 @@ bool StbiWrapper::LoadTexture(const std::string& _filePath, RawTexture& _output)
 
 	_output.imageSize = _output.width * _output.height * _output.channels;
 
-	_output.mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(_output.width, _output.height)))) + 1;
+	if(_computeMipmap)
+		_output.mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(_output.width, _output.height)))) + 1;
 
 	return true;
 }
 
-bool StbiWrapper::LoadCubemap(const CubemapImportInfos& _importInfos, RawCubemap& _output)
+bool StbiWrapper::LoadCubemap(const CubemapImportInfos& _importInfos, bool _computeMipmap, RawCubemap& _output)
 {
 	char* data[6]{};
 
@@ -52,7 +53,8 @@ bool StbiWrapper::LoadCubemap(const CubemapImportInfos& _importInfos, RawCubemap
 
 	_output.pixels = reinterpret_cast<char*>(stbi__malloc(6u * _output.imageSize));
 
-	_output.mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(_output.width, _output.height)))) + 1;
+	if (_computeMipmap)
+		_output.mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(_output.width, _output.height)))) + 1;
 
 	for (size_t i = 0; i < 6; ++i)
 	{

@@ -35,7 +35,7 @@ Scene::Scene(RenderEngine::ResourceManager* _resourceManager) :
 		"Resources/Engine/Textures/Skybox/front.jpg",
 		"Resources/Engine/Textures/Skybox/back.jpg");
 
-	skybox.cubemap = resourceManager->LoadCubemap(importInfos);
+	skybox.cubemap = resourceManager->LoadCubemap(importInfos, false);
 	skybox.irradianceMap = skybox.cubemap;
 	skybox.prefilterMap = skybox.cubemap;
 	skybox.BRDFlut = resourceManager->LoadTexture("Resources/Engine/Textures/default_brdf_lut.png");

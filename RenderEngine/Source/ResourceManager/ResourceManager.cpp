@@ -66,7 +66,7 @@ bool ResourceManager::UnloadMesh(Mesh* _mesh)
 	return meshManager.Unload(_mesh->filePath);
 }
 
-Texture* ResourceManager::LoadTexture(std::string _filePath)
+Texture* ResourceManager::LoadTexture(std::string _filePath, bool _computeMipmap)
 {
 	Texture* texture = GetTexture(_filePath);
 	if (texture != nullptr)
@@ -74,7 +74,7 @@ Texture* ResourceManager::LoadTexture(std::string _filePath)
 
 	RawTexture rawTexture;
 	rawTexture.textureCount = 1;
-	if (StbiWrapper::LoadTexture(_filePath, rawTexture))
+	if (StbiWrapper::LoadTexture(_filePath, _computeMipmap, rawTexture))
 	{
 		Texture* newTexture = new Texture();
 		renderContext->CreateTexture(rawTexture, newTexture);
@@ -135,7 +135,7 @@ bool ResourceManager::UnloadShader(Shader* _texture)
 	return shaderManager.Unload(_texture->filePath);
 }
 
-Cubemap* ResourceManager::LoadCubemap(CubemapImportInfos _filePaths)
+Cubemap* ResourceManager::LoadCubemap(CubemapImportInfos _filePaths, bool _computeMipmap)
 {
 	Cubemap* cubemap = GetCubemap(_filePaths);
 	if (cubemap != nullptr)
@@ -143,7 +143,7 @@ Cubemap* ResourceManager::LoadCubemap(CubemapImportInfos _filePaths)
 
 	RawCubemap rawCubemap;
 	rawCubemap.textureCount = 6;
-	if (StbiWrapper::LoadCubemap(_filePaths, rawCubemap))
+	if (StbiWrapper::LoadCubemap(_filePaths, _computeMipmap, rawCubemap))
 	{
 		Cubemap* newCubemap = new Cubemap();
 		renderContext->CreateCubemap(rawCubemap, newCubemap);

@@ -19,9 +19,9 @@ namespace RenderEngine::Wrapper
 
     public:
 
-        static bool LoadTexture(const std::string& _filePath, RawTexture& _output);
+        static bool LoadTexture(const std::string& _filePath, bool _computeMipmap, RawTexture& _output);
 
-        static bool LoadCubemap(const CubemapImportInfos& _importInfos, RawCubemap& _output);
+        static bool LoadCubemap(const CubemapImportInfos& _importInfos, bool _computeMipmap, RawCubemap& _output);
 
         static void FreeImage(char* image);
     };
