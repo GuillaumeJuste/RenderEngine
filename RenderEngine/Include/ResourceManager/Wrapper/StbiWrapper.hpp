@@ -4,7 +4,6 @@
 #define RENDERENGINE_STBIWRAPPER
 
 #include "ResourceManager/Assets/Texture/RawTexture.hpp"
-#include "ResourceManager/Assets/Cubemap/RawCubemap.hpp"
 #include "ResourceManager/Assets/Cubemap/CubemapImportInfos.hpp"
 #include <string>
 
@@ -19,11 +18,12 @@ namespace RenderEngine::Wrapper
 
     public:
 
-        static bool LoadTexture(const std::string& _filePath, bool _computeMipmap, RawTexture& _output);
+        static bool LoadTexture(const std::string& _filePath, bool _isHDR, bool _computeMipmap, RawTexture& _output);
 
-        static bool LoadCubemap(const CubemapImportInfos& _importInfos, bool _computeMipmap, RawCubemap& _output);
+        static bool LoadCubemap(const CubemapImportInfos& _importInfos, bool _computeMipmap, RawTexture& _output);
 
         static void FreeImage(char* image);
+        static void FreeImage(float* image);
     };
 }
 

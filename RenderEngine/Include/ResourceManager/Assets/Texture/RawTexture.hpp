@@ -17,10 +17,15 @@ namespace RenderEngine::Assets
         int imageSize;
         int channels;
         uint32_t mipLevels = 1;
+        unsigned int imageCount = 1;
 
-        uint32_t textureCount;
+        bool isHdr = false;
 
-        char* pixels;
+        union
+        {
+            char* dataC;
+            float* dataF;
+        };
 
         RawTexture() = default;
         ~RawTexture() = default;

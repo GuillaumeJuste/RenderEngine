@@ -21,6 +21,9 @@ namespace RenderEngine::Rendering
 
 		void CreateSampler();
 
+		template<typename T>
+		bool FillImageBuffer(T* _imageData);
+
 	public:
 		VkTexture() = default;
 		~VkTexture() = default;
@@ -38,5 +41,7 @@ namespace RenderEngine::Rendering
 	};
 
 }
+
+#include "Rendering/Vulkan/Texture/VkTexture.inl"
 
 #endif

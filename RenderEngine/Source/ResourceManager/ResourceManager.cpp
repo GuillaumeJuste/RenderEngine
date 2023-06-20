@@ -1,7 +1,6 @@
 #include "ResourceManager/ResourceManager.hpp"
 #include "ResourceManager/Wrapper/AssimpWrapper.hpp"
 #include "ResourceManager/Wrapper/StbiWrapper.hpp"
-#include "ResourceManager/Assets/Cubemap/RawCubemap.hpp"
 
 #include <stdexcept>
 #include <cstring>
@@ -66,15 +65,14 @@ bool ResourceManager::UnloadMesh(Mesh* _mesh)
 	return meshManager.Unload(_mesh->filePath);
 }
 
-Texture* ResourceManager::LoadTexture(std::string _filePath, bool _computeMipmap)
+Texture* ResourceManager::LoadTexture(std::string _filePath, bool _isHDR, bool _computeMipmap)
 {
 	Texture* texture = GetTexture(_filePath);
 	if (texture != nullptr)
 		return texture;
 
 	RawTexture rawTexture;
-	rawTexture.textureCount = 1;
-	if (StbiWrapper::LoadTexture(_filePath, _computeMipmap, rawTexture))
+	if (StbiWrapper::LoadTexture(_filePath, _isHDR, _computeMipmap, rawTexture))
 	{
 		Texture* newTexture = new Texture();
 		renderContext->CreateTexture(rawTexture, newTexture);
@@ -85,7 +83,7 @@ Texture* ResourceManager::LoadTexture(std::string _filePath, bool _computeMipmap
 		newTexture->mipLevels = rawTexture.mipLevels;
 		textureManager.Add(_filePath, newTexture);
 
-		StbiWrapper::FreeImage(rawTexture.pixels);
+		StbiWrapper::FreeImage(rawTexture.dataC);
 
 		return newTexture;
 	}
@@ -141,8 +139,7 @@ Cubemap* ResourceManager::LoadCubemap(CubemapImportInfos _filePaths, bool _compu
 	if (cubemap != nullptr)
 		return cubemap;
 
-	RawCubemap rawCubemap;
-	rawCubemap.textureCount = 6;
+	RawTexture rawCubemap;
 	if (StbiWrapper::LoadCubemap(_filePaths, _computeMipmap, rawCubemap))
 	{
 		Cubemap* newCubemap = new Cubemap();
@@ -154,7 +151,35 @@ Cubemap* ResourceManager::LoadCubemap(CubemapImportInfos _filePaths, bool _compu
 		newCubemap->imageSize = rawCubemap.imageSize;
 		cubemapManager.Add(_filePaths.pathes[0], newCubemap);
 
-		StbiWrapper::FreeImage(rawCubemap.pixels);
+		StbiWrapper::FreeImage(rawCubemap.dataC);
+
+		return newCubemap;
+	}
+
+	return nullptr;
+}
+
+Cubemap* ResourceManager::LoadCubemap(std::string _filePath, bool _computeMipmap)
+{
+	RawTexture rawTexture;
+	if (StbiWrapper::LoadTexture(_filePath, true, _computeMipmap, rawTexture))
+	{
+		Cubemap* newCubemap = new Cubemap();
+
+		Mesh* skyboxMesh = LoadMesh("Resources/Engine/Models/cube.obj");
+		Shader* skyboxVertShader = LoadShader("Resources/Engine/Shaders/Skybox.vert.spv", VERTEX);
+		Shader* skyboxFragShader = LoadShader("Resources/Engine/Shaders/TextureFragmentShader.frag.spv", FRAGMENT);
+
+		renderContext->CreateCubemap(rawTexture, skyboxMesh, skyboxVertShader, skyboxFragShader, newCubemap);
+
+		newCubemap->filePath = _filePath;
+		newCubemap->height = rawTexture.height;
+		newCubemap->width = rawTexture.width;
+		newCubemap->mipLevels = rawTexture.mipLevels;
+		newCubemap->imageSize = rawTexture.imageSize;
+		cubemapManager.Add(_filePath, newCubemap);
+
+		StbiWrapper::FreeImage(rawTexture.dataF);
 
 		return newCubemap;
 	}

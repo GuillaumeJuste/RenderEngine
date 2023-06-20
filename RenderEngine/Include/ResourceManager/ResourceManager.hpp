@@ -38,7 +38,7 @@ namespace RenderEngine
         Mesh* GetMesh(std::string _filePath);
         bool UnloadMesh(Mesh* _mesh);
 
-        Texture* LoadTexture(std::string _filePath, bool _computeMipmap = true);
+        Texture* LoadTexture(std::string _filePath, bool _isHDR = false, bool _computeMipmap = true);
         Texture* GetTexture(std::string _filePath);
         bool UnloadTexture(Texture* _texture);
 
@@ -47,6 +47,7 @@ namespace RenderEngine
         bool UnloadShader(Shader* _texture);
 
         Cubemap* LoadCubemap(CubemapImportInfos _filePaths, bool _computeMipmap = true);
+        Cubemap* LoadCubemap(std::string _filePath, bool _computeMipmap = true);
         Cubemap* GetCubemap(const CubemapImportInfos& _filePaths);
         bool UnloadCubemap(Cubemap* _cubemap);
 
