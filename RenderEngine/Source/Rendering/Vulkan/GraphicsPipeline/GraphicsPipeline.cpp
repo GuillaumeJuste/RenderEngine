@@ -14,8 +14,8 @@ void GraphicsPipeline::InitalizeGraphicsPipeline(const GraphicsPipelineVkCreateI
 	_output->swapChainExtent = _createInfo.swapChainExtent;
     _output->renderPass = _createInfo.renderPass;
 	
-    _output->vertexShader = dynamic_cast<VkShader*>(_createInfo.meshRenderer->vertexShader->iShader);
-    _output->fragmentShader = dynamic_cast<VkShader*>(_createInfo.meshRenderer->fragmentShader->iShader);
+    _output->vertexShader = dynamic_cast<VkShader*>(_createInfo.vertexShader->iShader);
+    _output->fragmentShader = dynamic_cast<VkShader*>(_createInfo.fragmentShader->iShader);
 
     VkPipelineShaderStageCreateInfo shaderStages[] = { _output->vertexShader->GetShaderStageInfo(), _output->fragmentShader->GetShaderStageInfo() };
 
@@ -43,10 +43,10 @@ void GraphicsPipeline::InitalizeGraphicsPipeline(const GraphicsPipelineVkCreateI
     rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
     rasterizer.depthClampEnable = VK_FALSE;
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
-    rasterizer.polygonMode = (VkPolygonMode)_createInfo.meshRenderer->drawMode;
-    rasterizer.lineWidth = _createInfo.meshRenderer->lineWidth;
+    rasterizer.polygonMode = (VkPolygonMode)_createInfo.drawMode;
+    rasterizer.lineWidth = _createInfo.lineWidth;
     rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
-    rasterizer.frontFace = (VkFrontFace)_createInfo.meshRenderer->frontFace;
+    rasterizer.frontFace = (VkFrontFace)_createInfo.frontFace;
     rasterizer.depthBiasEnable = VK_FALSE;
 
     VkPipelineMultisampleStateCreateInfo multisampling{};

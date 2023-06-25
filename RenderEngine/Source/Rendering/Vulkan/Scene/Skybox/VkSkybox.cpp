@@ -19,19 +19,16 @@ void VkSkybox::InitializeSkybox(const VkSkyboxCreateInfo& _createInfo, Descripto
 
 void VkSkybox::CreateGraphicsPipeline(DescriptorBuffer* _cameraBuffer)
 {
-	RenderEngine::SceneGraph::MeshRenderer meshRenderer;
-	meshRenderer.vertexShader = skybox->vertexShader;
-	meshRenderer.fragmentShader = skybox->fragmentShader;
-	meshRenderer.drawMode = PolygonDrawMode::FILL;
-	meshRenderer.lineWidth = 1.0f;
-	meshRenderer.frontFace = FrontFace::COUNTER_CLOCKWISE;
-
 	GraphicsPipelineVkCreateInfo gpCreateInfo{};
 	gpCreateInfo.logicalDevice = createInfo.logicalDevice;
 	gpCreateInfo.renderPass = createInfo.renderpass;
 	gpCreateInfo.swapChainExtent = createInfo.swapchain->GetExtent();
 	gpCreateInfo.swapChainImageFormat = createInfo.swapchain->GetImageFormat();
-	gpCreateInfo.meshRenderer = &meshRenderer;
+	gpCreateInfo.vertexShader = skybox->vertexShader;
+	gpCreateInfo.fragmentShader = skybox->fragmentShader;
+	gpCreateInfo.drawMode = PolygonDrawMode::FILL;
+	gpCreateInfo.lineWidth = 1.0f;
+	gpCreateInfo.frontFace = FrontFace::COUNTER_CLOCKWISE;
 	gpCreateInfo.writeDepthBuffer = VK_FALSE;
 	gpCreateInfo.culling_mode = VK_CULL_MODE_FRONT_BIT;
 	gpCreateInfo.samples = createInfo.samples;

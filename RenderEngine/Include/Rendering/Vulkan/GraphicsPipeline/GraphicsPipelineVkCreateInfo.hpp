@@ -27,15 +27,20 @@ namespace RenderEngine::Rendering
 		/// renderpass
 		RenderPass* renderPass;
 
-		RenderEngine::SceneGraph::MeshRenderer* meshRenderer;
-
 		std::vector<DescriptorDataList> descriptorDatas;
 
+		bool enableDepthTest = true;
 		bool writeDepthBuffer = true;
 
 		VkCullModeFlagBits culling_mode = VK_CULL_MODE_BACK_BIT;
 
 		VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT;
+
+		Shader* vertexShader;
+		Shader* fragmentShader;
+		FrontFace frontFace = FrontFace::CLOCKWISE;
+		PolygonDrawMode drawMode = PolygonDrawMode::FILL;
+		float lineWidth = 1.0f;
 
 		/// default constructor
 		GraphicsPipelineVkCreateInfo() = default;

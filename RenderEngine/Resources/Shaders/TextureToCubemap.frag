@@ -4,8 +4,8 @@ layout(set = 1, binding = 0) uniform sampler2D equirectangularMap;
 
 layout(location = 0) in DataBlock
 {
-	vec3 UVW;
-} vsIn;
+    vec3 uvw;
+} fsIn;
 
 layout(location = 0) out vec4 outColor;
 
@@ -20,7 +20,8 @@ vec2 SampleSphericalMap(vec3 v)
 
 void main()
 {		
-    vec2 uv = SampleSphericalMap(normalize(vsIn.UVW));
+    vec2 uv = SampleSphericalMap(normalize(fsIn.uvw));
+    uv.y *= -1;
     vec3 color = texture(equirectangularMap, uv).rgb;
     
     outColor = vec4(color, 1.0);

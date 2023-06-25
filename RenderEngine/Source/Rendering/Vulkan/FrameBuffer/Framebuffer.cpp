@@ -1,7 +1,7 @@
 #include "Rendering/Vulkan/FrameBuffer/FrameBuffer.hpp"
 
 #include <iostream>
-#include <array>
+#include <vector>
 
 using namespace RenderEngine::Rendering;
 
@@ -11,12 +11,17 @@ void FrameBuffer::InitializeFrameBuffer(const FrameBufferVkCreateInfo& _frameBuf
 
 	_output->framebuffers.resize(_frameBufferCreateInfo.swapChainImageCount);
 
-	for (size_t i = 0; i < _frameBufferCreateInfo.swapChainImageCount; i++) {
-		std::array<VkImageView, 3> attachments = {
-			_frameBufferCreateInfo.colorImage->GetImageView(),
-			_frameBufferCreateInfo.depthBuffer->GetVkImageView(),
-			_frameBufferCreateInfo.imageViews[i]
-		};
+	for (size_t i = 0; i < _frameBufferCreateInfo.swapChainImageCount; i++) 
+	{
+		std::vector<VkImageView> attachments;
+		
+		if (_frameBufferCreateInfo.colorImage != nullptr)
+			attachments.push_back(_frameBufferCreateInfo.colorImage->GetImageView());
+
+		if (_frameBufferCreateInfo.depthBuffer != nullptr)
+			attachments.push_back(_frameBufferCreateInfo.depthBuffer->GetVkImageView());
+
+		attachments.push_back(_frameBufferCreateInfo.imageViews[i]);
 
 		VkFramebufferCreateInfo framebufferInfo{};
 		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;

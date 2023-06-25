@@ -19,7 +19,7 @@ namespace RenderEngine::Rendering
 		Image image;
 		VkSampler sampler;
 
-		void CreateSampler();
+		void CreateSampler(uint32_t _mipmap);
 
 		template<typename T>
 		bool FillImageBuffer(T* _imageData);
@@ -28,13 +28,14 @@ namespace RenderEngine::Rendering
 		VkTexture() = default;
 		~VkTexture() = default;
 
-		static void InitializeVkTexture(const VkTextureVkCreateInfo& _vkTextureCreateInfo, VkTexture* _output);
+		static void InitializeVkTexture(const VkTextureVkCreateInfo& _vkTextureCreateInfo, VkTexture* _output, bool _fillImage = true);
 
 		/**
 		 * @brief clean up vulkan classes
 		*/
 		void Clean();
 
+		Image* GetImage();
 		VkImageView GetImageView() const;
 		VkSampler GetSampler() const;
 

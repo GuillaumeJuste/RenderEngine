@@ -35,13 +35,16 @@ Scene::Scene(RenderEngine::ResourceManager* _resourceManager) :
 		"Resources/Engine/Textures/Skybox/front.jpg",
 		"Resources/Engine/Textures/Skybox/back.jpg");
 
-	skybox.cubemap = resourceManager->LoadCubemap(importInfos, false);
+	/*skybox.cubemap = resourceManager->LoadCubemap(importInfos, false);
 	skybox.irradianceMap = skybox.cubemap;
-	skybox.prefilterMap = skybox.cubemap;
+	skybox.prefilterMap = skybox.cubemap;*/
 	skybox.BRDFlut = resourceManager->LoadTexture("Resources/Engine/Textures/default_brdf_lut.png");
-
 	skybox.vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/Skybox.vert.spv", VERTEX);
 	skybox.fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/Skybox.frag.spv", FRAGMENT);
+
+	skybox.cubemap = resourceManager->LoadCubemap("Resources/Engine/Textures/HDR/newport_loft.hdr", true, true);
+	skybox.irradianceMap = skybox.cubemap;
+	skybox.prefilterMap = skybox.cubemap;
 }
 
 void Scene::Initialize()

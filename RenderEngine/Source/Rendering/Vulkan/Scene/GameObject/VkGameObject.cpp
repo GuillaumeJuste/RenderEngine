@@ -31,7 +31,11 @@ void VkGameObject::CreateGraphicsPipeline()
 		gpCreateInfo.renderPass = createInfo.renderpass;
 		gpCreateInfo.swapChainExtent = createInfo.swapchain->GetExtent();
 		gpCreateInfo.swapChainImageFormat = createInfo.swapchain->GetImageFormat();
-		gpCreateInfo.meshRenderer = meshRenderer;
+		gpCreateInfo.vertexShader = meshRenderer->vertexShader;
+		gpCreateInfo.fragmentShader = meshRenderer->fragmentShader;
+		gpCreateInfo.drawMode = meshRenderer->drawMode;
+		gpCreateInfo.lineWidth = meshRenderer->lineWidth;
+		gpCreateInfo.frontFace = meshRenderer->frontFace;
 		gpCreateInfo.samples = createInfo.samples;
 
 		gpCreateInfo.descriptorDatas.push_back(GenerateDefaultVertexShaderDescriptorSet());

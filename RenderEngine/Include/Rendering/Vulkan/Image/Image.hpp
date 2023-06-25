@@ -37,7 +37,7 @@ namespace RenderEngine::Rendering
 		 * @param _output Image to initialize
 		*/
 		static void InitializeImage(const ImageVkCreateInfo& _imageCreateInfo, Image* _output);
-		void TransitionImageLayout(VkFormat _format, VkImageLayout _oldLayout, VkImageLayout _newLayout);
+		void TransitionImageLayout(VkFormat _format, VkImageLayout _oldLayout, VkImageLayout _newLayout, VkCommandBuffer _commandBuffer = nullptr);
 		void CopyBufferToImage(VkBuffer _buffer);
 		void GenerateMipmaps(VkFormat _format);
 

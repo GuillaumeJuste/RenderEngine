@@ -28,7 +28,6 @@ namespace RenderEngine::Rendering
 
 		stagingBuffer.Clean();
 
-		CreateSampler();
 
 		return false;
 	}

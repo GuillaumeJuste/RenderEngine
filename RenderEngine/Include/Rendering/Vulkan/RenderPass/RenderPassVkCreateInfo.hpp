@@ -4,6 +4,7 @@
 #define RENDERENGINE_RENDERPASSVKCREATEINFO
 
 #include "Rendering/Vulkan/DepthBuffer/DepthBuffer.hpp"
+#include <vector>
 
 namespace RenderEngine::Rendering
 {
@@ -15,10 +16,14 @@ namespace RenderEngine::Rendering
 		/// logical device
 		VkDevice logicalDevice;
 
+		std::vector<VkSubpassDependency> subpassDependencies;
+
 		/// swapchain image format
 		VkFormat swapChainImageFormat;
 
-		DepthBuffer* depthBuffer;
+		DepthBuffer* depthBuffer = nullptr;
+
+		bool createColorResolveAttachement = false;
 
 		VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT;
 

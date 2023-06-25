@@ -47,7 +47,7 @@ namespace RenderEngine
         bool UnloadShader(Shader* _texture);
 
         Cubemap* LoadCubemap(CubemapImportInfos _filePaths, bool _computeMipmap = true);
-        Cubemap* LoadCubemap(std::string _filePath, bool _computeMipmap = true);
+        Cubemap* LoadCubemap(std::string _filePath, bool _isHDR = false, bool _computeMipmap = true);
         Cubemap* GetCubemap(const CubemapImportInfos& _filePaths);
         bool UnloadCubemap(Cubemap* _cubemap);
 

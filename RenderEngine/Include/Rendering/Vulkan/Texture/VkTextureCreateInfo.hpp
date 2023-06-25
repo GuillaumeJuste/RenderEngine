@@ -24,6 +24,11 @@ namespace RenderEngine::Rendering
 
 		RenderEngine::Assets::RawTexture texture;
 
+		uint32_t width;
+		uint32_t height;
+		uint32_t imageCount;
+		uint32_t mipLevels;
+
 		VkFormat format;
 		VkImageTiling tiling;
 		VkImageUsageFlags usage; 

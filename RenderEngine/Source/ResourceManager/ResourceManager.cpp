@@ -159,32 +159,27 @@ Cubemap* ResourceManager::LoadCubemap(CubemapImportInfos _filePaths, bool _compu
 	return nullptr;
 }
 
-Cubemap* ResourceManager::LoadCubemap(std::string _filePath, bool _computeMipmap)
+Cubemap* ResourceManager::LoadCubemap(std::string _filePath, bool _isHDR, bool _computeMipmap)
 {
-	RawTexture rawTexture;
-	if (StbiWrapper::LoadTexture(_filePath, true, _computeMipmap, rawTexture))
-	{
-		Cubemap* newCubemap = new Cubemap();
+	Cubemap* newCubemap = new Cubemap();
 
-		Mesh* skyboxMesh = LoadMesh("Resources/Engine/Models/cube.obj");
-		Shader* skyboxVertShader = LoadShader("Resources/Engine/Shaders/Skybox.vert.spv", VERTEX);
-		Shader* skyboxFragShader = LoadShader("Resources/Engine/Shaders/TextureFragmentShader.frag.spv", FRAGMENT);
+	Texture* skyboxTexture = LoadTexture(_filePath, _isHDR, _computeMipmap);
+	Mesh* skyboxMesh = LoadMesh("Resources/Engine/Models/cube.obj");
+	Shader* skyboxVertShader = LoadShader("Resources/Engine/Shaders/Skybox.vert.spv", VERTEX);
+	Shader* skyboxFragShader = LoadShader("Resources/Engine/Shaders/TextureToCubemap.frag.spv", FRAGMENT);
 
-		renderContext->CreateCubemap(rawTexture, skyboxMesh, skyboxVertShader, skyboxFragShader, newCubemap);
+	renderContext->CreateCubemap(skyboxTexture, skyboxMesh, skyboxVertShader, skyboxFragShader, newCubemap);
+	newCubemap->filePath = _filePath;
+	newCubemap->height = 1024;
+	newCubemap->width = 1024;
+	newCubemap->mipLevels = 1;
+	newCubemap->imageSize = 1024 * 1024 * 4;
+	if(_isHDR)
+		newCubemap->imageSize *= 4;
 
-		newCubemap->filePath = _filePath;
-		newCubemap->height = rawTexture.height;
-		newCubemap->width = rawTexture.width;
-		newCubemap->mipLevels = rawTexture.mipLevels;
-		newCubemap->imageSize = rawTexture.imageSize;
-		cubemapManager.Add(_filePath, newCubemap);
+	cubemapManager.Add(_filePath, newCubemap);
 
-		StbiWrapper::FreeImage(rawTexture.dataF);
-
-		return newCubemap;
-	}
-
-	return nullptr;
+	return newCubemap;
 }
 
 Cubemap* ResourceManager::GetCubemap(const CubemapImportInfos& _filePaths)
