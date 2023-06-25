@@ -21,7 +21,6 @@ layout(location = 0) out DataBlock
 	vec3 interpNormal;
 	vec3 fragTexCoord;
 	vec3 cameraPos;
-    vec3 uvw;
 } vsOut;
 
 void main() {
@@ -29,7 +28,6 @@ void main() {
 
     vsOut.fragTexCoord = inTexCoord;
     vsOut.fragPos = vec3( ubo.model * vec4(inPosition, 1.0));
-    vsOut.uvw = inPosition;
     //vsOut.fragPos = vec3(gl_Position);
     vsOut.interpNormal = mat3(transpose(inverse(ubo.model))) * inNormal;  
     vsOut.cameraPos = cbo.cameraPos;
