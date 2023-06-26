@@ -28,6 +28,7 @@ namespace RenderEngine::Rendering
 		RenderPass* renderPass;
 
 		std::vector<DescriptorDataList> descriptorDatas;
+		std::vector<VkPushConstantRange> pushConstants;
 
 		bool enableDepthTest = true;
 		bool writeDepthBuffer = true;

@@ -525,30 +525,11 @@ bool RenderContext::CreateCubemap(RenderEngine::Assets::Texture* _texture, Rende
 	}
 
 	// Pipeline layout
-	struct defaultCameraBuffer {
+	struct defaultCameraBlock {
 		Mathlib::Mat4 invView;
 		Mathlib::Mat4 proj;
 		Mathlib::Vec3 cameraPos;
-	} cameraBuffer;
-
-	DescriptorBuffer pushBuffer;
-
-	BufferObjectVkCreateInfo cameraBufferCreateInfo;
-	cameraBufferCreateInfo.physicalDevice = physicalDeviceProperties.physicalDevice;
-	cameraBufferCreateInfo.logicalDevice = logicalDevice;
-	cameraBufferCreateInfo.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
-	cameraBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-	cameraBufferCreateInfo.bufferSize = sizeof(defaultCameraBuffer);
-	DescriptorBuffer::InitializeDescriptorBuffer(cameraBufferCreateInfo, 1, &pushBuffer);
-
-	DescriptorDataList vShaderDatalist{};
-
-	DescriptorData cameraBufferData{};
-	cameraBufferData.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	cameraBufferData.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-	cameraBufferData.binding = 0;
-	cameraBufferData.buffer = &pushBuffer;
-	vShaderDatalist.Add(cameraBufferData);
+	} cameraBlock;
 
 	VkTexture* inputTexture = dynamic_cast<VkTexture*>(_texture->iTexture);
 
@@ -559,6 +540,11 @@ bool RenderContext::CreateCubemap(RenderEngine::Assets::Texture* _texture, Rende
 	textureBufferData.binding = 0;
 	textureBufferData.texture = inputTexture;
 	fShaderDatalist.Add(textureBufferData);
+
+	VkPushConstantRange pushConstantRange{};
+	pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+	pushConstantRange.offset = 0;
+	pushConstantRange.size = sizeof(defaultCameraBlock);
 
 	GraphicsPipelineVkCreateInfo gpCreateInfo{};
 	gpCreateInfo.logicalDevice = logicalDevice;
@@ -575,8 +561,8 @@ bool RenderContext::CreateCubemap(RenderEngine::Assets::Texture* _texture, Rende
 	gpCreateInfo.culling_mode = VK_CULL_MODE_FRONT_BIT;
 	gpCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
 
-	gpCreateInfo.descriptorDatas.push_back(vShaderDatalist);
 	gpCreateInfo.descriptorDatas.push_back(fShaderDatalist);
+	gpCreateInfo.pushConstants.push_back(pushConstantRange);
 
 	GraphicsPipeline tmpPipeline;
 
@@ -618,20 +604,20 @@ bool RenderContext::CreateCubemap(RenderEngine::Assets::Texture* _texture, Rende
 
 	std::vector<Mathlib::Mat4> matrices = {
 		// POSITIVE_X
-		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(1.f, 0.f, 0.f), Mathlib::Vec3(0.f, 1.f, 0.f)),
+		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(1.f, 0.f, 0.f), Mathlib::Vec3(0.f, 1.f, 0.f)).Transpose(),
 		// NEGATIVE_X
-		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(-1.f, 0.f, 0.f), Mathlib::Vec3(0.f, 1.f, 0.f)),
+		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(-1.f, 0.f, 0.f), Mathlib::Vec3(0.f, 1.f, 0.f)).Transpose(),
 		// POSITIVE_Y
-		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, 1.f, 0.f), Mathlib::Vec3(0.f, 0.f, -1.f)),
+		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, -1.f, 0.f), Mathlib::Vec3(0.f, 0.f, -1.f)).Transpose(),
 		// NEGATIVE_Y
-		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, -1.f, 0.f), Mathlib::Vec3(0.f, 0.f, 1.f)),
+		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, 1.f, 0.f), Mathlib::Vec3(0.f, 0.f, 1.f)).Transpose(),
 		// POSITIVE_Z
-		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, 0.f, 1.f), Mathlib::Vec3(0.f, 1.f, 0.f)),
+		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, 0.f, 1.f), Mathlib::Vec3(0.f, 1.f, 0.f)).Transpose(),
 		// NEGATIVE_Z
-		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, 0.f, -1.f), Mathlib::Vec3(0.f, 1.f, 0.f)),
+		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, 0.f, -1.f), Mathlib::Vec3(0.f, 1.f, 0.f)).Transpose(),
 	};
 
-	Mathlib::Mat4 projection = Mathlib::Mat4::PerspectiveMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Math::Radians(90), 1.0f, 0.1f, 512.0f);
+	Mathlib::Mat4 projection = Mathlib::Mat4::PerspectiveMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Math::Radians(90), 1.0f, 0.1f, 512.0f).Transpose();
 
 	VkViewport viewport{};
 	viewport.width = dim;
@@ -659,12 +645,12 @@ bool RenderContext::CreateCubemap(RenderEngine::Assets::Texture* _texture, Rende
 		vkCmdBeginRenderPass(commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 	
 		// Update shader push constant block
-		cameraBuffer.invView = matrices[f];
-		cameraBuffer.proj = projection;
-		cameraBuffer.cameraPos = Mathlib::Vec3(0.f, 0.f, 0.f);
+		cameraBlock.invView = matrices[f];
+		cameraBlock.proj = projection;
+		cameraBlock.cameraPos = Mathlib::Vec3(0.f, 0.f, 0.f);
 	
-		pushBuffer.CopyDataToBuffer<defaultCameraBuffer>(0, &cameraBuffer, sizeof(defaultCameraBuffer));
-	
+		vkCmdPushConstants(commandBuffer, tmpPipeline.GetGraphicsPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(defaultCameraBlock), &cameraBlock);
+
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, tmpPipeline.GetGraphicsPipeline());
 	
 		size_t descrtiptorSetCount = descriptorSets.size();

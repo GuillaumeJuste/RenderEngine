@@ -165,7 +165,7 @@ Cubemap* ResourceManager::LoadCubemap(std::string _filePath, bool _isHDR, bool _
 
 	Texture* skyboxTexture = LoadTexture(_filePath, _isHDR, _computeMipmap);
 	Mesh* skyboxMesh = LoadMesh("Resources/Engine/Models/cube.obj");
-	Shader* skyboxVertShader = LoadShader("Resources/Engine/Shaders/Skybox.vert.spv", VERTEX);
+	Shader* skyboxVertShader = LoadShader("Resources/Engine/Shaders/FilterCube.vert.spv", VERTEX);
 	Shader* skyboxFragShader = LoadShader("Resources/Engine/Shaders/TextureToCubemap.frag.spv", FRAGMENT);
 
 	renderContext->CreateCubemap(skyboxTexture, skyboxMesh, skyboxVertShader, skyboxFragShader, newCubemap);

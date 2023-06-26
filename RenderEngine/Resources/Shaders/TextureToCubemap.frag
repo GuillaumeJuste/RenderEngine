@@ -1,6 +1,6 @@
 #version 450
 
-layout(set = 1, binding = 0) uniform sampler2D equirectangularMap;
+layout(set = 0, binding = 0) uniform sampler2D equirectangularMap;
 
 layout(location = 0) in DataBlock
 {

@@ -108,6 +108,8 @@ void GraphicsPipeline::InitalizeGraphicsPipeline(const GraphicsPipelineVkCreateI
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     pipelineLayoutInfo.setLayoutCount = (uint32_t)descrtiptorSetCount;
     pipelineLayoutInfo.pSetLayouts = vkDescriptorSetLayout.data();
+    pipelineLayoutInfo.pushConstantRangeCount = _createInfo.pushConstants.size();
+    pipelineLayoutInfo.pPushConstantRanges = _createInfo.pushConstants.data();
 
     if (vkCreatePipelineLayout(_output->logicalDevice, &pipelineLayoutInfo, nullptr, &_output->pipelineLayout) != VK_SUCCESS) {
         throw std::runtime_error("failed to create pipeline layout!");
