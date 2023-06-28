@@ -55,7 +55,7 @@ namespace RenderEngine::Rendering
 		 * @brief Get Vertex struct attribute description
 		 * @return Vertex struct attribute description
 		*/
-		static std::array<VkVertexInputAttributeDescription, 3> GetVertexAttributeDescriptions();
+		static std::array<VkVertexInputAttributeDescription, 4> GetVertexAttributeDescriptions();
 
 		void CreateDescriptorPool(std::vector<DescriptorDataList> _descriptorSetDatas);
 

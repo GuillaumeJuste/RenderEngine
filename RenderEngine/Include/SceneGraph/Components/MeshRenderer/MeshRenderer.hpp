@@ -24,6 +24,7 @@ namespace RenderEngine::SceneGraph
         Texture* texture;
         Texture* metalnessMap;
         Texture* roughnessMap;
+        Texture* normalMap;
         Texture* ambientOcclusionMap;
 
         Shader* vertexShader;

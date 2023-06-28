@@ -149,9 +149,9 @@ VkVertexInputBindingDescription GraphicsPipeline::GetVertexBindingDescription()
     return bindingDescription;
 }
 
-std::array<VkVertexInputAttributeDescription, 3> GraphicsPipeline::GetVertexAttributeDescriptions()
+std::array<VkVertexInputAttributeDescription, 4> GraphicsPipeline::GetVertexAttributeDescriptions()
 {
-    std::array<VkVertexInputAttributeDescription, 3> attributeDescriptions{};
+    std::array<VkVertexInputAttributeDescription, 4> attributeDescriptions{};
     attributeDescriptions[0].binding = 0;
     attributeDescriptions[0].location = 0;
     attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
@@ -166,6 +166,11 @@ std::array<VkVertexInputAttributeDescription, 3> GraphicsPipeline::GetVertexAttr
     attributeDescriptions[2].location = 2;
     attributeDescriptions[2].format = VK_FORMAT_R32G32B32_SFLOAT;
     attributeDescriptions[2].offset = offsetof(Vertex, textCoord);
+
+    attributeDescriptions[3].binding = 0;
+    attributeDescriptions[3].location = 3;
+    attributeDescriptions[3].format = VK_FORMAT_R32G32B32_SFLOAT;
+    attributeDescriptions[3].offset = offsetof(Vertex, tangent);
 
     return attributeDescriptions;
 }

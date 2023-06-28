@@ -37,6 +37,13 @@ bool AssimpWrapper::ProcessMesh(const aiScene* _scene, RawMesh& _output)
 				newVertex.textCoord.Z = mesh->mTextureCoords[0][i].z;
 			}
 
+			if (mesh->HasTangentsAndBitangents())
+			{
+				newVertex.tangent.X = mesh->mTangents[i].x;
+				newVertex.tangent.Y = mesh->mTangents[i].y;
+				newVertex.tangent.Z = mesh->mTangents[i].z;
+			}
+
 			_output.vertices.push_back(newVertex);
 		}
 
@@ -58,7 +65,8 @@ bool AssimpWrapper::LoadMesh(const std::string& _filePath, RawMesh& _output)
 		aiProcess_CalcTangentSpace |
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
-		aiProcess_SortByPType);
+		aiProcess_SortByPType |
+		aiProcess_CalcTangentSpace);
 
 	if (scene == nullptr) {
 		throw std::runtime_error(importer.GetErrorString());

@@ -12,7 +12,7 @@ layout(location = 0) in DataBlock
 layout(set = 1, binding = 0) uniform sampler2D albedoSampler;
 layout(set = 1, binding = 1) uniform sampler2D metalnessSampler;
 
-layout(set = 1, binding = 4) uniform MaterialBufferObject 
+layout(set = 1, binding = 12) uniform MaterialBufferObject 
 {
 	float shininess;
 	vec3 Ka;

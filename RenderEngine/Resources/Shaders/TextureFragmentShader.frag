@@ -7,6 +7,7 @@ layout(location = 0) in DataBlock
 	vec3 normal;
 	vec3 fragTexCoord;
 	vec3 cameraPos;
+    vec3 tangent;
 } fsIn;
 
 layout(set = 1, binding = 0) uniform sampler2D albedoSampler;

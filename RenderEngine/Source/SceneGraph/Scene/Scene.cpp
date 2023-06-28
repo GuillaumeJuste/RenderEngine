@@ -100,6 +100,7 @@ GameObject* Scene::AddGameObject(GameObjectCreateInfo _createInfo)
 	meshRenderer->texture = texture;
 	meshRenderer->metalnessMap = texture;
 	meshRenderer->roughnessMap = texture;
+	meshRenderer->normalMap = texture;
 	meshRenderer->ambientOcclusionMap = texture;
 	meshRenderer->vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/VertexShader.vert.spv", VERTEX);
 	meshRenderer->fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/BlinnPhongFragmentShader.frag.spv", FRAGMENT);

@@ -116,20 +116,20 @@ DescriptorDataList VkGameObject::GenerateDefaultFragmentShaderDescriptorSet()
 		roughnessMapBufferData.texture = dynamic_cast<VkTexture*>(meshRenderer->roughnessMap->iTexture);
 		datalist.Add(roughnessMapBufferData);
 
+		DescriptorData normalMapBufferData{};
+		normalMapBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		normalMapBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+		normalMapBufferData.binding = 3;
+		normalMapBufferData.texture = dynamic_cast<VkTexture*>(meshRenderer->normalMap->iTexture);
+		datalist.Add(normalMapBufferData);
+
 		DescriptorData aoMapBufferData{};
 		aoMapBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		aoMapBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-		aoMapBufferData.binding = 3;
+		aoMapBufferData.binding = 4;
 		aoMapBufferData.texture = dynamic_cast<VkTexture*>(meshRenderer->ambientOcclusionMap->iTexture);
 		datalist.Add(aoMapBufferData);
 	}
-
-	DescriptorData materialBufferData{};
-	materialBufferData.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	materialBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	materialBufferData.binding = 4;
-	materialBufferData.buffer = &materialBufferObject;
-	datalist.Add(materialBufferData);
 
 	DescriptorData pointLightBufferData{};
 	pointLightBufferData.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
@@ -179,6 +179,13 @@ DescriptorDataList VkGameObject::GenerateDefaultFragmentShaderDescriptorSet()
 	skyboxBufferData.binding = 11;
 	skyboxBufferData.texture = createInfo.skyboxMap;
 	datalist.Add(skyboxBufferData);
+
+	DescriptorData materialBufferData{};
+	materialBufferData.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	materialBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+	materialBufferData.binding = 12;
+	materialBufferData.buffer = &materialBufferObject;
+	datalist.Add(materialBufferData);
 
 	return datalist;
 }

@@ -7,12 +7,14 @@ layout(location = 0) in DataBlock
 	vec3 interpNormal;
 	vec3 fragTexCoord;
 	vec3 cameraPos;
+	vec3 tangent;
 } fsIn;
 
 layout(set = 1, binding = 0) uniform sampler2D albedoSampler;
 layout(set = 1, binding = 1) uniform sampler2D metalnessMapSampler;
 layout(set = 1, binding = 2) uniform sampler2D roughnessMapSampler;
-layout(set = 1, binding = 3) uniform sampler2D aoMapSampler;
+layout(set = 1, binding = 3) uniform sampler2D normalMapSampler;
+layout(set = 1, binding = 4) uniform sampler2D aoMapSampler;
 
 struct PointLight
 {
@@ -97,6 +99,8 @@ float GeometrySmith(vec3 _N, vec3 _V, vec3 _L, float _roughness);
 
 vec3 prefilteredReflection(vec3 _reflection, float _roughness);
 
+vec3 getNormalFromMap();
+
 float ComputeAttenuation(float _distance, float _lightRange);
 vec3 ComputePointLightLighting(PointLight _light, vec3 _normal, vec3 _viewDirection, vec3 _albdeo, float _metalness, float _roughness, vec3 _F0);
 vec3 ComputeDirectionalLightLighting(DirectionalLight _light, vec3 _normal, vec3 _viewDirection, vec3 _albdeo, float _metalness, float _roughness, vec3 _F0);
@@ -111,7 +115,7 @@ void main()
 	float roughness = texture(roughnessMapSampler, fsIn.fragTexCoord.xy).x;
 	float ao = texture(aoMapSampler, fsIn.fragTexCoord.xy).x;
 
-	vec3 normal = normalize(fsIn.interpNormal);
+	vec3 normal = getNormalFromMap();
     vec3 viewDirection = normalize(fsIn.cameraPos - fsIn.fragPos);
 	vec3 reflection = reflect(-viewDirection, normal); 
 
@@ -281,4 +285,13 @@ vec3 prefilteredReflection(vec3 _reflection, float _roughness)
 	vec3 a = textureLod(prefilteredSampler, _reflection, lodf).rgb;
 	vec3 b = textureLod(prefilteredSampler, _reflection, lodc).rgb;
 	return mix(a, b, lod - lodf);
+}
+
+vec3 getNormalFromMap()
+{
+	vec3 N = normalize(fsIn.interpNormal);
+	vec3 T = normalize(fsIn.tangent);
+	vec3 B = cross (N, T);
+	mat3 TBN = mat3(T, B, N);
+	return vec3(normalize(TBN * (texture(normalMapSampler, fsIn.fragTexCoord.xy).rgb * 2.0 - 1.0)));
 }

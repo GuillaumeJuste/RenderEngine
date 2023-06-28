@@ -263,6 +263,7 @@ Scene* SetupSphereScene()
     Texture* wallTexture = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/albedo.png");
     Texture* wallMetalnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/metallic.png");
     Texture* wallRoughnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/roughness.png");
+    Texture* wallNormalMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/normal.png");
     Texture* wallAoMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/ao.png");
 
     /*Cube 1*/
@@ -282,6 +283,7 @@ Scene* SetupSphereScene()
     meshRenderer->texture = wallTexture;
     meshRenderer->metalnessMap = wallMetalnessMap;
     meshRenderer->roughnessMap = wallRoughnessMap;
+    meshRenderer->normalMap = wallNormalMap;
     meshRenderer->ambientOcclusionMap = wallAoMap;
     meshRenderer->fragmentShader = fragShader;
     meshRenderer->shininess = 32.0f;
@@ -308,6 +310,7 @@ Scene* SetupSphereScene()
     Texture* ironTexture = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/albedo.png");
     Texture* ironMetalnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/metallic.png");
     Texture* ironRoughnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/roughness.png");
+    Texture* ironNormalMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/normal.png");
     Texture* ironAoMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/ao.png");
 
     MeshRenderer* meshRenderer2 = obj2->GetComponent<MeshRenderer>();
@@ -315,6 +318,7 @@ Scene* SetupSphereScene()
     meshRenderer2->texture = ironTexture;
     meshRenderer2->metalnessMap = ironMetalnessMap;
     meshRenderer2->roughnessMap = ironRoughnessMap;
+    meshRenderer2->normalMap = ironNormalMap;
     meshRenderer2->ambientOcclusionMap = ironAoMap;
     meshRenderer2->fragmentShader = fragShader;
     meshRenderer2->shininess = 32.0f;
@@ -341,6 +345,7 @@ Scene* SetupSphereScene()
     Texture* goldTexture = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Gold/albedo.png");
     Texture* goldMetalnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Gold/metallic.png");
     Texture* goldRoughnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Gold/roughness.png");
+    Texture* goldNormalMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Gold/normal.png");
     Texture* goldAoMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Gold/ao.png");
 
     MeshRenderer* meshRenderer3 = obj3->GetComponent<MeshRenderer>();
@@ -348,6 +353,7 @@ Scene* SetupSphereScene()
     meshRenderer3->texture = goldTexture;
     meshRenderer3->metalnessMap = goldMetalnessMap;
     meshRenderer3->roughnessMap = goldRoughnessMap;
+    meshRenderer3->normalMap = goldNormalMap;
     meshRenderer3->ambientOcclusionMap = goldAoMap;
     meshRenderer3->fragmentShader = fragShader;
     meshRenderer3->shininess = 32.0f;
@@ -359,7 +365,7 @@ Scene* SetupSphereScene()
     rotator3->rotationAxis = ROTATION_AXIS::Y;*/
 
     /*light 1*/
-    Mathlib::Transform transform4;
+   /* Mathlib::Transform transform4;
     transform4.position = Mathlib::Vec3(0.f, 0.0f, -2.f);
     transform4.scale = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
 
@@ -377,7 +383,7 @@ Scene* SetupSphereScene()
 
     MeshRenderer* meshRenderer4 = light4->GetComponent<MeshRenderer>();
     meshRenderer4->enable = true;
-    meshRenderer4->fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/TextureFragmentShader.frag.spv", FRAGMENT);
+    meshRenderer4->fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/TextureFragmentShader.frag.spv", FRAGMENT);*/
 
     /*RotatorComponent* rotator2 = scene->GetCamera()->AddComponent<RotatorComponent>();
     rotator2->rotationAxis = ROTATION_AXIS::Y;*/

@@ -21,6 +21,8 @@ namespace RenderEngine::Assets
         Mathlib::Vec3 normal;
         
         Mathlib::Vec3 textCoord;
+
+        Mathlib::Vec3 tangent;
     };
 }
 
