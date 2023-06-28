@@ -5,7 +5,6 @@ layout(push_constant) uniform PushConsts
 {
     mat4 invView;
     mat4 proj;
-    vec3 cameraPos;
 } cbo;
 
 layout(location = 0) in vec3 inPosition;

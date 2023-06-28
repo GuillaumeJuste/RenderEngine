@@ -42,9 +42,10 @@ Scene::Scene(RenderEngine::ResourceManager* _resourceManager) :
 	skybox.vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/Skybox.vert.spv", VERTEX);
 	skybox.fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/Skybox.frag.spv", FRAGMENT);
 
-	skybox.cubemap = resourceManager->LoadCubemap("Resources/Engine/Textures/HDR/newport_loft.hdr", true, true);
+	/*skybox.cubemap = resourceManager->LoadCubemap("Resources/Engine/Textures/HDR/newport_loft.hdr", true, true);
 	skybox.irradianceMap = skybox.cubemap;
-	skybox.prefilterMap = skybox.cubemap;
+	skybox.prefilterMap = skybox.cubemap;*/
+	resourceManager->CreateSkybox("Resources/Engine/Textures/HDR/newport_loft.hdr", &skybox, true);
 }
 
 void Scene::Initialize()

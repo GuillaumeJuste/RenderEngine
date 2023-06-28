@@ -13,6 +13,7 @@
 #include "ResourceManager/Assets/Cubemap/Cubemap.hpp"
 #include "ResourceManager/Assets/AssetManager.hpp"
 #include "Rendering/Base/Interface/IRenderContext.hpp"
+#include "SceneGraph/Scene/Skybox.hpp"
 
 using namespace RenderEngine::Assets;
 using namespace RenderEngine::Rendering;
@@ -50,6 +51,8 @@ namespace RenderEngine
         Cubemap* LoadCubemap(std::string _filePath, bool _isHDR = false, bool _computeMipmap = true);
         Cubemap* GetCubemap(const CubemapImportInfos& _filePaths);
         bool UnloadCubemap(Cubemap* _cubemap);
+
+        void CreateSkybox(std::string _filePath, RenderEngine::SceneGraph::Skybox* _output, bool _isHDR = false);
 
         void Clean();
     };
