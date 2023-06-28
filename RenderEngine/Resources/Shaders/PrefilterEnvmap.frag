@@ -8,8 +8,8 @@ layout(location = 0) in DataBlock
 layout(set = 0, binding = 0) uniform samplerCube samplerEnv;
 
 layout(push_constant) uniform PushConsts {
-	float roughness;
-	uint numSamples;
+	layout (offset = 128) float roughness;
+	layout (offset = 132) uint numSamples;
 } consts;
 
 layout (location = 0) out vec4 outColor;

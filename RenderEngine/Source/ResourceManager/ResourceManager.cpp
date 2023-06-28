@@ -214,9 +214,8 @@ void ResourceManager::CreateSkybox(std::string _filePath, RenderEngine::SceneGra
 	cubemapManager.Add(_filePath + "irradiance", irradianceCubemap);
 
 	_output->irradianceMap = irradianceCubemap;
-	_output->prefilterMap = _output->cubemap;
 
-	/*Shader* prefilterFragShader = LoadShader("Resources/Engine/Shaders/PrefilterEnvmap.frag.spv", FRAGMENT);
+	Shader* prefilterFragShader = LoadShader("Resources/Engine/Shaders/PrefilterEnvmap.frag.spv", FRAGMENT);
 
 	Cubemap* prefilterCubemap = new Cubemap();
 
@@ -231,7 +230,7 @@ void ResourceManager::CreateSkybox(std::string _filePath, RenderEngine::SceneGra
 
 	cubemapManager.Add(_filePath + "prefiltered", prefilterCubemap);
 
-	_output->prefilterMap = prefilterCubemap;*/
+	_output->prefilterMap = prefilterCubemap;
 }
 
 void ResourceManager::Clean()

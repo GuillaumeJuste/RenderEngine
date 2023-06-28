@@ -820,25 +820,17 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, RenderEngine::A
 
 	// Pipeline layout
 
-	struct defaultCameraBlock {
+	struct PushBlock {
 		Mathlib::Mat4 invView;
 		Mathlib::Mat4 proj;
-	} cameraBlock;
-
-	VkPushConstantRange cameraPushConstantRange{};
-	cameraPushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-	cameraPushConstantRange.offset = 0;
-	cameraPushConstantRange.size = sizeof(defaultCameraBlock);
-
-	struct EnvConstants {
 		float roughness;
 		uint32_t numSamples = 32u;
-	} envConstants;
+	} pushBlock;
 
-	VkPushConstantRange envPushConstantRange{};
-	envPushConstantRange.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	envPushConstantRange.offset = 0;
-	envPushConstantRange.size = sizeof(envConstants);
+	VkPushConstantRange cameraPushConstantRange{};
+	cameraPushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+	cameraPushConstantRange.offset = 0;
+	cameraPushConstantRange.size = sizeof(PushBlock);
 
 	//fragment shader descriptor set
 	VkTexture* inputTexture = dynamic_cast<VkTexture*>(_texture);
@@ -868,7 +860,6 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, RenderEngine::A
 
 	gpCreateInfo.descriptorDatas.push_back(fShaderDatalist);
 	gpCreateInfo.pushConstants.push_back(cameraPushConstantRange);
-	gpCreateInfo.pushConstants.push_back(envPushConstantRange);
 
 	GraphicsPipeline tmpPipeline;
 
@@ -940,15 +931,14 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, RenderEngine::A
 	scissor.offset.y = 0;
 
 	VkCommandBuffer commandBuffer = CommandBuffer::BeginSingleTimeCommands(logicalDevice, commandPool);
+	vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 	vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
 	BufferObject* VBO = dynamic_cast<BufferObject*>(_mesh->vertexBuffer);
 	BufferObject* IBO = dynamic_cast<BufferObject*>(_mesh->indexBuffer);
 	for (uint32_t m = 0; m < numMips; m++)
 	{
-		envConstants.roughness = (float)m / (float)(numMips - 1);
-
-		vkCmdPushConstants(commandBuffer, tmpPipeline.GetGraphicsPipelineLayout(), VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(EnvConstants), &envConstants);
+		pushBlock.roughness = (float)m / (float)(numMips - 1);
 
 		viewport.width = static_cast<float>(dim * std::pow(0.5f, m));
 		viewport.height = static_cast<float>(-dim * std::pow(0.5f, m));
@@ -961,10 +951,12 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, RenderEngine::A
 			vkCmdBeginRenderPass(commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 			// Update shader push constant block
-			cameraBlock.invView = matrices[f];
-			cameraBlock.proj = projection;
+			pushBlock.invView = matrices[f];
+			pushBlock.proj = projection;
 
-			vkCmdPushConstants(commandBuffer, tmpPipeline.GetGraphicsPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT, sizeof(EnvConstants), sizeof(defaultCameraBlock), &cameraBlock);
+			vkCmdPushConstants(commandBuffer, tmpPipeline.GetGraphicsPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushBlock), &pushBlock);
+			
+			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, tmpPipeline.GetGraphicsPipeline());
 
 			size_t descrtiptorSetCount = descriptorSets.size();
 

@@ -28,7 +28,7 @@ void VkTexture::InitializeVkTexture(const VkTextureVkCreateInfo& _vkTextureCreat
 	imageCreateInfo.imageFlags = _vkTextureCreateInfo.imageFlags;
 	imageCreateInfo.imageViewType = _vkTextureCreateInfo.imageViewType;
 	imageCreateInfo.imageViewAspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
-	imageCreateInfo.mipLevels = _vkTextureCreateInfo.texture.mipLevels;
+	imageCreateInfo.mipLevels = _vkTextureCreateInfo.mipLevels;
 	Image::InitializeImage(imageCreateInfo, &_output->image);
 
 	if (_fillImage)
@@ -38,16 +38,16 @@ void VkTexture::InitializeVkTexture(const VkTextureVkCreateInfo& _vkTextureCreat
 		else
 			_output->FillImageBuffer<float>(_vkTextureCreateInfo.texture.dataF);
 
-		_output->CreateSampler(_vkTextureCreateInfo.mipLevels);
 	}
-	else
-	{
-		_output->CreateSampler(1);
-	}
+	_output->CreateSampler(_vkTextureCreateInfo.mipLevels);
+
 }
 
 void VkTexture::CreateSampler(uint32_t _mipmap)
 {
+	VkPhysicalDeviceProperties properties{};
+	vkGetPhysicalDeviceProperties(createInfo.physicalDevice, &properties);
+
 	VkSamplerCreateInfo samplerInfo{};
 	samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
 	samplerInfo.magFilter = VK_FILTER_LINEAR;
@@ -56,10 +56,6 @@ void VkTexture::CreateSampler(uint32_t _mipmap)
 	samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
 	samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
 	samplerInfo.anisotropyEnable = VK_TRUE;
-	
-	VkPhysicalDeviceProperties properties{};
-	vkGetPhysicalDeviceProperties(createInfo.physicalDevice, &properties);
-
 	samplerInfo.maxAnisotropy = properties.limits.maxSamplerAnisotropy;
 	samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
 	samplerInfo.unnormalizedCoordinates = VK_FALSE;

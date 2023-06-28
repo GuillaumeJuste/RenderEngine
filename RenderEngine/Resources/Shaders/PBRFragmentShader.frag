@@ -59,13 +59,11 @@ layout (set = 1,binding = 7) buffer SpotLightData
 } spotLightsBuffer;
 
 layout(set = 1, binding = 8) uniform samplerCube irradianceSampler;
-layout(set = 1, binding = 9) uniform samplerCube prefilterSampler;
+layout(set = 1, binding = 9) uniform samplerCube prefilteredSampler;
 layout(set = 1, binding = 10) uniform sampler2D BRDFlutSampler;
 layout(set = 1, binding = 11) uniform samplerCube skyboxSampler;
 
 layout(location = 0) out vec4 outColor;
-
-float roughness = 0.2;
 
 const float PI = 3.14159265359;
 
@@ -97,14 +95,14 @@ float GeometrySchlickGGX(float _NdotV, float _roughness);
 // _roughness : material roughness
 float GeometrySmith(vec3 _N, vec3 _V, vec3 _L, float _roughness);
 
+vec3 prefilteredReflection(vec3 _reflection, float _roughness);
+
 float ComputeAttenuation(float _distance, float _lightRange);
 vec3 ComputePointLightLighting(PointLight _light, vec3 _normal, vec3 _viewDirection, vec3 _albdeo, float _metalness, float _roughness, vec3 _F0);
 vec3 ComputeDirectionalLightLighting(DirectionalLight _light, vec3 _normal, vec3 _viewDirection, vec3 _albdeo, float _metalness, float _roughness, vec3 _F0);
 vec3 ComputeSpotLightLighting(SpotLight _light, vec3 _normal, vec3 _viewDirection, vec3 _albdeo, float _metalness, float _roughness, vec3 _F0);
 
 vec3 ComputeLighting(Light _light, vec3 _normal, vec3 _viewDirection, vec3 _albdeo, float _metalness, float _roughness, vec3 _F0);
-
-vec3 computePrefiltered();
 
 void main() 
 {
@@ -149,8 +147,8 @@ void main()
 	vec3 irradiance = texture(irradianceSampler, normal).rgb;
     vec3 diffuse = irradiance * albedo;
 
-    vec3 prefilteredColor = texture(prefilterSampler, reflection).rgb;    
-    //vec3 prefilteredColor = computePrefiltered();    
+    vec3 prefilteredColor = prefilteredReflection(reflection, roughness);    
+    //vec3 prefilteredColor = textureLod(prefilteredSampler, reflection, 10.0).rgb;;    
     vec2 brdf  = texture(BRDFlutSampler, vec2(max(dot(normal, viewDirection), 0.0), roughness)).rg;
     vec3 specular = prefilteredColor * (kS * brdf.x + brdf.y);
 
@@ -274,84 +272,13 @@ float ComputeAttenuation(float _distance, float _lightRange)
 	//return 1.0 / (_distance * _distance);
 }
 
-float RadicalInverse_VdC(uint bits) 
+vec3 prefilteredReflection(vec3 _reflection, float _roughness)
 {
-     bits = (bits << 16u) | (bits >> 16u);
-     bits = ((bits & 0x55555555u) << 1u) | ((bits & 0xAAAAAAAAu) >> 1u);
-     bits = ((bits & 0x33333333u) << 2u) | ((bits & 0xCCCCCCCCu) >> 2u);
-     bits = ((bits & 0x0F0F0F0Fu) << 4u) | ((bits & 0xF0F0F0F0u) >> 4u);
-     bits = ((bits & 0x00FF00FFu) << 8u) | ((bits & 0xFF00FF00u) >> 8u);
-     return float(bits) * 2.3283064365386963e-10; // / 0x100000000
-}
-// ----------------------------------------------------------------------------
-vec2 Hammersley(uint i, uint N)
-{
-	return vec2(float(i)/float(N), RadicalInverse_VdC(i));
-}
-// ----------------------------------------------------------------------------
-vec3 ImportanceSampleGGX(vec2 Xi, vec3 N, float roughness)
-{
-	float a = roughness*roughness;
-	
-	float phi = 2.0 * PI * Xi.x;
-	float cosTheta = sqrt((1.0 - Xi.y) / (1.0 + (a*a - 1.0) * Xi.y));
-	float sinTheta = sqrt(1.0 - cosTheta*cosTheta);
-	
-	// from spherical coordinates to cartesian coordinates - halfway vector
-	vec3 H;
-	H.x = cos(phi) * sinTheta;
-	H.y = sin(phi) * sinTheta;
-	H.z = cosTheta;
-	
-	// from tangent-space H vector to world-space sample vector
-	vec3 up          = abs(N.z) < 0.999 ? vec3(0.0, 0.0, 1.0) : vec3(1.0, 0.0, 0.0);
-	vec3 tangent   = normalize(cross(up, N));
-	vec3 bitangent = cross(N, tangent);
-	
-	vec3 sampleVec = tangent * H.x + bitangent * H.y + N * H.z;
-	return normalize(sampleVec);
-}
-// ----------------------------------------------------------------------------
-vec3 computePrefiltered()
-{		
-    vec3 N = normalize(fsIn.fragPos);
-    
-    // make the simplifying assumption that V equals R equals the normal 
-    vec3 R = N;
-    vec3 V = R;
-
-    const uint SAMPLE_COUNT = 1024u;
-    vec3 prefilteredColor = vec3(0.0);
-    float totalWeight = 0.0;
-    
-    for(uint i = 0u; i < SAMPLE_COUNT; ++i)
-    {
-        // generates a sample vector that's biased towards the preferred alignment direction (importance sampling).
-        vec2 Xi = Hammersley(i, SAMPLE_COUNT);
-        vec3 H = ImportanceSampleGGX(Xi, N, roughness);
-        vec3 L  = normalize(2.0 * dot(V, H) * H - V);
-
-        float NdotL = max(dot(N, L), 0.0);
-        if(NdotL > 0.0)
-        {
-            // sample from the environment's mip level based on roughness/pdf
-            float D   = DistributionGGX(N, H, roughness);
-            float NdotH = max(dot(N, H), 0.0);
-            float HdotV = max(dot(H, V), 0.0);
-            float pdf = D * NdotH / (4.0 * HdotV) + 0.0001; 
-
-            float resolution = 512.0; // resolution of source cubemap (per face)
-            float saTexel  = 4.0 * PI / (6.0 * resolution * resolution);
-            float saSample = 1.0 / (float(SAMPLE_COUNT) * pdf + 0.0001);
-
-            float mipLevel = roughness == 0.0 ? 0.0 : 0.5 * log2(saSample / saTexel); 
-            
-            prefilteredColor += textureLod(skyboxSampler, L, mipLevel).rgb * NdotL;
-            totalWeight      += NdotL;
-        }
-    }
-
-    prefilteredColor = prefilteredColor / totalWeight;
-
-    return prefilteredColor;
+	const float MAX_REFLECTION_LOD = 10.0; // todo: param/const
+	float lod = _roughness * MAX_REFLECTION_LOD;
+	float lodf = floor(lod);
+	float lodc = ceil(lod);
+	vec3 a = textureLod(prefilteredSampler, _reflection, lodf).rgb;
+	vec3 b = textureLod(prefilteredSampler, _reflection, lodc).rgb;
+	return mix(a, b, lod - lodf);
 }

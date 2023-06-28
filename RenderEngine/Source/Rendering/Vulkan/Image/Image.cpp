@@ -213,7 +213,7 @@ void Image::CreateImageView()
     viewInfo.format = createInfo.format;
     viewInfo.subresourceRange.aspectMask = createInfo.imageViewAspectFlags;
     viewInfo.subresourceRange.baseMipLevel = 0;
-    viewInfo.subresourceRange.levelCount = 1;
+    viewInfo.subresourceRange.levelCount = createInfo.mipLevels;
     viewInfo.subresourceRange.baseArrayLayer = 0;
     viewInfo.subresourceRange.layerCount = createInfo.textureCount;
     viewInfo.image = image;

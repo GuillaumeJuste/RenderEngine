@@ -3,8 +3,8 @@
 
 layout(push_constant) uniform PushConsts 
 {
-    mat4 invView;
-    mat4 proj;
+    layout (offset = 0) mat4 invView;
+    layout (offset = 64) mat4 proj;
 } cbo;
 
 layout(location = 0) in vec3 inPosition;
