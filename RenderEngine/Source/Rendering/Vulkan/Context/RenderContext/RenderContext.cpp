@@ -555,7 +555,7 @@ bool RenderContext::CreateCubemap(ITexture* _texture, RenderEngine::Assets::Mesh
 	gpCreateInfo.fragmentShader = _fragmentShader;
 	gpCreateInfo.drawMode = PolygonDrawMode::FILL;
 	gpCreateInfo.lineWidth = 1.0f;
-	gpCreateInfo.frontFace = FrontFace::COUNTER_CLOCKWISE;
+	gpCreateInfo.frontFace = FrontFace::CLOCKWISE;
 	gpCreateInfo.enableDepthTest = VK_FALSE;
 	gpCreateInfo.writeDepthBuffer = VK_FALSE;
 	gpCreateInfo.culling_mode = VK_CULL_MODE_FRONT_BIT;
@@ -852,7 +852,7 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, RenderEngine::A
 	gpCreateInfo.fragmentShader = _fragmentShader;
 	gpCreateInfo.drawMode = PolygonDrawMode::FILL;
 	gpCreateInfo.lineWidth = 1.0f;
-	gpCreateInfo.frontFace = FrontFace::COUNTER_CLOCKWISE;
+	gpCreateInfo.frontFace = FrontFace::CLOCKWISE;
 	gpCreateInfo.enableDepthTest = VK_FALSE;
 	gpCreateInfo.writeDepthBuffer = VK_FALSE;
 	gpCreateInfo.culling_mode = VK_CULL_MODE_FRONT_BIT;

@@ -9,7 +9,7 @@ namespace RenderEngine::Rendering
 {
 	struct SpotLightData
 	{
-		bool enable = false;
+		int enable = false;
 		alignas(16) Mathlib::Vec3 position;
 		alignas(16) Mathlib::Vec3 color;
 		alignas(16) Mathlib::Vec3 direction;

@@ -4,13 +4,15 @@
 layout(location = 0) in DataBlock
 {
 	vec3 fragPos;
-	vec3 interpNormal;
-	vec3 fragTexCoord;
+	vec3 normal;
+	vec3 texCoord;
 	vec3 cameraPos;
+    vec3 tangent;
 } fsIn;
 
 layout(set = 1, binding = 0) uniform sampler2D albedoSampler;
 layout(set = 1, binding = 1) uniform sampler2D metalnessSampler;
+layout(set = 1, binding = 3) uniform sampler2D normalMapSampler;
 
 layout(set = 1, binding = 12) uniform MaterialBufferObject 
 {
@@ -69,7 +71,6 @@ layout(location = 0) out vec4 outColor;
 
 struct Light
 {
-	vec3 color;
 	vec3 direction;
 	vec3 radiance;
 };
@@ -79,14 +80,14 @@ vec3 ComputePointLightLighting(PointLight _pointLight, vec3 _normal, vec3 _viewD
 vec3 ComputeDirectionalLightLighting(DirectionalLight _directionalLight, vec3 _normal, vec3 _viewDirection, vec3 _albedo, float _metalness);
 vec3 ComputeSpotLightLighting(SpotLight _spotLight, vec3 _normal, vec3 _viewDirection, vec3 _albedo, float _metalness);
 vec3 ComputeLighting(Light _light, vec3 _normal, vec3 _viewDirection, vec3 _albedo, float _metalness);
-
+vec3 getNormalFromMap();
 
 void main() 
 {
-    vec3 albedo = texture(albedoSampler, vec2(fsIn.fragTexCoord.x, fsIn.fragTexCoord.y)).xyz;
-    float metalness = texture(metalnessSampler, vec2(fsIn.fragTexCoord.x, fsIn.fragTexCoord.y)).x;
+    vec3 albedo = texture(albedoSampler, fsIn.texCoord.xy).xyz;
+    float metalness = texture(metalnessSampler, fsIn.texCoord.xy).x;
 
-	vec3 normal = normalize(fsIn.interpNormal);
+	vec3 normal = getNormalFromMap();
     vec3 viewDirection = normalize(fsIn.cameraPos - fsIn.fragPos);
 
 	vec3 color = vec3(0.0);
@@ -108,9 +109,6 @@ void main()
 			color += ComputeSpotLightLighting(spotLightsBuffer.lights[i], normal, viewDirection, albedo, metalness);
 	}
 
-	// Add ambiant
-	color += material.Ka * albedo;
-
 	outColor = vec4(color, 1.0);
 }
 
@@ -127,7 +125,6 @@ float ComputeAttenuation(float _distance, float _lightRange)
 vec3 ComputePointLightLighting(PointLight _pointLight, vec3 _normal, vec3 _viewDirection, vec3 _albedo, float _metalness)
 {
 	Light light;
-	light.color = _pointLight.color;
 	light.direction = normalize(_pointLight.position - fsIn.fragPos);
 
 	float distance = length(_pointLight.position - fsIn.fragPos);
@@ -140,7 +137,6 @@ vec3 ComputePointLightLighting(PointLight _pointLight, vec3 _normal, vec3 _viewD
 vec3 ComputeDirectionalLightLighting(DirectionalLight _directionalLight, vec3 _normal, vec3 _viewDirection, vec3 _albedo, float _metalness)
 {
 	Light light;
-	light.color = _directionalLight.color;
 	light.direction = normalize(-_directionalLight.direction);
 	light.radiance = _directionalLight.color * _directionalLight.intensity;
 
@@ -151,7 +147,6 @@ vec3 ComputeDirectionalLightLighting(DirectionalLight _directionalLight, vec3 _n
 vec3 ComputeSpotLightLighting(SpotLight _spotLight, vec3 _normal, vec3 _viewDirection, vec3 _albedo, float _metalness)
 {
 	Light light;
-	light.color = _spotLight.color;
 	light.direction = normalize(_spotLight.position - fsIn.fragPos);
 	float lightTheta = dot(light.direction, normalize(-_spotLight.direction));
 	
@@ -163,11 +158,12 @@ vec3 ComputeSpotLightLighting(SpotLight _spotLight, vec3 _normal, vec3 _viewDire
 	{
 		return ComputeLighting(light, _normal, _viewDirection, _albedo, _metalness);
 	}
-	return vec3(0.0);
+	return material.Ka * _albedo;
 }
 
 vec3 ComputeLighting(Light _light, vec3 _normal, vec3 _viewDirection, vec3 _albedo, float _metalness)
 {
+	vec3 ambient = material.Ka * _albedo;
 	vec3 diffuse = vec3(0.0, 0.0, 0.0);
     vec3 specular = vec3(0.0, 0.0, 0.0);
 
@@ -183,5 +179,14 @@ vec3 ComputeLighting(Light _light, vec3 _normal, vec3 _viewDirection, vec3 _albe
 		specular = material.Ks * _albedo * pow(max(dot(_viewDirection, reflectDirection), 0.0), material.shininess) * _metalness;
 	}
 
-	return _light.radiance * (diffuse + specular);
+	return (ambient + diffuse + specular) * _light.radiance;
+}
+
+vec3 getNormalFromMap()
+{
+	vec3 N = normalize(fsIn.normal);
+	vec3 T = normalize(fsIn.tangent);
+	vec3 B = cross (N, T);
+	mat3 TBN = mat3(T, B, N);
+	return vec3(normalize(TBN * (texture(normalMapSampler, fsIn.texCoord.xy).rgb * 2.0 - 1.0)));
 }

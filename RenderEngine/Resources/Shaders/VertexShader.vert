@@ -19,8 +19,8 @@ layout(location = 3) in vec3 inTangent;
 layout(location = 0) out DataBlock
 {
 	vec3 fragPos;
-	vec3 interpNormal;
-	vec3 fragTexCoord;
+	vec3 normal;
+	vec3 texCoord;
 	vec3 cameraPos;
     vec3 tangent;
 } vsOut;
@@ -28,12 +28,11 @@ layout(location = 0) out DataBlock
 void main() {
     gl_Position = cbo.proj * cbo.invView * ubo.model * vec4(vec3(inPosition.x, inPosition.y, inPosition.z), 1.0);
 
-    vsOut.fragTexCoord = inTexCoord;
+    vsOut.texCoord = inTexCoord;
     vsOut.fragPos = vec3( ubo.model * vec4(inPosition, 1.0));
-    //vsOut.fragPos = vec3(gl_Position);
 
-    mat3 modelMat3 = mat3(transpose(inverse(ubo.model)));
-    vsOut.interpNormal = modelMat3 * inNormal;  
+    mat3 modelMat3 = mat3(ubo.model);
+    vsOut.normal = modelMat3 * inNormal;  
     vsOut.tangent = modelMat3 * inTangent;
     vsOut.cameraPos = cbo.cameraPos;
 }

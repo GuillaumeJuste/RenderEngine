@@ -9,7 +9,7 @@ namespace RenderEngine::Rendering
 {
 	struct PointLightData
 	{
-		bool enable = false;
+		int enable = false;
 		alignas(16) Mathlib::Vec3 position;
 		alignas(16) Mathlib::Vec3 color;
 		float intensity = 1.0f;

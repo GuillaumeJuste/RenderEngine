@@ -246,6 +246,74 @@ Scene* SetupIlluminationScene()
     return scene;
 }
 
+Scene* SetupSimplePlaneScene()
+{
+    Scene* scene = sceneManager->AddScene();
+    scene->name = "test_scene_simple_plane";
+
+    Camera* camera = scene->GetCamera();
+    Mathlib::Transform cameraTransform;
+    cameraTransform.position = Mathlib::Vec3(0.0f, 0.0f, -1.0f);
+    cameraTransform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 180.f, 0.f));
+    camera->SetLocalTransform(cameraTransform);
+    camera->fov = 90.f;
+
+    Mathlib::Transform objTransform;
+    objTransform.position = Mathlib::Vec3(0.f, 0.f, 2.0f);
+    objTransform.scale = Mathlib::Vec3(4.f, 2.0f, 1.f);
+    objTransform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 0.f, 0.f));
+
+    GameObjectCreateInfo objCreateinfo;
+    objCreateinfo.transform = objTransform;
+    objCreateinfo.parent = nullptr;
+
+    GameObject* obj = scene->AddGameObject(objCreateinfo);
+
+    //Mesh* mesh = resourceManager->LoadMesh("Resources/Sample/SceneCreation/Models/quad.obj");
+    Shader* fragShader = resourceManager->LoadShader("Resources/Engine/Shaders/BlinnPhongFragmentShader.frag.spv", FRAGMENT);
+    Texture* wallTexture = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Brick/bricks.jpg");
+    Texture* wallMetalnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/metallic.png");
+    Texture* wallRoughnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/roughness.png");
+    Texture* wallNormalMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Brick/bricks_normal.jpg");
+    Texture* wallAoMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/ao.png");
+
+    MeshRenderer* objMeshRenderer = obj->GetComponent<MeshRenderer>();
+    objMeshRenderer->texture = wallTexture;
+    objMeshRenderer->metalnessMap = wallMetalnessMap;
+    objMeshRenderer->roughnessMap = wallRoughnessMap;
+    objMeshRenderer->normalMap = wallNormalMap;
+    objMeshRenderer->ambientOcclusionMap = wallAoMap;
+    objMeshRenderer->fragmentShader = fragShader;
+    //objMeshRenderer->mesh = mesh;
+    objMeshRenderer->ambient = Mathlib::Vec4(0.1f, 0.1f, 0.1f, 1.f);
+    objMeshRenderer->diffuse = Mathlib::Vec4(0.4f, 0.4f, 0.4f, 1.f);
+    objMeshRenderer->specular = Mathlib::Vec4(0.8f, 0.8f, 0.8f, 1.f);
+    objMeshRenderer->shininess = 16.0f;
+    objMeshRenderer->frontFace = FrontFace::COUNTER_CLOCKWISE;
+
+    RotatorComponent* rotator = obj->AddComponent<RotatorComponent>();
+    rotator->rotationAxis = ROTATION_AXIS::Y;
+
+    Mathlib::Transform lightTransform;
+    lightTransform.position = Mathlib::Vec3(0.f, 0.0f, 0.f);
+    lightTransform.scale = Mathlib::Vec3(0.3f, 0.3f, 0.3f);
+    lightTransform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 0.f, 0.f));
+
+    GameObjectCreateInfo lightCreateInfo;
+    lightCreateInfo.transform = lightTransform;
+    lightCreateInfo.parent = nullptr;
+    lightCreateInfo.name = "light_1";
+
+    GameObject* light1 = scene->AddGameObject(lightCreateInfo);
+
+    PointLight* lightComponent = light1->AddComponent<PointLight>();
+    lightComponent->color = Mathlib::Vec3(1.f, 1.0f, 1.0f);
+    lightComponent->intensity = 5.f;
+    lightComponent->range = 10.f;
+
+    return scene;
+}
+
 Scene* SetupSphereScene()
 {
     Scene* scene = sceneManager->AddScene();
@@ -291,8 +359,8 @@ Scene* SetupSphereScene()
     meshRenderer->diffuse = Mathlib::Vec4(0.4f, 0.4f, 0.4f, 1.f);
     meshRenderer->specular = Mathlib::Vec4(0.8f, 0.8f, 0.8f, 1.f);
 
-    /*RotatorComponent* rotator = obj->AddComponent<RotatorComponent>();
-    rotator->rotationAxis = ROTATION_AXIS::Y;*/
+    RotatorComponent* rotator = obj->AddComponent<RotatorComponent>();
+    rotator->rotationAxis = ROTATION_AXIS::Y;
 
     /*cube 2*/
 
@@ -326,8 +394,8 @@ Scene* SetupSphereScene()
     meshRenderer2->diffuse = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
     meshRenderer2->specular = Mathlib::Vec3(1.0f, 1.0f, 1.0f);
 
-    /*RotatorComponent* rotator2 = obj2->AddComponent<RotatorComponent>();
-    rotator2->rotationAxis = ROTATION_AXIS::Y;*/
+    RotatorComponent* rotator2 = obj2->AddComponent<RotatorComponent>();
+    rotator2->rotationAxis = ROTATION_AXIS::Y;
 
     /*cube 3*/
 
@@ -361,11 +429,11 @@ Scene* SetupSphereScene()
     meshRenderer3->diffuse = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
     meshRenderer3->specular = Mathlib::Vec3(1.0f, 1.0f, 1.0f);
 
-    /*RotatorComponent* rotator3 = obj3->AddComponent<RotatorComponent>();
-    rotator3->rotationAxis = ROTATION_AXIS::Y;*/
+    RotatorComponent* rotator3 = obj3->AddComponent<RotatorComponent>();
+    rotator3->rotationAxis = ROTATION_AXIS::Y;
 
     /*light 1*/
-   /* Mathlib::Transform transform4;
+    Mathlib::Transform transform4;
     transform4.position = Mathlib::Vec3(0.f, 0.0f, -2.f);
     transform4.scale = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
 
@@ -383,10 +451,7 @@ Scene* SetupSphereScene()
 
     MeshRenderer* meshRenderer4 = light4->GetComponent<MeshRenderer>();
     meshRenderer4->enable = true;
-    meshRenderer4->fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/TextureFragmentShader.frag.spv", FRAGMENT);*/
-
-    /*RotatorComponent* rotator2 = scene->GetCamera()->AddComponent<RotatorComponent>();
-    rotator2->rotationAxis = ROTATION_AXIS::Y;*/
+    meshRenderer4->fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/TextureFragmentShader.frag.spv", FRAGMENT);
 
     return scene;
 }

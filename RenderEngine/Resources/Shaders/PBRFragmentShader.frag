@@ -4,10 +4,10 @@
 layout(location = 0) in DataBlock
 {
 	vec3 fragPos;
-	vec3 interpNormal;
-	vec3 fragTexCoord;
+	vec3 normal;
+	vec3 texCoord;
 	vec3 cameraPos;
-	vec3 tangent;
+    vec3 tangent;
 } fsIn;
 
 layout(set = 1, binding = 0) uniform sampler2D albedoSampler;
@@ -71,7 +71,6 @@ const float PI = 3.14159265359;
 
 struct Light
 {
-	vec3 color;
 	vec3 direction;
 	vec3 radiance;
 };
@@ -110,10 +109,10 @@ vec3 ComputeLighting(Light _light, vec3 _normal, vec3 _viewDirection, vec3 _albd
 
 void main() 
 {
-	vec3 albedo = texture(albedoSampler, fsIn.fragTexCoord.xy).xyz;
-	float metalness = texture(metalnessMapSampler, fsIn.fragTexCoord.xy).x;
-	float roughness = texture(roughnessMapSampler, fsIn.fragTexCoord.xy).x;
-	float ao = texture(aoMapSampler, fsIn.fragTexCoord.xy).x;
+	vec3 albedo = texture(albedoSampler, fsIn.texCoord.xy).xyz;
+	float metalness = texture(metalnessMapSampler, fsIn.texCoord.xy).x;
+	float roughness = texture(roughnessMapSampler, fsIn.texCoord.xy).x;
+	float ao = texture(aoMapSampler, fsIn.texCoord.xy).x;
 
 	vec3 normal = getNormalFromMap();
     vec3 viewDirection = normalize(fsIn.cameraPos - fsIn.fragPos);
@@ -168,7 +167,6 @@ void main()
 vec3 ComputePointLightLighting(PointLight _light, vec3 _normal, vec3 _viewDirection, vec3 _albdeo, float _metalness, float _roughness, vec3 _F0)
 {
 	Light light;
-	light.color = _light.color;
 	light.direction = normalize(_light.position - fsIn.fragPos);
 
 	float distance = length(_light.position - fsIn.fragPos);
@@ -181,7 +179,6 @@ vec3 ComputePointLightLighting(PointLight _light, vec3 _normal, vec3 _viewDirect
 vec3 ComputeDirectionalLightLighting(DirectionalLight _light, vec3 _normal, vec3 _viewDirection, vec3 _albdeo, float _metalness, float _roughness, vec3 _F0)
 {
 	Light light;
-	light.color = _light.color;
 	light.direction = normalize(-_light.direction);
 	light.radiance = _light.color * _light.intensity;
 
@@ -191,7 +188,6 @@ vec3 ComputeDirectionalLightLighting(DirectionalLight _light, vec3 _normal, vec3
 vec3 ComputeSpotLightLighting(SpotLight _light, vec3 _normal, vec3 _viewDirection, vec3 _albdeo, float _metalness, float _roughness, vec3 _F0)
 {
 	Light light;
-	light.color = _light.color;
 	light.direction = normalize(_light.position - fsIn.fragPos);
 	float lightTheta = dot(light.direction, normalize(-_light.direction));
 	
@@ -289,9 +285,9 @@ vec3 prefilteredReflection(vec3 _reflection, float _roughness)
 
 vec3 getNormalFromMap()
 {
-	vec3 N = normalize(fsIn.interpNormal);
+	vec3 N = normalize(fsIn.normal);
 	vec3 T = normalize(fsIn.tangent);
 	vec3 B = cross (N, T);
 	mat3 TBN = mat3(T, B, N);
-	return vec3(normalize(TBN * (texture(normalMapSampler, fsIn.fragTexCoord.xy).rgb * 2.0 - 1.0)));
+	return vec3(normalize(TBN * (texture(normalMapSampler, fsIn.texCoord.xy).rgb * 2.0 - 1.0)));
 }

@@ -5,7 +5,7 @@ layout(location = 0) in DataBlock
 {
 	vec3 fragPos;
 	vec3 normal;
-	vec3 fragTexCoord;
+	vec3 texCoord;
 	vec3 cameraPos;
     vec3 tangent;
 } fsIn;
@@ -17,5 +17,5 @@ layout(location = 0) out vec4 outColor;
 
 void main() 
 {
-    outColor = texture(albedoSampler, vec2(fsIn.fragTexCoord.x, fsIn.fragTexCoord.y));
+    outColor = texture(albedoSampler, fsIn.texCoord.xy);
 }
