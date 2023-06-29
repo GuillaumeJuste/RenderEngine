@@ -28,7 +28,7 @@ void VkSkybox::CreateGraphicsPipeline(DescriptorBuffer* _cameraBuffer)
 	gpCreateInfo.fragmentShader = skybox->fragmentShader;
 	gpCreateInfo.drawMode = PolygonDrawMode::FILL;
 	gpCreateInfo.lineWidth = 1.0f;
-	gpCreateInfo.frontFace = FrontFace::CLOCKWISE;
+	gpCreateInfo.frontFace = FrontFace::COUNTER_CLOCKWISE;
 	gpCreateInfo.writeDepthBuffer = VK_FALSE;
 	gpCreateInfo.culling_mode = VK_CULL_MODE_FRONT_BIT;
 	gpCreateInfo.samples = createInfo.samples;
