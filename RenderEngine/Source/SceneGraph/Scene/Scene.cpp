@@ -97,11 +97,11 @@ GameObject* Scene::AddGameObject(GameObjectCreateInfo _createInfo)
 	Texture* texture = resourceManager->LoadTexture("Resources/Engine/Textures/White.jpg");
 	MeshRenderer* meshRenderer = gao->AddComponent<MeshRenderer>();
 	meshRenderer->mesh = mesh;
-	meshRenderer->texture = texture;
-	meshRenderer->metalnessMap = texture;
-	meshRenderer->roughnessMap = texture;
-	meshRenderer->normalMap = texture;
-	meshRenderer->ambientOcclusionMap = texture;
+	meshRenderer->material.texture = texture;
+	meshRenderer->material.metalnessMap = texture;
+	meshRenderer->material.roughnessMap = texture;
+	meshRenderer->material.normalMap = texture;
+	meshRenderer->material.ambientOcclusionMap = texture;
 	meshRenderer->vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/VertexShader.vert.spv", VERTEX);
 	meshRenderer->fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/BlinnPhongFragmentShader.frag.spv", FRAGMENT);
 

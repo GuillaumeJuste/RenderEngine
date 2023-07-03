@@ -99,35 +99,35 @@ DescriptorDataList VkGameObject::GenerateDefaultFragmentShaderDescriptorSet()
 		textureBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		textureBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 		textureBufferData.binding = 0;
-		textureBufferData.texture = dynamic_cast<VkTexture*>(meshRenderer->texture->iTexture);
+		textureBufferData.texture = dynamic_cast<VkTexture*>(meshRenderer->material.texture->iTexture);
 		datalist.Add(textureBufferData);
 
 		DescriptorData metalnessMapBufferData{};
 		metalnessMapBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		metalnessMapBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 		metalnessMapBufferData.binding = 1;
-		metalnessMapBufferData.texture = dynamic_cast<VkTexture*>(meshRenderer->metalnessMap->iTexture);
+		metalnessMapBufferData.texture = dynamic_cast<VkTexture*>(meshRenderer->material.metalnessMap->iTexture);
 		datalist.Add(metalnessMapBufferData);
 
 		DescriptorData roughnessMapBufferData{};
 		roughnessMapBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		roughnessMapBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 		roughnessMapBufferData.binding = 2;
-		roughnessMapBufferData.texture = dynamic_cast<VkTexture*>(meshRenderer->roughnessMap->iTexture);
+		roughnessMapBufferData.texture = dynamic_cast<VkTexture*>(meshRenderer->material.roughnessMap->iTexture);
 		datalist.Add(roughnessMapBufferData);
 
 		DescriptorData normalMapBufferData{};
 		normalMapBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		normalMapBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 		normalMapBufferData.binding = 3;
-		normalMapBufferData.texture = dynamic_cast<VkTexture*>(meshRenderer->normalMap->iTexture);
+		normalMapBufferData.texture = dynamic_cast<VkTexture*>(meshRenderer->material.normalMap->iTexture);
 		datalist.Add(normalMapBufferData);
 
 		DescriptorData aoMapBufferData{};
 		aoMapBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		aoMapBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 		aoMapBufferData.binding = 4;
-		aoMapBufferData.texture = dynamic_cast<VkTexture*>(meshRenderer->ambientOcclusionMap->iTexture);
+		aoMapBufferData.texture = dynamic_cast<VkTexture*>(meshRenderer->material.ambientOcclusionMap->iTexture);
 		datalist.Add(aoMapBufferData);
 	}
 
@@ -252,10 +252,10 @@ void VkGameObject::Update(size_t _currentframe)
 	uniformBufferObject.CopyDataToBuffer<UniformBufferData>((int)_currentframe, &uboData, sizeof(UniformBufferData));
 
 	Material material{};
-	material.shininess = meshRenderer->shininess;
-	material.ambient = meshRenderer->ambient;
-	material.diffuse = meshRenderer->diffuse;
-	material.specular = meshRenderer->specular;
+	material.shininess = meshRenderer->material.shininess;
+	material.ambient = meshRenderer->material.ambient;
+	material.diffuse = meshRenderer->material.diffuse;
+	material.specular = meshRenderer->material.specular;
 
 	materialBufferObject.CopyDataToBuffer<Material>((int)_currentframe, &material, sizeof(Material));
 }

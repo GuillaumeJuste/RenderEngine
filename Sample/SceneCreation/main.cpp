@@ -135,16 +135,16 @@ Scene* SetupSimpleCubeScene()
     Texture* wallAoMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/ao.png");
 
     MeshRenderer* objMeshRenderer = obj->GetComponent<MeshRenderer>();
-    objMeshRenderer->texture = wallTexture;
-    objMeshRenderer->metalnessMap = wallMetalnessMap;
-    objMeshRenderer->roughnessMap = wallRoughnessMap;
-    objMeshRenderer->normalMap = wallNormalMap;
-    objMeshRenderer->ambientOcclusionMap = wallAoMap;
     objMeshRenderer->fragmentShader = fragShader;
-    objMeshRenderer->ambient = Mathlib::Vec4(0.1f, 0.1f, 0.1f, 1.f);
-    objMeshRenderer->diffuse = Mathlib::Vec4(0.4f, 0.4f, 0.4f, 1.f);
-    objMeshRenderer->specular = Mathlib::Vec4(0.8f, 0.8f, 0.8f, 1.f);
-    objMeshRenderer->shininess = 16.0f;
+    objMeshRenderer->material.texture = wallTexture;
+    objMeshRenderer->material.metalnessMap = wallMetalnessMap;
+    objMeshRenderer->material.roughnessMap = wallRoughnessMap;
+    objMeshRenderer->material.normalMap = wallNormalMap;
+    objMeshRenderer->material.ambientOcclusionMap = wallAoMap;
+    objMeshRenderer->material.ambient = Mathlib::Vec4(0.1f, 0.1f, 0.1f, 1.f);
+    objMeshRenderer->material.diffuse = Mathlib::Vec4(0.4f, 0.4f, 0.4f, 1.f);
+    objMeshRenderer->material.specular = Mathlib::Vec4(0.8f, 0.8f, 0.8f, 1.f);
+    objMeshRenderer->material.shininess = 16.0f;
 
     RotatorComponent* rotator = obj->AddComponent<RotatorComponent>();
     rotator->rotationAxis = ROTATION_AXIS::Y;
@@ -202,17 +202,17 @@ Scene* SetupSphereScene()
     GameObject* obj = scene->AddGameObject(createinfo);
 
     MeshRenderer* meshRenderer = obj->GetComponent<MeshRenderer>();
-    meshRenderer->mesh = sphere;
-    meshRenderer->texture = wallTexture;
-    meshRenderer->metalnessMap = wallMetalnessMap;
-    meshRenderer->roughnessMap = wallRoughnessMap;
-    meshRenderer->normalMap = wallNormalMap;
-    meshRenderer->ambientOcclusionMap = wallAoMap;
     meshRenderer->fragmentShader = fragShader;
-    meshRenderer->shininess = 32.0f;
-    meshRenderer->ambient = Mathlib::Vec4(0.1f, 0.1f, 0.1f, 1.f);
-    meshRenderer->diffuse = Mathlib::Vec4(0.4f, 0.4f, 0.4f, 1.f);
-    meshRenderer->specular = Mathlib::Vec4(0.8f, 0.8f, 0.8f, 1.f);
+    meshRenderer->mesh = sphere;
+    meshRenderer->material.texture = wallTexture;
+    meshRenderer->material.metalnessMap = wallMetalnessMap;
+    meshRenderer->material.roughnessMap = wallRoughnessMap;
+    meshRenderer->material.normalMap = wallNormalMap;
+    meshRenderer->material.ambientOcclusionMap = wallAoMap;
+    meshRenderer->material.shininess = 32.0f;
+    meshRenderer->material.ambient = Mathlib::Vec4(0.1f, 0.1f, 0.1f, 1.f);
+    meshRenderer->material.diffuse = Mathlib::Vec4(0.4f, 0.4f, 0.4f, 1.f);
+    meshRenderer->material.specular = Mathlib::Vec4(0.8f, 0.8f, 0.8f, 1.f);
 
     RotatorComponent* rotator = obj->AddComponent<RotatorComponent>();
     rotator->rotationAxis = ROTATION_AXIS::Y;
@@ -237,17 +237,17 @@ Scene* SetupSphereScene()
     Texture* ironAoMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/ao.png");
 
     MeshRenderer* meshRenderer2 = obj2->GetComponent<MeshRenderer>();
-    meshRenderer2->mesh = sphere;
-    meshRenderer2->texture = ironTexture;
-    meshRenderer2->metalnessMap = ironMetalnessMap;
-    meshRenderer2->roughnessMap = ironRoughnessMap;
-    meshRenderer2->normalMap = ironNormalMap;
-    meshRenderer2->ambientOcclusionMap = ironAoMap;
     meshRenderer2->fragmentShader = fragShader;
-    meshRenderer2->shininess = 32.0f;
-    meshRenderer2->ambient = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
-    meshRenderer2->diffuse = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
-    meshRenderer2->specular = Mathlib::Vec3(1.0f, 1.0f, 1.0f);
+    meshRenderer2->mesh = sphere;
+    meshRenderer2->material.texture = ironTexture;
+    meshRenderer2->material.metalnessMap = ironMetalnessMap;
+    meshRenderer2->material.roughnessMap = ironRoughnessMap;
+    meshRenderer2->material.normalMap = ironNormalMap;
+    meshRenderer2->material.ambientOcclusionMap = ironAoMap;
+    meshRenderer2->material.shininess = 32.0f;
+    meshRenderer2->material.ambient = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
+    meshRenderer2->material.diffuse = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
+    meshRenderer2->material.specular = Mathlib::Vec3(1.0f, 1.0f, 1.0f);
 
     RotatorComponent* rotator2 = obj2->AddComponent<RotatorComponent>();
     rotator2->rotationAxis = ROTATION_AXIS::Y;
@@ -273,16 +273,16 @@ Scene* SetupSphereScene()
 
     MeshRenderer* meshRenderer3 = obj3->GetComponent<MeshRenderer>();
     meshRenderer3->mesh = sphere;
-    meshRenderer3->texture = goldTexture;
-    meshRenderer3->metalnessMap = goldMetalnessMap;
-    meshRenderer3->roughnessMap = goldRoughnessMap;
-    meshRenderer3->normalMap = goldNormalMap;
-    meshRenderer3->ambientOcclusionMap = goldAoMap;
+    meshRenderer3->material.texture = goldTexture;
+    meshRenderer3->material.metalnessMap = goldMetalnessMap;
+    meshRenderer3->material.roughnessMap = goldRoughnessMap;
+    meshRenderer3->material.normalMap = goldNormalMap;
+    meshRenderer3->material.ambientOcclusionMap = goldAoMap;
     meshRenderer3->fragmentShader = fragShader;
-    meshRenderer3->shininess = 32.0f;
-    meshRenderer3->ambient = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
-    meshRenderer3->diffuse = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
-    meshRenderer3->specular = Mathlib::Vec3(1.0f, 1.0f, 1.0f);
+    meshRenderer3->material.shininess = 32.0f;
+    meshRenderer3->material.ambient = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
+    meshRenderer3->material.diffuse = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
+    meshRenderer3->material.specular = Mathlib::Vec3(1.0f, 1.0f, 1.0f);
 
     RotatorComponent* rotator3 = obj3->AddComponent<RotatorComponent>();
     rotator3->rotationAxis = ROTATION_AXIS::Y;
