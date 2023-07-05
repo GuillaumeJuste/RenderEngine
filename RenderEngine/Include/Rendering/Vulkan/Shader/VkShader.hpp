@@ -17,13 +17,13 @@ namespace RenderEngine::Rendering
 	private:
 
 		/// logical device
-		VkDevice logicalDevice;
+		VkDevice logicalDevice = VK_NULL_HANDLE;
 
 		/// shader module
-		VkShaderModule shaderModule;
+		VkShaderModule shaderModule = VK_NULL_HANDLE;
 
 		/// shader type
-		VkShaderStageFlagBits shaderType;
+		VkShaderStageFlagBits shaderType = VK_SHADER_STAGE_VERTEX_BIT;
 		
 		/// shader stage info
 		VkPipelineShaderStageCreateInfo shaderStageInfo;

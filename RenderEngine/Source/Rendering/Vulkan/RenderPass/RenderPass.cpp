@@ -44,7 +44,7 @@ void RenderPass::InitializeRenderPass(const RenderPassVkCreateInfo& _createInfo,
         depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
         VkAttachmentReference depthAttachmentRef{};
-        depthAttachmentRef.attachment = attachments.size();
+        depthAttachmentRef.attachment = static_cast<uint32_t>(attachments.size());
         depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
         subpass.pDepthStencilAttachment = &depthAttachmentRef;
@@ -64,7 +64,7 @@ void RenderPass::InitializeRenderPass(const RenderPassVkCreateInfo& _createInfo,
         colorAttachmentResolve.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
         VkAttachmentReference colorAttachmentResolveRef{};
-        colorAttachmentResolveRef.attachment = attachments.size();
+        colorAttachmentResolveRef.attachment = static_cast<uint32_t>(attachments.size());
         colorAttachmentResolveRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
         subpass.pResolveAttachments = &colorAttachmentResolveRef;

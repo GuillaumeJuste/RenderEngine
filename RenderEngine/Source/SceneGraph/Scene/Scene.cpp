@@ -28,24 +28,14 @@ Scene::Scene(RenderEngine::ResourceManager* _resourceManager) :
 	GameObject::InitializeGameObject(mainCameraCreateInfo, &mainCamera);
 
 	skybox.mesh = resourceManager->LoadMesh("Resources/Engine/Models/cube.obj");
-	CubemapImportInfos importInfos("Resources/Engine/Textures/Skybox/right.jpg",
-		"Resources/Engine/Textures/Skybox/left.jpg",
-		"Resources/Engine/Textures/Skybox/top.jpg",
-		"Resources/Engine/Textures/Skybox/bottom.jpg",
-		"Resources/Engine/Textures/Skybox/front.jpg",
-		"Resources/Engine/Textures/Skybox/back.jpg");
 
-	/*skybox.cubemap = resourceManager->LoadCubemap(importInfos, false);
-	skybox.irradianceMap = skybox.cubemap;
-	skybox.prefilterMap = skybox.cubemap;*/
 	skybox.BRDFlut = resourceManager->LoadTexture("Resources/Engine/Textures/default_brdf_lut.png");
 	skybox.vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/Skybox.vert.spv", VERTEX);
 	skybox.fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/Skybox.frag.spv", FRAGMENT);
 
-	/*skybox.cubemap = resourceManager->LoadCubemap("Resources/Engine/Textures/HDR/newport_loft.hdr", true, true);
-	skybox.irradianceMap = skybox.cubemap;
-	skybox.prefilterMap = skybox.cubemap;*/
-	resourceManager->CreateSkybox("Resources/Engine/Textures/HDR/newport_loft.hdr", &skybox, true);
+	Texture* skyboxTexture = resourceManager->LoadTexture("Resources/Engine/Textures/HDR/newport_loft.hdr", true, false);
+
+	resourceManager->CreateSkyboxFromTexture(skyboxTexture, Mathlib::Vec2(1024.f, 1024.f), &skybox);
 }
 
 void Scene::Initialize()

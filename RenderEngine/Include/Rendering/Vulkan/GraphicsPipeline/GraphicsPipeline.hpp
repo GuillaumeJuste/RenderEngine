@@ -19,13 +19,13 @@ namespace RenderEngine::Rendering
 	private:
 
 		/// logical device
-		VkDevice logicalDevice;
+		VkDevice logicalDevice = VK_NULL_HANDLE;
 
 		/// vertex shader
-		VkShader* vertexShader;
+		VkShader* vertexShader = nullptr;
 
 		/// fragment shader
-		VkShader* fragmentShader;
+		VkShader* fragmentShader = nullptr;
 
 		/// swapchain extent
 		VkExtent2D swapChainExtent;
@@ -34,7 +34,7 @@ namespace RenderEngine::Rendering
 		VkFormat swapChainImageFormat;
 
 		/// render pass
-		RenderPass* renderPass;
+		RenderPass* renderPass = nullptr;
 
 		std::vector<DescriptorSetLayout> descriptorSetLayout;
 		std::vector<DescriptorPool> descriptorPool;

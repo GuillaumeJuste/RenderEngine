@@ -19,11 +19,11 @@ namespace RenderEngine::SceneGraph
     {
     public:
 
-        Mesh* mesh;
+        Mesh* mesh = nullptr;
         Material material;
 
-        Shader* vertexShader;
-        Shader* fragmentShader;
+        Shader* vertexShader = nullptr;
+        Shader* fragmentShader = nullptr;
         FrontFace frontFace = FrontFace::CLOCKWISE;
         PolygonDrawMode drawMode = PolygonDrawMode::FILL;
         float lineWidth = 1.0f;

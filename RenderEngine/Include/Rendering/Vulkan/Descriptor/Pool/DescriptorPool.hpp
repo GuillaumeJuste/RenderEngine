@@ -17,7 +17,7 @@ namespace RenderEngine::Rendering
 	private:
 		VkDevice logicalDevice = VK_NULL_HANDLE;
 
-		VkDescriptorPool descriptorPool;
+		VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
 	public:
 
 		/// default constructor

@@ -16,9 +16,9 @@ namespace RenderEngine::Rendering
 	private:
 		ImageVkCreateInfo createInfo;
 
-		VkImage image;
-		VkImageView imageView;
-		VkDeviceMemory imageMemory;
+		VkImage image = VK_NULL_HANDLE;
+		VkImageView imageView = VK_NULL_HANDLE;
+		VkDeviceMemory imageMemory = VK_NULL_HANDLE;
 		
 		bool HasStencilComponent(VkFormat _format);
 

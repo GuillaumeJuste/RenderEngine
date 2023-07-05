@@ -13,16 +13,16 @@ namespace RenderEngine::Rendering
 	*/
 	struct ImageVkCreateInfo
 	{
-		VkPhysicalDevice physicalDevice;
-		VkDevice logicalDevice;
+		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+		VkDevice logicalDevice = VK_NULL_HANDLE;
 		uint32_t width;
 		uint32_t height;
 		VkFormat format;
 		VkImageTiling tiling;
 		VkImageUsageFlags usage;
 		VkMemoryPropertyFlags properties;
-		VkQueue graphicsQueue;
-		CommandPool* commandPool;
+		VkQueue graphicsQueue = VK_NULL_HANDLE;
+		CommandPool* commandPool = nullptr;
 		VkImageCreateFlags imageFlags;
 		uint32_t textureCount;
 		VkImageViewType imageViewType;

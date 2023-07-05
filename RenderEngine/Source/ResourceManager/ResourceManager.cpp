@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <cstring>
 #include <fstream>
+#include <sstream>
 
 using namespace RenderEngine;
 using namespace RenderEngine::Wrapper;
@@ -159,25 +160,22 @@ Cubemap* ResourceManager::LoadCubemap(CubemapImportInfos _filePaths, bool _compu
 	return nullptr;
 }
 
-Cubemap* ResourceManager::LoadCubemap(std::string _filePath, bool _isHDR, bool _computeMipmap)
+Cubemap* ResourceManager::CubemapFromTexture(Texture* _texture, Mathlib::Vec2 _generatedTextureSize, bool _computeMipmap)
 {
+	Cubemap* cubemap = GetCubemap(_texture->filePath);
+	if (cubemap != nullptr)
+		return cubemap;
+
 	Cubemap* newCubemap = new Cubemap();
 
-	Texture* skyboxTexture = LoadTexture(_filePath, _isHDR, _computeMipmap);
 	Mesh* skyboxMesh = LoadMesh("Resources/Engine/Models/cube.obj");
 	Shader* skyboxVertShader = LoadShader("Resources/Engine/Shaders/FilterCube.vert.spv", VERTEX);
 	Shader* skyboxFragShader = LoadShader("Resources/Engine/Shaders/TextureToCubemap.frag.spv", FRAGMENT);
 
-	renderContext->CreateCubemap(skyboxTexture->iTexture, skyboxMesh, skyboxVertShader, skyboxFragShader, newCubemap);
-	newCubemap->filePath = _filePath;
-	newCubemap->height = 1024;
-	newCubemap->width = 1024;
-	newCubemap->mipLevels = 1;
-	newCubemap->imageSize = 1024 * 1024 * 4;
-	if(_isHDR)
-		newCubemap->imageSize *= 4;
-
-	cubemapManager.Add(_filePath, newCubemap);
+	renderContext->CreateCubemap(_texture->iTexture, _generatedTextureSize, _computeMipmap, newCubemap, skyboxMesh, skyboxVertShader, skyboxFragShader);
+	newCubemap->filePath = _texture->filePath;
+	
+	cubemapManager.Add(_texture->filePath, newCubemap);
 
 	return newCubemap;
 }
@@ -187,50 +185,57 @@ Cubemap* ResourceManager::GetCubemap(const CubemapImportInfos& _filePaths)
 	return cubemapManager.Get(_filePaths.pathes[0]);
 }
 
+Cubemap* ResourceManager::GetCubemap(std::string _filePath)
+{
+	return cubemapManager.Get(_filePath);
+}
+
 bool ResourceManager::UnloadCubemap(Cubemap* _cubemap)
 {
 	return cubemapManager.Unload(_cubemap->filePath);
 }
 
-void ResourceManager::CreateSkybox(std::string _filePath, RenderEngine::SceneGraph::Skybox* _output, bool _isHDR)
+void ResourceManager::CreateSkyboxFromTexture(Texture* _texture, Mathlib::Vec2 _generatedTextureSize, RenderEngine::SceneGraph::Skybox* _output)
 {
-	_output->cubemap = LoadCubemap(_filePath, _isHDR, false);
-
-	Cubemap* irradianceCubemap = new Cubemap();
+	_output->cubemap = CubemapFromTexture(_texture, _generatedTextureSize, _output->cubemap);
 
 	Mesh* skyboxMesh = LoadMesh("Resources/Engine/Models/cube.obj");
 	Shader* skyboxVertShader = LoadShader("Resources/Engine/Shaders/FilterCube.vert.spv", VERTEX);
-	Shader* irradianceFragShader = LoadShader("Resources/Engine/Shaders/IrradianceConvolution.frag.spv", FRAGMENT);
 
-	renderContext->CreateCubemap(_output->cubemap->iTexture, skyboxMesh, skyboxVertShader, irradianceFragShader, irradianceCubemap);
-	irradianceCubemap->filePath = _filePath;
-	irradianceCubemap->height = 1024;
-	irradianceCubemap->width = 1024;
-	irradianceCubemap->mipLevels = 1;
-	irradianceCubemap->imageSize = 1024 * 1024 * 4;
-	if (_isHDR)
-		irradianceCubemap->imageSize *= 4;
+	Cubemap* irradianceCubemap = GetCubemap(_texture->filePath + "irradiance");
+	if (irradianceCubemap != nullptr)
+		_output->irradianceMap = irradianceCubemap;
+	else
+	{
+		irradianceCubemap = new Cubemap();
 
-	cubemapManager.Add(_filePath + "irradiance", irradianceCubemap);
+		
+		Shader* irradianceFragShader = LoadShader("Resources/Engine/Shaders/IrradianceConvolution.frag.spv", FRAGMENT);
 
-	_output->irradianceMap = irradianceCubemap;
+		renderContext->CreateCubemap(_output->cubemap->iTexture, _generatedTextureSize, false, irradianceCubemap, skyboxMesh, skyboxVertShader, irradianceFragShader);
+		irradianceCubemap->filePath = _texture->filePath + "irradiance";
 
-	Shader* prefilterFragShader = LoadShader("Resources/Engine/Shaders/PrefilterEnvmap.frag.spv", FRAGMENT);
+		cubemapManager.Add(irradianceCubemap->filePath, irradianceCubemap);
 
-	Cubemap* prefilterCubemap = new Cubemap();
+		_output->irradianceMap = irradianceCubemap;
+	}
 
-	renderContext->CreatePrefilteredCubemap(_output->cubemap->iTexture, skyboxMesh, skyboxVertShader, prefilterFragShader, prefilterCubemap);
-	prefilterCubemap->filePath = _filePath;
-	prefilterCubemap->height = 1024;
-	prefilterCubemap->width = 1024;
-	prefilterCubemap->mipLevels = 1;
-	prefilterCubemap->imageSize = 1024 * 1024 * 4;
-	if (_isHDR)
-		prefilterCubemap->imageSize *= 4;
+	Cubemap* prefilterCubemap = GetCubemap(_texture->filePath + "prefiltered");
+	if (prefilterCubemap != nullptr)
+		_output->prefilterMap = prefilterCubemap;
+	else
+	{
+		prefilterCubemap = new Cubemap();
 
-	cubemapManager.Add(_filePath + "prefiltered", prefilterCubemap);
+		Shader* prefilterFragShader = LoadShader("Resources/Engine/Shaders/PrefilterEnvmap.frag.spv", FRAGMENT);
 
-	_output->prefilterMap = prefilterCubemap;
+		renderContext->CreatePrefilteredCubemap(_output->cubemap->iTexture, _generatedTextureSize, prefilterCubemap, skyboxMesh, skyboxVertShader, prefilterFragShader);
+		prefilterCubemap->filePath = _texture->filePath + "prefiltered";
+
+		cubemapManager.Add(prefilterCubemap->filePath, prefilterCubemap);
+
+		_output->prefilterMap = prefilterCubemap;
+	}
 }
 
 void ResourceManager::Clean()

@@ -12,10 +12,10 @@ namespace RenderEngine::Assets
     */
     struct RawTexture
     {
-        int width;
-        int height;
-        int imageSize;
-        int channels;
+        int width = 0;
+        int height = 0;
+        int imageSize = 0;
+        int channels = 4;
         uint32_t mipLevels = 1;
         unsigned int imageCount = 1;
 
@@ -23,7 +23,7 @@ namespace RenderEngine::Assets
 
         union
         {
-            char* dataC;
+            char* dataC = nullptr;
             float* dataF;
         };
 

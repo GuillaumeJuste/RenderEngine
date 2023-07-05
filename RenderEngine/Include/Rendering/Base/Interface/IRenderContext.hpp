@@ -22,10 +22,10 @@ namespace RenderEngine::Rendering
 		virtual bool CreateTexture(const RenderEngine::Assets::RawTexture& _input, RenderEngine::Assets::Texture* _output) = 0;
 		virtual bool CreateShader(const RenderEngine::Assets::RawShader& _input, RenderEngine::Assets::Shader* _output) = 0;
 		virtual bool CreateCubemap(const RenderEngine::Assets::RawTexture& _input, RenderEngine::Assets::Cubemap* _output) = 0;
-		virtual bool CreateCubemap(ITexture* _texture, RenderEngine::Assets::Mesh* _mesh,
-			RenderEngine::Assets::Shader* _vertexShader, RenderEngine::Assets::Shader* _fragmentShader, RenderEngine::Assets::Cubemap* _output) = 0;
-		virtual bool CreatePrefilteredCubemap(ITexture* _texture, RenderEngine::Assets::Mesh* _mesh,
-			RenderEngine::Assets::Shader* _vertexShader, RenderEngine::Assets::Shader* _fragmentShader, RenderEngine::Assets::Cubemap* _output) = 0;
+		virtual bool CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize, bool _generateMipmap, RenderEngine::Assets::Cubemap* _output, 
+			RenderEngine::Assets::Mesh* _mesh, RenderEngine::Assets::Shader* _vertexShader, RenderEngine::Assets::Shader* _fragmentShader) = 0;
+		virtual bool CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize, RenderEngine::Assets::Cubemap* _output, 
+			RenderEngine::Assets::Mesh* _mesh, RenderEngine::Assets::Shader* _vertexShader, RenderEngine::Assets::Shader* _fragmentShader) = 0;
 	};
 }
 

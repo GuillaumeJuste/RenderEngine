@@ -12,11 +12,11 @@ namespace RenderEngine::SceneGraph
 {
     struct Material
     {
-        Texture* texture;
-        Texture* metalnessMap;
-        Texture* roughnessMap;
-        Texture* normalMap;
-        Texture* ambientOcclusionMap;
+        Texture* texture = nullptr;
+        Texture* metalnessMap = nullptr;
+        Texture* roughnessMap = nullptr;
+        Texture* normalMap = nullptr;
+        Texture* ambientOcclusionMap = nullptr;
 
         float shininess = 0.f;
         Mathlib::Vec3 ambient = Mathlib::Vec3::Zero;

@@ -18,17 +18,17 @@ namespace RenderEngine::Rendering
 		/**
 		 * @brief logical device handle
 		*/
-		VkDevice logicalDevice;
+		VkDevice logicalDevice = VK_NULL_HANDLE;
 
 		/**
 		 * @brief command pool owning the command buffer
 		*/
-		CommandPool* commandPool;
+		CommandPool* commandPool = nullptr;
 
 		/**
 		 * @brief command buffer handle
 		*/
-		VkCommandBuffer commandBuffer;
+		VkCommandBuffer commandBuffer = VK_NULL_HANDLE;
 
 	public:
 

@@ -69,7 +69,7 @@ bool StbiWrapper::LoadCubemap(const CubemapImportInfos& _importInfos, bool _comp
 
 	_output.imageSize = _output.width * _output.height * _output.channels;
 
-	_output.dataC = reinterpret_cast<char*>(stbi__malloc(6u * _output.imageSize));
+	_output.dataC = reinterpret_cast<char*>(stbi__malloc(6 * _output.imageSize));
 
 	if (_computeMipmap)
 		_output.mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(_output.width, _output.height)))) + 1;

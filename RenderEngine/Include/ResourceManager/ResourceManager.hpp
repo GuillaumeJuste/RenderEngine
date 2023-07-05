@@ -48,11 +48,12 @@ namespace RenderEngine
         bool UnloadShader(Shader* _texture);
 
         Cubemap* LoadCubemap(CubemapImportInfos _filePaths, bool _computeMipmap = true);
-        Cubemap* LoadCubemap(std::string _filePath, bool _isHDR = false, bool _computeMipmap = true);
+        Cubemap* CubemapFromTexture(Texture* _texture, Mathlib::Vec2 _generatedTextureSize, bool _computeMipmap = false);
         Cubemap* GetCubemap(const CubemapImportInfos& _filePaths);
+        Cubemap* GetCubemap(std::string _filePath);
         bool UnloadCubemap(Cubemap* _cubemap);
 
-        void CreateSkybox(std::string _filePath, RenderEngine::SceneGraph::Skybox* _output, bool _isHDR = false);
+        void CreateSkyboxFromTexture(Texture* _texture, Mathlib::Vec2 _generatedTextureSize, RenderEngine::SceneGraph::Skybox* _output);
 
         void Clean();
     };

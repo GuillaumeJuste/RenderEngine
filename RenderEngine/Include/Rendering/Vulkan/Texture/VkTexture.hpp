@@ -17,7 +17,7 @@ namespace RenderEngine::Rendering
 		VkTextureVkCreateInfo createInfo;
 
 		Image image;
-		VkSampler sampler;
+		VkSampler sampler = VK_NULL_HANDLE;
 
 		void CreateSampler(uint32_t _mipmap);
 

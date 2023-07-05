@@ -17,7 +17,7 @@ namespace RenderEngine::Rendering
 	private:
 		VkDevice logicalDevice = VK_NULL_HANDLE;
 
-		VkDescriptorSetLayout descriptorSetLayout;
+		VkDescriptorSetLayout descriptorSetLayout = VK_NULL_HANDLE;
 
 	public:
 

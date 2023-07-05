@@ -422,13 +422,20 @@ bool RenderContext::CreateCubemap(const RenderEngine::Assets::RawTexture& _input
 	return true;
 }
 
-bool RenderContext::CreateCubemap(ITexture* _texture, RenderEngine::Assets::Mesh* _mesh,
-	RenderEngine::Assets::Shader* _vertexShader, RenderEngine::Assets::Shader* _fragmentShader, RenderEngine::Assets::Cubemap* _output)
+bool RenderContext::CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize, bool _generateMipmap, RenderEngine::Assets::Cubemap* _output,
+	RenderEngine::Assets::Mesh* _mesh, RenderEngine::Assets::Shader* _vertexShader, RenderEngine::Assets::Shader* _fragmentShader)
 {
 	const VkFormat format = VK_FORMAT_R32G32B32A32_SFLOAT;
-	const int32_t dim = 1024;
-	//const uint32_t numMips = static_cast<uint32_t>(floor(log2(dim))) + 1;
-	const uint32_t numMips = 1;
+	const int32_t width = (int32_t)_outputSize.X;
+	const int32_t height = (int32_t)_outputSize.Y;
+	uint32_t numMips = 1;
+	if(_generateMipmap)
+		numMips = static_cast<uint32_t>(std::floor(std::log2(std::max(width, height)))) + 1;
+
+	_output->width = width;
+	_output->height = height;
+	_output->mipLevels = numMips;
+	_output->imageSize = width * height * 16 /* 4 channels * sizeof(float) */;
 
 	// output texture
 
@@ -437,8 +444,8 @@ bool RenderContext::CreateCubemap(ITexture* _texture, RenderEngine::Assets::Mesh
 	textCreateInfo.physicalDevice = physicalDeviceProperties.physicalDevice;
 	textCreateInfo.graphicsQueue = graphicsQueue;
 	textCreateInfo.commandPool = commandPool;
-	textCreateInfo.width = dim;
-	textCreateInfo.height = dim;
+	textCreateInfo.width = width;
+	textCreateInfo.height = height;
 	textCreateInfo.mipLevels = numMips;
 	textCreateInfo.imageCount = 6;
 	textCreateInfo.format = format;
@@ -495,8 +502,8 @@ bool RenderContext::CreateCubemap(ITexture* _texture, RenderEngine::Assets::Mesh
 		ImageVkCreateInfo imageCreateInfo{};
 		imageCreateInfo.physicalDevice = physicalDeviceProperties.physicalDevice;
 		imageCreateInfo.logicalDevice = logicalDevice;
-		imageCreateInfo.width = dim;
-		imageCreateInfo.height = dim;
+		imageCreateInfo.width = width;
+		imageCreateInfo.height = height;
 		imageCreateInfo.format = format;
 		imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
 		imageCreateInfo.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
@@ -515,7 +522,7 @@ bool RenderContext::CreateCubemap(ITexture* _texture, RenderEngine::Assets::Mesh
 		createInfo.renderPass = &tmpRenderPass;
 		createInfo.imageViews.push_back(offscreen.image.GetImageView());
 		createInfo.swapChainImageCount = 1;
-		createInfo.swapChainExtent = VkExtent2D{ dim, dim};
+		createInfo.swapChainExtent = VkExtent2D{ (unsigned int)width, (unsigned int)height};
 		createInfo.depthBuffer = nullptr;
 		createInfo.colorImage = nullptr;
 
@@ -549,7 +556,7 @@ bool RenderContext::CreateCubemap(ITexture* _texture, RenderEngine::Assets::Mesh
 	GraphicsPipelineVkCreateInfo gpCreateInfo{};
 	gpCreateInfo.logicalDevice = logicalDevice;
 	gpCreateInfo.renderPass = &tmpRenderPass;
-	gpCreateInfo.swapChainExtent = VkExtent2D{dim, dim};
+	gpCreateInfo.swapChainExtent = VkExtent2D{ (unsigned int)width, (unsigned int)height };
 	gpCreateInfo.swapChainImageFormat = format;
 	gpCreateInfo.vertexShader = _vertexShader;
 	gpCreateInfo.fragmentShader = _fragmentShader;
@@ -587,16 +594,16 @@ bool RenderContext::CreateCubemap(ITexture* _texture, RenderEngine::Assets::Mesh
 
 	// Render
 
-	VkClearValue clearValues[1];
+	VkClearValue clearValues[1]{};
 	clearValues[0].color = { { 0.0f, 0.0f, 0.0f, 1.0f } };
 
-	VkRenderPassBeginInfo renderPassBeginInfo;
+	VkRenderPassBeginInfo renderPassBeginInfo{};
 	renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 	// Reuse render pass from example pass
 	renderPassBeginInfo.renderPass = tmpRenderPass.GetRenderPass();
 	renderPassBeginInfo.framebuffer = offscreen.framebuffer.GetFrameBuffers()[0];
-	renderPassBeginInfo.renderArea.extent.width = dim;
-	renderPassBeginInfo.renderArea.extent.height = dim;
+	renderPassBeginInfo.renderArea.extent.width = width;
+	renderPassBeginInfo.renderArea.extent.height = height;
 	renderPassBeginInfo.clearValueCount = 1;
 	renderPassBeginInfo.pClearValues = clearValues;
 	renderPassBeginInfo.pNext = nullptr;
@@ -620,16 +627,16 @@ bool RenderContext::CreateCubemap(ITexture* _texture, RenderEngine::Assets::Mesh
 	Mathlib::Mat4 projection = Mathlib::Mat4::PerspectiveMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Math::Radians(90), 1.0f, 0.1f, 512.0f).Transpose();
 
 	VkViewport viewport{};
-	viewport.width = dim;
-	viewport.height = -dim;
+	viewport.width = _outputSize.X;
+	viewport.height = -_outputSize.Y;
 	viewport.x = 0.f;
-	viewport.y = dim;
+	viewport.y = _outputSize.Y;
 	viewport.minDepth = 0.f;
 	viewport.maxDepth = 1.f;
 
 	VkRect2D scissor{};
-	scissor.extent.width = dim;
-	scissor.extent.height = dim;
+	scissor.extent.width = width;
+	scissor.extent.height = height;
 	scissor.offset.x = 0;
 	scissor.offset.y = 0;
 
@@ -639,70 +646,77 @@ bool RenderContext::CreateCubemap(ITexture* _texture, RenderEngine::Assets::Mesh
 
 	BufferObject*  VBO = dynamic_cast<BufferObject*>(_mesh->vertexBuffer);
 	BufferObject*  IBO = dynamic_cast<BufferObject*>(_mesh->indexBuffer);
-	for (uint32_t f = 0; f < 6; f++) 
+	for (uint32_t m = 0; m < numMips; m++)
 	{
-		// Render scene from cube face's point of view
-		vkCmdBeginRenderPass(commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
-	
-		// Update shader push constant block
-		cameraBlock.invView = matrices[f];
-		cameraBlock.proj = projection;
-		cameraBlock.cameraPos = Mathlib::Vec3(0.f, 0.f, 0.f);
-	
-		vkCmdPushConstants(commandBuffer, tmpPipeline.GetGraphicsPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(defaultCameraBlock), &cameraBlock);
+		viewport.width = static_cast<float>(width * std::pow(0.5f, m));
+		viewport.height = static_cast<float>(-height * std::pow(0.5f, m));
+		viewport.y = -viewport.height;
+		vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
-		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, tmpPipeline.GetGraphicsPipeline());
-	
-		size_t descrtiptorSetCount = descriptorSets.size();
-	
-		for (int index = 0; index < descrtiptorSetCount; index++)
+		for (uint32_t f = 0; f < 6; f++)
 		{
-			vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, tmpPipeline.GetGraphicsPipelineLayout(), index, 1, &descriptorSets[index].GetFrameDescriptorSet(0), 0, nullptr);
-		}
-	
-		VkBuffer vertexBuffers[] = { VBO->GetVkBuffer() };
-		VkDeviceSize offsets[] = { 0 };
-		vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-	
-		vkCmdBindIndexBuffer(commandBuffer, IBO->GetVkBuffer(), 0, VK_INDEX_TYPE_UINT16);
-		vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(_mesh->indiceCount), 1, 0, 0, 0);
-	
-		vkCmdEndRenderPass(commandBuffer);
-	
-		offscreen.image.TransitionImageLayout(format, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, commandBuffer);
-	
-		// Copy region for transfer from framebuffer to cube face
-		VkImageCopy copyRegion = {};
-	
-		copyRegion.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-		copyRegion.srcSubresource.baseArrayLayer = 0;
-		copyRegion.srcSubresource.mipLevel = 0;
-		copyRegion.srcSubresource.layerCount = 1;
-		copyRegion.srcOffset = { 0, 0, 0 };
-	
-		copyRegion.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-		copyRegion.dstSubresource.baseArrayLayer = f;
-		copyRegion.dstSubresource.mipLevel = 0;
-		copyRegion.dstSubresource.layerCount = 1;
-		copyRegion.dstOffset = { 0, 0, 0 };
-	
-		copyRegion.extent.width = static_cast<uint32_t>(viewport.width);
-		copyRegion.extent.height = -static_cast<uint32_t>(viewport.height);
-		copyRegion.extent.depth = 1;
-	
-		vkCmdCopyImage(
-			commandBuffer,
-			offscreen.image.GetVkImage(),
-			VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-			outputTexture->GetImage()->GetVkImage(),
-			VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-			1,
-			&copyRegion);
-	
-		offscreen.image.TransitionImageLayout(format, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, commandBuffer);
-	
-	}
+			// Render scene from cube face's point of view
+			vkCmdBeginRenderPass(commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
+			// Update shader push constant block
+			cameraBlock.invView = matrices[f];
+			cameraBlock.proj = projection;
+			cameraBlock.cameraPos = Mathlib::Vec3(0.f, 0.f, 0.f);
+
+			vkCmdPushConstants(commandBuffer, tmpPipeline.GetGraphicsPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(defaultCameraBlock), &cameraBlock);
+
+			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, tmpPipeline.GetGraphicsPipeline());
+
+			size_t descrtiptorSetCount = descriptorSets.size();
+
+			for (int index = 0; index < descrtiptorSetCount; index++)
+			{
+				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, tmpPipeline.GetGraphicsPipelineLayout(), index, 1, &descriptorSets[index].GetFrameDescriptorSet(0), 0, nullptr);
+			}
+
+			VkBuffer vertexBuffers[] = { VBO->GetVkBuffer() };
+			VkDeviceSize offsets[] = { 0 };
+			vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+			vkCmdBindIndexBuffer(commandBuffer, IBO->GetVkBuffer(), 0, VK_INDEX_TYPE_UINT16);
+			vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(_mesh->indiceCount), 1, 0, 0, 0);
+
+			vkCmdEndRenderPass(commandBuffer);
+
+			offscreen.image.TransitionImageLayout(format, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, commandBuffer);
+
+			// Copy region for transfer from framebuffer to cube face
+			VkImageCopy copyRegion = {};
+
+			copyRegion.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			copyRegion.srcSubresource.baseArrayLayer = 0;
+			copyRegion.srcSubresource.mipLevel = 0;
+			copyRegion.srcSubresource.layerCount = 1;
+			copyRegion.srcOffset = { 0, 0, 0 };
+
+			copyRegion.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			copyRegion.dstSubresource.baseArrayLayer = f;
+			copyRegion.dstSubresource.mipLevel = m;
+			copyRegion.dstSubresource.layerCount = 1;
+			copyRegion.dstOffset = { 0, 0, 0 };
+
+			copyRegion.extent.width = static_cast<uint32_t>(viewport.width);
+			copyRegion.extent.height = -static_cast<uint32_t>(viewport.height);
+			copyRegion.extent.depth = 1;
+
+			vkCmdCopyImage(
+				commandBuffer,
+				offscreen.image.GetVkImage(),
+				VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+				outputTexture->GetImage()->GetVkImage(),
+				VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+				1,
+				&copyRegion);
+
+			offscreen.image.TransitionImageLayout(format, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, commandBuffer);
+
+		}
+	}
 	outputTexture->GetImage()->TransitionImageLayout(format, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, commandBuffer);
 
 	CommandBuffer::EndSingleTimeCommands(logicalDevice, commandPool, graphicsQueue, commandBuffer);
@@ -717,12 +731,19 @@ bool RenderContext::CreateCubemap(ITexture* _texture, RenderEngine::Assets::Mesh
 	return true;
 }
 
-bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, RenderEngine::Assets::Mesh* _mesh,
-	RenderEngine::Assets::Shader* _vertexShader, RenderEngine::Assets::Shader* _fragmentShader, RenderEngine::Assets::Cubemap* _output)
+bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize, RenderEngine::Assets::Cubemap* _output,
+	RenderEngine::Assets::Mesh* _mesh, RenderEngine::Assets::Shader* _vertexShader, RenderEngine::Assets::Shader* _fragmentShader)
 {
 	const VkFormat format = VK_FORMAT_R32G32B32A32_SFLOAT;
-	const int32_t dim = 1024;
-	const uint32_t numMips = static_cast<uint32_t>(floor(log2(dim))) + 1;
+	const int32_t width = (int32_t)_outputSize.X;
+	const int32_t height = (int32_t)_outputSize.Y;
+	const uint32_t numMips = static_cast<uint32_t>(std::floor(std::log2(std::max(width, height)))) + 1;
+
+
+	_output->width = width;
+	_output->height = height;
+	_output->mipLevels = numMips;
+	_output->imageSize = width * height * 16 /* 4 channels * sizeof(float) */;
 
 	// output texture
 
@@ -731,8 +752,8 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, RenderEngine::A
 	textCreateInfo.physicalDevice = physicalDeviceProperties.physicalDevice;
 	textCreateInfo.graphicsQueue = graphicsQueue;
 	textCreateInfo.commandPool = commandPool;
-	textCreateInfo.width = dim;
-	textCreateInfo.height = dim;
+	textCreateInfo.width = width;
+	textCreateInfo.height = height;
 	textCreateInfo.mipLevels = numMips;
 	textCreateInfo.imageCount = 6;
 	textCreateInfo.format = format;
@@ -789,8 +810,8 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, RenderEngine::A
 		ImageVkCreateInfo imageCreateInfo{};
 		imageCreateInfo.physicalDevice = physicalDeviceProperties.physicalDevice;
 		imageCreateInfo.logicalDevice = logicalDevice;
-		imageCreateInfo.width = dim;
-		imageCreateInfo.height = dim;
+		imageCreateInfo.width = width;
+		imageCreateInfo.height = height;
 		imageCreateInfo.format = format;
 		imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
 		imageCreateInfo.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
@@ -809,7 +830,7 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, RenderEngine::A
 		createInfo.renderPass = &tmpRenderPass;
 		createInfo.imageViews.push_back(offscreen.image.GetImageView());
 		createInfo.swapChainImageCount = 1;
-		createInfo.swapChainExtent = VkExtent2D{ dim, dim };
+		createInfo.swapChainExtent = VkExtent2D{ (unsigned int)width, (unsigned int)height };
 		createInfo.depthBuffer = nullptr;
 		createInfo.colorImage = nullptr;
 
@@ -823,7 +844,7 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, RenderEngine::A
 	struct PushBlock {
 		Mathlib::Mat4 invView;
 		Mathlib::Mat4 proj;
-		float roughness;
+		float roughness = 0.f;
 		uint32_t numSamples = 32u;
 	} pushBlock;
 
@@ -846,7 +867,7 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, RenderEngine::A
 	GraphicsPipelineVkCreateInfo gpCreateInfo{};
 	gpCreateInfo.logicalDevice = logicalDevice;
 	gpCreateInfo.renderPass = &tmpRenderPass;
-	gpCreateInfo.swapChainExtent = VkExtent2D{ dim, dim };
+	gpCreateInfo.swapChainExtent = VkExtent2D{ (unsigned int)width, (unsigned int)height };
 	gpCreateInfo.swapChainImageFormat = format;
 	gpCreateInfo.vertexShader = _vertexShader;
 	gpCreateInfo.fragmentShader = _fragmentShader;
@@ -884,16 +905,16 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, RenderEngine::A
 
 	// Render
 
-	VkClearValue clearValues[1];
+	VkClearValue clearValues[1]{};
 	clearValues[0].color = { { 0.0f, 0.0f, 0.0f, 1.0f } };
 
-	VkRenderPassBeginInfo renderPassBeginInfo;
+	VkRenderPassBeginInfo renderPassBeginInfo{};
 	renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 	// Reuse render pass from example pass
 	renderPassBeginInfo.renderPass = tmpRenderPass.GetRenderPass();
 	renderPassBeginInfo.framebuffer = offscreen.framebuffer.GetFrameBuffers()[0];
-	renderPassBeginInfo.renderArea.extent.width = dim;
-	renderPassBeginInfo.renderArea.extent.height = dim;
+	renderPassBeginInfo.renderArea.extent.width = width;
+	renderPassBeginInfo.renderArea.extent.height = height;
 	renderPassBeginInfo.clearValueCount = 1;
 	renderPassBeginInfo.pClearValues = clearValues;
 	renderPassBeginInfo.pNext = nullptr;
@@ -917,16 +938,16 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, RenderEngine::A
 	Mathlib::Mat4 projection = Mathlib::Mat4::PerspectiveMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Math::Radians(90), 1.0f, 0.1f, 512.0f).Transpose();
 
 	VkViewport viewport{};
-	viewport.width = dim;
-	viewport.height = -dim;
+	viewport.width = _outputSize.X;
+	viewport.height = -_outputSize.Y;
 	viewport.x = 0.f;
-	viewport.y = dim;
+	viewport.y = _outputSize.Y;
 	viewport.minDepth = 0.f;
 	viewport.maxDepth = 1.f;
 
 	VkRect2D scissor{};
-	scissor.extent.width = dim;
-	scissor.extent.height = dim;
+	scissor.extent.width = width;
+	scissor.extent.height = height;
 	scissor.offset.x = 0;
 	scissor.offset.y = 0;
 
@@ -940,8 +961,8 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, RenderEngine::A
 	{
 		pushBlock.roughness = (float)m / (float)(numMips - 1);
 
-		viewport.width = static_cast<float>(dim * std::pow(0.5f, m));
-		viewport.height = static_cast<float>(-dim * std::pow(0.5f, m));
+		viewport.width = static_cast<float>(width * std::pow(0.5f, m));
+		viewport.height = static_cast<float>(-height * std::pow(0.5f, m));
 		viewport.y = -viewport.height;
 		vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
