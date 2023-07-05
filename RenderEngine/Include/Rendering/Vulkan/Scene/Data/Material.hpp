@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef RENDERENGINE_MATERIAL
-#define RENDERENGINE_MATERIAL
+#ifndef RENDERENGINE_VKMATERIAL
+#define RENDERENGINE_VKMATERIAL
 
 #include "Mathlib/Mathlib/Include/Space/Vec3.hpp"
 

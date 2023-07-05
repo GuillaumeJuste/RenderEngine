@@ -25,12 +25,21 @@ void GameObject::Start()
 	}
 }
 
-void GameObject::Update()
+void GameObject::Update(double _deltaTime)
 {
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
 		if((*it)->enable)
-			(*it)->Update();
+			(*it)->Update(_deltaTime);
+	}
+}
+
+void GameObject::FixedUpdate(double _deltaTime)
+{
+	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+	{
+		if ((*it)->enable)
+			(*it)->FixedUpdate(_deltaTime);
 	}
 }
 

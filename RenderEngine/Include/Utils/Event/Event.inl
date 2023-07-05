@@ -1,6 +1,6 @@
 #include <iostream>
 
-namespace Utils
+namespace RenderEngine::Utils
 {
 	template <typename... Args>
 	Event<Args...>::~Event()

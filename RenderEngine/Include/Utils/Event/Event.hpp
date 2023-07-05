@@ -7,7 +7,7 @@
 
 #include <vector>
 
-namespace Utils
+namespace RenderEngine::Utils
 {
 	/**
 	 * @brief Handle struct for a method

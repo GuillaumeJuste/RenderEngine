@@ -11,6 +11,10 @@ void DirectionalLight::Start()
 {
 }
 
-void DirectionalLight::Update()
+void DirectionalLight::Update(double _deltaTime)
+{
+}
+
+void DirectionalLight::FixedUpdate(double _deltaTime)
 {
 }

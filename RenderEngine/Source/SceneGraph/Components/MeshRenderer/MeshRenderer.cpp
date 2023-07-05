@@ -10,6 +10,10 @@ void MeshRenderer::Start()
 {
 }
 
-void MeshRenderer::Update()
+void MeshRenderer::Update(double _deltaTime)
+{
+}
+
+void MeshRenderer::FixedUpdate(double _deltaTime)
 {
 }

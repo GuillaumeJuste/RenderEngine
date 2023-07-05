@@ -2,7 +2,6 @@
 #include "SceneGraph/Object/GameObject/GameObject.hpp"
 #include "Transform/Transform.hpp"
 
-
 void RotatorComponent::Initialize()
 {
 
@@ -27,14 +26,18 @@ void RotatorComponent::Start()
 	}
 }
 
-void RotatorComponent::Update()
+void RotatorComponent::Update(double _deltaTime)
+{
+}
+
+void RotatorComponent::FixedUpdate(double _deltaTime)
 {
 	Mathlib::Transform transform = gameObject->GetLocalTransform();
 
 	switch (rotationAxis)
 	{
 	case ROTATION_AXIS::X:
-		transform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(currentRotation, 0.f,0.f));
+		transform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(currentRotation, 0.f, 0.f));
 		break;
 	case ROTATION_AXIS::Y:
 		transform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, currentRotation, 0.f));
@@ -46,7 +49,7 @@ void RotatorComponent::Update()
 		break;
 	}
 
-	currentRotation += 0.01f;
+	currentRotation += rotationSpeed * _deltaTime;
 	if (currentRotation >= 360.f)
 		currentRotation -= 360.f;
 

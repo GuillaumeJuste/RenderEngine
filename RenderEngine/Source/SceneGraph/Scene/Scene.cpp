@@ -2,6 +2,7 @@
 #include "ResourceManager/ResourceManager.hpp"
 #include "SceneGraph/Components/MeshRenderer/MeshRenderer.hpp"
 #include "ResourceManager/ResourceManager.hpp"
+#include <chrono>
 
 using namespace RenderEngine::SceneGraph;
 
@@ -28,14 +29,28 @@ Scene::Scene(RenderEngine::ResourceManager* _resourceManager) :
 	GameObject::InitializeGameObject(mainCameraCreateInfo, &mainCamera);
 
 	skybox.mesh = resourceManager->LoadMesh("Resources/Engine/Models/cube.obj");
-
 	skybox.BRDFlut = resourceManager->LoadTexture("Resources/Engine/Textures/default_brdf_lut.png");
 	skybox.vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/Skybox.vert.spv", VERTEX);
 	skybox.fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/Skybox.frag.spv", FRAGMENT);
 
-	Texture* skyboxTexture = resourceManager->LoadTexture("Resources/Engine/Textures/HDR/newport_loft.hdr", true, false);
+	/*CubemapImportInfos importInfos("Resources/Engine/Textures/Skybox/right.jpg",
+		"Resources/Engine/Textures/Skybox/left.jpg",
+		"Resources/Engine/Textures/Skybox/top.jpg",
+		"Resources/Engine/Textures/Skybox/bottom.jpg",
+		"Resources/Engine/Textures/Skybox/front.jpg",
+		"Resources/Engine/Textures/Skybox/back.jpg");
 
+	skybox.cubemap = resourceManager->LoadCubemap(importInfos, false);
+	skybox.irradianceMap = skybox.cubemap;
+	skybox.prefilterMap = skybox.cubemap;*/
+
+	Texture* skyboxTexture = resourceManager->LoadTexture("Resources/Engine/Textures/HDR/newport_loft.hdr", true, false);
 	resourceManager->CreateSkyboxFromTexture(skyboxTexture, Mathlib::Vec2(1024.f, 1024.f), &skybox);
+}
+
+Scene::~Scene()
+{
+	timer.FixedUpdateEvent.Remove(this, &Scene::FixedUpdate);
 }
 
 void Scene::Initialize()
@@ -49,6 +64,9 @@ void Scene::Initialize()
 
 void Scene::Start()
 {
+	timer.Start();
+	timer.FixedUpdateEvent.Add(this, &Scene::FixedUpdate);
+
 	mainCamera.Start();
 	for (std::list<GameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{
@@ -58,12 +76,24 @@ void Scene::Start()
 
 void Scene::Update()
 {
-	mainCamera.Update();
+	timer.Update();
+
+	mainCamera.Update(timer.GetDeltaTime());
 
 	for (std::list<GameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{
 		if(it->enable)
-			it->Update();
+			it->Update(timer.GetDeltaTime());
+	}
+}
+
+void Scene::FixedUpdate(double _deltaTime)
+{
+	mainCamera.FixedUpdate(timer.GetDeltaTime());
+	for (std::list<GameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
+	{
+		if (it->enable)
+			it->FixedUpdate(_deltaTime);
 	}
 }
 

@@ -7,6 +7,7 @@
 #include "SceneGraph/Object/GameObject/GameObjectCreateInfo.hpp"
 #include "SceneGraph/Object/GameObject/Camera/Camera.hpp"
 #include "SceneGraph/Scene/Skybox.hpp"
+#include "Utils/Time/Time.hpp"
 
 #include <string>
 #include <list>
@@ -38,6 +39,10 @@ namespace RenderEngine::SceneGraph
 
         RenderEngine::ResourceManager* resourceManager;
 
+        RenderEngine::Utils::Time timer;
+
+        void FixedUpdate(double _deltaTime);
+
     public:
         /**
         * @brief scene name
@@ -46,9 +51,12 @@ namespace RenderEngine::SceneGraph
 
         Skybox skybox;
 
+        float fixedTimestep = 0.02f;
+
         Scene() = default;
+        Scene(const Scene&) = default;
         Scene(RenderEngine::ResourceManager* _resourceManager);
-        ~Scene() = default;
+        ~Scene();
 
         void Initialize();
         void Start();

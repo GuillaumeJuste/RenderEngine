@@ -46,7 +46,8 @@ namespace RenderEngine::SceneGraph
 
         void Initialize();
         void Start();
-        void Update();
+        void Update(double _deltaTime);
+        void FixedUpdate(double _deltaTime);
 
         /**
          * @brief Add child to GAmeObject

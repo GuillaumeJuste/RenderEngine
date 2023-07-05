@@ -5,7 +5,7 @@
 
 #include <utility>
 
-namespace Utils
+namespace RenderEngine::Utils
 {
 	/**
 	 * @brief Abstract struct used to store 

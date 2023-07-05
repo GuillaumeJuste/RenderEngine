@@ -25,8 +25,9 @@ namespace RenderEngine::SceneGraph
 
         void Initialize();
         void Start();
-        void Update();
-
+        void Update(double _deltaTime);
+        void FixedUpdate(double _deltaTime);
+        
         const Mathlib::Transform& GetLocalTransform() const;
         void SetLocalTransform(const Mathlib::Transform& _transform);
     };

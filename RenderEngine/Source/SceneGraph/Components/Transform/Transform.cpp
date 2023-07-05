@@ -15,7 +15,11 @@ void Transform::Start()
 {
 }
 
-void Transform::Update()
+void Transform::Update(double _deltaTime)
+{
+}
+
+void Transform::FixedUpdate(double _deltaTime)
 {
 }
 

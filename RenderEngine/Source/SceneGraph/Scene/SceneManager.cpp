@@ -11,7 +11,7 @@ SceneManager::SceneManager(RenderEngine::ResourceManager* _resourceManager) :
 
 Scene* SceneManager::AddScene()
 {
-    return &scenes.emplace_front(Scene(resourceManager));
+    return &scenes.emplace_front(resourceManager);
 }
 
 Scene* SceneManager::GetScene(std::string _name)

@@ -20,12 +20,15 @@ private:
 public:
     ROTATION_AXIS rotationAxis = ROTATION_AXIS::X;
 
+    float rotationSpeed = 5.f;
+
     RotatorComponent() = default;
     ~RotatorComponent() = default;
 
     void Initialize();
     void Start();
-    void Update();
+    void Update(double _deltaTime);
+    void FixedUpdate(double _deltaTime);
 };
 
 

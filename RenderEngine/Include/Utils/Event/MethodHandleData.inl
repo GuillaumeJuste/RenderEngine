@@ -1,4 +1,4 @@
-namespace Utils
+namespace RenderEngine::Utils
 {
     template <typename C, typename... Args>
     MethodHandleData<C, Args...>::MethodHandleData(C* _caller, void(C::* _func)(Args...)) :
