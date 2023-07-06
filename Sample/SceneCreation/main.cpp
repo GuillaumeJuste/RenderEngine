@@ -12,6 +12,7 @@
 #include "SceneGraph/Components/Light/DirectionalLight.hpp"
 #include "SceneGraph/Components/Light/SpotLight.hpp"
 #include "Component/RotatorComponent.hpp"
+#include "Component/CameraController.hpp"
 #include <iostream>
 
 #include<Mathlib/Mathlib/Include/Misc/Math.hpp>
@@ -112,9 +113,12 @@ Scene* SetupSimpleCubeScene()
     Camera* camera = scene->GetCamera();
     Mathlib::Transform cameraTransform;
     cameraTransform.position = Mathlib::Vec3(0.0f, 0.0f, -1.0f);
-    cameraTransform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 180.f, 0.f));
+    cameraTransform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 0.f, 0.f));
     camera->SetLocalTransform(cameraTransform);
     camera->fov = 90.f;
+
+    CameraController* cameraController = camera->AddComponent<CameraController>();
+    cameraController->window = window;
 
     Mathlib::Transform objTransform;
     objTransform.position = Mathlib::Vec3(0.f, 0.f, 2.0f);

@@ -58,6 +58,9 @@ namespace RenderEngine::Window
         virtual void GetFrameBufferSize(int* _width, int* _height) = 0;
 
         virtual void* GetHandle() const = 0;
+
+        virtual bool GetKeyPressed(int _keycode, int _keyStatus) = 0;
+        virtual void GetCursorPos(double* _mouseX, double* _mouseY) = 0;
     };
 }
 

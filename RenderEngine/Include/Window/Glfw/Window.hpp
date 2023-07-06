@@ -60,6 +60,9 @@ namespace RenderEngine::Window::GLFW
 		void GetFrameBufferSize(int* _width, int* _height);
 
 		void* GetHandle() const;
+
+		bool GetKeyPressed(int _keycode, int _keyStatus);
+		void GetCursorPos(double* _mouseX, double* _mouseY);
 	};
 }
 
