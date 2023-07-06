@@ -4,15 +4,14 @@
 #define RENDERENGINE_WINDOW
 
 #include "Rendering/Vulkan/Misc/VulkanBaseInclude.hpp"
-
-#include "Utils/Event/Event.hpp"
+#include "Window/WindowBase.hpp"
 
 namespace RenderEngine::Window::GLFW
 {
 	/**
 	 * @brief Class managing GLFW window creation and destruction
 	*/
-	class Window
+	class Window : public RenderEngine::Window::WindowBase
 	{
 	private:
 		/**
@@ -21,21 +20,6 @@ namespace RenderEngine::Window::GLFW
 		GLFWwindow* glfwWindow;
 
 		/**
-		 * @brief window width
-		*/
-		unsigned int width;
-
-		/**
-		 * @brief window height
-		*/
-		unsigned int height;
-
-		/**
-		 * @brief window name
-		*/
-		const char* name;
-		
-		/**
 		 * @brief Callback function called when GLFW window is resized
 		 * @param _window window handle
 		 * @param _width new window width
@@ -43,11 +27,6 @@ namespace RenderEngine::Window::GLFW
 		*/
 		static void FramebufferResizeCallback(GLFWwindow* _window, int _width, int _height);
 	public:
-
-		/**
-		 * @brief Event called when window is resized;
-		*/
-		Utils::Event<> FramebufferResizeEvent;
 
 		/**
 		 * @brief Window constructor
@@ -71,16 +50,16 @@ namespace RenderEngine::Window::GLFW
 		void Cleanup();
 
 		/**
-		 * @brief GLFW window handle getter
-		 * @return GLFW window handle
-		*/
-		GLFWwindow* GetGLFWWindow();
-
-		/**
 		 * @brief Get window dimensions
 		 * @return window dimensions as VkExtent2D
 		*/
-		VkExtent2D GetWindowExtent();
+		Mathlib::Vec2 GetWindowExtent();
+
+		bool WindowShouldClose();
+
+		void GetFrameBufferSize(int* _width, int* _height);
+
+		void* GetHandle() const;
 	};
 }
 

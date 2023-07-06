@@ -145,10 +145,9 @@ void RenderContext::CleanUpSwapChain()
 void RenderContext::RecreateSwapChain()
 {
 	int width = 0, height = 0;
-	glfwGetFramebufferSize(windowProperties->window->GetGLFWWindow(), &width, &height);
+	windowProperties->window->GetFrameBufferSize(&width, &height);
 	while (width == 0 || height == 0) {
-		glfwGetFramebufferSize(windowProperties->window->GetGLFWWindow(), &width, &height);
-		glfwWaitEvents();
+		windowProperties->window->GetFrameBufferSize(&width, &height);
 	}
 
 	vkDeviceWaitIdle(logicalDevice);

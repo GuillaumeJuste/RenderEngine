@@ -24,7 +24,7 @@ namespace RenderEngine::Rendering
 		/**
 		 * @brief window from which the surface was created
 		*/
-		GLFW::Window* window = nullptr;
+		WindowBase* window = nullptr;
 
 		/**
 		 * @brief Surface
@@ -45,7 +45,7 @@ namespace RenderEngine::Rendering
 		 * @param _window glfw window
 		 * @param _output surface to initialize
 		*/
-		static void InitializeSurface(const VkInstance& _instance, GLFW::Window* _window, Surface* _output);
+		static void InitializeSurface(const VkInstance& _instance, WindowBase* _window, Surface* _output);
 
 		/**
 		 * @brief clean surface

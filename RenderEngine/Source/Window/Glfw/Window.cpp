@@ -4,9 +4,11 @@
 
 using namespace RenderEngine::Window::GLFW;
 
-Window::Window(unsigned int _width, unsigned int _height, const char* _name) :
-    width{ _width }, height{ _height }, name{ _name }
+Window::Window(unsigned int _width, unsigned int _height, const char* _name)
 {
+    width = _width;
+    height = _height;
+    name = _name;
     glfwInit();
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -19,7 +21,7 @@ Window::Window(unsigned int _width, unsigned int _height, const char* _name) :
 
 void Window::Update()
 {
-
+    glfwPollEvents();
 }
 
 void Window::Cleanup()
@@ -27,11 +29,6 @@ void Window::Cleanup()
     glfwDestroyWindow(glfwWindow);
 
     glfwTerminate();
-}
-
-GLFWwindow* Window::GetGLFWWindow()
-{
-    return glfwWindow;
 }
 
 void Window::FramebufferResizeCallback(GLFWwindow* _window, int _width, int _height)
@@ -42,10 +39,26 @@ void Window::FramebufferResizeCallback(GLFWwindow* _window, int _width, int _hei
     window->FramebufferResizeEvent();
 }
 
-VkExtent2D Window::GetWindowExtent()
+Mathlib::Vec2 Window::GetWindowExtent()
 {
-    return VkExtent2D {
-            static_cast<uint32_t>(width),
-            static_cast<uint32_t>(height)
+    return Mathlib::Vec2 {
+            static_cast<float>(width),
+            static_cast<float>(height)
     };
+}
+
+bool Window::WindowShouldClose()
+{
+    return glfwWindowShouldClose(glfwWindow);
+}
+
+void Window::GetFrameBufferSize(int* _width, int* _height)
+{
+    glfwGetFramebufferSize(glfwWindow, _width, _height);
+    glfwWaitEvents();
+}
+
+void* Window::GetHandle() const
+{
+    return glfwWindow;
 }

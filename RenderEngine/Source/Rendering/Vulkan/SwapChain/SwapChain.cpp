@@ -156,7 +156,7 @@ VkExtent2D SwapChain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& _capabili
 	else
 	{
 		int width, height;
-		glfwGetFramebufferSize(windowProperties->window->GetGLFWWindow(), &width, &height);
+		windowProperties->window->GetFrameBufferSize(&width, &height);
 
 		width = Math::Clamp(width, _capabilities.minImageExtent.width, _capabilities.maxImageExtent.width);
 		height = Math::Clamp(height, _capabilities.minImageExtent.height, _capabilities.maxImageExtent.height);

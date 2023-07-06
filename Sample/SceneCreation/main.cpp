@@ -314,13 +314,14 @@ Scene* SetupSphereScene()
 
 void MainLoop()
 {
-    Scene* scene = SetupSphereScene();
+    Scene* scene = SetupSimpleCubeScene();
 
     scene->Initialize();
     scene->Start();
 
-    while (!glfwWindowShouldClose(window->GetGLFWWindow())) {
-        glfwPollEvents();
+    while (!window->WindowShouldClose()) 
+    {
+        window->Update();
         renderContext->DrawScene(scene);
         scene->Update();
     }

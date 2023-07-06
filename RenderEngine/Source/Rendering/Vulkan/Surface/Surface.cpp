@@ -7,12 +7,12 @@
 using namespace RenderEngine::Window;
 using namespace RenderEngine::Rendering;
 
-void Surface::InitializeSurface(const VkInstance& _instance, GLFW::Window* _window, Surface* _output)
+void Surface::InitializeSurface(const VkInstance& _instance, WindowBase* _window, Surface* _output)
 {
 	_output->instance = _instance;
 	_output->window = _window;
 
-	if (glfwCreateWindowSurface(_instance, _window->GetGLFWWindow(), nullptr, &_output->vkSurface) != VK_SUCCESS) 
+	if (glfwCreateWindowSurface(_instance, reinterpret_cast<GLFWwindow*>(_window->GetHandle()), nullptr, &_output->vkSurface) != VK_SUCCESS)
 	{
 		throw std::runtime_error("failed to create window surface!");
 	}

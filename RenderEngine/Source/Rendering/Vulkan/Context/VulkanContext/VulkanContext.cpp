@@ -111,7 +111,7 @@ std::vector<const char*> VulkanContext::GetRequiredExtensions()
     return extensions;
 }
 
-WindowProperties* VulkanContext::AddWindow(GLFW::Window* _window)
+WindowProperties* VulkanContext::AddWindow(WindowBase* _window)
 {
     for (std::forward_list<WindowProperties>::iterator it = windowsProperties.begin(); it != windowsProperties.end(); ++it)
     {
