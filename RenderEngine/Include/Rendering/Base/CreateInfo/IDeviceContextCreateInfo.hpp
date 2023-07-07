@@ -3,7 +3,7 @@
 #ifndef RENDERENGINE_IDEVICECONTEXTCREATEINFO
 #define RENDERENGINE_IDEVICECONTEXTCREATEINFO
 
-#include "Window/WindowBase.hpp"
+#include "Window/IWindow.hpp"
 
 using namespace RenderEngine::Window;
 
@@ -12,7 +12,7 @@ namespace RenderEngine::Rendering
 	struct IDeviceContextCreateInfo
 	{
 		/// window
-		WindowBase* window;
+		IWindow* window;
 	};
 }
 

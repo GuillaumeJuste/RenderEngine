@@ -71,7 +71,7 @@ namespace RenderEngine::Rendering
 		 * @param _window window to add to the list
 		 * @return
 		*/
-		WindowProperties* AddWindow(WindowBase* _window);
+		WindowProperties* AddWindow(IWindow* _window);
 
 	public:
 

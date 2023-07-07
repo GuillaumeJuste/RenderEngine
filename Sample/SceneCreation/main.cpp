@@ -128,6 +128,7 @@ Scene* SetupSimpleCubeScene()
     GameObjectCreateInfo objCreateinfo;
     objCreateinfo.transform = objTransform;
     objCreateinfo.parent = nullptr;
+    objCreateinfo.name = "cube";
 
     GameObject* obj = scene->AddGameObject(objCreateinfo);
 
@@ -149,10 +150,9 @@ Scene* SetupSimpleCubeScene()
     objMeshRenderer->material.diffuse = Mathlib::Vec4(0.4f, 0.4f, 0.4f, 1.f);
     objMeshRenderer->material.specular = Mathlib::Vec4(0.8f, 0.8f, 0.8f, 1.f);
     objMeshRenderer->material.shininess = 16.0f;
-    //objMeshRenderer->enable = false;
 
-    /*RotatorComponent* rotator = obj->AddComponent<RotatorComponent>();
-    rotator->rotationAxis = ROTATION_AXIS::Y;*/
+    RotatorComponent* rotator = obj->AddComponent<RotatorComponent>();
+    rotator->rotationAxis = ROTATION_AXIS::Y;
 
     Mathlib::Transform lightTransform;
     lightTransform.position = Mathlib::Vec3(0.f, 0.0f, 0.f);

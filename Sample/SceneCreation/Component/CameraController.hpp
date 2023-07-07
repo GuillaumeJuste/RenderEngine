@@ -4,7 +4,7 @@
 #define CAMERACONTROLLER
 
 #include "SceneGraph/Components/Component.hpp"
-#include "Window/WindowBase.hpp"
+#include "Window/IWindow.hpp"
 
 class CameraController : public RenderEngine::SceneGraph::Component
 {
@@ -16,7 +16,7 @@ private:
     float dy = 0.0f;
 
 public:
-    RenderEngine::Window::WindowBase* window;
+    RenderEngine::Window::IWindow* window;
     float movementSpeed = 20.f;
     float rotationSpeed = 10.f;
 

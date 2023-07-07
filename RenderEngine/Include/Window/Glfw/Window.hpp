@@ -4,14 +4,14 @@
 #define RENDERENGINE_WINDOW
 
 #include "Rendering/Vulkan/Misc/VulkanBaseInclude.hpp"
-#include "Window/WindowBase.hpp"
+#include "Window/IWindow.hpp"
 
 namespace RenderEngine::Window::GLFW
 {
 	/**
 	 * @brief Class managing GLFW window creation and destruction
 	*/
-	class Window : public RenderEngine::Window::WindowBase
+	class Window : public RenderEngine::Window::IWindow
 	{
 	private:
 		/**

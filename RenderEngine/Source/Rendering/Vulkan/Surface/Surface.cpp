@@ -7,7 +7,7 @@
 using namespace RenderEngine::Window;
 using namespace RenderEngine::Rendering;
 
-void Surface::InitializeSurface(const VkInstance& _instance, WindowBase* _window, Surface* _output)
+void Surface::InitializeSurface(const VkInstance& _instance, IWindow* _window, Surface* _output)
 {
 	_output->instance = _instance;
 	_output->window = _window;

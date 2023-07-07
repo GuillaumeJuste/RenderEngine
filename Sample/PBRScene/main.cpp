@@ -105,7 +105,7 @@ void InitEngine()
     renderContext = deviceContext->CreateRenderContext(renderContextCreateInfo);
 }
 
-Scene* SetupSphereScene()
+Scene* SetupPBRScene()
 {
     Scene* scene = sceneManager->AddScene();
     scene->name = "test_scene_simple_cube";
@@ -256,7 +256,7 @@ Scene* SetupSphereScene()
 
 void MainLoop()
 {
-    Scene* scene = SetupSphereScene();
+    Scene* scene = SetupPBRScene();
 
     scene->Initialize();
     scene->Start();

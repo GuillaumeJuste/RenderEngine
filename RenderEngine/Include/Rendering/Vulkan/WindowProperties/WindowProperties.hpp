@@ -17,7 +17,7 @@ namespace RenderEngine::Rendering
 	struct WindowProperties
 	{
 		/// window
-		WindowBase* window;
+		IWindow* window;
 
 		/// surface
 		Surface surface;

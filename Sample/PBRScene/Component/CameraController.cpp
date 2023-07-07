@@ -25,20 +25,21 @@ void CameraController::FixedUpdate(double _deltaTime)
 {
 	if (window != nullptr)
 	{
+		float deltaTime = (float)_deltaTime;
 		Mathlib::Transform gaoTransform = gameObject->GetLocalTransform();
 
 		if (window->GetKeyPressed(262, 1))
-			gaoTransform.position += gaoTransform.GetRightVector() * movementSpeed * _deltaTime;
+			gaoTransform.position += gaoTransform.GetRightVector() * movementSpeed * deltaTime;
 		if (window->GetKeyPressed(263, 1))
-			gaoTransform.position -= gaoTransform.GetRightVector() * movementSpeed * _deltaTime;
+			gaoTransform.position -= gaoTransform.GetRightVector() * movementSpeed * deltaTime;
 		if (window->GetKeyPressed(341, 1))
-			gaoTransform.position -= gaoTransform.GetUpVector() * movementSpeed * _deltaTime;
+			gaoTransform.position -= gaoTransform.GetUpVector() * movementSpeed * deltaTime;
 		if (window->GetKeyPressed(32, 1))
-			gaoTransform.position += gaoTransform.GetUpVector() * movementSpeed * _deltaTime;
+			gaoTransform.position += gaoTransform.GetUpVector() * movementSpeed * deltaTime;
 		if (window->GetKeyPressed(264, 1))
-			gaoTransform.position -= gaoTransform.GetForwardVector() * movementSpeed * _deltaTime;
+			gaoTransform.position -= gaoTransform.GetForwardVector() * movementSpeed * deltaTime;
 		if (window->GetKeyPressed(265, 1))
-			gaoTransform.position += gaoTransform.GetForwardVector() * movementSpeed * _deltaTime;
+			gaoTransform.position += gaoTransform.GetForwardVector() * movementSpeed * deltaTime;
 
 		double mouseX, mouseY;
 
@@ -46,8 +47,8 @@ void CameraController::FixedUpdate(double _deltaTime)
 
 		if (mouseX != oldMouseX || mouseY != oldMouseY)
 		{
-			dx += static_cast<float>(mouseX - oldMouseX) * _deltaTime * rotationSpeed * Mathlib::Math::DegToRad;
-			dy += static_cast<float>(mouseY - oldMouseY) * _deltaTime * rotationSpeed * Mathlib::Math::DegToRad;
+			dx += static_cast<float>(mouseX - oldMouseX) * deltaTime * rotationSpeed * Mathlib::Math::DegToRad;
+			dy += static_cast<float>(mouseY - oldMouseY) * deltaTime * rotationSpeed * Mathlib::Math::DegToRad;
 
 			oldMouseX = mouseX;
 			oldMouseY = mouseY;
