@@ -94,8 +94,6 @@ void SwapChainCommandBuffer::SwapChainExtentResizedCallback()
 		viewport.height = -static_cast<float>(swapChainExtent.height); 
 		viewport.x = 0.f;
 		viewport.y = static_cast<float>(swapChainExtent.height);
-		viewport.minDepth = 1.0f;
-		viewport.maxDepth = 0.0f;
 	}
 	else
 	{
@@ -103,10 +101,11 @@ void SwapChainCommandBuffer::SwapChainExtentResizedCallback()
 		viewport.height = - commandBufferCreateInfo.viewportData.height;
 		viewport.x = 0.f;
 		viewport.y = commandBufferCreateInfo.viewportData.height;
-		viewport.minDepth = 1.f;
-		viewport.maxDepth = 0.f;
+		
 	}
-	
+	viewport.minDepth = 0.f;
+	viewport.maxDepth = 1.f;
+
 	if (commandBufferCreateInfo.customScissor == false)
 	{
 		scissor.offset = { 0, 0 };

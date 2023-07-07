@@ -610,20 +610,20 @@ bool RenderContext::CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize,
 
 	std::vector<Mathlib::Mat4> matrices = {
 		// POSITIVE_X
-		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(1.f, 0.f, 0.f), Mathlib::Vec3(0.f, 1.f, 0.f)).Transpose(),
+		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::LEFT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(1.f, 0.f, 0.f), Mathlib::Vec3(0.f, 1.f, 0.f)).Transpose(),
 		// NEGATIVE_X
-		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(-1.f, 0.f, 0.f), Mathlib::Vec3(0.f, 1.f, 0.f)).Transpose(),
+		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::LEFT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(-1.f, 0.f, 0.f), Mathlib::Vec3(0.f, 1.f, 0.f)).Transpose(),
 		// POSITIVE_Y
-		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, -1.f, 0.f), Mathlib::Vec3(0.f, 0.f, -1.f)).Transpose(),
+		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::LEFT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, 1.f, 0.f), Mathlib::Vec3(0.f, 0.f, -1.f)).Transpose(),
 		// NEGATIVE_Y
-		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, 1.f, 0.f), Mathlib::Vec3(0.f, 0.f, 1.f)).Transpose(),
+		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::LEFT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, -1.f, 0.f), Mathlib::Vec3(0.f, 0.f, 1.f)).Transpose(),
 		// POSITIVE_Z
-		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, 0.f, 1.f), Mathlib::Vec3(0.f, 1.f, 0.f)).Transpose(),
+		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::LEFT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, 0.f, 1.f), Mathlib::Vec3(0.f, 1.f, 0.f)).Transpose(),
 		// NEGATIVE_Z
-		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, 0.f, -1.f), Mathlib::Vec3(0.f, 1.f, 0.f)).Transpose(),
+		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::LEFT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, 0.f, -1.f), Mathlib::Vec3(0.f, 1.f, 0.f)).Transpose(),
 	};
 
-	Mathlib::Mat4 projection = Mathlib::Mat4::PerspectiveMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Math::Radians(90), 1.0f, 0.1f, 512.0f).Transpose();
+	Mathlib::Mat4 projection = Mathlib::Mat4::PerspectiveMatrix(Mathlib::COORDINATE_SYSTEM::LEFT_HAND, Mathlib::Math::Radians(90), 1.0f, 0.1f, 512.0f).Transpose();
 
 	VkViewport viewport{};
 	viewport.width = _outputSize.X;
@@ -921,20 +921,20 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _
 
 	std::vector<Mathlib::Mat4> matrices = {
 		// POSITIVE_X
-		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(1.f, 0.f, 0.f), Mathlib::Vec3(0.f, 1.f, 0.f)).Transpose(),
+		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::LEFT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(1.f, 0.f, 0.f), Mathlib::Vec3(0.f, 1.f, 0.f)).Transpose(),
 		// NEGATIVE_X
-		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(-1.f, 0.f, 0.f), Mathlib::Vec3(0.f, 1.f, 0.f)).Transpose(),
+		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::LEFT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(-1.f, 0.f, 0.f), Mathlib::Vec3(0.f, 1.f, 0.f)).Transpose(),
 		// POSITIVE_Y
-		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, -1.f, 0.f), Mathlib::Vec3(0.f, 0.f, -1.f)).Transpose(),
+		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::LEFT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, 1.f, 0.f), Mathlib::Vec3(0.f, 0.f, -1.f)).Transpose(),
 		// NEGATIVE_Y
-		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, 1.f, 0.f), Mathlib::Vec3(0.f, 0.f, 1.f)).Transpose(),
+		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::LEFT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, -1.f, 0.f), Mathlib::Vec3(0.f, 0.f, -1.f)).Transpose(),
 		// POSITIVE_Z
-		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, 0.f, 1.f), Mathlib::Vec3(0.f, 1.f, 0.f)).Transpose(),
+		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::LEFT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, 0.f, 1.f), Mathlib::Vec3(0.f, 1.f, 0.f)).Transpose(),
 		// NEGATIVE_Z
-		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, 0.f, -1.f), Mathlib::Vec3(0.f, 1.f, 0.f)).Transpose(),
+		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::LEFT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, 0.f, -1.f), Mathlib::Vec3(0.f, 1.f, 0.f)).Transpose(),
 	};
 
-	Mathlib::Mat4 projection = Mathlib::Mat4::PerspectiveMatrix(Mathlib::COORDINATE_SYSTEM::RIGHT_HAND, Mathlib::Math::Radians(90), 1.0f, 0.1f, 512.0f).Transpose();
+	Mathlib::Mat4 projection = Mathlib::Mat4::PerspectiveMatrix(Mathlib::COORDINATE_SYSTEM::LEFT_HAND, Mathlib::Math::Radians(90), 1.0f, 0.1f, 512.0f).Transpose();
 
 	VkViewport viewport{};
 	viewport.width = _outputSize.X;

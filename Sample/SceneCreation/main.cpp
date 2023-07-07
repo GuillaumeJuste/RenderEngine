@@ -149,13 +149,14 @@ Scene* SetupSimpleCubeScene()
     objMeshRenderer->material.diffuse = Mathlib::Vec4(0.4f, 0.4f, 0.4f, 1.f);
     objMeshRenderer->material.specular = Mathlib::Vec4(0.8f, 0.8f, 0.8f, 1.f);
     objMeshRenderer->material.shininess = 16.0f;
+    //objMeshRenderer->enable = false;
 
     RotatorComponent* rotator = obj->AddComponent<RotatorComponent>();
     rotator->rotationAxis = ROTATION_AXIS::Y;
 
     Mathlib::Transform lightTransform;
     lightTransform.position = Mathlib::Vec3(0.f, 0.0f, 0.f);
-    lightTransform.scale = Mathlib::Vec3(0.3f, 0.3f, 0.3f);
+    lightTransform.scale = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
     lightTransform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 0.f, 0.f));
 
     GameObjectCreateInfo lightCreateInfo;
@@ -164,6 +165,9 @@ Scene* SetupSimpleCubeScene()
     lightCreateInfo.name = "light_1";
 
     GameObject* light1 = scene->AddGameObject(lightCreateInfo);
+
+    MeshRenderer* lightMeshRenderer = light1->GetComponent<MeshRenderer>();
+    lightMeshRenderer->fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/TextureFragmentShader.frag.spv", FRAGMENT);
 
     PointLight* lightComponent = light1->AddComponent<PointLight>();
     lightComponent->color = Mathlib::Vec3(1.f, 1.0f, 1.0f);
@@ -181,9 +185,12 @@ Scene* SetupSphereScene()
     Camera* camera = scene->GetCamera();
     Mathlib::Transform cameraTransform;
     cameraTransform.position = Mathlib::Vec3(0.0f, 0.0f, -2.f);
-    cameraTransform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 180.f, 0.f));
+    cameraTransform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 0.f, 0.f));
     camera->SetLocalTransform(cameraTransform);
     camera->fov = 90.f;
+
+    CameraController* cameraController = camera->AddComponent<CameraController>();
+    cameraController->window = window;
 
     Mesh* sphere = resourceManager->LoadMesh("Resources/Sample/SceneCreation/Models/Sphere.obj");
     Shader* fragShader = resourceManager->LoadShader("Resources/Engine/Shaders/PBRFragmentShader.frag.spv", FRAGMENT);
@@ -318,7 +325,7 @@ Scene* SetupSphereScene()
 
 void MainLoop()
 {
-    Scene* scene = SetupSimpleCubeScene();
+    Scene* scene = SetupSphereScene();
 
     scene->Initialize();
     scene->Start();

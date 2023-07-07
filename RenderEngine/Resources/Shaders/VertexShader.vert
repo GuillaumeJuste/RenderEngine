@@ -26,7 +26,7 @@ layout(location = 0) out DataBlock
 } vsOut;
 
 void main() {
-    gl_Position = cbo.proj * cbo.invView * ubo.model * vec4(vec3(inPosition.x, inPosition.y, inPosition.z), 1.0);
+    gl_Position = cbo.proj * cbo.invView * ubo.model * vec4(inPosition, 1.0);
 
     vsOut.texCoord = inTexCoord;
     vsOut.fragPos = vec3( ubo.model * vec4(inPosition, 1.0));
