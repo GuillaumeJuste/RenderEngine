@@ -105,78 +105,6 @@ void InitEngine()
     renderContext = deviceContext->CreateRenderContext(renderContextCreateInfo);
 }
 
-Scene* SetupSimpleCubeScene()
-{
-    Scene* scene = sceneManager->AddScene();
-    scene->name = "test_scene_simple_plane";
-
-    Camera* camera = scene->GetCamera();
-    Mathlib::Transform cameraTransform;
-    cameraTransform.position = Mathlib::Vec3(0.0f, 0.0f, -1.0f);
-    cameraTransform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 0.f, 0.f));
-    camera->SetLocalTransform(cameraTransform);
-    camera->fov = 90.f;
-
-    CameraController* cameraController = camera->AddComponent<CameraController>();
-    cameraController->window = window;
-
-    Mathlib::Transform objTransform;
-    objTransform.position = Mathlib::Vec3(0.f, 0.f, 2.0f);
-    objTransform.scale = Mathlib::Vec3(4.f, 2.0f, 1.f);
-    objTransform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 0.f, 0.f));
-
-    GameObjectCreateInfo objCreateinfo;
-    objCreateinfo.transform = objTransform;
-    objCreateinfo.parent = nullptr;
-
-    GameObject* obj = scene->AddGameObject(objCreateinfo);
-
-    Shader* fragShader = resourceManager->LoadShader("Resources/Engine/Shaders/BlinnPhongFragmentShader.frag.spv", FRAGMENT);
-    Texture* wallTexture = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Brick/bricks.jpg");
-    Texture* wallMetalnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/metallic.png");
-    Texture* wallRoughnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/roughness.png");
-    Texture* wallNormalMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Brick/bricks_normal.jpg");
-    Texture* wallAoMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/ao.png");
-
-    MeshRenderer* objMeshRenderer = obj->GetComponent<MeshRenderer>();
-    objMeshRenderer->fragmentShader = fragShader;
-    objMeshRenderer->material.texture = wallTexture;
-    objMeshRenderer->material.metalnessMap = wallMetalnessMap;
-    objMeshRenderer->material.roughnessMap = wallRoughnessMap;
-    objMeshRenderer->material.normalMap = wallNormalMap;
-    objMeshRenderer->material.ambientOcclusionMap = wallAoMap;
-    objMeshRenderer->material.ambient = Mathlib::Vec4(0.1f, 0.1f, 0.1f, 1.f);
-    objMeshRenderer->material.diffuse = Mathlib::Vec4(0.4f, 0.4f, 0.4f, 1.f);
-    objMeshRenderer->material.specular = Mathlib::Vec4(0.8f, 0.8f, 0.8f, 1.f);
-    objMeshRenderer->material.shininess = 16.0f;
-    //objMeshRenderer->enable = false;
-
-    /*RotatorComponent* rotator = obj->AddComponent<RotatorComponent>();
-    rotator->rotationAxis = ROTATION_AXIS::Y;*/
-
-    Mathlib::Transform lightTransform;
-    lightTransform.position = Mathlib::Vec3(0.f, 0.0f, 0.f);
-    lightTransform.scale = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
-    lightTransform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 0.f, 0.f));
-
-    GameObjectCreateInfo lightCreateInfo;
-    lightCreateInfo.transform = lightTransform;
-    lightCreateInfo.parent = nullptr;
-    lightCreateInfo.name = "light_1";
-
-    GameObject* light1 = scene->AddGameObject(lightCreateInfo);
-
-    MeshRenderer* lightMeshRenderer = light1->GetComponent<MeshRenderer>();
-    lightMeshRenderer->fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/TextureFragmentShader.frag.spv", FRAGMENT);
-
-    PointLight* lightComponent = light1->AddComponent<PointLight>();
-    lightComponent->color = Mathlib::Vec3(1.f, 1.0f, 1.0f);
-    lightComponent->intensity = 5.f;
-    lightComponent->range = 10.f;
-
-    return scene;
-}
-
 Scene* SetupSphereScene()
 {
     Scene* scene = sceneManager->AddScene();
@@ -195,13 +123,13 @@ Scene* SetupSphereScene()
     CameraController* cameraController = camera->AddComponent<CameraController>();
     cameraController->window = window;
 
-    Mesh* sphere = resourceManager->LoadMesh("Resources/Sample/SceneCreation/Models/Sphere.obj");
+    Mesh* sphere = resourceManager->LoadMesh("Resources/Sample/PBRScene/Models/Sphere.obj");
     Shader* fragShader = resourceManager->LoadShader("Resources/Engine/Shaders/PBRFragmentShader.frag.spv", FRAGMENT);
-    Texture* wallTexture = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/albedo.png");
-    Texture* wallMetalnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/metallic.png");
-    Texture* wallRoughnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/roughness.png");
-    Texture* wallNormalMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/normal.png");
-    Texture* wallAoMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/ao.png");
+    Texture* wallTexture = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Wall/albedo.png");
+    Texture* wallMetalnessMap = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Wall/metallic.png");
+    Texture* wallRoughnessMap = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Wall/roughness.png");
+    Texture* wallNormalMap = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Wall/normal.png");
+    Texture* wallAoMap = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Wall/ao.png");
 
     /*Sphere 1*/
     Mathlib::Transform transform;
@@ -244,11 +172,11 @@ Scene* SetupSphereScene()
 
     GameObject* obj2 = scene->AddGameObject(createinfo2);
 
-    Texture* ironTexture = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/albedo.png");
-    Texture* ironMetalnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/metallic.png");
-    Texture* ironRoughnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/roughness.png");
-    Texture* ironNormalMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/normal.png");
-    Texture* ironAoMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Rusted_iron/ao.png");
+    Texture* ironTexture = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Rusted_iron/albedo.png");
+    Texture* ironMetalnessMap = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Rusted_iron/metallic.png");
+    Texture* ironRoughnessMap = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Rusted_iron/roughness.png");
+    Texture* ironNormalMap = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Rusted_iron/normal.png");
+    Texture* ironAoMap = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Rusted_iron/ao.png");
 
     MeshRenderer* meshRenderer2 = obj2->GetComponent<MeshRenderer>();
     meshRenderer2->fragmentShader = fragShader;
@@ -279,11 +207,11 @@ Scene* SetupSphereScene()
 
     GameObject* obj3 = scene->AddGameObject(createinfo3);
 
-    Texture* goldTexture = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Gold/albedo.png");
-    Texture* goldMetalnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Gold/metallic.png");
-    Texture* goldRoughnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Gold/roughness.png");
-    Texture* goldNormalMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Gold/normal.png");
-    Texture* goldAoMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Gold/ao.png");
+    Texture* goldTexture = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Gold/albedo.png");
+    Texture* goldMetalnessMap = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Gold/metallic.png");
+    Texture* goldRoughnessMap = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Gold/roughness.png");
+    Texture* goldNormalMap = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Gold/normal.png");
+    Texture* goldAoMap = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Gold/ao.png");
 
     MeshRenderer* meshRenderer3 = obj3->GetComponent<MeshRenderer>();
     meshRenderer3->mesh = sphere;
@@ -328,7 +256,7 @@ Scene* SetupSphereScene()
 
 void MainLoop()
 {
-    Scene* scene = SetupSimpleCubeScene();
+    Scene* scene = SetupSphereScene();
 
     scene->Initialize();
     scene->Start();
