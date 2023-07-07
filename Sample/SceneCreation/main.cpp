@@ -122,7 +122,7 @@ Scene* SetupSimpleCubeScene()
 
     Mathlib::Transform objTransform;
     objTransform.position = Mathlib::Vec3(0.f, 0.f, 2.0f);
-    objTransform.scale = Mathlib::Vec3(4.f, 2.0f, 1.f);
+    objTransform.scale = Mathlib::Vec3(2.f, 1.0f, 1.f);
     objTransform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 0.f, 0.f));
 
     GameObjectCreateInfo objCreateinfo;

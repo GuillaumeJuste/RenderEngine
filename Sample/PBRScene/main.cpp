@@ -231,7 +231,7 @@ Scene* SetupPBRScene()
 
     /*light 1*/
     Mathlib::Transform transform4;
-    transform4.position = Mathlib::Vec3(0.f, 0.0f, -2.f);
+    transform4.position = Mathlib::Vec3(0.f, 0.0f, -1.f);
     transform4.scale = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
 
     GameObjectCreateInfo createinfo4;

@@ -2,7 +2,7 @@
 
 #include "SceneGraph/Object/GameObject/GameObject.hpp"
 #include "Transform/Transform.hpp"
-#include "Mathlib/Mathlib/Include/Misc/Constants.hpp"
+#include "Mathlib/Mathlib/Include/Collections/Mathlib.hpp"
 
 void CameraController::Initialize()
 {
@@ -14,6 +14,10 @@ void CameraController::Start()
 	if (window != nullptr)
 	{
 		window->GetCursorPos(&oldMouseX, &oldMouseY);
+
+		Mathlib::Vec3 eulerRotation = gameObject->GetLocalTransform().rotation.Euler();
+		dx = eulerRotation.X;
+		dy = eulerRotation.Y;
 	}
 }
 
@@ -47,16 +51,13 @@ void CameraController::FixedUpdate(double _deltaTime)
 
 		if (mouseX != oldMouseX || mouseY != oldMouseY)
 		{
-			dx += static_cast<float>(mouseX - oldMouseX) * deltaTime * rotationSpeed * Mathlib::Math::DegToRad;
-			dy += static_cast<float>(mouseY - oldMouseY) * deltaTime * rotationSpeed * Mathlib::Math::DegToRad;
+			dx += static_cast<float>(mouseY - oldMouseY) * deltaTime * rotationSpeed;
+			dy += static_cast<float>(mouseX - oldMouseX) * deltaTime * rotationSpeed;
 
 			oldMouseX = mouseX;
 			oldMouseY = mouseY;
 
-			dx = dx > Mathlib::Math::Pi ? dx - Mathlib::Math::Pi : dx < -Mathlib::Math::Pi ? dx + Mathlib::Math::Pi : dx;
-			dy = dy > Mathlib::Math::Pi ? dy - Mathlib::Math::Pi : dy < -Mathlib::Math::Pi ? dy + Mathlib::Math::Pi : dy;
-
-			gaoTransform.rotation = Mathlib::Quat(cos(dx), 0, sin(dx), 0) * Mathlib::Quat(cos(dy), sin(dy), 0, 0);
+			gaoTransform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(dx, dy, 0.f));
 		}
 
 		gameObject->SetLocalTransform(gaoTransform);
