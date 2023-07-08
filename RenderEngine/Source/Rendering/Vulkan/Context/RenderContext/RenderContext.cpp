@@ -394,7 +394,7 @@ bool RenderContext::CreateShader(const RenderEngine::Assets::RawShader& _input, 
 	return true;
 }
 
-bool RenderContext::CreateCubemap(const RenderEngine::Assets::RawTexture& _input, RenderEngine::Assets::Cubemap* _output)
+bool RenderContext::CreateCubemap(const RenderEngine::Assets::RawTexture& _input, RenderEngine::Assets::Texture* _output)
 {
 	VkTextureVkCreateInfo textCreateInfo{};
 	textCreateInfo.logicalDevice = logicalDevice;
@@ -421,7 +421,7 @@ bool RenderContext::CreateCubemap(const RenderEngine::Assets::RawTexture& _input
 	return true;
 }
 
-bool RenderContext::CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize, bool _generateMipmap, RenderEngine::Assets::Cubemap* _output,
+bool RenderContext::CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize, bool _generateMipmap, RenderEngine::Assets::Texture* _output,
 	RenderEngine::Assets::Mesh* _mesh, RenderEngine::Assets::Shader* _vertexShader, RenderEngine::Assets::Shader* _fragmentShader)
 {
 	const VkFormat format = VK_FORMAT_R32G32B32A32_SFLOAT;
@@ -435,6 +435,7 @@ bool RenderContext::CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize,
 	_output->height = height;
 	_output->mipLevels = numMips;
 	_output->imageSize = width * height * 16 /* 4 channels * sizeof(float) */;
+	_output->imageCount = 6;
 
 	// output texture
 
@@ -457,7 +458,7 @@ bool RenderContext::CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize,
 	VkTexture* outputTexture = new VkTexture();
 
 	VkTexture::InitializeVkTexture(textCreateInfo, outputTexture, false);
-	outputTexture->GetImage()->TransitionImageLayout(format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+	outputTexture->GetImage()->TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
 	// initialize renderpass
 
@@ -527,7 +528,7 @@ bool RenderContext::CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize,
 
 		FrameBuffer::InitializeFrameBuffer(createInfo, &offscreen.framebuffer);
 
-		offscreen.image.TransitionImageLayout(format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+		offscreen.image.TransitionImageLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 	}
 
 	// Pipeline layout
@@ -647,8 +648,8 @@ bool RenderContext::CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize,
 	BufferObject*  IBO = dynamic_cast<BufferObject*>(_mesh->indexBuffer);
 	for (uint32_t m = 0; m < numMips; m++)
 	{
-		viewport.width = static_cast<float>(width * std::pow(0.5f, m));
-		viewport.height = static_cast<float>(-height * std::pow(0.5f, m));
+		viewport.width = static_cast<float>(width * Mathlib::Math::Pow(0.5f, m));
+		viewport.height = static_cast<float>(-height * Mathlib::Math::Pow(0.5f, m));
 		viewport.y = -viewport.height;
 		vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
@@ -682,7 +683,7 @@ bool RenderContext::CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize,
 
 			vkCmdEndRenderPass(commandBuffer);
 
-			offscreen.image.TransitionImageLayout(format, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, commandBuffer);
+			offscreen.image.TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, commandBuffer);
 
 			// Copy region for transfer from framebuffer to cube face
 			VkImageCopy copyRegion = {};
@@ -712,11 +713,11 @@ bool RenderContext::CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize,
 				1,
 				&copyRegion);
 
-			offscreen.image.TransitionImageLayout(format, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, commandBuffer);
+			offscreen.image.TransitionImageLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, commandBuffer);
 
 		}
 	}
-	outputTexture->GetImage()->TransitionImageLayout(format, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, commandBuffer);
+	outputTexture->GetImage()->TransitionImageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, commandBuffer);
 
 	CommandBuffer::EndSingleTimeCommands(logicalDevice, commandPool, graphicsQueue, commandBuffer);
 
@@ -730,7 +731,7 @@ bool RenderContext::CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize,
 	return true;
 }
 
-bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize, RenderEngine::Assets::Cubemap* _output,
+bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize, RenderEngine::Assets::Texture* _output,
 	RenderEngine::Assets::Mesh* _mesh, RenderEngine::Assets::Shader* _vertexShader, RenderEngine::Assets::Shader* _fragmentShader)
 {
 	const VkFormat format = VK_FORMAT_R32G32B32A32_SFLOAT;
@@ -743,6 +744,7 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _
 	_output->height = height;
 	_output->mipLevels = numMips;
 	_output->imageSize = width * height * 16 /* 4 channels * sizeof(float) */;
+	_output->imageCount = 6;
 
 	// output texture
 
@@ -765,7 +767,7 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _
 	VkTexture* outputTexture = new VkTexture();
 
 	VkTexture::InitializeVkTexture(textCreateInfo, outputTexture, false);
-	outputTexture->GetImage()->TransitionImageLayout(format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+	outputTexture->GetImage()->TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
 	// initialize renderpass
 
@@ -835,7 +837,7 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _
 
 		FrameBuffer::InitializeFrameBuffer(createInfo, &offscreen.framebuffer);
 
-		offscreen.image.TransitionImageLayout(format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+		offscreen.image.TransitionImageLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 	}
 
 	// Pipeline layout
@@ -960,8 +962,8 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _
 	{
 		pushBlock.roughness = (float)m / (float)(numMips - 1);
 
-		viewport.width = static_cast<float>(width * std::pow(0.5f, m));
-		viewport.height = static_cast<float>(-height * std::pow(0.5f, m));
+		viewport.width = static_cast<float>(width * Mathlib::Math::Pow(0.5f, m));
+		viewport.height = static_cast<float>(-height * Mathlib::Math::Pow(0.5f, m));
 		viewport.y = -viewport.height;
 		vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
@@ -994,7 +996,7 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _
 
 			vkCmdEndRenderPass(commandBuffer);
 
-			offscreen.image.TransitionImageLayout(format, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, commandBuffer);
+			offscreen.image.TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, commandBuffer);
 
 			// Copy region for transfer from framebuffer to cube face
 			VkImageCopy copyRegion = {};
@@ -1024,11 +1026,11 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _
 				1,
 				&copyRegion);
 
-			offscreen.image.TransitionImageLayout(format, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, commandBuffer);
+			offscreen.image.TransitionImageLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, commandBuffer);
 
 		}
 	}
-	outputTexture->GetImage()->TransitionImageLayout(format, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, commandBuffer);
+	outputTexture->GetImage()->TransitionImageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, commandBuffer);
 
 	CommandBuffer::EndSingleTimeCommands(logicalDevice, commandPool, graphicsQueue, commandBuffer);
 
@@ -1040,6 +1042,15 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _
 	_output->iTexture = outputTexture;
 
 	return true;
+}
+
+std::vector<char> RenderContext::GetTextureContent(RenderEngine::Assets::Texture* _texture)
+{
+	VkTexture* vkTexture = dynamic_cast<VkTexture*>(_texture->iTexture);
+	std::vector<char> data = std::vector<char>(_texture->imageSize * _texture->imageCount);
+
+	vkTexture->GetTextureData(data.data(), _texture->imageSize * _texture->imageCount);
+	return data;
 }
 
 void RenderContext::Cleanup()

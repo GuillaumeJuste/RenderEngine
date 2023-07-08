@@ -110,6 +110,10 @@ Scene* SetupSimpleCubeScene()
     Scene* scene = sceneManager->AddScene();
     scene->name = "test_scene_simple_plane";
 
+    resourceManager->SaveAsset(scene->skybox.cubemap);
+
+    scene->skybox.cubemap = resourceManager->LoadAsset("Resources/Engine/Textures/Skybox/Skybox.asset");
+
     Camera* camera = scene->GetCamera();
     Mathlib::Transform cameraTransform;
     cameraTransform.position = Mathlib::Vec3(0.0f, 0.0f, -1.0f);

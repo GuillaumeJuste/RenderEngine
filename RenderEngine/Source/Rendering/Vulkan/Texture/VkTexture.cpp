@@ -93,3 +93,27 @@ VkSampler VkTexture::GetSampler() const
 {
 	return sampler;
 }
+
+void VkTexture::GetTextureData(char* _output, uint32_t _imageSize)
+{
+	BufferObject stagingBuffer;
+	BufferObjectVkCreateInfo stagingBufferCreateInfo;
+	stagingBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
+	stagingBufferCreateInfo.logicalDevice = createInfo.logicalDevice;
+	stagingBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+	stagingBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+	stagingBufferCreateInfo.bufferSize = _imageSize;
+	if (createInfo.format == VK_FORMAT_R32G32B32A32_SFLOAT)
+		stagingBufferCreateInfo.bufferSize *= sizeof(float);
+
+	BufferObject::InitializeBufferObject(stagingBufferCreateInfo, &stagingBuffer);
+
+	image.CopyImageToBuffer(stagingBuffer.GetVkBuffer());
+
+	void* data;
+	vkMapMemory(createInfo.logicalDevice, stagingBuffer.GetVkBufferMemory(), 0, stagingBuffer.GetBufferSize(), 0, &data);
+	memcpy(_output, data, stagingBuffer.GetBufferSize());
+	vkUnmapMemory(createInfo.logicalDevice, stagingBuffer.GetVkBufferMemory());
+
+	stagingBuffer.Clean();
+}

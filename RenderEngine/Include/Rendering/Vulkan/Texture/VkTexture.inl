@@ -18,13 +18,13 @@ namespace RenderEngine::Rendering
 		memcpy(data, _imageData, stagingBuffer.GetBufferSize());
 		vkUnmapMemory(createInfo.logicalDevice, stagingBuffer.GetVkBufferMemory());
 
-		image.TransitionImageLayout(createInfo.format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+		image.TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 		image.CopyBufferToImage(stagingBuffer.GetVkBuffer());
 
 		if (createInfo.texture.mipLevels > 1)
 			image.GenerateMipmaps(createInfo.format);
 		else
-			image.TransitionImageLayout(createInfo.format, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+			image.TransitionImageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
 		stagingBuffer.Clean();
 

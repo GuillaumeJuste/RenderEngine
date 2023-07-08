@@ -19,6 +19,7 @@ namespace RenderEngine::Rendering
 		VkImage image = VK_NULL_HANDLE;
 		VkImageView imageView = VK_NULL_HANDLE;
 		VkDeviceMemory imageMemory = VK_NULL_HANDLE;
+		VkImageLayout currentLayout;
 		
 		bool HasStencilComponent(VkFormat _format);
 
@@ -37,8 +38,9 @@ namespace RenderEngine::Rendering
 		 * @param _output Image to initialize
 		*/
 		static void InitializeImage(const ImageVkCreateInfo& _imageCreateInfo, Image* _output);
-		void TransitionImageLayout(VkFormat _format, VkImageLayout _oldLayout, VkImageLayout _newLayout, VkCommandBuffer _commandBuffer = nullptr);
+		void TransitionImageLayout(VkImageLayout _newLayout, VkCommandBuffer _commandBuffer = nullptr);
 		void CopyBufferToImage(VkBuffer _buffer);
+		bool CopyImageToBuffer(VkBuffer _buffer);
 		void GenerateMipmaps(VkFormat _format);
 
 		/**

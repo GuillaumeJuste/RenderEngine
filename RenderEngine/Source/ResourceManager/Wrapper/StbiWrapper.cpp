@@ -13,7 +13,6 @@ bool StbiWrapper::LoadTexture(const std::string& _filePath, bool _isHDR, bool _c
 	if (_isHDR)
 	{
 		_output.dataF = stbi_loadf(_filePath.c_str(), &_output.width, &_output.height, &_output.channels, STBI_rgb_alpha);
-		_output.isHdr = true;
 
 		if (!_output.dataF)
 		{
@@ -23,13 +22,13 @@ bool StbiWrapper::LoadTexture(const std::string& _filePath, bool _isHDR, bool _c
 	else
 	{
 		_output.dataC = reinterpret_cast<char*>(stbi_load(_filePath.c_str(), &_output.width, &_output.height, &_output.channels, STBI_rgb_alpha));
-		_output.isHdr = false;
 
 		if (!_output.dataC)
 		{
 			return false;
 		}
 	}
+	_output.isHdr = _isHDR;
 
 	_output.channels = 4;
 
@@ -48,7 +47,6 @@ bool StbiWrapper::LoadTexture(const std::string& _filePath, bool _isHDR, bool _c
 bool StbiWrapper::LoadCubemap(const CubemapImportInfos& _importInfos, bool _computeMipmap, RawTexture& _output)
 {
 	char* data[6]{};
-
 	// Load textures.
 	for (size_t i = 0; i < 6; ++i)
 	{

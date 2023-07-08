@@ -9,8 +9,7 @@
 #include "ResourceManager/Assets/Texture/Texture.hpp"
 #include "ResourceManager/Assets/Shader/Shader.hpp"
 #include "ResourceManager/Assets/Shader/RawShader.hpp"
-#include "ResourceManager/Assets/Cubemap/CubemapImportInfos.hpp"
-#include "ResourceManager/Assets/Cubemap/Cubemap.hpp"
+#include "ResourceManager/Assets/Texture/CubemapImportInfos.hpp"
 #include "ResourceManager/Assets/AssetManager.hpp"
 #include "Rendering/Base/Interface/IRenderContext.hpp"
 #include "SceneGraph/Scene/Skybox.hpp"
@@ -28,7 +27,6 @@ namespace RenderEngine
         AssetManager<Mesh> meshManager;
         AssetManager<Texture> textureManager;
         AssetManager<Shader> shaderManager;
-        AssetManager<Cubemap> cubemapManager;
 
         bool ReadShaderFile(const std::string& _shaderFilePath, RawShader& _output);
 
@@ -47,13 +45,14 @@ namespace RenderEngine
         Shader* GetShader(std::string _filePath);
         bool UnloadShader(Shader* _texture);
 
-        Cubemap* LoadCubemap(CubemapImportInfos _filePaths, bool _computeMipmap = true);
-        Cubemap* CubemapFromTexture(Texture* _texture, Mathlib::Vec2 _generatedTextureSize, bool _computeMipmap = false);
-        Cubemap* GetCubemap(const CubemapImportInfos& _filePaths);
-        Cubemap* GetCubemap(std::string _filePath);
-        bool UnloadCubemap(Cubemap* _cubemap);
-
+        Texture* LoadCubemap(CubemapImportInfos _filePaths, std::string _assetName, bool _computeMipmap = true);
+        Texture* CubemapFromTexture(Texture* _texture, Mathlib::Vec2 _generatedTextureSize, bool _computeMipmap = false);
+        Texture* GetCubemap(std::string _filePath);
+        bool UnloadCubemap(Texture* _cubemap);
         void CreateSkyboxFromTexture(Texture* _texture, Mathlib::Vec2 _generatedTextureSize, RenderEngine::SceneGraph::Skybox* _output);
+
+        void SaveAsset(Texture* _texture);
+        Texture* LoadAsset(std::string _filePath);
 
         void Clean();
     };

@@ -39,6 +39,8 @@ namespace RenderEngine::Rendering
 		VkImageView GetImageView() const;
 		VkSampler GetSampler() const;
 
+		void GetTextureData(char* _output, uint32_t _imageSize);
+
 	};
 
 }

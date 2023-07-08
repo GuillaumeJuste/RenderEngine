@@ -1,4 +1,4 @@
-#include "ResourceManager/Assets/Cubemap/CubemapImportInfos.hpp"
+#include "ResourceManager/Assets/Texture/CubemapImportInfos.hpp"
 
 using namespace RenderEngine::Assets;
 

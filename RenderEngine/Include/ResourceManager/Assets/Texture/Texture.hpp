@@ -17,6 +17,8 @@ namespace RenderEngine::Assets
         int height;
         int imageSize;
         uint32_t mipLevels;
+        uint32_t imageCount = 1;
+        bool isHDR = false;
 
         RenderEngine::Rendering::ITexture* iTexture;
 

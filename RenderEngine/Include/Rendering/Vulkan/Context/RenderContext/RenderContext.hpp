@@ -139,11 +139,13 @@ namespace RenderEngine::Rendering
 		bool CreateMesh(const RenderEngine::Assets::RawMesh& _input, RenderEngine::Assets::Mesh* _output);
 		bool CreateTexture(const RenderEngine::Assets::RawTexture& _input, RenderEngine::Assets::Texture* _output);
 		bool CreateShader(const RenderEngine::Assets::RawShader& _input, RenderEngine::Assets::Shader* _output);
-		bool CreateCubemap(const RenderEngine::Assets::RawTexture& _input, RenderEngine::Assets::Cubemap* _output);
-		bool CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize, bool _generateMipmap, RenderEngine::Assets::Cubemap* _output,
+		bool CreateCubemap(const RenderEngine::Assets::RawTexture& _input, RenderEngine::Assets::Texture* _output);
+		bool CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize, bool _generateMipmap, RenderEngine::Assets::Texture* _output,
 			RenderEngine::Assets::Mesh* _mesh, RenderEngine::Assets::Shader* _vertexShader, RenderEngine::Assets::Shader* _fragmentShader);
-		bool CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize, RenderEngine::Assets::Cubemap* _output,
+		bool CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize, RenderEngine::Assets::Texture* _output,
 			RenderEngine::Assets::Mesh* _mesh, RenderEngine::Assets::Shader* _vertexShader, RenderEngine::Assets::Shader* _fragmentShader);
+
+		std::vector<char> GetTextureContent(RenderEngine::Assets::Texture* _texture);
 
 		/**
 		 * @brief clean up vulkan classes

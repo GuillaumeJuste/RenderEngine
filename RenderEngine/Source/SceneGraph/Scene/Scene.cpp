@@ -40,7 +40,7 @@ Scene::Scene(RenderEngine::ResourceManager* _resourceManager) :
 		"Resources/Engine/Textures/Skybox/front.jpg",
 		"Resources/Engine/Textures/Skybox/back.jpg");
 
-	skybox.cubemap = resourceManager->LoadCubemap(importInfos, false);
+	skybox.cubemap = resourceManager->LoadCubemap(importInfos, "Skybox", true);
 	skybox.irradianceMap = skybox.cubemap;
 	skybox.prefilterMap = skybox.cubemap;
 }

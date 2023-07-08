@@ -4,7 +4,7 @@
 #define RENDERENGINE_STBIWRAPPER
 
 #include "ResourceManager/Assets/Texture/RawTexture.hpp"
-#include "ResourceManager/Assets/Cubemap/CubemapImportInfos.hpp"
+#include "ResourceManager/Assets/Texture/CubemapImportInfos.hpp"
 #include <string>
 
 using namespace RenderEngine::Assets;

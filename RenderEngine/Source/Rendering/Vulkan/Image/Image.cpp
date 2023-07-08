@@ -45,9 +45,10 @@ void Image::InitializeImage(const ImageVkCreateInfo& _imageCreateInfo, Image* _o
     vkBindImageMemory(_imageCreateInfo.logicalDevice, _output->image, _output->imageMemory, 0);
 
     _output->CreateImageView();
+    _output->currentLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 }
 
-void Image::TransitionImageLayout(VkFormat _format, VkImageLayout _oldLayout, VkImageLayout _newLayout, VkCommandBuffer _commandBuffer)
+void Image::TransitionImageLayout(VkImageLayout _newLayout, VkCommandBuffer _commandBuffer)
 {
     VkCommandBuffer commandBuffer = _commandBuffer;
     if(commandBuffer == nullptr)
@@ -55,7 +56,7 @@ void Image::TransitionImageLayout(VkFormat _format, VkImageLayout _oldLayout, Vk
 
     VkImageMemoryBarrier barrier{};
     barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-    barrier.oldLayout = _oldLayout;
+    barrier.oldLayout = currentLayout;
     barrier.newLayout = _newLayout;
     barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
     barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
@@ -72,12 +73,12 @@ void Image::TransitionImageLayout(VkFormat _format, VkImageLayout _oldLayout, Vk
     if (_newLayout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL) {
         barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
 
-        if (HasStencilComponent(_format)) {
+        if (HasStencilComponent(createInfo.format)) {
             barrier.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
         }
     }
 
-    switch (_oldLayout)
+    switch (currentLayout)
     {
     case VK_IMAGE_LAYOUT_UNDEFINED:
         // Image layout is undefined (or does not matter)
@@ -198,6 +199,8 @@ void Image::TransitionImageLayout(VkFormat _format, VkImageLayout _oldLayout, Vk
 
     if (_commandBuffer == nullptr)
         CommandBuffer::EndSingleTimeCommands(createInfo.logicalDevice, createInfo.commandPool, createInfo.graphicsQueue, commandBuffer);
+
+    currentLayout = _newLayout;
 }
 
 bool Image::HasStencilComponent(VkFormat _format)
@@ -255,6 +258,77 @@ void Image::CopyBufferToImage(VkBuffer _buffer)
     );
 
     CommandBuffer::EndSingleTimeCommands(createInfo.logicalDevice, createInfo.commandPool, createInfo.graphicsQueue, commandBuffer);
+}
+
+bool Image::CopyImageToBuffer(VkBuffer _buffer)
+{
+    VkImageLayout oldLayout = currentLayout;
+
+    VkCommandBuffer commandBuffer = CommandBuffer::BeginSingleTimeCommands(createInfo.logicalDevice, createInfo.commandPool);
+
+    TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, commandBuffer);
+
+    VkBufferImageCopy region{};
+    region.bufferOffset = 0;
+    region.bufferRowLength = 0;
+    region.bufferImageHeight = 0;
+
+    /*for (uint32_t m = 0; m < createInfo.mipLevels; m++)
+    {
+        uint32_t width = createInfo.width * std::pow(0.5f, m);
+        uint32_t height = createInfo.width * std::pow(0.5f, m);
+
+        region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        region.imageSubresource.mipLevel = m;
+        region.imageSubresource.baseArrayLayer = 0;
+        region.imageSubresource.layerCount = createInfo.textureCount;
+
+        region.imageOffset = { 0, 0, 0 };
+        region.imageExtent = {
+            width,
+            height,
+            1
+        };
+
+        vkCmdCopyImageToBuffer(
+            commandBuffer,
+            image,
+            VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+            _buffer,
+            1,
+            &region
+        );
+    }*/
+
+    uint32_t width = createInfo.width;
+    uint32_t height = createInfo.width;
+
+    region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    region.imageSubresource.mipLevel = 0;
+    region.imageSubresource.baseArrayLayer = 0;
+    region.imageSubresource.layerCount = createInfo.textureCount;
+
+    region.imageOffset = { 0, 0, 0 };
+    region.imageExtent = {
+        width,
+        height,
+        1
+    };
+
+    vkCmdCopyImageToBuffer(
+        commandBuffer,
+        image,
+        VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+        _buffer,
+        1,
+        &region
+    );
+    
+    TransitionImageLayout(oldLayout, commandBuffer);
+
+    CommandBuffer::EndSingleTimeCommands(createInfo.logicalDevice, createInfo.commandPool, createInfo.graphicsQueue, commandBuffer);
+
+    return true;
 }
 
 void Image::GenerateMipmaps(VkFormat _format)
@@ -342,7 +416,7 @@ void Image::GenerateMipmaps(VkFormat _format)
         0, nullptr,
         1, &barrier);
 
-
+    currentLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     CommandBuffer::EndSingleTimeCommands(createInfo.logicalDevice, createInfo.commandPool, createInfo.graphicsQueue, commandBuffer);
 }
 
