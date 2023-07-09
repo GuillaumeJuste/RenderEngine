@@ -103,12 +103,14 @@ void VkTexture::GetTextureData(char* _output, uint32_t _imageSize)
 	stagingBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 	stagingBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 	stagingBufferCreateInfo.bufferSize = _imageSize;
-	if (createInfo.format == VK_FORMAT_R32G32B32A32_SFLOAT)
-		stagingBufferCreateInfo.bufferSize *= sizeof(float);
 
 	BufferObject::InitializeBufferObject(stagingBufferCreateInfo, &stagingBuffer);
 
-	image.CopyImageToBuffer(stagingBuffer.GetVkBuffer());
+	uint32_t elementSize = createInfo.texture.channels;
+	if (createInfo.format == VK_FORMAT_R32G32B32A32_SFLOAT)
+		elementSize *= 4;
+
+	image.CopyImageToBuffer(stagingBuffer.GetVkBuffer(), elementSize);
 
 	void* data;
 	vkMapMemory(createInfo.logicalDevice, stagingBuffer.GetVkBufferMemory(), 0, stagingBuffer.GetBufferSize(), 0, &data);

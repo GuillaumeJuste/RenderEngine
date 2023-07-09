@@ -353,7 +353,7 @@ void RenderContext::CreateIndexBufferObject(const RenderEngine::Assets::RawMesh&
 	_output->indexBuffer = IBO;
 }
 
-bool RenderContext::CreateTexture(const RenderEngine::Assets::RawTexture& _input, RenderEngine::Assets::Texture* _output)
+bool RenderContext::CreateTexture(const RenderEngine::Assets::RawTexture& _input, RenderEngine::Assets::Texture* _output, bool _generateMipMap)
 {
 	VkTextureVkCreateInfo textCreateInfo{};
 	textCreateInfo.logicalDevice = logicalDevice;
@@ -371,6 +371,7 @@ bool RenderContext::CreateTexture(const RenderEngine::Assets::RawTexture& _input
 	textCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 	textCreateInfo.imageFlags = _input.imageCount == 6 ? VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT : 0;
 	textCreateInfo.imageViewType = _input.imageCount == 6 ? VK_IMAGE_VIEW_TYPE_CUBE : VK_IMAGE_VIEW_TYPE_2D;
+	textCreateInfo.generateMipmap = _generateMipMap;
 
 	VkTexture* vkTexture = new VkTexture();
 
@@ -1017,12 +1018,13 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _
 	return true;
 }
 
-std::vector<char> RenderContext::GetTextureContent(RenderEngine::Assets::Texture* _texture)
+std::vector<char> RenderContext::GetTextureContent(RenderEngine::Assets::Texture* _texture, uint32_t _imageTotalSize)
 {
 	VkTexture* vkTexture = dynamic_cast<VkTexture*>(_texture->iTexture);
-	std::vector<char> data = std::vector<char>(_texture->imageSize * _texture->imageCount);
 
-	vkTexture->GetTextureData(data.data(), _texture->imageSize * _texture->imageCount);
+	std::vector<char> data = std::vector<char>(_imageTotalSize);
+
+	vkTexture->GetTextureData(data.data(), _imageTotalSize);
 	return data;
 }
 

@@ -220,11 +220,11 @@ void VkScene::CreateSkybox()
 
 void VkScene::Draw(VkCommandBuffer _commandBuffer, int _currentFrame) 
 {
-	skybox.Draw(_commandBuffer, _currentFrame);
 	for (std::forward_list<VkGameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{
 		it->Draw(_commandBuffer, _currentFrame);
 	}
+	skybox.Draw(_commandBuffer, _currentFrame);
 }
 
 void VkScene::Update(size_t _currentframe)

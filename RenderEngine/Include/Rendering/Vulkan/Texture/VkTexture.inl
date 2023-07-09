@@ -19,9 +19,9 @@ namespace RenderEngine::Rendering
 		vkUnmapMemory(createInfo.logicalDevice, stagingBuffer.GetVkBufferMemory());
 
 		image.TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-		image.CopyBufferToImage(stagingBuffer.GetVkBuffer());
+		image.CopyBufferToImage(stagingBuffer.GetVkBuffer(), createInfo.texture.channels * sizeof(T), !createInfo.generateMipmap);
 
-		if (createInfo.texture.mipLevels > 1)
+		if (createInfo.texture.mipLevels > 1 && createInfo.generateMipmap)
 			image.GenerateMipmaps(createInfo.format);
 		else
 			image.TransitionImageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);

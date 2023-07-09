@@ -206,7 +206,7 @@ bool ResourceManager::UnloadCubemap(Texture* _cubemap)
 
 void ResourceManager::CreateSkyboxFromTexture(Texture* _texture, Mathlib::Vec2 _generatedTextureSize, RenderEngine::SceneGraph::Skybox* _output)
 {
-	_output->cubemap = CubemapFromTexture(_texture, _generatedTextureSize, _output->cubemap);
+	_output->cubemap = CubemapFromTexture(_texture, _generatedTextureSize, false);
 
 	Mesh* skyboxMesh = LoadMesh("Resources/Engine/Models/cube.obj");
 	Shader* skyboxVertShader = LoadShader("Resources/Engine/Shaders/FilterCube.vert.spv", VERTEX);
@@ -260,7 +260,11 @@ std::vector<char> fileData;
 
 void ResourceManager::SaveAsset(Texture* _texture)
 {
-	std::vector<char> data = renderContext->GetTextureContent(_texture);
+	uint32_t textureSize = _texture->ComputeTotalSize(_texture->width, _texture->height, _texture->channels, _texture->mipLevels);
+	if (_texture->isHDR)
+		textureSize *= sizeof(float);
+
+	std::vector<char> data = renderContext->GetTextureContent(_texture, textureSize * _texture->imageCount);
 
 	fileData = data;
 
@@ -273,7 +277,7 @@ void ResourceManager::SaveAsset(Texture* _texture)
 	ofs.open(filePath, std::ofstream::out | std::ofstream::trunc | std::ofstream::binary);
 	ofs.write(reinterpret_cast<const char*>(&_texture->width), sizeof(int));
 	ofs.write(reinterpret_cast<const char*>(&_texture->height), sizeof(int));
-	ofs.write(reinterpret_cast<const char*>(&_texture->imageSize), sizeof(int));
+	ofs.write(reinterpret_cast<const char*>(&textureSize), sizeof(uint32_t));
 	ofs.write(reinterpret_cast<const char*>(&_texture->imageCount), sizeof(uint32_t));
 	ofs.write(reinterpret_cast<const char*>(&_texture->mipLevels), sizeof(uint32_t));
 	ofs.write(reinterpret_cast<const char*>(&_texture->isHDR), sizeof(bool));
@@ -295,7 +299,7 @@ Texture* ResourceManager::LoadAsset(std::string _filePath)
 
 		file.read(reinterpret_cast<char*>(&rawTexture.width), sizeof(int));
 		file.read(reinterpret_cast<char*>(&rawTexture.height), sizeof(int));
-		file.read(reinterpret_cast<char*>(&rawTexture.imageSize), sizeof(int));
+		file.read(reinterpret_cast<char*>(&rawTexture.imageSize), sizeof(uint32_t));
 		file.read(reinterpret_cast<char*>(&rawTexture.imageCount), sizeof(uint32_t));
 		file.read(reinterpret_cast<char*>(&rawTexture.mipLevels), sizeof(uint32_t));
 		file.read(reinterpret_cast<char*>(&rawTexture.isHdr), sizeof(bool));
@@ -315,7 +319,7 @@ Texture* ResourceManager::LoadAsset(std::string _filePath)
 
 
 		Texture* newTexture = new Texture();
-		renderContext->CreateTexture(rawTexture, newTexture);
+		renderContext->CreateTexture(rawTexture, newTexture, false);
 		newTexture->filePath = _filePath;
 		newTexture->height = rawTexture.height;
 		newTexture->width = rawTexture.width;

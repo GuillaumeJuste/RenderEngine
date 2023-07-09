@@ -227,7 +227,7 @@ void Image::CreateImageView()
     }
 }
 
-void Image::CopyBufferToImage(VkBuffer _buffer)
+void Image::CopyBufferToImage(VkBuffer _buffer, uint32_t _elementSize, bool _copyMipmap)
 {
     VkCommandBuffer commandBuffer = CommandBuffer::BeginSingleTimeCommands(createInfo.logicalDevice, createInfo.commandPool);
 
@@ -236,31 +236,42 @@ void Image::CopyBufferToImage(VkBuffer _buffer)
     region.bufferRowLength = 0;
     region.bufferImageHeight = 0;
 
-    region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    region.imageSubresource.mipLevel = 0;
-    region.imageSubresource.baseArrayLayer = 0;
-    region.imageSubresource.layerCount = createInfo.textureCount;
+    uint32_t mipCount = 1;
+    if (_copyMipmap)
+        mipCount = createInfo.mipLevels;
 
-    region.imageOffset = { 0, 0, 0 };
-    region.imageExtent = {
-        createInfo.width,
-        createInfo.height,
-        1
-    };
+    for (uint32_t m = 0; m < mipCount; m++)
+    {
+        uint32_t width = createInfo.width * std::pow(0.5f, m);
+        uint32_t height = createInfo.height * std::pow(0.5f, m);
 
-    vkCmdCopyBufferToImage(
-        commandBuffer,
-        _buffer,
-        image,
-        VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-        1,
-        &region
-    );
+        region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        region.imageSubresource.mipLevel = m;
+        region.imageSubresource.baseArrayLayer = 0;
+        region.imageSubresource.layerCount = createInfo.textureCount;
 
+        region.imageOffset = { 0, 0, 0 };
+        region.imageExtent = {
+            width,
+            height,
+            1
+        };
+
+        vkCmdCopyBufferToImage(
+            commandBuffer,
+            _buffer,
+            image,
+            VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+            1,
+            &region
+        );
+
+        region.bufferOffset += width * width * createInfo.textureCount * _elementSize;
+    }
     CommandBuffer::EndSingleTimeCommands(createInfo.logicalDevice, createInfo.commandPool, createInfo.graphicsQueue, commandBuffer);
 }
 
-bool Image::CopyImageToBuffer(VkBuffer _buffer)
+bool Image::CopyImageToBuffer(VkBuffer _buffer, uint32_t _elementSize)
 {
     VkImageLayout oldLayout = currentLayout;
 
@@ -273,10 +284,10 @@ bool Image::CopyImageToBuffer(VkBuffer _buffer)
     region.bufferRowLength = 0;
     region.bufferImageHeight = 0;
 
-    /*for (uint32_t m = 0; m < createInfo.mipLevels; m++)
+    for (uint32_t m = 0; m < createInfo.mipLevels; m++)
     {
         uint32_t width = createInfo.width * std::pow(0.5f, m);
-        uint32_t height = createInfo.width * std::pow(0.5f, m);
+        uint32_t height = createInfo.height * std::pow(0.5f, m);
 
         region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
         region.imageSubresource.mipLevel = m;
@@ -298,9 +309,10 @@ bool Image::CopyImageToBuffer(VkBuffer _buffer)
             1,
             &region
         );
-    }*/
+        region.bufferOffset += width* width * createInfo.textureCount * _elementSize;
+    }
 
-    uint32_t width = createInfo.width;
+    /*uint32_t width = createInfo.width;
     uint32_t height = createInfo.width;
 
     region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -322,7 +334,7 @@ bool Image::CopyImageToBuffer(VkBuffer _buffer)
         _buffer,
         1,
         &region
-    );
+    );*/
     
     TransitionImageLayout(oldLayout, commandBuffer);
 

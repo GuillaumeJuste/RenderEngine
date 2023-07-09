@@ -38,6 +38,8 @@ namespace RenderEngine::Rendering
 
 		VkImageViewType imageViewType;
 
+		bool generateMipmap = true;
+
 		/// default constructor
 		VkTextureVkCreateInfo() = default;
 	};

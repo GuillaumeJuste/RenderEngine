@@ -15,7 +15,8 @@ namespace RenderEngine::Assets
     {
         int width;
         int height;
-        int imageSize;
+        int channels = 4;
+        uint32_t imageSize;
         uint32_t mipLevels;
         uint32_t imageCount = 1;
         bool isHDR = false;
@@ -24,6 +25,8 @@ namespace RenderEngine::Assets
 
         Texture() = default;
         ~Texture();
+
+        static uint32_t ComputeTotalSize(int _width, int _height, int _channels, int _mipmapLevels);
     };
 }
 

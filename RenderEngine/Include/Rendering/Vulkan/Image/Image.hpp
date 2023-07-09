@@ -39,8 +39,8 @@ namespace RenderEngine::Rendering
 		*/
 		static void InitializeImage(const ImageVkCreateInfo& _imageCreateInfo, Image* _output);
 		void TransitionImageLayout(VkImageLayout _newLayout, VkCommandBuffer _commandBuffer = nullptr);
-		void CopyBufferToImage(VkBuffer _buffer);
-		bool CopyImageToBuffer(VkBuffer _buffer);
+		void CopyBufferToImage(VkBuffer _buffer, uint32_t _elementSize, bool _copyMipmap = false);
+		bool CopyImageToBuffer(VkBuffer _buffer, uint32_t _elementSize);
 		void GenerateMipmaps(VkFormat _format);
 
 		/**
