@@ -271,28 +271,15 @@ void ResourceManager::SaveAsset(Texture* _texture)
 
 	std::ofstream ofs;
 	ofs.open(filePath, std::ofstream::out | std::ofstream::trunc | std::ofstream::binary);
-	ofs << _texture->width << ";" << _texture->height << ";" << _texture->imageSize << ";" << _texture->imageCount << ";" << _texture->mipLevels << ";" << _texture->isHDR << ";";
+	ofs.write(reinterpret_cast<const char*>(&_texture->width), sizeof(int));
+	ofs.write(reinterpret_cast<const char*>(&_texture->height), sizeof(int));
+	ofs.write(reinterpret_cast<const char*>(&_texture->imageSize), sizeof(int));
+	ofs.write(reinterpret_cast<const char*>(&_texture->imageCount), sizeof(uint32_t));
+	ofs.write(reinterpret_cast<const char*>(&_texture->mipLevels), sizeof(uint32_t));
+	ofs.write(reinterpret_cast<const char*>(&_texture->isHDR), sizeof(bool));
 	ofs.write(data.data(), data.size());
 	
 	ofs.close();
-}
-
-size_t stringCompare(std::vector<char> _first, std::string _second)
-{
-	int string1Size = _first.size();
-	int string2Size = _second.length();
-
-	size_t total = 0;
-	for (size_t i = 0; i < Mathlib::Math::Min(string1Size, string2Size); i++)
-	{
-		if (_first[i] == _second[i])
-		{
-			total++;
-		}
-		/*else
-			return total;*/
-	}
-	return total;
 }
 
 Texture* ResourceManager::LoadAsset(std::string _filePath)
@@ -304,44 +291,28 @@ Texture* ResourceManager::LoadAsset(std::string _filePath)
 		if (!file.is_open())
 			return { };
 
-		// Read contents
-		std::string content{ std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>() };
-
-		// Close the file
-		file.close();
-		
-		std::vector<std::string> output;
-		size_t oldIndex = 0;
-		size_t currentIndex = 0;
-
-		for (int i = 0; i <= 5; i++)
-		{
-			currentIndex = content.find(';', oldIndex);
-			output.push_back(content.substr(oldIndex, currentIndex - oldIndex));
-			oldIndex = currentIndex + 1;
-		}
-		output.push_back(content.substr(oldIndex));
-
 		RawTexture rawTexture;
-		rawTexture.width = std::stoi(output[0]);
-		rawTexture.height = std::stoi(output[1].c_str());
-		rawTexture.imageSize = std::stoi(output[2].c_str());
-		rawTexture.imageCount = std::stoi(output[3].c_str());
-		//rawTexture.mipLevels = std::stoi(output[4].c_str());
-		rawTexture.mipLevels = 1;
-		rawTexture.isHdr = std::stoi(output[5].c_str());
 
+		file.read(reinterpret_cast<char*>(&rawTexture.width), sizeof(int));
+		file.read(reinterpret_cast<char*>(&rawTexture.height), sizeof(int));
+		file.read(reinterpret_cast<char*>(&rawTexture.imageSize), sizeof(int));
+		file.read(reinterpret_cast<char*>(&rawTexture.imageCount), sizeof(uint32_t));
+		file.read(reinterpret_cast<char*>(&rawTexture.mipLevels), sizeof(uint32_t));
+		file.read(reinterpret_cast<char*>(&rawTexture.isHdr), sizeof(bool));
 
 		if (rawTexture.isHdr)
-			rawTexture.dataF = reinterpret_cast<float*>(output[6].data());
+		{
+			rawTexture.dataF = new float[rawTexture.imageCount * rawTexture.imageSize];
+			file.read(reinterpret_cast<char*>(rawTexture.dataF), rawTexture.imageCount * rawTexture.imageSize);
+		}
 		else
-			rawTexture.dataC = output[6].data();
+		{
+			rawTexture.dataC = new char[rawTexture.imageCount * rawTexture.imageSize];
+			file.read(rawTexture.dataC, rawTexture.imageCount * rawTexture.imageSize);
+		}
 
-		size_t fileSize = content.length();
-		size_t dataSize = output[6].length();
-		int totalsize = rawTexture.imageCount * rawTexture.imageSize;
+		file.close();
 
-		size_t common = stringCompare(fileData, output[6]);
 
 		Texture* newTexture = new Texture();
 		renderContext->CreateTexture(rawTexture, newTexture);
@@ -353,6 +324,15 @@ Texture* ResourceManager::LoadAsset(std::string _filePath)
 		newTexture->imageCount = rawTexture.imageCount;
 		newTexture->isHDR = rawTexture.isHdr;
 		textureManager.Add(_filePath, newTexture);
+
+		if (rawTexture.isHdr)
+		{
+			delete rawTexture.dataF;
+		}
+		else
+		{
+			delete rawTexture.dataC;
+		}
 
 		return newTexture;
 	}

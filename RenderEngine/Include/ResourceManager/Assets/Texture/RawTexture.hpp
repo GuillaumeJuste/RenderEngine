@@ -23,7 +23,7 @@ namespace RenderEngine::Assets
 
         union
         {
-            char* dataC = nullptr;
+            char* dataC ;
             float* dataF;
         };
 
