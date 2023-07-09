@@ -110,9 +110,9 @@ Scene* SetupSimpleCubeScene()
     Scene* scene = sceneManager->AddScene();
     scene->name = "test_scene_simple_plane";
 
-    resourceManager->SaveAsset(scene->skybox.cubemap);
+    /*resourceManager->SaveAsset(scene->skybox.cubemap);
 
-    scene->skybox.cubemap = resourceManager->LoadAsset("Resources/Engine/Textures/Skybox/Skybox.asset");
+    scene->skybox.cubemap = resourceManager->LoadAsset("Resources/Engine/Textures/Skybox/Skybox.asset");*/
 
     Camera* camera = scene->GetCamera();
     Mathlib::Transform cameraTransform;
@@ -143,9 +143,13 @@ Scene* SetupSimpleCubeScene()
     Texture* wallNormalMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Brick/bricks_normal.jpg");
     Texture* wallAoMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/ao.png");
 
+    resourceManager->SaveAsset(wallTexture);
+
+    Texture* loadedTex = resourceManager->LoadAsset("Resources/Sample/SceneCreation/Textures/Brick/bricks.asset");
+
     MeshRenderer* objMeshRenderer = obj->GetComponent<MeshRenderer>();
     objMeshRenderer->fragmentShader = fragShader;
-    objMeshRenderer->material.texture = wallTexture;
+    objMeshRenderer->material.texture = loadedTex;
     objMeshRenderer->material.metalnessMap = wallMetalnessMap;
     objMeshRenderer->material.roughnessMap = wallRoughnessMap;
     objMeshRenderer->material.normalMap = wallNormalMap;

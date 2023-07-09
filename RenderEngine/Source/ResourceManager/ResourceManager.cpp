@@ -151,7 +151,7 @@ Texture* ResourceManager::LoadCubemap(CubemapImportInfos _filePaths, std::string
 	if (StbiWrapper::LoadCubemap(_filePaths, _computeMipmap, rawCubemap))
 	{
 		Texture* newCubemap = new Texture();
-		renderContext->CreateCubemap(rawCubemap, newCubemap);
+		renderContext->CreateTexture(rawCubemap, newCubemap);
 		newCubemap->filePath = filepath.string();
 		newCubemap->height = rawCubemap.height;
 		newCubemap->width = rawCubemap.width;
@@ -256,17 +256,43 @@ void ResourceManager::CreateSkyboxFromTexture(Texture* _texture, Mathlib::Vec2 _
 	}
 }
 
+std::vector<char> fileData;
+
 void ResourceManager::SaveAsset(Texture* _texture)
 {
 	std::vector<char> data = renderContext->GetTextureContent(_texture);
 
+	fileData = data;
+
 	std::filesystem::path filePath(_texture->filePath);
+	if (filePath.has_extension())
+		filePath.replace_extension();
 	filePath.concat(".asset");
 
 	std::ofstream ofs;
-	ofs.open(filePath, std::ofstream::out | std::ofstream::trunc);
-	ofs << _texture->width << ";" << _texture->height << ";" << _texture->imageSize << ";" << _texture->imageCount << ";" << _texture->mipLevels << ";" << _texture->isHDR << ";" << data.data();
+	ofs.open(filePath, std::ofstream::out | std::ofstream::trunc | std::ofstream::binary);
+	ofs << _texture->width << ";" << _texture->height << ";" << _texture->imageSize << ";" << _texture->imageCount << ";" << _texture->mipLevels << ";" << _texture->isHDR << ";";
+	ofs.write(data.data(), data.size());
+	
 	ofs.close();
+}
+
+size_t stringCompare(std::vector<char> _first, std::string _second)
+{
+	int string1Size = _first.size();
+	int string2Size = _second.length();
+
+	size_t total = 0;
+	for (size_t i = 0; i < Mathlib::Math::Min(string1Size, string2Size); i++)
+	{
+		if (_first[i] == _second[i])
+		{
+			total++;
+		}
+		/*else
+			return total;*/
+	}
+	return total;
 }
 
 Texture* ResourceManager::LoadAsset(std::string _filePath)
@@ -304,16 +330,21 @@ Texture* ResourceManager::LoadAsset(std::string _filePath)
 		//rawTexture.mipLevels = std::stoi(output[4].c_str());
 		rawTexture.mipLevels = 1;
 		rawTexture.isHdr = std::stoi(output[5].c_str());
+
+
 		if (rawTexture.isHdr)
 			rawTexture.dataF = reinterpret_cast<float*>(output[6].data());
 		else
 			rawTexture.dataC = output[6].data();
 
+		size_t fileSize = content.length();
 		size_t dataSize = output[6].length();
 		int totalsize = rawTexture.imageCount * rawTexture.imageSize;
 
+		size_t common = stringCompare(fileData, output[6]);
+
 		Texture* newTexture = new Texture();
-		renderContext->CreateCubemap(rawTexture, newTexture);
+		renderContext->CreateTexture(rawTexture, newTexture);
 		newTexture->filePath = _filePath;
 		newTexture->height = rawTexture.height;
 		newTexture->width = rawTexture.width;

@@ -369,8 +369,8 @@ bool RenderContext::CreateTexture(const RenderEngine::Assets::RawTexture& _input
 	textCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
 	textCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 	textCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-	textCreateInfo.imageFlags = 0;
-	textCreateInfo.imageViewType = VK_IMAGE_VIEW_TYPE_2D;
+	textCreateInfo.imageFlags = _input.imageCount == 6 ? VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT : 0;
+	textCreateInfo.imageViewType = _input.imageCount == 6 ? VK_IMAGE_VIEW_TYPE_CUBE : VK_IMAGE_VIEW_TYPE_2D;
 
 	VkTexture* vkTexture = new VkTexture();
 
@@ -391,33 +391,6 @@ bool RenderContext::CreateShader(const RenderEngine::Assets::RawShader& _input, 
 	VkShader::CreateVkShader(shaderCreateInfo, vkShader);
 	_output->iShader = vkShader;
 
-	return true;
-}
-
-bool RenderContext::CreateCubemap(const RenderEngine::Assets::RawTexture& _input, RenderEngine::Assets::Texture* _output)
-{
-	VkTextureVkCreateInfo textCreateInfo{};
-	textCreateInfo.logicalDevice = logicalDevice;
-	textCreateInfo.physicalDevice = physicalDeviceProperties.physicalDevice;
-	textCreateInfo.graphicsQueue = graphicsQueue;
-	textCreateInfo.commandPool = commandPool;
-	textCreateInfo.texture = _input;
-	textCreateInfo.width = _input.width;
-	textCreateInfo.height = _input.height;
-	textCreateInfo.mipLevels = _input.mipLevels;
-	textCreateInfo.imageCount = _input.imageCount;
-	textCreateInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
-	textCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-	textCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
-	textCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-	textCreateInfo.imageFlags = VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
-	textCreateInfo.imageViewType = VK_IMAGE_VIEW_TYPE_CUBE;
-
-	VkTexture* vkTexture = new VkTexture();
-
-	VkTexture::InitializeVkTexture(textCreateInfo, vkTexture);
-
-	_output->iTexture = vkTexture;
 	return true;
 }
 
