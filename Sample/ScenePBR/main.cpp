@@ -131,13 +131,13 @@ Scene* SetupPBRScene()
     CameraController* cameraController = camera->AddComponent<CameraController>();
     cameraController->window = window;
 
-    Mesh* sphere = resourceManager->LoadMesh("Resources/Sample/PBRScene/Models/Sphere.obj");
+    Mesh* sphere = resourceManager->LoadMesh("Resources/Sample/ScenePBR/Models/Sphere.obj");
     Shader* fragShader = resourceManager->LoadShader("Resources/Engine/Shaders/PBRFragmentShader.frag.spv", FRAGMENT);
-    Texture* wallTexture = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Wall/albedo.png");
-    Texture* wallMetalnessMap = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Wall/metallic.png");
-    Texture* wallRoughnessMap = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Wall/roughness.png");
-    Texture* wallNormalMap = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Wall/normal.png");
-    Texture* wallAoMap = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Wall/ao.png");
+    Texture* wallTexture = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Wall/albedo.png");
+    Texture* wallMetalnessMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Wall/metallic.png");
+    Texture* wallRoughnessMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Wall/roughness.png");
+    Texture* wallNormalMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Wall/normal.png");
+    Texture* wallAoMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Wall/ao.png");
 
     /*Sphere 1*/
     Mathlib::Transform transform;
@@ -180,11 +180,11 @@ Scene* SetupPBRScene()
 
     GameObject* obj2 = scene->AddGameObject(createinfo2);
 
-    Texture* ironTexture = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Rusted_iron/albedo.png");
-    Texture* ironMetalnessMap = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Rusted_iron/metallic.png");
-    Texture* ironRoughnessMap = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Rusted_iron/roughness.png");
-    Texture* ironNormalMap = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Rusted_iron/normal.png");
-    Texture* ironAoMap = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Rusted_iron/ao.png");
+    Texture* ironTexture = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Rusted_iron/albedo.png");
+    Texture* ironMetalnessMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Rusted_iron/metallic.png");
+    Texture* ironRoughnessMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Rusted_iron/roughness.png");
+    Texture* ironNormalMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Rusted_iron/normal.png");
+    Texture* ironAoMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Rusted_iron/ao.png");
 
     MeshRenderer* meshRenderer2 = obj2->GetComponent<MeshRenderer>();
     meshRenderer2->fragmentShader = fragShader;
@@ -215,11 +215,11 @@ Scene* SetupPBRScene()
 
     GameObject* obj3 = scene->AddGameObject(createinfo3);
 
-    Texture* goldTexture = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Gold/albedo.png");
-    Texture* goldMetalnessMap = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Gold/metallic.png");
-    Texture* goldRoughnessMap = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Gold/roughness.png");
-    Texture* goldNormalMap = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Gold/normal.png");
-    Texture* goldAoMap = resourceManager->LoadTexture("Resources/Sample/PBRScene/Textures/Gold/ao.png");
+    Texture* goldTexture = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Gold/albedo.png");
+    Texture* goldMetalnessMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Gold/metallic.png");
+    Texture* goldRoughnessMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Gold/roughness.png");
+    Texture* goldNormalMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Gold/normal.png");
+    Texture* goldAoMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Gold/ao.png");
 
     MeshRenderer* meshRenderer3 = obj3->GetComponent<MeshRenderer>();
     meshRenderer3->mesh = sphere;
