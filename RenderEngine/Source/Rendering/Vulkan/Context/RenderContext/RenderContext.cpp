@@ -903,7 +903,7 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _
 		// POSITIVE_Y
 		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::LEFT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, 1.f, 0.f), Mathlib::Vec3(0.f, 0.f, -1.f)).Transpose(),
 		// NEGATIVE_Y
-		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::LEFT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, -1.f, 0.f), Mathlib::Vec3(0.f, 0.f, -1.f)).Transpose(),
+		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::LEFT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, -1.f, 0.f), Mathlib::Vec3(0.f, 0.f, 1.f)).Transpose(),
 		// POSITIVE_Z
 		Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::LEFT_HAND, Mathlib::Vec3(0.f, 0.f, 0.f), Mathlib::Vec3(0.f, 0.f, 1.f), Mathlib::Vec3(0.f, 1.f, 0.f)).Transpose(),
 		// NEGATIVE_Z

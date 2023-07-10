@@ -17,8 +17,6 @@ Window::Window(unsigned int _width, unsigned int _height, const char* _name)
     glfwWindow = glfwCreateWindow(_width, _height, _name, nullptr, nullptr);
     glfwSetWindowUserPointer(glfwWindow, this);
     glfwSetFramebufferSizeCallback(glfwWindow, FramebufferResizeCallback);
-
-    glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 void Window::Update()
@@ -73,4 +71,17 @@ bool Window::GetKeyPressed(int _keycode, int _keyStatus)
 void Window::GetCursorPos(double* _mouseX, double* _mouseY)
 {
     glfwGetCursorPos(glfwWindow, _mouseX, _mouseY);
+}
+
+void Window::LockMouseToWindow(bool _enable)
+{
+    if (_enable != mouseLocked)
+    {
+        mouseLocked = _enable;
+        if(mouseLocked)
+            glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        else
+            glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+    }
 }

@@ -28,6 +28,8 @@ namespace RenderEngine::Window
          * @brief window name
         */
         const char* name;
+
+        bool mouseLocked = false;
     public:
         /**
          * @brief Event called when window is resized;
@@ -61,6 +63,8 @@ namespace RenderEngine::Window
 
         virtual bool GetKeyPressed(int _keycode, int _keyStatus) = 0;
         virtual void GetCursorPos(double* _mouseX, double* _mouseY) = 0;
+
+        virtual void LockMouseToWindow(bool _enable) = 0;
     };
 }
 

@@ -15,6 +15,9 @@ private:
     float dx = 0.0f;
     float dy = 0.0f;
 
+    bool noUpdate = false;
+    bool enableMouse = false;
+
 public:
     RenderEngine::Window::IWindow* window;
     float movementSpeed = 20.f;

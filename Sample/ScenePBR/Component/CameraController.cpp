@@ -61,5 +61,16 @@ void CameraController::FixedUpdate(double _deltaTime)
 		}
 
 		gameObject->SetLocalTransform(gaoTransform);
+
+		if (window->GetKeyPressed(290, 1) && !noUpdate)
+		{
+			enableMouse = !enableMouse;
+			window->LockMouseToWindow(enableMouse);
+			noUpdate = true;
+		}
+		if (window->GetKeyPressed(290, 0) && noUpdate)
+		{
+			noUpdate = false;
+		}
 	}
 }

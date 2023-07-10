@@ -110,17 +110,14 @@ Scene* SetupPBRScene()
     Scene* scene = sceneManager->AddScene();
     scene->name = "test_scene_simple_cube";
 
-    /*Texture* skyboxTexture = resourceManager->LoadTexture("Resources/Engine/Textures/HDR/newport_loft.hdr", true, false);
-    resourceManager->CreateSkyboxFromTexture(skyboxTexture, Mathlib::Vec2(512.f, 512.f), &scene->skybox);
 
-    resourceManager->SaveAsset(scene->skybox.cubemap);
+    /*Texture* skyboxTexture = resourceManager->LoadTexture("Resources/Engine/Textures/HDR/newport_loft.hdr", true, false);
+    resourceManager->CreateSkyboxFromTexture(skyboxTexture, Mathlib::Vec2(512.f, 512.f), &scene->skybox);*/
+
+    /*resourceManager->SaveAsset(scene->skybox.cubemap);
     resourceManager->SaveAsset(scene->skybox.irradianceMap);
     resourceManager->SaveAsset(scene->skybox.prefilterMap);*/
-
-    scene->skybox.cubemap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftCubemap.asset");
-    scene->skybox.irradianceMap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftIrradiance.asset");
-    scene->skybox.prefilterMap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftPrefiltered.asset");
-
+    
     Camera* camera = scene->GetCamera();
     Mathlib::Transform cameraTransform;
     cameraTransform.position = Mathlib::Vec3(0.0f, 0.0f, -2.f);
@@ -258,6 +255,7 @@ Scene* SetupPBRScene()
     meshRenderer4->enable = true;
     meshRenderer4->fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/TextureFragmentShader.frag.spv", FRAGMENT);
     meshRenderer4->frontFace = FrontFace::COUNTER_CLOCKWISE;
+    meshRenderer4->enable = false;
 
     return scene;
 }

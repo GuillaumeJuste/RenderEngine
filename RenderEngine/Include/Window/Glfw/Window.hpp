@@ -63,6 +63,8 @@ namespace RenderEngine::Window::GLFW
 
 		bool GetKeyPressed(int _keycode, int _keyStatus);
 		void GetCursorPos(double* _mouseX, double* _mouseY);
+
+		void LockMouseToWindow(bool _enable);
 	};
 }
 
