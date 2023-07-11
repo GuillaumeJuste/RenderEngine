@@ -10,7 +10,7 @@
 namespace RenderEngine::Window
 {
     /**
-     * @brief WindowBase class implementation
+     * @brief IWindow class implementation
     */
     class IWindow
     {
@@ -52,19 +52,48 @@ namespace RenderEngine::Window
 
         /**
          * @brief Get window dimensions
-         * @return window dimensions as VkExtent2D
+         * @return window dimensions as Mathlib::Vec2
         */
         virtual Mathlib::Vec2 GetWindowExtent() = 0;
 
+        /**
+         * @brief Check the close flag of the window
+         * @return true if the window should be closed
+        */
         virtual bool WindowShouldClose() = 0;
 
+        /**
+         * @brief Get the framebuffer size
+         * @param _width output width
+         * @param _height output height
+        */
         virtual void GetFrameBufferSize(int* _width, int* _height) = 0;
 
+        /**
+         * @brief Get the window handle as a void*
+         * @return window handle
+        */
         virtual void* GetHandle() const = 0;
 
-        virtual bool GetKeyPressed(RenderEngine::Utils::Input _key, RenderEngine::Utils::InputStatus _keyStatus) = 0;
+        /**
+         * @brief Check the input status of a key if the window is in use
+         * @param _key Key to check
+         * @param _keyStatus state of the key to check
+         * @return true if the key status match _keyStatus
+        */
+        virtual bool CheckKeyStatus(RenderEngine::Utils::Input _key, RenderEngine::Utils::InputStatus _keyStatus) = 0;
+
+        /**
+         * @brief Get  the cursor position inside the window
+         * @param _mouseX output X coordinate
+         * @param _mouseY outpur Y coordinate
+        */
         virtual void GetCursorPos(double* _mouseX, double* _mouseY) = 0;
 
+        /**
+         * @brief Lock the cursor inside the window
+         * @param _enable enabling status
+        */
         virtual void LockMouseToWindow(bool _enable) = 0;
     };
 }

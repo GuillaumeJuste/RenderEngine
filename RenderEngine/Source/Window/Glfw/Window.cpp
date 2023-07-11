@@ -63,7 +63,7 @@ void* Window::GetHandle() const
     return glfwWindow;
 }
 
-bool Window::GetKeyPressed(RenderEngine::Utils::Input _key, RenderEngine::Utils::InputStatus _keyStatus)
+bool Window::CheckKeyStatus(RenderEngine::Utils::Input _key, RenderEngine::Utils::InputStatus _keyStatus)
 {
     return glfwGetKey(glfwWindow, GetKeyValue(_key)) == GetKeyStatusValue(_keyStatus);
 }

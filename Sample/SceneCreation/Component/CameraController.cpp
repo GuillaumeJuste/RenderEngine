@@ -34,17 +34,17 @@ void CameraController::FixedUpdate(double _deltaTime)
 		float deltaTime = (float) _deltaTime;
 		Mathlib::Transform gaoTransform = gameObject->GetLocalTransform();
 
-		if (window->GetKeyPressed(Input::KEY_RIGHT, InputStatus::PRESS))
+		if (window->CheckKeyStatus(Input::KEY_RIGHT, InputStatus::PRESS))
 			gaoTransform.position += gaoTransform.GetRightVector() * movementSpeed * deltaTime;
-		if (window->GetKeyPressed(Input::KEY_LEFT, InputStatus::PRESS))
+		if (window->CheckKeyStatus(Input::KEY_LEFT, InputStatus::PRESS))
 			gaoTransform.position -= gaoTransform.GetRightVector() * movementSpeed * deltaTime;
-		if (window->GetKeyPressed(Input::KEY_LEFT_CONTROL, InputStatus::PRESS))
+		if (window->CheckKeyStatus(Input::KEY_LEFT_CONTROL, InputStatus::PRESS))
 			gaoTransform.position -= gaoTransform.GetUpVector() * movementSpeed * deltaTime;
-		if (window->GetKeyPressed(Input::KEY_SPACE, InputStatus::PRESS))
+		if (window->CheckKeyStatus(Input::KEY_SPACE, InputStatus::PRESS))
 			gaoTransform.position += gaoTransform.GetUpVector() * movementSpeed * deltaTime;
-		if (window->GetKeyPressed(Input::KEY_DOWN, InputStatus::PRESS))
+		if (window->CheckKeyStatus(Input::KEY_DOWN, InputStatus::PRESS))
 			gaoTransform.position -= gaoTransform.GetForwardVector() * movementSpeed * deltaTime;
-		if (window->GetKeyPressed(Input::KEY_UP, InputStatus::PRESS))
+		if (window->CheckKeyStatus(Input::KEY_UP, InputStatus::PRESS))
 			gaoTransform.position += gaoTransform.GetForwardVector() * movementSpeed * deltaTime;
 
 		double mouseX, mouseY;
@@ -64,13 +64,13 @@ void CameraController::FixedUpdate(double _deltaTime)
 
 		gameObject->SetLocalTransform(gaoTransform);
 
-		if (window->GetKeyPressed(Input::KEY_F1, InputStatus::PRESS) && !noUpdate)
+		if (window->CheckKeyStatus(Input::KEY_F1, InputStatus::PRESS) && !noUpdate)
 		{
 			enableMouse = !enableMouse;
 			window->LockMouseToWindow(enableMouse);
 			noUpdate = true;
 		}
-		if (window->GetKeyPressed(Input::KEY_F1, InputStatus::RELEASE) && noUpdate)
+		if (window->CheckKeyStatus(Input::KEY_F1, InputStatus::RELEASE) && noUpdate)
 		{
 			noUpdate = false;
 		}
