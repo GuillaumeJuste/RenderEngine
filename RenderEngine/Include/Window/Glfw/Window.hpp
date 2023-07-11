@@ -26,6 +26,9 @@ namespace RenderEngine::Window::GLFW
 		 * @param _height new window height
 		*/
 		static void FramebufferResizeCallback(GLFWwindow* _window, int _width, int _height);
+
+		int GetKeyValue(RenderEngine::Utils::Input _key);
+		int GetKeyStatusValue(RenderEngine::Utils::InputStatus _keyStatus);
 	public:
 
 		/**
@@ -61,7 +64,7 @@ namespace RenderEngine::Window::GLFW
 
 		void* GetHandle() const;
 
-		bool GetKeyPressed(int _keycode, int _keyStatus);
+		bool GetKeyPressed(RenderEngine::Utils::Input _key, RenderEngine::Utils::InputStatus _keyStatus);
 		void GetCursorPos(double* _mouseX, double* _mouseY);
 
 		void LockMouseToWindow(bool _enable);

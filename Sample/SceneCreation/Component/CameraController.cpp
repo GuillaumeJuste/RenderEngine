@@ -4,6 +4,8 @@
 #include "Transform/Transform.hpp"
 #include "Mathlib/Mathlib/Include/Collections/Mathlib.hpp"
 
+using namespace RenderEngine::Utils;
+
 void CameraController::Initialize()
 {
 
@@ -32,17 +34,17 @@ void CameraController::FixedUpdate(double _deltaTime)
 		float deltaTime = (float) _deltaTime;
 		Mathlib::Transform gaoTransform = gameObject->GetLocalTransform();
 
-		if (window->GetKeyPressed(262, 1))
+		if (window->GetKeyPressed(Input::KEY_RIGHT, InputStatus::PRESS))
 			gaoTransform.position += gaoTransform.GetRightVector() * movementSpeed * deltaTime;
-		if (window->GetKeyPressed(263, 1))
+		if (window->GetKeyPressed(Input::KEY_LEFT, InputStatus::PRESS))
 			gaoTransform.position -= gaoTransform.GetRightVector() * movementSpeed * deltaTime;
-		if (window->GetKeyPressed(341, 1))
+		if (window->GetKeyPressed(Input::KEY_LEFT_CONTROL, InputStatus::PRESS))
 			gaoTransform.position -= gaoTransform.GetUpVector() * movementSpeed * deltaTime;
-		if (window->GetKeyPressed(32, 1))
+		if (window->GetKeyPressed(Input::KEY_SPACE, InputStatus::PRESS))
 			gaoTransform.position += gaoTransform.GetUpVector() * movementSpeed * deltaTime;
-		if (window->GetKeyPressed(264, 1))
+		if (window->GetKeyPressed(Input::KEY_DOWN, InputStatus::PRESS))
 			gaoTransform.position -= gaoTransform.GetForwardVector() * movementSpeed * deltaTime;
-		if (window->GetKeyPressed(265, 1))
+		if (window->GetKeyPressed(Input::KEY_UP, InputStatus::PRESS))
 			gaoTransform.position += gaoTransform.GetForwardVector() * movementSpeed * deltaTime;
 
 		double mouseX, mouseY;
@@ -62,13 +64,13 @@ void CameraController::FixedUpdate(double _deltaTime)
 
 		gameObject->SetLocalTransform(gaoTransform);
 
-		if (window->GetKeyPressed(290, 1) && !noUpdate)
+		if (window->GetKeyPressed(Input::KEY_F1, InputStatus::PRESS) && !noUpdate)
 		{
 			enableMouse = !enableMouse;
 			window->LockMouseToWindow(enableMouse);
 			noUpdate = true;
 		}
-		if (window->GetKeyPressed(290, 0) && noUpdate)
+		if (window->GetKeyPressed(Input::KEY_F1, InputStatus::RELEASE) && noUpdate)
 		{
 			noUpdate = false;
 		}

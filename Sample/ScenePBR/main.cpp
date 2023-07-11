@@ -112,9 +112,9 @@ Scene* SetupPBRScene()
 
 
     /*Texture* skyboxTexture = resourceManager->LoadTexture("Resources/Engine/Textures/HDR/newport_loft.hdr", true, false);
-    resourceManager->CreateSkyboxFromTexture(skyboxTexture, Mathlib::Vec2(512.f, 512.f), &scene->skybox);*/
+    resourceManager->CreateSkyboxFromTexture(skyboxTexture, Mathlib::Vec2(512.f, 512.f), &scene->skybox);
 
-    /*resourceManager->SaveAsset(scene->skybox.cubemap);
+    resourceManager->SaveAsset(scene->skybox.cubemap);
     resourceManager->SaveAsset(scene->skybox.irradianceMap);
     resourceManager->SaveAsset(scene->skybox.prefilterMap);*/
     
@@ -267,7 +267,7 @@ void MainLoop()
     scene->Initialize();
     scene->Start();
 
-    while (!window->WindowShouldClose()) 
+    while (!window->WindowShouldClose() && !window->GetKeyPressed(RenderEngine::Utils::Input::KEY_ESCAPE, RenderEngine::Utils::InputStatus::PRESS))
     {
         window->Update();
         renderContext->DrawScene(scene);

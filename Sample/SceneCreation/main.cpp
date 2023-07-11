@@ -184,7 +184,7 @@ void MainLoop()
     scene->Initialize();
     scene->Start();
 
-    while (!window->WindowShouldClose()) 
+    while (!window->WindowShouldClose() && !window->GetKeyPressed(RenderEngine::Utils::Input::KEY_ESCAPE, RenderEngine::Utils::InputStatus::PRESS))
     {
         window->Update();
         renderContext->DrawScene(scene);

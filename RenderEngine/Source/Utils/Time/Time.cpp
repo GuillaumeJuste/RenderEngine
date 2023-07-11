@@ -26,9 +26,12 @@ void Time::Update()
 	fixedUpdateTime += (float)deltaTime;
 	if (fixedUpdateTime >= fixedTimeStep)
 	{
-		float fixedDeltaTime = (fixedUpdateTime / fixedTimeStep) * fixedTimeStep;
-		fixedUpdateTime = fixedUpdateTime - fixedDeltaTime;
-		FixedUpdateEvent(fixedDeltaTime);
+		int stepCount = (int)(fixedUpdateTime / fixedTimeStep);
+		
+		for(int i = 0; i < stepCount; i++)
+			FixedUpdateEvent(fixedTimeStep);
+
+		fixedUpdateTime -= stepCount * fixedTimeStep;
 	}
 
 	currentTime = newTime;

@@ -5,6 +5,7 @@
 
 #include "Utils/Event/Event.hpp"
 #include "Mathlib/Mathlib/Include/Space/Vec2.hpp"
+#include "Utils/Input/Input.hpp"
 
 namespace RenderEngine::Window
 {
@@ -61,7 +62,7 @@ namespace RenderEngine::Window
 
         virtual void* GetHandle() const = 0;
 
-        virtual bool GetKeyPressed(int _keycode, int _keyStatus) = 0;
+        virtual bool GetKeyPressed(RenderEngine::Utils::Input _key, RenderEngine::Utils::InputStatus _keyStatus) = 0;
         virtual void GetCursorPos(double* _mouseX, double* _mouseY) = 0;
 
         virtual void LockMouseToWindow(bool _enable) = 0;
