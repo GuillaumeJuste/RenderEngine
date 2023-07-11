@@ -9,6 +9,9 @@
 
 namespace RenderEngine::Utils
 {
+	/**
+	 * @brief enum of all the input key supported
+	*/
 	enum class Input : uint32_t
 	{
 		KEY_UNKNOWN = 0,
@@ -134,6 +137,9 @@ namespace RenderEngine::Utils
 		KEY_MENU
 	};
 
+	/**
+	 * @brief enum of all the key status supported
+	*/
 	enum class InputStatus : uint32_t
 	{
 		RELEASE = 0,

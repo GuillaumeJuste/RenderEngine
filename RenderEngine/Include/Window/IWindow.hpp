@@ -37,7 +37,10 @@ namespace RenderEngine::Window
         */
         Utils::Event<> FramebufferResizeEvent;
 
+        /// Default constructor.
         IWindow() = default;
+
+        /// Default destructor.
         ~IWindow() = default;
 
         /**
