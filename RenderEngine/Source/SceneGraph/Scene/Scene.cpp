@@ -91,7 +91,7 @@ GameObject* Scene::AddGameObject(GameObjectCreateInfo _createInfo)
 	GameObject::InitializeGameObject(_createInfo, gao);
 
 	mainCamera.SetParent(&rootObject);
-
+	GameObjectAdded(gao);
 	return gao;
 }
 
@@ -101,12 +101,16 @@ bool Scene::RemoveGameObject(GameObject* _gao)
 	{
 		if (it->GetUId() == _gao->GetUId())
 		{
-			std::vector<GameObject*> childrensList = it->GetChildrens();
+			std::vector<GameObject*> childrensList = _gao->GetChildrens();
 			size_t size = childrensList.size();
 			for (size_t j = 0; j < size; j++)
 			{
 				childrensList[j]->SetParent(_gao->GetParent());
 			}
+			_gao->GetParent()->RemoveChild(_gao);
+
+			GameObjectRemoved(_gao);
+			_gao->Cleanup();
 			gameObjects.erase(it);
 			return true;
 		}
@@ -157,6 +161,7 @@ void Scene::Cleanup()
 	{
 		it->Cleanup();
 	}
+	mainCamera.Cleanup();
 }
 
 bool Scene::operator==(const Scene& _scene) const

@@ -7,7 +7,9 @@
 #include "SceneGraph/Object/GameObject/GameObjectCreateInfo.hpp"
 #include "SceneGraph/Object/GameObject/Camera/Camera.hpp"
 #include "SceneGraph/Scene/Skybox.hpp"
+
 #include "Utils/Time/Time.hpp"
+#include "Utils/Event/Event.hpp"
 
 #include <string>
 #include <list>
@@ -62,6 +64,16 @@ namespace RenderEngine::SceneGraph
          * @brief scene fixed update time step
         */
         float fixedTimestep = 0.02f;
+
+        /**
+         * @brief event called when a gameObject is added to the scene
+        */
+        RenderEngine::Utils::Event<GameObject*> GameObjectAdded;
+
+        /**
+         * @brief event called when a gameObject is removed from the scene
+        */
+        RenderEngine::Utils::Event<GameObject*> GameObjectRemoved;
 
         /// constructor
         Scene();

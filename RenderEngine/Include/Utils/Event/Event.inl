@@ -11,7 +11,7 @@ namespace RenderEngine::Utils
 	template <typename... Args>
 	void Event<Args...>::Add(void(*_func)(Args...))
 	{
-		functionHandles.push_back(FunctionHandle<Args...>(_func));
+		functionHandles.push_back(FunctionHandle<Args...>{_func});
 	}
 
 	template <typename... Args>

@@ -52,7 +52,7 @@ namespace RenderEngine::Utils
         
     public:
         /**
-         * @brief event called when a fxied update should happen
+         * @brief event called when a fixed update happen
         */
         Event<double> FixedUpdateEvent;
 

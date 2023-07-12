@@ -9,6 +9,7 @@ namespace RenderEngine::SceneGraph
 		{
 			components.push_back(castedComponent);
 			castedComponent->gameObject = this;
+			ComponentAdded(newComponent);
 			return newComponent;
 		}
 		delete newComponent;
@@ -45,8 +46,9 @@ namespace RenderEngine::SceneGraph
 	{
 		for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 		{
-			if (_component == (*it))
+			if (_component == *it)
 			{
+				ComponentRemoved(_component);
 				components.erase(it);
 				return true;
 			}

@@ -8,6 +8,8 @@
 #include "SceneGraph/Components/Transfom/Transform.hpp"
 #include "SceneGraph/Object/GameObject/GameObjectCreateInfo.hpp"
 
+#include "Utils/Event/Event.hpp"
+
 #include <vector>
 
 namespace RenderEngine::SceneGraph
@@ -40,6 +42,16 @@ namespace RenderEngine::SceneGraph
         std::vector<Component*> components;
 
     public:
+        /**
+         * @brief event called when a component is added to the GameObject
+        */
+        RenderEngine::Utils::Event<Component*> ComponentAdded;
+
+        /**
+         * @brief event called when a component is removed from the GameObject
+        */
+        RenderEngine::Utils::Event<Component*> ComponentRemoved;
+
         /// default constructor
         GameObject() = default;
 
