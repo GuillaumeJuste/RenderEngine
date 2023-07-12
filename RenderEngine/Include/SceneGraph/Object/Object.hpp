@@ -23,7 +23,10 @@ namespace RenderEngine::SceneGraph
         */
         unsigned int uid;  
     public :
+        ///constructor
         Object();
+        
+        /// default destructor
         ~Object() = default;
 
         /**

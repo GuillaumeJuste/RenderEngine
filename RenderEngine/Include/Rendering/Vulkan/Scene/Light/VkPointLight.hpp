@@ -3,7 +3,7 @@
 #ifndef RENDERENGINE_VKPOINTLIGHT
 #define RENDERENGINE_VKPOINTLIGHT
 
-#include "SceneGraph/Components/Light/PointLight.hpp"
+#include "Components/Light/PointLight.hpp"
 #include "SceneGraph/Object/GameObject/GameObject.hpp"
 
 namespace RenderEngine::Rendering
@@ -11,7 +11,7 @@ namespace RenderEngine::Rendering
 	struct VkPointLight
 	{
 		RenderEngine::SceneGraph::GameObject* gameObject;
-		RenderEngine::SceneGraph::PointLight* pointlight;
+		RenderEngine::Component::PointLight* pointlight;
 
 		/// default constructor
 		VkPointLight() = default;

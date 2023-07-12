@@ -16,13 +16,39 @@ namespace RenderEngine::SceneGraph
     */
     struct Skybox
     {
+        /**
+         * @brief mesh on which the skybox will be applied
+        */
         Mesh* mesh;
+
+        /**
+         * @brief skybox's cubemap
+        */
         Texture* cubemap;
+
+        /**
+         * @brief skybox's irradiance cubemap
+        */
         Texture* irradianceMap;
+
+        /**
+         * @brief skybox's prefiltered cubemap
+        */
         Texture* prefilterMap;
+
+        /**
+         * @brief BRDF look up table
+        */
         Texture* BRDFlut;
 
+        /**
+         * @brief skybox's vertex shader
+        */
         Shader* vertexShader;
+
+        /**
+         * @brief skybox's fragment shader
+        */
         Shader* fragmentShader;
     };
 }

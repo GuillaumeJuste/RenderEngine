@@ -1,6 +1,6 @@
-#include "SceneGraph/Components/MeshRenderer/MeshRenderer.hpp"
+#include "Components/MeshRenderer/MeshRenderer.hpp"
 
-using namespace RenderEngine::SceneGraph;
+using namespace RenderEngine::Component;
 
 void MeshRenderer::Initialize()
 {

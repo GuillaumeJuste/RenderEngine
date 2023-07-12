@@ -24,8 +24,8 @@ void VkSkybox::CreateGraphicsPipeline(DescriptorBuffer* _cameraBuffer)
 	gpCreateInfo.renderPass = createInfo.renderpass;
 	gpCreateInfo.swapChainExtent = createInfo.swapchain->GetExtent();
 	gpCreateInfo.swapChainImageFormat = createInfo.swapchain->GetImageFormat();
-	gpCreateInfo.vertexShader = skybox->vertexShader;
-	gpCreateInfo.fragmentShader = skybox->fragmentShader;
+	gpCreateInfo.vertexShader = dynamic_cast<VkShader*>(skybox->vertexShader->iShader);
+	gpCreateInfo.fragmentShader = dynamic_cast<VkShader*>(skybox->fragmentShader->iShader);
 	gpCreateInfo.drawMode = PolygonDrawMode::FILL;
 	gpCreateInfo.lineWidth = 1.0f;
 	gpCreateInfo.frontFace = FrontFace::COUNTER_CLOCKWISE;

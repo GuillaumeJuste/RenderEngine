@@ -13,7 +13,7 @@
 namespace RenderEngine::SceneGraph
 {
     /**
-     * @brief GameObject class
+     * @brief GameObject class implementation
     */
     class GameObject : public Object
     {
@@ -24,6 +24,9 @@ namespace RenderEngine::SceneGraph
         */
         GameObject* parent = nullptr;
 
+        /**
+         * @brief object transform
+        */
         Transform transform;
 
         /**
@@ -31,10 +34,16 @@ namespace RenderEngine::SceneGraph
         */
         std::vector<GameObject*> childrens;
 
+        /**
+         * @brief GameObject components
+        */
         std::vector<Component*> components;
 
     public:
+        /// default constructor
         GameObject() = default;
+
+        ///default destructor
         ~GameObject() = default;
 
         /**
@@ -44,9 +53,26 @@ namespace RenderEngine::SceneGraph
         */
         static void InitializeGameObject(const GameObjectCreateInfo& _createinfo, GameObject* _output);
 
+        /**
+         * @brief initialize GameObject
+        */
         void Initialize();
+
+        /**
+         * @brief start GameObject
+        */
         void Start();
+
+        /**
+         * @brief Update Gameobject
+         * @param _deltaTime frame delta time
+        */
         void Update(double _deltaTime);
+
+        /**
+         * @brief GameObject fixed update
+         * @param _deltaTime fixed delta time
+        */
         void FixedUpdate(double _deltaTime);
 
         /**
@@ -62,15 +88,36 @@ namespace RenderEngine::SceneGraph
         */
         bool RemoveChild(GameObject* _child);
 
+        /**
+         * @brief Add a component of type <T> to the game object
+         * @tparam T Type of the component
+         * @return component added to the object
+        */
         template<typename T>
         T* AddComponent();
 
+        /**
+         * @brief Get the first component of type <T>
+         * @tparam T Type of the component
+         * @return pointer to the component found
+        */
         template<typename T>
         T* GetComponent();
 
+        /**
+         * @brief Get all the components of type <T>
+         * @tparam T Type of the component
+         * @return vector containing pointer to all the matching components
+        */
         template<typename T>
         std::vector<T*> GetComponents();
 
+        /**
+         * @brief remove the first component of type <T>
+         * @tparam T T Type of the component
+         * @param _component pointer to the component to remove
+         * @return true if the component was properly removed
+        */
         template<typename T>
         bool RemoveComponent(T* _component);
 
@@ -82,12 +129,18 @@ namespace RenderEngine::SceneGraph
 
         /**
          * @brief Get GameObject world transform
-         * @return GameObject world transform
         */
         Mathlib::Transform GetWorldTransform() const;
 
+        /**
+         * @brief Get the game object local transform
+        */
         Mathlib::Transform GetLocalTransform() const;
 
+        /**
+         * @brief Set the game object local transform
+         * @param _newTransform new transform to apply to the GameObject
+        */
         void SetLocalTransform(Mathlib::Transform _newTransform);
 
 
@@ -103,6 +156,9 @@ namespace RenderEngine::SceneGraph
         */
         void SetParent(GameObject* _newParent);
 
+        /**
+         * @brief clear the GameObject
+        */
         void Cleanup();
     };
 }

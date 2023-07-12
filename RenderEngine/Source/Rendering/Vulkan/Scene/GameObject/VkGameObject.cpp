@@ -31,8 +31,8 @@ void VkGameObject::CreateGraphicsPipeline()
 		gpCreateInfo.renderPass = createInfo.renderpass;
 		gpCreateInfo.swapChainExtent = createInfo.swapchain->GetExtent();
 		gpCreateInfo.swapChainImageFormat = createInfo.swapchain->GetImageFormat();
-		gpCreateInfo.vertexShader = meshRenderer->vertexShader;
-		gpCreateInfo.fragmentShader = meshRenderer->fragmentShader;
+		gpCreateInfo.vertexShader = dynamic_cast<VkShader*>(meshRenderer->vertexShader->iShader);
+		gpCreateInfo.fragmentShader = dynamic_cast<VkShader*>(meshRenderer->fragmentShader->iShader);
 		gpCreateInfo.drawMode = meshRenderer->drawMode;
 		gpCreateInfo.lineWidth = meshRenderer->lineWidth;
 		gpCreateInfo.frontFace = meshRenderer->frontFace;
@@ -99,7 +99,7 @@ DescriptorDataList VkGameObject::GenerateDefaultFragmentShaderDescriptorSet()
 		textureBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		textureBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 		textureBufferData.binding = 0;
-		textureBufferData.texture = dynamic_cast<VkTexture*>(meshRenderer->material.texture->iTexture);
+		textureBufferData.texture = dynamic_cast<VkTexture*>(meshRenderer->material.albedo->iTexture);
 		datalist.Add(textureBufferData);
 
 		DescriptorData metalnessMapBufferData{};

@@ -1,10 +1,11 @@
-#include "CameraController.hpp"
+#include "Components/CameraController/CameraController.hpp"
 
 #include "SceneGraph/Object/GameObject/GameObject.hpp"
 #include "Transform/Transform.hpp"
-#include "Mathlib/Mathlib/Include/Misc/Constants.hpp"
+#include "Mathlib/Mathlib/Include/Collections/Mathlib.hpp"
 
 using namespace RenderEngine::Utils;
+using namespace RenderEngine::Component;
 
 void CameraController::Initialize()
 {
@@ -31,7 +32,7 @@ void CameraController::FixedUpdate(double _deltaTime)
 {
 	if (window != nullptr)
 	{
-		float deltaTime = (float)_deltaTime;
+		float deltaTime = (float) _deltaTime;
 		Mathlib::Transform gaoTransform = gameObject->GetLocalTransform();
 
 		if (window->CheckKeyStatus(Input::KEY_RIGHT, InputStatus::PRESS))

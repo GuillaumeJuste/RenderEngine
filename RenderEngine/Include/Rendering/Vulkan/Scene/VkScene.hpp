@@ -42,7 +42,7 @@ namespace RenderEngine::Rendering
 		std::vector<VkSpotLight> sceneSpotLights;
 		VkSkybox skybox;
 
-		void CreateVkGameObjects(VkGameObjectCreateInfo _createInfo, std::vector<GameObject*> _childrens);
+		void CreateVkGameObjects(VkGameObjectCreateInfo _createInfo, std::vector<RenderEngine::SceneGraph::GameObject*> _childrens);
 
 		std::vector<PointLightData> GeneratePointLightsData();
 		std::vector<DirectionalLightData> GenerateDirectionalLightsData();

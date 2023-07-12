@@ -1,6 +1,6 @@
-#include "SceneGraph/Components/Light/SpotLight.hpp"
+#include "Components/Light/SpotLight.hpp"
 
-using namespace RenderEngine::SceneGraph;
+using namespace RenderEngine::Component;
 
 void SpotLight::Initialize()
 {

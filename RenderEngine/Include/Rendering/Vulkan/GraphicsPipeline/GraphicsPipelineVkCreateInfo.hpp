@@ -5,8 +5,9 @@
 
 #include "Rendering/Vulkan/RenderPass/RenderPass.hpp"
 #include "Rendering/Vulkan/Shader/VkShader.hpp"
-#include "SceneGraph/Components/MeshRenderer/MeshRenderer.hpp"
 #include "Rendering/Vulkan/Descriptor/Set/DescriptorDataList.hpp"
+#include "Rendering/Base/Enum/FrontFace.hpp"
+#include "Rendering/Base/Enum/PolygonDrawMode.hpp"
 
 namespace RenderEngine::Rendering
 {
@@ -37,8 +38,8 @@ namespace RenderEngine::Rendering
 
 		VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT;
 
-		Shader* vertexShader;
-		Shader* fragmentShader;
+		VkShader* vertexShader;
+		VkShader* fragmentShader;
 		FrontFace frontFace = FrontFace::CLOCKWISE;
 		PolygonDrawMode drawMode = PolygonDrawMode::FILL;
 		float lineWidth = 1.0f;

@@ -14,8 +14,8 @@ void GraphicsPipeline::InitalizeGraphicsPipeline(const GraphicsPipelineVkCreateI
 	_output->swapChainExtent = _createInfo.swapChainExtent;
     _output->renderPass = _createInfo.renderPass;
 	
-    _output->vertexShader = dynamic_cast<VkShader*>(_createInfo.vertexShader->iShader);
-    _output->fragmentShader = dynamic_cast<VkShader*>(_createInfo.fragmentShader->iShader);
+    _output->vertexShader = _createInfo.vertexShader;
+    _output->fragmentShader = _createInfo.fragmentShader;
 
     VkPipelineShaderStageCreateInfo shaderStages[] = { _output->vertexShader->GetShaderStageInfo(), _output->fragmentShader->GetShaderStageInfo() };
 

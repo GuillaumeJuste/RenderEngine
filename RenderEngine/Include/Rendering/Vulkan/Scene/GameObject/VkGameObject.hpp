@@ -9,12 +9,12 @@
 #include "Rendering/Vulkan/GraphicsPipeline/GraphicsPipeline.hpp"
 #include "Rendering/Vulkan/Descriptor/Set/DescriptorSet.hpp"
 #include "Rendering/Vulkan/Descriptor/Buffer/DescriptorBuffer.hpp"
-#include "SceneGraph/Components/MeshRenderer/MeshRenderer.hpp"
+#include "Components/MeshRenderer/MeshRenderer.hpp"
 #include "Rendering/Vulkan/Texture/VkTexture.hpp"
 #include "Rendering/Vulkan/Descriptor/Set/DescriptorData.hpp"
 #include "Rendering/Vulkan/Descriptor/Set/DescriptorDataList.hpp"
 
-using namespace RenderEngine::SceneGraph;
+using namespace RenderEngine::Component;
 
 namespace RenderEngine::Rendering
 {

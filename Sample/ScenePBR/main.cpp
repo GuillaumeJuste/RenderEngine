@@ -7,18 +7,19 @@
 #include "SceneGraph/Scene/SceneManager.hpp"
 #include "ResourceManager/ResourceManager.hpp"
 #include "SceneGraph/Object/GameObject/GameObject.hpp"
-#include "SceneGraph/Components/MeshRenderer/MeshRenderer.hpp"
-#include "SceneGraph/Components/Light/PointLight.hpp"
-#include "SceneGraph/Components/Light/DirectionalLight.hpp"
-#include "SceneGraph/Components/Light/SpotLight.hpp"
+#include "Components/MeshRenderer/MeshRenderer.hpp"
+#include "Components/Light/PointLight.hpp"
+#include "Components/Light/DirectionalLight.hpp"
+#include "Components/Light/SpotLight.hpp"
+#include "Components/CameraController/CameraController.hpp"
 #include "Component/RotatorComponent.hpp"
-#include "Component/CameraController.hpp"
 #include <iostream>
 
 #include<Mathlib/Mathlib/Include/Misc/Math.hpp>
 
-using namespace RenderEngine::Rendering;
 using namespace RenderEngine;
+using namespace RenderEngine::Rendering;
+using namespace RenderEngine::SceneGraph;
 
 /**
 * @brief Window for engine rendering
@@ -110,6 +111,13 @@ Scene* SetupPBRScene()
     Scene* scene = sceneManager->AddScene();
     scene->name = "test_scene_simple_cube";
 
+    scene->skybox.mesh = resourceManager->LoadMesh("Resources/Engine/Models/cube.obj");
+    scene->skybox.BRDFlut = resourceManager->LoadTexture("Resources/Engine/Textures/default_brdf_lut.png");
+    scene->skybox.vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/Skybox.vert.spv", VERTEX);
+    scene->skybox.fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/Skybox.frag.spv", FRAGMENT);
+    scene->skybox.cubemap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftCubemap.asset");
+    scene->skybox.irradianceMap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftIrradiance.asset");
+    scene->skybox.prefilterMap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftPrefiltered.asset");
 
     /*Texture* skyboxTexture = resourceManager->LoadTexture("Resources/Engine/Textures/HDR/newport_loft.hdr", true, false);
     resourceManager->CreateSkyboxFromTexture(skyboxTexture, Mathlib::Vec2(512.f, 512.f), &scene->skybox);
@@ -125,10 +133,11 @@ Scene* SetupPBRScene()
     camera->SetLocalTransform(cameraTransform);
     camera->fov = 90.f;
 
-    CameraController* cameraController = camera->AddComponent<CameraController>();
+    RenderEngine::Component::CameraController* cameraController = camera->AddComponent<RenderEngine::Component::CameraController>();
     cameraController->window = window;
 
     Mesh* sphere = resourceManager->LoadMesh("Resources/Sample/ScenePBR/Models/Sphere.obj");
+    Shader* vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/VertexShader.vert.spv", VERTEX);
     Shader* fragShader = resourceManager->LoadShader("Resources/Engine/Shaders/PBRFragmentShader.frag.spv", FRAGMENT);
     Texture* wallTexture = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Wall/albedo.png");
     Texture* wallMetalnessMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Wall/metallic.png");
@@ -148,10 +157,11 @@ Scene* SetupPBRScene()
 
     GameObject* obj = scene->AddGameObject(createinfo);
 
-    MeshRenderer* meshRenderer = obj->GetComponent<MeshRenderer>();
+    RenderEngine::Component::MeshRenderer* meshRenderer = obj->AddComponent<RenderEngine::Component::MeshRenderer>();
+    meshRenderer->vertexShader = vertexShader;
     meshRenderer->fragmentShader = fragShader;
     meshRenderer->mesh = sphere;
-    meshRenderer->material.texture = wallTexture;
+    meshRenderer->material.albedo = wallTexture;
     meshRenderer->material.metalnessMap = wallMetalnessMap;
     meshRenderer->material.roughnessMap = wallRoughnessMap;
     meshRenderer->material.normalMap = wallNormalMap;
@@ -183,10 +193,11 @@ Scene* SetupPBRScene()
     Texture* ironNormalMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Rusted_iron/normal.png");
     Texture* ironAoMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Rusted_iron/ao.png");
 
-    MeshRenderer* meshRenderer2 = obj2->GetComponent<MeshRenderer>();
+    RenderEngine::Component::MeshRenderer* meshRenderer2 = obj2->AddComponent<RenderEngine::Component::MeshRenderer>();
+    meshRenderer2->vertexShader = vertexShader;
     meshRenderer2->fragmentShader = fragShader;
     meshRenderer2->mesh = sphere;
-    meshRenderer2->material.texture = ironTexture;
+    meshRenderer2->material.albedo = ironTexture;
     meshRenderer2->material.metalnessMap = ironMetalnessMap;
     meshRenderer2->material.roughnessMap = ironRoughnessMap;
     meshRenderer2->material.normalMap = ironNormalMap;
@@ -218,14 +229,16 @@ Scene* SetupPBRScene()
     Texture* goldNormalMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Gold/normal.png");
     Texture* goldAoMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Gold/ao.png");
 
-    MeshRenderer* meshRenderer3 = obj3->GetComponent<MeshRenderer>();
+    RenderEngine::Component::MeshRenderer* meshRenderer3 = obj3->AddComponent<RenderEngine::Component::MeshRenderer>();
+    meshRenderer3->vertexShader = vertexShader;
+    meshRenderer3->fragmentShader = fragShader; 
     meshRenderer3->mesh = sphere;
-    meshRenderer3->material.texture = goldTexture;
+    meshRenderer3->material.albedo = goldTexture;
     meshRenderer3->material.metalnessMap = goldMetalnessMap;
     meshRenderer3->material.roughnessMap = goldRoughnessMap;
     meshRenderer3->material.normalMap = goldNormalMap;
     meshRenderer3->material.ambientOcclusionMap = goldAoMap;
-    meshRenderer3->fragmentShader = fragShader;
+    
     meshRenderer3->material.shininess = 32.0f;
     meshRenderer3->material.ambient = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
     meshRenderer3->material.diffuse = Mathlib::Vec3(0.5f, 0.5f, 0.5f);
@@ -246,14 +259,22 @@ Scene* SetupPBRScene()
 
     GameObject* light4 = scene->AddGameObject(createinfo4);
 
-    PointLight* lightComponent4 = light4->AddComponent<PointLight>();
+    RenderEngine::Component::PointLight* lightComponent4 = light4->AddComponent<RenderEngine::Component::PointLight>();
     lightComponent4->color = Mathlib::Vec3(1.0f, 1.0f, 1.f);
     lightComponent4->range = 30.f;
     lightComponent4->intensity = 1.f;
 
-    MeshRenderer* meshRenderer4 = light4->GetComponent<MeshRenderer>();
+    RenderEngine::Component::MeshRenderer* meshRenderer4 = light4->AddComponent<RenderEngine::Component::MeshRenderer>();
     meshRenderer4->enable = true;
+    meshRenderer4->vertexShader = vertexShader;
     meshRenderer4->fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/TextureFragmentShader.frag.spv", FRAGMENT);
+    meshRenderer4->mesh = resourceManager->LoadMesh("Resources/Sample/ScenePBR/Models/cube.obj");
+    meshRenderer4->material.albedo = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/white.jpg");
+    meshRenderer4->material.metalnessMap = meshRenderer4->material.albedo;
+    meshRenderer4->material.roughnessMap = meshRenderer4->material.albedo;
+    meshRenderer4->material.normalMap = meshRenderer4->material.albedo;
+    meshRenderer4->material.ambientOcclusionMap = meshRenderer4->material.albedo;
+
     meshRenderer4->frontFace = FrontFace::COUNTER_CLOCKWISE;
     meshRenderer4->enable = false;
 
@@ -267,7 +288,7 @@ void MainLoop()
     scene->Initialize();
     scene->Start();
 
-    while (!window->WindowShouldClose() && !window->GetKeyPressed(RenderEngine::Utils::Input::KEY_ESCAPE, RenderEngine::Utils::InputStatus::PRESS))
+    while (!window->WindowShouldClose() && !window->CheckKeyStatus(RenderEngine::Utils::Input::KEY_ESCAPE, RenderEngine::Utils::InputStatus::PRESS))
     {
         window->Update();
         renderContext->DrawScene(scene);
@@ -278,6 +299,7 @@ void MainLoop()
 
 void Cleanup()
 {
+    sceneManager->Cleanup();
     delete sceneManager;
     resourceManager->Clean();
     delete resourceManager;
@@ -291,7 +313,7 @@ void Run()
     InitWindow();
     InitEngine();
     resourceManager = new ResourceManager(renderContext);
-    sceneManager = new SceneManager(resourceManager);
+    sceneManager = new SceneManager();
     MainLoop();
     Cleanup();
 }

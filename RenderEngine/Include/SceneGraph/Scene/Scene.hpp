@@ -12,11 +12,6 @@
 #include <string>
 #include <list>
 
-namespace RenderEngine
-{
-    class ResourceManager;
-}
-
 namespace RenderEngine::SceneGraph
 {
     /**
@@ -35,12 +30,21 @@ namespace RenderEngine::SceneGraph
         */
         GameObject rootObject;
 
+        /**
+         * @brief scene main camera
+        */
         Camera mainCamera;
 
-        RenderEngine::ResourceManager* resourceManager;
-
+        /**
+         * @brief scene internal timer used for delta time computation
+        */
         RenderEngine::Utils::Time timer;
 
+        /**
+         * @brief scene fixed update
+         * called by the timer on fixed update time and call all game objects fixed update
+         * @param _deltaTime fixed delta time
+        */
         void FixedUpdate(double _deltaTime);
 
     public:
@@ -49,17 +53,38 @@ namespace RenderEngine::SceneGraph
         */
         std::string name;
 
+        /**
+         * @brief scene skybox;
+        */
         Skybox skybox;
 
+        /**
+         * @brief scene fixed update time step
+        */
         float fixedTimestep = 0.02f;
 
-        Scene() = default;
+        /// constructor
+        Scene();
+
+        /// default copy constructor
         Scene(const Scene&) = default;
-        Scene(RenderEngine::ResourceManager* _resourceManager);
+
+        /// destructor
         ~Scene();
 
+        /**
+         * @brief initialize scene game objects
+        */
         void Initialize();
+
+        /**
+         * @brief Start game objects and timer
+        */
         void Start();
+
+        /**
+         * @brief Update the scene
+        */
         void Update();
 
         /**
@@ -96,10 +121,21 @@ namespace RenderEngine::SceneGraph
         */
         const GameObject& GetSceneRoot();
 
+        /**
+         * @brief Get a pointer on the scene main camera
+         * @return pointer to the camera
+        */
         Camera* GetCamera();
 
+        /**
+         * @brief Clear the scene
+        */
         void Cleanup();
 
+        /**
+         * @brief compare two scene by name
+         * @param _scene scene to compare with
+        */
         bool operator==(const Scene& _scene) const;
     };
 }

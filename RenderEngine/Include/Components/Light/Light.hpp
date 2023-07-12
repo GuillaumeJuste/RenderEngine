@@ -6,7 +6,7 @@
 #include "SceneGraph/Components/Component.hpp"
 #include "Mathlib/Mathlib/Include/Space/Vec3.hpp"
 
-namespace RenderEngine::SceneGraph
+namespace RenderEngine::Component
 {
     /**
      * @brief Light class implementation
@@ -14,10 +14,16 @@ namespace RenderEngine::SceneGraph
     class Light
     {
     public:
+        /// Light color
         Mathlib::Vec3 color;
+        
+        /// Light intensity
         float intensity = 1.0f;
 
+        /// default constructor
         Light() = default;
+
+        /// default destructor
         ~Light() = default;
     };
 }

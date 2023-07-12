@@ -532,8 +532,8 @@ bool RenderContext::CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize,
 	gpCreateInfo.renderPass = &tmpRenderPass;
 	gpCreateInfo.swapChainExtent = VkExtent2D{ (unsigned int)width, (unsigned int)height };
 	gpCreateInfo.swapChainImageFormat = format;
-	gpCreateInfo.vertexShader = _vertexShader;
-	gpCreateInfo.fragmentShader = _fragmentShader;
+	gpCreateInfo.vertexShader = dynamic_cast<VkShader*>(_vertexShader->iShader);
+	gpCreateInfo.fragmentShader = dynamic_cast<VkShader*>(_fragmentShader->iShader);
 	gpCreateInfo.drawMode = PolygonDrawMode::FILL;
 	gpCreateInfo.lineWidth = 1.0f;
 	gpCreateInfo.frontFace = FrontFace::COUNTER_CLOCKWISE;
@@ -844,8 +844,8 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _
 	gpCreateInfo.renderPass = &tmpRenderPass;
 	gpCreateInfo.swapChainExtent = VkExtent2D{ (unsigned int)width, (unsigned int)height };
 	gpCreateInfo.swapChainImageFormat = format;
-	gpCreateInfo.vertexShader = _vertexShader;
-	gpCreateInfo.fragmentShader = _fragmentShader;
+	gpCreateInfo.vertexShader = dynamic_cast<VkShader*>(_vertexShader->iShader);
+	gpCreateInfo.fragmentShader = dynamic_cast<VkShader*>(_fragmentShader->iShader);
 	gpCreateInfo.drawMode = PolygonDrawMode::FILL;
 	gpCreateInfo.lineWidth = 1.0f;
 	gpCreateInfo.frontFace = FrontFace::COUNTER_CLOCKWISE;

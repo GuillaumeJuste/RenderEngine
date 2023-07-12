@@ -1,7 +1,7 @@
-#include "SceneGraph/Components/Light/DirectionalLight.hpp"
+#include "Components/Light/DirectionalLight.hpp"
 
 
-using namespace RenderEngine::SceneGraph;
+using namespace RenderEngine::Component;
 
 void DirectionalLight::Initialize()
 {

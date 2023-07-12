@@ -15,6 +15,7 @@ namespace RenderEngine::SceneGraph
     class Component
     {
     protected :
+        /// owning GameObject
         GameObject* gameObject = nullptr;
     public:
         /**
@@ -22,12 +23,32 @@ namespace RenderEngine::SceneGraph
         */
         bool enable = true;
 
+        /// default constructor
         Component() = default;
+
+        /// default destructor
         ~Component() = default;
 
+        /**
+         * @brief Component Initiliazation
+        */
         virtual void Initialize() = 0;
+
+        /**
+         * @brief Component Start
+        */
         virtual void Start() = 0;
+
+        /**
+         * @brief Component Update
+         * @param _deltaTime frame delta time
+        */
         virtual void Update(double _deltaTime) = 0;
+
+        /**
+         * @brief Component Fixed Update
+         * @param _deltaTime fixed delta time
+        */
         virtual void FixedUpdate(double _deltaTime) = 0;
 
         friend class GameObject;

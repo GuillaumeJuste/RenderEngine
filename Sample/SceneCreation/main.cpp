@@ -7,18 +7,19 @@
 #include "SceneGraph/Scene/SceneManager.hpp"
 #include "ResourceManager/ResourceManager.hpp"
 #include "SceneGraph/Object/GameObject/GameObject.hpp"
-#include "SceneGraph/Components/MeshRenderer/MeshRenderer.hpp"
-#include "SceneGraph/Components/Light/PointLight.hpp"
-#include "SceneGraph/Components/Light/DirectionalLight.hpp"
-#include "SceneGraph/Components/Light/SpotLight.hpp"
+#include "Components/MeshRenderer/MeshRenderer.hpp"
+#include "Components/Light/PointLight.hpp"
+#include "Components/Light/DirectionalLight.hpp"
+#include "Components/Light/SpotLight.hpp"
+#include "Components/CameraController/CameraController.hpp"
 #include "Component/RotatorComponent.hpp"
-#include "Component/CameraController.hpp"
 #include <iostream>
 
 #include<Mathlib/Mathlib/Include/Misc/Math.hpp>
 
-using namespace RenderEngine::Rendering;
 using namespace RenderEngine;
+using namespace RenderEngine::Rendering;
+using namespace RenderEngine::SceneGraph;
 
 /**
 * @brief Window for engine rendering
@@ -110,6 +111,14 @@ Scene* SetupSimpleCubeScene()
     Scene* scene = sceneManager->AddScene();
     scene->name = "test_scene_simple_plane";
 
+    scene->skybox.mesh = resourceManager->LoadMesh("Resources/Engine/Models/cube.obj");
+    scene->skybox.BRDFlut = resourceManager->LoadTexture("Resources/Engine/Textures/default_brdf_lut.png");
+    scene->skybox.vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/Skybox.vert.spv", VERTEX);
+    scene->skybox.fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/Skybox.frag.spv", FRAGMENT);
+    scene->skybox.cubemap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftCubemap.asset");
+    scene->skybox.irradianceMap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftIrradiance.asset");
+    scene->skybox.prefilterMap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftPrefiltered.asset");
+
     Camera* camera = scene->GetCamera();
     Mathlib::Transform cameraTransform;
     cameraTransform.position = Mathlib::Vec3(0.0f, 0.0f, -1.0f);
@@ -117,7 +126,7 @@ Scene* SetupSimpleCubeScene()
     camera->SetLocalTransform(cameraTransform);
     camera->fov = 90.f;
 
-    CameraController* cameraController = camera->AddComponent<CameraController>();
+    RenderEngine::Component::CameraController* cameraController = camera->AddComponent<RenderEngine::Component::CameraController>();
     cameraController->window = window;
 
     Mathlib::Transform objTransform;
@@ -132,16 +141,20 @@ Scene* SetupSimpleCubeScene()
 
     GameObject* obj = scene->AddGameObject(objCreateinfo);
 
+    Shader* vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/VertexShader.vert.spv", VERTEX);
     Shader* fragShader = resourceManager->LoadShader("Resources/Engine/Shaders/BlinnPhongFragmentShader.frag.spv", FRAGMENT);
+    Mesh* mesh = resourceManager->LoadMesh("Resources/Sample/SceneCreation/Models/cube.obj");
     Texture* wallTexture = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Brick/bricks.jpg");
     Texture* wallMetalnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/metallic.png");
     Texture* wallRoughnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/roughness.png");
     Texture* wallNormalMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Brick/bricks_normal.jpg");
     Texture* wallAoMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/ao.png");
 
-    MeshRenderer* objMeshRenderer = obj->GetComponent<MeshRenderer>();
+    RenderEngine::Component::MeshRenderer* objMeshRenderer = obj->AddComponent<RenderEngine::Component::MeshRenderer>();
+    objMeshRenderer->vertexShader = vertexShader;
     objMeshRenderer->fragmentShader = fragShader;
-    objMeshRenderer->material.texture = wallTexture;
+    objMeshRenderer->mesh = mesh;
+    objMeshRenderer->material.albedo = wallTexture;
     objMeshRenderer->material.metalnessMap = wallMetalnessMap;
     objMeshRenderer->material.roughnessMap = wallRoughnessMap;
     objMeshRenderer->material.normalMap = wallNormalMap;
@@ -166,10 +179,17 @@ Scene* SetupSimpleCubeScene()
 
     GameObject* light1 = scene->AddGameObject(lightCreateInfo);
 
-    MeshRenderer* lightMeshRenderer = light1->GetComponent<MeshRenderer>();
+    RenderEngine::Component::MeshRenderer* lightMeshRenderer = light1->AddComponent<RenderEngine::Component::MeshRenderer>();
+    lightMeshRenderer->vertexShader = vertexShader;
     lightMeshRenderer->fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/TextureFragmentShader.frag.spv", FRAGMENT);
+    lightMeshRenderer->mesh = mesh;
+    lightMeshRenderer->material.albedo = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/white.jpg");
+    lightMeshRenderer->material.metalnessMap = lightMeshRenderer->material.albedo;
+    lightMeshRenderer->material.roughnessMap = lightMeshRenderer->material.albedo;
+    lightMeshRenderer->material.normalMap = lightMeshRenderer->material.albedo;
+    lightMeshRenderer->material.ambientOcclusionMap = lightMeshRenderer->material.albedo;
 
-    PointLight* lightComponent = light1->AddComponent<PointLight>();
+    RenderEngine::Component::PointLight* lightComponent = light1->AddComponent<RenderEngine::Component::PointLight>();
     lightComponent->color = Mathlib::Vec3(1.f, 1.0f, 1.0f);
     lightComponent->intensity = 5.f;
     lightComponent->range = 10.f;
@@ -184,7 +204,7 @@ void MainLoop()
     scene->Initialize();
     scene->Start();
 
-    while (!window->WindowShouldClose() && !window->GetKeyPressed(RenderEngine::Utils::Input::KEY_ESCAPE, RenderEngine::Utils::InputStatus::PRESS))
+    while (!window->WindowShouldClose() && !window->CheckKeyStatus(RenderEngine::Utils::Input::KEY_ESCAPE, RenderEngine::Utils::InputStatus::PRESS))
     {
         window->Update();
         renderContext->DrawScene(scene);
@@ -195,6 +215,7 @@ void MainLoop()
 
 void Cleanup()
 {
+    sceneManager->Cleanup();
     delete sceneManager;
     resourceManager->Clean();
     delete resourceManager;
@@ -208,7 +229,7 @@ void Run()
     InitWindow();
     InitEngine();
     resourceManager = new ResourceManager(renderContext);
-    sceneManager = new SceneManager(resourceManager);
+    sceneManager = new SceneManager();
     MainLoop();
     Cleanup();
 }

@@ -1,7 +1,7 @@
-#include "SceneGraph/Components/Light/PointLight.hpp"
+#include "Components/Light/PointLight.hpp"
 #include <iostream>
 
-using namespace RenderEngine::SceneGraph;
+using namespace RenderEngine::Component;
 
 void PointLight::Initialize()
 {

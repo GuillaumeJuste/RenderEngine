@@ -1,13 +1,9 @@
 #include "SceneGraph/Scene/Scene.hpp"
-#include "ResourceManager/ResourceManager.hpp"
-#include "SceneGraph/Components/MeshRenderer/MeshRenderer.hpp"
-#include "ResourceManager/ResourceManager.hpp"
 #include <chrono>
 
 using namespace RenderEngine::SceneGraph;
 
-Scene::Scene(RenderEngine::ResourceManager* _resourceManager) :
-	resourceManager{ _resourceManager }
+Scene::Scene() 
 {
 	GameObjectCreateInfo rootCreateInfo{};
 	rootCreateInfo.name = "root";
@@ -27,15 +23,6 @@ Scene::Scene(RenderEngine::ResourceManager* _resourceManager) :
 	mainCameraCreateInfo.parent = &rootObject;
 
 	GameObject::InitializeGameObject(mainCameraCreateInfo, &mainCamera);
-
-	skybox.mesh = resourceManager->LoadMesh("Resources/Engine/Models/cube.obj");
-	skybox.BRDFlut = resourceManager->LoadTexture("Resources/Engine/Textures/default_brdf_lut.png");
-	skybox.vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/Skybox.vert.spv", VERTEX);
-	skybox.fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/Skybox.frag.spv", FRAGMENT);
-
-	skybox.cubemap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftCubemap.asset");
-	skybox.irradianceMap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftIrradiance.asset");
-	skybox.prefilterMap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftPrefiltered.asset");
 }
 
 Scene::~Scene()
@@ -102,18 +89,6 @@ GameObject* Scene::AddGameObject(GameObjectCreateInfo _createInfo)
 	}	
 
 	GameObject::InitializeGameObject(_createInfo, gao);
-
-	Mesh* mesh = resourceManager->LoadMesh("Resources/Engine/Models/cube.obj");
-	Texture* texture = resourceManager->LoadTexture("Resources/Engine/Textures/White.jpg");
-	MeshRenderer* meshRenderer = gao->AddComponent<MeshRenderer>();
-	meshRenderer->mesh = mesh;
-	meshRenderer->material.texture = texture;
-	meshRenderer->material.metalnessMap = texture;
-	meshRenderer->material.roughnessMap = texture;
-	meshRenderer->material.normalMap = texture;
-	meshRenderer->material.ambientOcclusionMap = texture;
-	meshRenderer->vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/VertexShader.vert.spv", VERTEX);
-	meshRenderer->fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/BlinnPhongFragmentShader.frag.spv", FRAGMENT);
 
 	mainCamera.SetParent(&rootObject);
 
