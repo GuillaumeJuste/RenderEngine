@@ -9,23 +9,25 @@
 namespace RenderEngine::Assets
 {
     /**
-     * @brief Mesh class implementation
+     * @brief raw mesh struct implementation
     */
     struct RawMesh
     {
-        /**
-        * @brief mesh list of vertices
-       */
+        
+        /// list of mesh vertices
         std::vector<Vertex> vertices;
 
-        /**
-         * @brief mesh list of indices
-        */
+        
+        /// list of mesh indices
         std::vector<uint16_t> indices;
 
+        /// mesh name
         std::string name;
 
+        /// default constructor
         RawMesh() = default;
+
+        /// default destructor
         ~RawMesh() = default;
     };
 }

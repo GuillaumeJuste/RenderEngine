@@ -7,6 +7,7 @@
 
 namespace RenderEngine::Assets
 {
+    /// Supported shader stages
     enum SHADER_STAGE
     {
         VERTEX,
@@ -15,15 +16,20 @@ namespace RenderEngine::Assets
         GEOMETRY
     };
     /**
-     * @brief Texture class implementation
+     * @brief raw shader data structure
     */
     struct RawShader
     {
+        /// compiled shader
         std::vector<char> shaderCode;
 
+        /// shader stage
         SHADER_STAGE stage = SHADER_STAGE::VERTEX;
 
+        /// default constructor
         RawShader() = default;
+
+        /// default destructor
         ~RawShader() = default;
     };
 }

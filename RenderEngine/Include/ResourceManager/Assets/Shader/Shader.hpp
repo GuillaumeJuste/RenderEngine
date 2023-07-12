@@ -10,15 +10,20 @@
 namespace RenderEngine::Assets
 {
     /**
-     * @brief Texture class implementation
+     * @brief Shader struct implementation
     */
     struct Shader : public IAsset
     {
+        /// shader handle
         RenderEngine::Rendering::IShader* iShader;
 
+        /// shader stage
         SHADER_STAGE stage = SHADER_STAGE::VERTEX;
 
+        /// default constructor
         Shader() = default;
+
+        /// destructor
         ~Shader();
     };
 }

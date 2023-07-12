@@ -8,7 +8,7 @@
 
 using namespace RenderEngine::Wrapper;
 
-bool StbiWrapper::LoadTexture(const std::string& _filePath, bool _isHDR, bool _computeMipmap, RawTexture& _output)
+bool StbiWrapper::LoadTexture(const std::string& _filePath, bool _isHDR, RawTexture& _output)
 {
 	if (_isHDR)
 	{
@@ -36,15 +36,12 @@ bool StbiWrapper::LoadTexture(const std::string& _filePath, bool _isHDR, bool _c
 	if (_isHDR)
 		_output.imageSize *= sizeof(float);
 
-	if(_computeMipmap)
-		_output.mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(_output.width, _output.height)))) + 1;
-
 	_output.imageCount = 1;
 
 	return true;
 }
 
-bool StbiWrapper::LoadCubemap(const CubemapImportInfos& _importInfos, bool _computeMipmap, RawTexture& _output)
+bool StbiWrapper::LoadCubemap(const CubemapImportInfos& _importInfos, RawTexture& _output)
 {
 	char* data[6]{};
 	// Load textures.
@@ -68,9 +65,6 @@ bool StbiWrapper::LoadCubemap(const CubemapImportInfos& _importInfos, bool _comp
 	_output.imageSize = _output.width * _output.height * _output.channels;
 
 	_output.dataC = reinterpret_cast<char*>(stbi__malloc(6 * _output.imageSize));
-
-	if (_computeMipmap)
-		_output.mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(_output.width, _output.height)))) + 1;
 
 	for (size_t i = 0; i < 6; ++i)
 	{

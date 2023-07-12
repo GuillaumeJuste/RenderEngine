@@ -74,8 +74,11 @@ Texture* ResourceManager::LoadTexture(std::string _filePath, bool _isHDR, bool _
 		return texture;
 
 	RawTexture rawTexture;
-	if (StbiWrapper::LoadTexture(_filePath, _isHDR, _computeMipmap, rawTexture))
+	if (StbiWrapper::LoadTexture(_filePath, _isHDR, rawTexture))
 	{
+		rawTexture.mipLevels = 1;
+		if (_computeMipmap)
+			rawTexture.mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(rawTexture.width, rawTexture.height)))) + 1;
 		Texture* newTexture = new Texture();
 		renderContext->CreateTexture(rawTexture, newTexture);
 		newTexture->filePath = _filePath;
@@ -132,12 +135,12 @@ Shader* ResourceManager::GetShader(std::string _filePath)
 	return shaderManager.Get(_filePath);
 }
 
-bool ResourceManager::UnloadShader(Shader* _texture)
+bool ResourceManager::UnloadShader(Shader* _shader)
 {
-	return shaderManager.Unload(_texture->filePath);
+	return shaderManager.Unload(_shader->filePath);
 }
 
-Texture* ResourceManager::LoadCubemap(CubemapImportInfos _filePaths, std::string _assetName, bool _computeMipmap)
+Texture* ResourceManager::LoadCubemap(const CubemapImportInfos& _filePaths, std::string _assetName, bool _computeMipmap)
 {
 	std::filesystem::path filepath(_filePaths.right);
 	filepath.remove_filename();
@@ -148,8 +151,12 @@ Texture* ResourceManager::LoadCubemap(CubemapImportInfos _filePaths, std::string
 		return cubemap;
 
 	RawTexture rawCubemap;
-	if (StbiWrapper::LoadCubemap(_filePaths, _computeMipmap, rawCubemap))
+	if (StbiWrapper::LoadCubemap(_filePaths, rawCubemap))
 	{
+		rawCubemap.mipLevels = 1;
+		if (_computeMipmap)
+			rawCubemap.mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(rawCubemap.width, rawCubemap.height)))) + 1;
+
 		Texture* newCubemap = new Texture();
 		renderContext->CreateTexture(rawCubemap, newCubemap);
 		newCubemap->filePath = filepath.string();
@@ -260,9 +267,7 @@ std::vector<char> fileData;
 
 void ResourceManager::SaveAsset(Texture* _texture)
 {
-	uint32_t textureSize = _texture->ComputeTotalSize(_texture->width, _texture->height, _texture->channels, _texture->mipLevels);
-	if (_texture->isHDR)
-		textureSize *= sizeof(float);
+	uint32_t textureSize = _texture->ComputeTotalSize(_texture);
 
 	std::vector<char> data = renderContext->GetTextureContent(_texture, textureSize * _texture->imageCount);
 

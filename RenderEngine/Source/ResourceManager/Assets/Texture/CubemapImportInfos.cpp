@@ -24,7 +24,3 @@ CubemapImportInfos::CubemapImportInfos(const CubemapImportInfos& _other) noexcep
 {
 
 }
-
-CubemapImportInfos::~CubemapImportInfos()
-{
-}

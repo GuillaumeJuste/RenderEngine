@@ -13,15 +13,17 @@ namespace RenderEngine::Assets
     */
     struct Vertex 
     {
-        /**
-         * @brief vertex position
-        */
+        
+        ///vertex position
         Mathlib::Vec3 position;
 
+        /// vertex normal
         Mathlib::Vec3 normal;
         
+        /// vertex texture coordinate
         Mathlib::Vec3 textCoord;
 
+        /// vertex tangent
         Mathlib::Vec3 tangent;
     };
 }
