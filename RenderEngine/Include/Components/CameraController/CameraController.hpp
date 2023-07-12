@@ -21,6 +21,14 @@ namespace RenderEngine::Component
         bool enableMouse = false;
 
     public:
+        RenderEngine::Utils::Input forward = RenderEngine::Utils::Input::KEY_UP;
+        RenderEngine::Utils::Input back = RenderEngine::Utils::Input::KEY_DOWN;
+        RenderEngine::Utils::Input left = RenderEngine::Utils::Input::KEY_LEFT;
+        RenderEngine::Utils::Input right = RenderEngine::Utils::Input::KEY_RIGHT;
+        RenderEngine::Utils::Input up = RenderEngine::Utils::Input::KEY_SPACE;
+        RenderEngine::Utils::Input down = RenderEngine::Utils::Input::KEY_LEFT_CONTROL;
+        RenderEngine::Utils::Input LockCursorToWindow = RenderEngine::Utils::Input::KEY_F1;
+
         RenderEngine::Window::IWindow* window;
         float movementSpeed = 20.f;
         float rotationSpeed = 10.f;
