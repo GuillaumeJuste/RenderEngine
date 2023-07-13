@@ -26,7 +26,7 @@ namespace RenderEngine::Rendering
 		/**
 		 * @brief Vulkan instance
 		*/
-		VkInstance instance;
+		VkInstance instance = VK_NULL_HANDLE;
 		
 		/**
 		 * @brief Debug messenger used to catch and display Vulkan errors

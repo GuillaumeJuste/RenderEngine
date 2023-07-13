@@ -20,11 +20,11 @@ namespace RenderEngine::Rendering
 		VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT;
 
 		/// logical device
-		VkDevice logicalDevice;
+		VkDevice logicalDevice = VK_NULL_HANDLE;
 
-		SwapChain* swapchain;
+		SwapChain* swapchain = nullptr;
 
-		RenderPass* renderpass;
+		RenderPass* renderpass = nullptr;
 
 		/// default constructor
 		VkSkyboxCreateInfo() = default;

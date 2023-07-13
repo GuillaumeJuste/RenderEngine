@@ -64,7 +64,7 @@ namespace RenderEngine::Rendering
 		
 		DepthBuffer depthBuffer;
 
-		Image colorImage;
+		VkImageBuffer colorImage;
 		
 		///command buffers
 		std::vector<SwapChainCommandBuffer> commandBuffers;

@@ -19,12 +19,12 @@ namespace RenderEngine::Rendering
 		GraphicsPipeline graphicsPipeline;
 		std::vector<DescriptorSet> descriptorSets;
 
-		BufferObject* vbo;
-		BufferObject* ibo;
-		VkTexture* cubemap;
-		VkTexture* irradiance;
-		VkTexture* prefilter;
-		VkTexture* BRDFlut;
+		BufferObject* vbo = nullptr;
+		BufferObject* ibo = nullptr;
+		VkTexture* cubemap = nullptr;
+		VkTexture* irradiance = nullptr;
+		VkTexture* prefilter = nullptr;
+		VkTexture* BRDFlut = nullptr;
 
 		void CreateGraphicsPipeline(DescriptorBuffer* _cameraBuffer);
 
@@ -34,7 +34,7 @@ namespace RenderEngine::Rendering
 
 		void CreateDescriptorSet(std::vector<DescriptorDataList> _descriptorDatas);
 	public:
-		RenderEngine::SceneGraph::Skybox* skybox;
+		RenderEngine::SceneGraph::Skybox* skybox = nullptr;
 
 		void InitializeSkybox(const VkSkyboxCreateInfo& _createInfo, DescriptorBuffer* _cameraBuffer);
 		void Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const;

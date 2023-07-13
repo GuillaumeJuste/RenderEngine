@@ -9,19 +9,19 @@
 
 using namespace RenderEngine::Rendering;
 
-void VkTexture::InitializeVkTexture(const VkTextureVkCreateInfo& _vkTextureCreateInfo, VkTexture* _output, bool _fillImage)
+void VkTexture::InitializeVkTexture(const VkTextureVkCreateInfo& _vkTextureCreateInfo, VkTexture* _output)
 {
-	_output->createInfo = _vkTextureCreateInfo;
+	_output->FillDataFromCreateInfo(_vkTextureCreateInfo);
 
-	ImageVkCreateInfo imageCreateInfo{};
+	VkImageBufferCreateInfo imageCreateInfo{};
 	imageCreateInfo.physicalDevice = _vkTextureCreateInfo.physicalDevice;
 	imageCreateInfo.logicalDevice = _vkTextureCreateInfo.logicalDevice;
 	imageCreateInfo.width = static_cast<uint32_t>(_vkTextureCreateInfo.width);
 	imageCreateInfo.height = static_cast<uint32_t>(_vkTextureCreateInfo.height);
 	imageCreateInfo.format = _vkTextureCreateInfo.format;
-	imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+	imageCreateInfo.tiling = _vkTextureCreateInfo.tiling;
 	imageCreateInfo.usage = _vkTextureCreateInfo.usage;
-	imageCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+	imageCreateInfo.properties = _vkTextureCreateInfo.properties;
 	imageCreateInfo.commandPool = _vkTextureCreateInfo.commandPool;
 	imageCreateInfo.graphicsQueue = _vkTextureCreateInfo.graphicsQueue;
 	imageCreateInfo.textureCount = _vkTextureCreateInfo.imageCount;
@@ -29,24 +29,31 @@ void VkTexture::InitializeVkTexture(const VkTextureVkCreateInfo& _vkTextureCreat
 	imageCreateInfo.imageViewType = _vkTextureCreateInfo.imageViewType;
 	imageCreateInfo.imageViewAspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
 	imageCreateInfo.mipLevels = _vkTextureCreateInfo.mipLevels;
-	Image::InitializeImage(imageCreateInfo, &_output->image);
+	VkImageBuffer::InitializeImageBuffer(imageCreateInfo, &_output->imageBuffer);
 
-	if (_fillImage)
-	{
-		if (_vkTextureCreateInfo.texture.isHdr == false)
-			_output->FillImageBuffer<char>(_vkTextureCreateInfo.texture.dataC);
-		else
-			_output->FillImageBuffer<float>(_vkTextureCreateInfo.texture.dataF);
-
-	}
 	_output->CreateSampler(_vkTextureCreateInfo.mipLevels);
 
+}
+
+void VkTexture::FillDataFromCreateInfo(const VkTextureVkCreateInfo& _vkTextureCreateInfo)
+{
+	elementSize = _vkTextureCreateInfo.channels;
+	if (_vkTextureCreateInfo.format == VK_FORMAT_R32G32B32A32_SFLOAT)
+		elementSize *= 4;
+
+	logicalDevice = _vkTextureCreateInfo.logicalDevice;
+
+	physicalDevice = _vkTextureCreateInfo.physicalDevice;
+
+	graphicsQueue = _vkTextureCreateInfo.graphicsQueue;
+
+	commandPool = _vkTextureCreateInfo.commandPool;
 }
 
 void VkTexture::CreateSampler(uint32_t _mipmap)
 {
 	VkPhysicalDeviceProperties properties{};
-	vkGetPhysicalDeviceProperties(createInfo.physicalDevice, &properties);
+	vkGetPhysicalDeviceProperties(physicalDevice, &properties);
 
 	VkSamplerCreateInfo samplerInfo{};
 	samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
@@ -66,7 +73,7 @@ void VkTexture::CreateSampler(uint32_t _mipmap)
 	samplerInfo.minLod = 0.0f;
 	samplerInfo.maxLod = static_cast<float>(_mipmap);
 
-	if (vkCreateSampler(createInfo.logicalDevice, &samplerInfo, nullptr, &sampler) != VK_SUCCESS) 
+	if (vkCreateSampler(logicalDevice, &samplerInfo, nullptr, &sampler) != VK_SUCCESS) 
 	{
 		throw std::runtime_error("failed to create texture sampler!");
 	}
@@ -74,19 +81,19 @@ void VkTexture::CreateSampler(uint32_t _mipmap)
 
 void VkTexture::Clean()
 {
-	vkDestroySampler(createInfo.logicalDevice, sampler, nullptr);
-	image.Cleanup();
+	vkDestroySampler(logicalDevice, sampler, nullptr);
+	imageBuffer.Cleanup();
 }
 
 
-Image* VkTexture::GetImage()
+VkImageBuffer* VkTexture::GetImageBuffer()
 {
-	return &image;
+	return &imageBuffer;
 }
 
 VkImageView VkTexture::GetImageView() const
 {
-	return image.GetImageView();
+	return imageBuffer.GetImageView();
 }
 
 VkSampler VkTexture::GetSampler() const
@@ -98,24 +105,20 @@ void VkTexture::GetTextureData(char* _output, uint32_t _imageSize)
 {
 	BufferObject stagingBuffer;
 	BufferObjectVkCreateInfo stagingBufferCreateInfo;
-	stagingBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
-	stagingBufferCreateInfo.logicalDevice = createInfo.logicalDevice;
+	stagingBufferCreateInfo.physicalDevice = physicalDevice;
+	stagingBufferCreateInfo.logicalDevice = logicalDevice;
 	stagingBufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 	stagingBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 	stagingBufferCreateInfo.bufferSize = _imageSize;
 
 	BufferObject::InitializeBufferObject(stagingBufferCreateInfo, &stagingBuffer);
 
-	uint32_t elementSize = createInfo.texture.channels;
-	if (createInfo.format == VK_FORMAT_R32G32B32A32_SFLOAT)
-		elementSize *= 4;
-
-	image.CopyImageToBuffer(stagingBuffer.GetVkBuffer(), elementSize);
+	imageBuffer.CopyImageToBuffer(stagingBuffer.GetVkBuffer(), elementSize);
 
 	void* data;
-	vkMapMemory(createInfo.logicalDevice, stagingBuffer.GetVkBufferMemory(), 0, stagingBuffer.GetBufferSize(), 0, &data);
+	vkMapMemory(logicalDevice, stagingBuffer.GetVkBufferMemory(), 0, stagingBuffer.GetBufferSize(), 0, &data);
 	memcpy(_output, data, stagingBuffer.GetBufferSize());
-	vkUnmapMemory(createInfo.logicalDevice, stagingBuffer.GetVkBufferMemory());
+	vkUnmapMemory(logicalDevice, stagingBuffer.GetVkBufferMemory());
 
 	stagingBuffer.Clean();
 }

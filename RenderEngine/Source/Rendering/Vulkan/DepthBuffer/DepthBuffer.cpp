@@ -12,7 +12,7 @@ void DepthBuffer::InitializeDepthBuffer(const DepthBufferVkCreateInfo& _createIn
 
     VkFormat depthFormat = _output->FindDepthFormat();
 
-    ImageVkCreateInfo imageCreateInfo{};
+    VkImageBufferCreateInfo imageCreateInfo{};
     imageCreateInfo.physicalDevice = _createInfo.physicalDevice;
     imageCreateInfo.logicalDevice = _createInfo.logicalDevice;
     imageCreateInfo.width = _createInfo.swapChainExtent.width;
@@ -30,7 +30,7 @@ void DepthBuffer::InitializeDepthBuffer(const DepthBufferVkCreateInfo& _createIn
     imageCreateInfo.samples = _createInfo.samples;
 
 
-    Image::InitializeImage(imageCreateInfo, &_output->depthImage);
+    VkImageBuffer::InitializeImageBuffer(imageCreateInfo, &_output->depthImage);
 
     _output->depthImage.TransitionImageLayout(VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 

@@ -35,9 +35,6 @@ namespace RenderEngine::Assets
 
 		/// copy constructor
 		CubemapImportInfos(const CubemapImportInfos& _other) noexcept;
-
-		/// default destructor
-        ~CubemapImportInfos() = default;
     };
 }
 

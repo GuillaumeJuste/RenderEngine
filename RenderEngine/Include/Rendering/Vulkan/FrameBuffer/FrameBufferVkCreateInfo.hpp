@@ -32,7 +32,7 @@ namespace RenderEngine::Rendering
 
 		DepthBuffer* depthBuffer;
 
-		Image* colorImage;
+		VkImageBuffer* colorImage;
 
 		/// default constructor
 		FrameBufferVkCreateInfo() = default;

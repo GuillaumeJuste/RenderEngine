@@ -22,12 +22,11 @@ namespace RenderEngine::Rendering
 		/// command pool
 		CommandPool* commandPool;
 
-		RenderEngine::Assets::RawTexture texture;
-
 		uint32_t width;
 		uint32_t height;
 		uint32_t imageCount;
 		uint32_t mipLevels;
+		uint32_t channels;
 
 		VkFormat format;
 		VkImageTiling tiling;
@@ -37,8 +36,6 @@ namespace RenderEngine::Rendering
 		VkImageCreateFlags imageFlags;
 
 		VkImageViewType imageViewType;
-
-		bool generateMipmap = true;
 
 		/// default constructor
 		VkTextureVkCreateInfo() = default;

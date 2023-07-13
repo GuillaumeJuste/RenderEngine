@@ -24,19 +24,19 @@ namespace RenderEngine::Rendering
 		VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT;
 
 		/// logical device
-		VkDevice logicalDevice;
+		VkDevice logicalDevice = VK_NULL_HANDLE;
 
 		/// graphics queue
-		VkQueue graphicsQueue;
+		VkQueue graphicsQueue = VK_NULL_HANDLE;
 
 		/// command pool
-		CommandPool* commandPool;
+		CommandPool* commandPool = nullptr;
 
-		SwapChain* swapchain;
+		SwapChain* swapchain = nullptr;
 
-		RenderPass* renderpass;
+		RenderPass* renderpass = nullptr;
 
-		RenderEngine::SceneGraph::Scene* scene;
+		RenderEngine::SceneGraph::Scene* scene = nullptr;
 
 		/// default constructor
 		VkSceneCreateInfo() = default;

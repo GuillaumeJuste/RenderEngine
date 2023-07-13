@@ -5,7 +5,7 @@
 
 #include "Rendering/Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Rendering/Vulkan/Texture/VkTextureCreateInfo.hpp"
-#include "Rendering/Vulkan/Image/Image.hpp"
+#include "Rendering/Vulkan/ImageBuffer/VkImageBuffer.hpp"
 #include "Rendering/Base/Interface/Primitive/ITexture.hpp"
 
 namespace RenderEngine::Rendering
@@ -13,29 +13,42 @@ namespace RenderEngine::Rendering
 	class VkTexture : public ITexture
 	{
 	private:
+		/// logical device
+		VkDevice logicalDevice = VK_NULL_HANDLE;
 
-		VkTextureVkCreateInfo createInfo;
+		/// physical device
+		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 
-		Image image;
+		/// graphics queue
+		VkQueue graphicsQueue = VK_NULL_HANDLE;
+
+		/// command pool
+		CommandPool* commandPool = nullptr;
+
+		uint32_t elementSize = 0;
+
+		VkImageBuffer imageBuffer;
 		VkSampler sampler = VK_NULL_HANDLE;
 
 		void CreateSampler(uint32_t _mipmap);
 
-		template<typename T>
-		bool FillImageBuffer(T* _imageData);
+		void FillDataFromCreateInfo(const VkTextureVkCreateInfo& _vkTextureCreateInfo);
 
 	public:
 		VkTexture() = default;
 		~VkTexture() = default;
 
-		static void InitializeVkTexture(const VkTextureVkCreateInfo& _vkTextureCreateInfo, VkTexture* _output, bool _fillImage = true);
+		static void InitializeVkTexture(const VkTextureVkCreateInfo& _vkTextureCreateInfo, VkTexture* _output);
+
+		template<typename T>
+		bool FillImageBuffer(T* _imageData, uint32_t _totalImageSize, bool _copyMipMap);
 
 		/**
 		 * @brief clean up vulkan classes
 		*/
 		void Clean();
 
-		Image* GetImage();
+		VkImageBuffer* GetImageBuffer();
 		VkImageView GetImageView() const;
 		VkSampler GetSampler() const;
 

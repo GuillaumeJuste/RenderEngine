@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef RENDERENGINE_IMAGEVKCREATEINFO
-#define RENDERENGINE_IMAGEVKCREATEINFO
+#ifndef RENDERENGINE_VKIMAGEBUFFERCREATEINFO
+#define RENDERENGINE_VKIMAGEBUFFERCREATEINFO
 
 #include "Rendering/Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Rendering/Vulkan/CommandPool/CommandPool.hpp"
@@ -11,7 +11,7 @@ namespace RenderEngine::Rendering
 	/**
 	* @brief struct holding data for Image Initialization
 	*/
-	struct ImageVkCreateInfo
+	struct VkImageBufferCreateInfo
 	{
 		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 		VkDevice logicalDevice = VK_NULL_HANDLE;
@@ -30,7 +30,7 @@ namespace RenderEngine::Rendering
 		uint32_t mipLevels;
 		VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT;
 		/// default constructor
-		ImageVkCreateInfo() = default;
+		VkImageBufferCreateInfo() = default;
 	};
 }
 

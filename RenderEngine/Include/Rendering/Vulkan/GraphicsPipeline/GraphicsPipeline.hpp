@@ -31,7 +31,7 @@ namespace RenderEngine::Rendering
 		VkExtent2D swapChainExtent;
 
 		/// swapchain image format
-		VkFormat swapChainImageFormat;
+		VkFormat swapChainImageFormat = VK_FORMAT_UNDEFINED;
 
 		/// render pass
 		RenderPass* renderPass = nullptr;
@@ -40,7 +40,7 @@ namespace RenderEngine::Rendering
 		std::vector<DescriptorPool> descriptorPool;
 
 		/// pipeline layout
-		VkPipelineLayout pipelineLayout;
+		VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
 		
 		/// pipeline
 		VkPipeline graphicsPipeline =VK_NULL_HANDLE;

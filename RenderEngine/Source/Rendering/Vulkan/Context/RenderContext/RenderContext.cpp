@@ -83,7 +83,7 @@ void RenderContext::createColorResources()
 {
 	VkFormat colorFormat = swapChain.GetImageFormat();
 
-	ImageVkCreateInfo imageCreateInfo{};
+	VkImageBufferCreateInfo imageCreateInfo{};
 	imageCreateInfo.physicalDevice = physicalDeviceProperties.physicalDevice;
 	imageCreateInfo.logicalDevice = logicalDevice;
 	imageCreateInfo.width = static_cast<uint32_t>(swapChain.GetExtent().width);
@@ -100,7 +100,7 @@ void RenderContext::createColorResources()
 	imageCreateInfo.imageViewAspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
 	imageCreateInfo.mipLevels = 1;
 	imageCreateInfo.samples = physicalDeviceProperties.msaaSamples;
-	Image::InitializeImage(imageCreateInfo, &colorImage);
+	VkImageBuffer::InitializeImageBuffer(imageCreateInfo, &colorImage);
 }
 
 void RenderContext::CreateDepthBuffer()
@@ -360,22 +360,31 @@ bool RenderContext::CreateTexture(const RenderEngine::Assets::RawTexture& _input
 	textCreateInfo.physicalDevice = physicalDeviceProperties.physicalDevice;
 	textCreateInfo.graphicsQueue = graphicsQueue;
 	textCreateInfo.commandPool = commandPool;
-	textCreateInfo.texture = _input;
 	textCreateInfo.width = _input.width;
 	textCreateInfo.height = _input.height;
 	textCreateInfo.mipLevels = _input.mipLevels;
 	textCreateInfo.imageCount = _input.imageCount;
+	textCreateInfo.channels = _input.channels;
 	textCreateInfo.format = _input.isHdr ? VK_FORMAT_R32G32B32A32_SFLOAT : VK_FORMAT_R8G8B8A8_SRGB;
 	textCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
 	textCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 	textCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 	textCreateInfo.imageFlags = _input.imageCount == 6 ? VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT : 0;
 	textCreateInfo.imageViewType = _input.imageCount == 6 ? VK_IMAGE_VIEW_TYPE_CUBE : VK_IMAGE_VIEW_TYPE_2D;
-	textCreateInfo.generateMipmap = _generateMipMap;
 
 	VkTexture* vkTexture = new VkTexture();
 
 	VkTexture::InitializeVkTexture(textCreateInfo, vkTexture);
+
+	if (_input.isHdr == false)
+		vkTexture->FillImageBuffer<char>(_input.dataC, _input.imageSize * _input.imageCount, !_generateMipMap);
+	else
+		vkTexture->FillImageBuffer<float>(_input.dataF, _input.imageSize * _input.imageCount, !_generateMipMap);
+
+	if (_input.mipLevels > 1 && _generateMipMap)
+		vkTexture->GetImageBuffer()->GenerateMipmaps();
+	else
+		vkTexture->GetImageBuffer()->TransitionImageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
 	_output->iTexture = vkTexture;
 	return true;
@@ -422,6 +431,7 @@ bool RenderContext::CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize,
 	textCreateInfo.height = height;
 	textCreateInfo.mipLevels = numMips;
 	textCreateInfo.imageCount = 6;
+	textCreateInfo.channels = 4;
 	textCreateInfo.format = format;
 	textCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
 	textCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
@@ -431,8 +441,8 @@ bool RenderContext::CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize,
 
 	VkTexture* outputTexture = new VkTexture();
 
-	VkTexture::InitializeVkTexture(textCreateInfo, outputTexture, false);
-	outputTexture->GetImage()->TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+	VkTexture::InitializeVkTexture(textCreateInfo, outputTexture);
+	outputTexture->GetImageBuffer()->TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
 	// initialize renderpass
 
@@ -467,13 +477,13 @@ bool RenderContext::CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize,
 	RenderPass::InitializeRenderPass(renderPassCreateInfo, &tmpRenderPass);
 
 	struct {
-		Image image;
+		VkImageBuffer imageBuffer;
 		FrameBuffer framebuffer;
 	} offscreen;
 
 	// Offscreen framebuffer
 	{
-		ImageVkCreateInfo imageCreateInfo{};
+		VkImageBufferCreateInfo imageCreateInfo{};
 		imageCreateInfo.physicalDevice = physicalDeviceProperties.physicalDevice;
 		imageCreateInfo.logicalDevice = logicalDevice;
 		imageCreateInfo.width = width;
@@ -489,12 +499,12 @@ bool RenderContext::CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize,
 		imageCreateInfo.imageViewType = VK_IMAGE_VIEW_TYPE_2D;
 		imageCreateInfo.imageViewAspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
 		imageCreateInfo.mipLevels = 1;
-		Image::InitializeImage(imageCreateInfo, &offscreen.image);
+		VkImageBuffer::InitializeImageBuffer(imageCreateInfo, &offscreen.imageBuffer);
 
 		FrameBufferVkCreateInfo createInfo{};
 		createInfo.logicalDevice = logicalDevice;
 		createInfo.renderPass = &tmpRenderPass;
-		createInfo.imageViews.push_back(offscreen.image.GetImageView());
+		createInfo.imageViews.push_back(offscreen.imageBuffer.GetImageView());
 		createInfo.swapChainImageCount = 1;
 		createInfo.swapChainExtent = VkExtent2D{ (unsigned int)width, (unsigned int)height};
 		createInfo.depthBuffer = nullptr;
@@ -502,7 +512,7 @@ bool RenderContext::CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize,
 
 		FrameBuffer::InitializeFrameBuffer(createInfo, &offscreen.framebuffer);
 
-		offscreen.image.TransitionImageLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+		offscreen.imageBuffer.TransitionImageLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 	}
 
 	// Pipeline layout
@@ -622,8 +632,8 @@ bool RenderContext::CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize,
 	BufferObject*  IBO = dynamic_cast<BufferObject*>(_mesh->indexBuffer);
 	for (uint32_t m = 0; m < numMips; m++)
 	{
-		viewport.width = static_cast<float>(width * Mathlib::Math::Pow(0.5f, m));
-		viewport.height = static_cast<float>(-height * Mathlib::Math::Pow(0.5f, m));
+		viewport.width = static_cast<float>(width) * Mathlib::Math::Pow(0.5f, (float)m);
+		viewport.height = static_cast<float>(-height) * Mathlib::Math::Pow(0.5f, (float)m);
 		viewport.y = -viewport.height;
 		vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
@@ -657,7 +667,7 @@ bool RenderContext::CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize,
 
 			vkCmdEndRenderPass(commandBuffer);
 
-			offscreen.image.TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, commandBuffer);
+			offscreen.imageBuffer.TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, commandBuffer);
 
 			// Copy region for transfer from framebuffer to cube face
 			VkImageCopy copyRegion = {};
@@ -680,24 +690,24 @@ bool RenderContext::CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize,
 
 			vkCmdCopyImage(
 				commandBuffer,
-				offscreen.image.GetVkImage(),
+				offscreen.imageBuffer.GetVkImage(),
 				VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-				outputTexture->GetImage()->GetVkImage(),
+				outputTexture->GetImageBuffer()->GetVkImage(),
 				VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 				1,
 				&copyRegion);
 
-			offscreen.image.TransitionImageLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, commandBuffer);
+			offscreen.imageBuffer.TransitionImageLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, commandBuffer);
 
 		}
 	}
-	outputTexture->GetImage()->TransitionImageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, commandBuffer);
+	outputTexture->GetImageBuffer()->TransitionImageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, commandBuffer);
 
 	CommandBuffer::EndSingleTimeCommands(logicalDevice, commandPool, graphicsQueue, commandBuffer);
 
 	tmpPipeline.Cleanup();
 	offscreen.framebuffer.Cleanup();
-	offscreen.image.Cleanup();
+	offscreen.imageBuffer.Cleanup();
 	tmpRenderPass.Cleanup();
 
 	_output->iTexture = outputTexture;
@@ -731,6 +741,7 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _
 	textCreateInfo.height = height;
 	textCreateInfo.mipLevels = numMips;
 	textCreateInfo.imageCount = 6;
+	textCreateInfo.channels = 4;
 	textCreateInfo.format = format;
 	textCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
 	textCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
@@ -740,8 +751,8 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _
 
 	VkTexture* outputTexture = new VkTexture();
 
-	VkTexture::InitializeVkTexture(textCreateInfo, outputTexture, false);
-	outputTexture->GetImage()->TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+	VkTexture::InitializeVkTexture(textCreateInfo, outputTexture);
+	outputTexture->GetImageBuffer()->TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
 	// initialize renderpass
 
@@ -776,13 +787,13 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _
 	RenderPass::InitializeRenderPass(renderPassCreateInfo, &tmpRenderPass);
 
 	struct {
-		Image image;
+		VkImageBuffer imageBuffer;
 		FrameBuffer framebuffer;
 	} offscreen;
 
 	// Offscreen framebuffer
 	{
-		ImageVkCreateInfo imageCreateInfo{};
+		VkImageBufferCreateInfo imageCreateInfo{};
 		imageCreateInfo.physicalDevice = physicalDeviceProperties.physicalDevice;
 		imageCreateInfo.logicalDevice = logicalDevice;
 		imageCreateInfo.width = width;
@@ -798,12 +809,12 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _
 		imageCreateInfo.imageViewType = VK_IMAGE_VIEW_TYPE_2D;
 		imageCreateInfo.imageViewAspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
 		imageCreateInfo.mipLevels = 1;
-		Image::InitializeImage(imageCreateInfo, &offscreen.image);
+		VkImageBuffer::InitializeImageBuffer(imageCreateInfo, &offscreen.imageBuffer);
 
 		FrameBufferVkCreateInfo createInfo{};
 		createInfo.logicalDevice = logicalDevice;
 		createInfo.renderPass = &tmpRenderPass;
-		createInfo.imageViews.push_back(offscreen.image.GetImageView());
+		createInfo.imageViews.push_back(offscreen.imageBuffer.GetImageView());
 		createInfo.swapChainImageCount = 1;
 		createInfo.swapChainExtent = VkExtent2D{ (unsigned int)width, (unsigned int)height };
 		createInfo.depthBuffer = nullptr;
@@ -811,7 +822,7 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _
 
 		FrameBuffer::InitializeFrameBuffer(createInfo, &offscreen.framebuffer);
 
-		offscreen.image.TransitionImageLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+		offscreen.imageBuffer.TransitionImageLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 	}
 
 	// Pipeline layout
@@ -936,8 +947,8 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _
 	{
 		pushBlock.roughness = (float)m / (float)(numMips - 1);
 
-		viewport.width = static_cast<float>(width * Mathlib::Math::Pow(0.5f, m));
-		viewport.height = static_cast<float>(-height * Mathlib::Math::Pow(0.5f, m));
+		viewport.width = static_cast<float>(width) * Mathlib::Math::Pow(0.5f, (float)m);
+		viewport.height = static_cast<float>(-height) * Mathlib::Math::Pow(0.5f, (float)m);
 		viewport.y = -viewport.height;
 		vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
@@ -970,7 +981,7 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _
 
 			vkCmdEndRenderPass(commandBuffer);
 
-			offscreen.image.TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, commandBuffer);
+			offscreen.imageBuffer.TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, commandBuffer);
 
 			// Copy region for transfer from framebuffer to cube face
 			VkImageCopy copyRegion = {};
@@ -993,24 +1004,24 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _
 
 			vkCmdCopyImage(
 				commandBuffer,
-				offscreen.image.GetVkImage(),
+				offscreen.imageBuffer.GetVkImage(),
 				VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-				outputTexture->GetImage()->GetVkImage(),
+				outputTexture->GetImageBuffer()->GetVkImage(),
 				VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 				1,
 				&copyRegion);
 
-			offscreen.image.TransitionImageLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, commandBuffer);
+			offscreen.imageBuffer.TransitionImageLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, commandBuffer);
 
 		}
 	}
-	outputTexture->GetImage()->TransitionImageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, commandBuffer);
+	outputTexture->GetImageBuffer()->TransitionImageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, commandBuffer);
 
 	CommandBuffer::EndSingleTimeCommands(logicalDevice, commandPool, graphicsQueue, commandBuffer);
 
 	tmpPipeline.Cleanup();
 	offscreen.framebuffer.Cleanup();
-	offscreen.image.Cleanup();
+	offscreen.imageBuffer.Cleanup();
 	tmpRenderPass.Cleanup();
 
 	_output->iTexture = outputTexture;
