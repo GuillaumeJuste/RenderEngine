@@ -49,12 +49,18 @@ using namespace RenderEngine;
 using namespace RenderEngine::Rendering;
 using namespace RenderEngine::Window;
 
+/// initialize Window
 void InitWindow()
 {
     std::cout << "[Initialize] Window" << std::endl;
     window = new GLFW::Window(1024, 720, "Render Engine");
 }
 
+/**
+ * @brief Select GPU used for rendering if multiple are available
+ * @param _physicalDevicesNames list of the GPUs names
+ * @return selected GPU name
+*/
 std::string UserSelectPhysicalDevice(std::vector<std::string> _physicalDevicesNames)
 {
     size_t size = _physicalDevicesNames.size();
@@ -81,9 +87,10 @@ std::string UserSelectPhysicalDevice(std::vector<std::string> _physicalDevicesNa
     return _physicalDevicesNames[gpuIndex];
 }
 
+/// intialize vulkan rendering context
 void InitEngine()
 {
-    std::cout << "[Initialize] Vulkan" << std::endl;
+    // Initialize Vulkan instance
     IEngineInstanceCreateInfo instanceCreateInfo{};
     instanceCreateInfo.applicationName = "RenderEngine";
     instanceCreateInfo.applicationVersion = Mathlib::Vec3(1.f, 0.f, 0.f);
@@ -91,12 +98,16 @@ void InitEngine()
     instanceCreateInfo.engineVersion = Mathlib::Vec3(1.f, 0.f, 0.f);
     vulkanContext.InitializeInstance(instanceCreateInfo);
 
+    // Initialize device instance
     IDeviceContextCreateInfo deviceCreateInfo{};
     deviceCreateInfo.window = window;
     deviceContext = vulkanContext.CreateDeviceContext(deviceCreateInfo);
+
+    // select GPU used by the device instance
     std::vector<std::string> deviceNames = deviceContext->QueryAvailblePhysicalDevices();
     deviceContext->InitializeDeviceContext(UserSelectPhysicalDevice(deviceNames));
 
+    // Initialize rendering context
     SwapChainCommandBufferCreateInfo CBCreateInfo{};
     CBCreateInfo.customViewport = false;
     CBCreateInfo.customScissor = false;
@@ -106,11 +117,14 @@ void InitEngine()
     renderContext = deviceContext->CreateRenderContext(renderContextCreateInfo);
 }
 
+/// setup scene
 Scene* SetupSimpleCubeScene()
 {
+    // create the scene
     Scene* scene = sceneManager->AddScene();
     scene->name = "test_scene_simple_plane";
 
+    // setup skybox
     scene->skybox.mesh = resourceManager->LoadMesh("Resources/Engine/Models/cube.obj");
     scene->skybox.BRDFlut = resourceManager->LoadTexture("Resources/Engine/Textures/default_brdf_lut.png");
     scene->skybox.vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/Skybox.vert.spv", VERTEX);
@@ -119,6 +133,7 @@ Scene* SetupSimpleCubeScene()
     scene->skybox.irradianceMap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftIrradiance.asset");
     scene->skybox.prefilterMap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftPrefiltered.asset");
 
+    // set camera initial position and rotation
     Camera* camera = scene->GetCamera();
     Mathlib::Transform cameraTransform;
     cameraTransform.position = Mathlib::Vec3(0.0f, 0.0f, -1.0f);
@@ -126,21 +141,28 @@ Scene* SetupSimpleCubeScene()
     camera->SetLocalTransform(cameraTransform);
     camera->fov = 90.f;
 
+    // add camera controller to the camera
+    // input are rebindable
     RenderEngine::Component::CameraController* cameraController = camera->AddComponent<RenderEngine::Component::CameraController>();
     cameraController->window = window;
 
+    // Add a GameObject to the scene
+    // create transform
     Mathlib::Transform objTransform;
     objTransform.position = Mathlib::Vec3(0.f, 0.f, 2.0f);
     objTransform.scale = Mathlib::Vec3(2.f, 1.0f, 1.f);
     objTransform.rotation = Mathlib::Quat::FromEuler(Mathlib::Vec3(0.f, 0.f, 0.f));
 
+    // set creation parameters
     GameObjectCreateInfo objCreateinfo;
     objCreateinfo.transform = objTransform;
     objCreateinfo.parent = nullptr;
     objCreateinfo.name = "cube";
 
+    // Add object to the scene
     GameObject* obj = scene->AddGameObject(objCreateinfo);
 
+    // load assets used for rendering
     Shader* vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/VertexShader.vert.spv", VERTEX);
     Shader* fragShader = resourceManager->LoadShader("Resources/Engine/Shaders/BlinnPhongFragmentShader.frag.spv", FRAGMENT);
     Mesh* mesh = resourceManager->LoadMesh("Resources/Sample/SceneCreation/Models/cube.obj");
@@ -150,6 +172,7 @@ Scene* SetupSimpleCubeScene()
     Texture* wallNormalMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Brick/bricks_normal.jpg");
     Texture* wallAoMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/ao.png");
 
+    // Add & set a MeshRenderer to the GameObject
     RenderEngine::Component::MeshRenderer* objMeshRenderer = obj->AddComponent<RenderEngine::Component::MeshRenderer>();
     objMeshRenderer->vertexShader = vertexShader;
     objMeshRenderer->fragmentShader = fragShader;
@@ -164,9 +187,12 @@ Scene* SetupSimpleCubeScene()
     objMeshRenderer->material.specular = Mathlib::Vec4(0.8f, 0.8f, 0.8f, 1.f);
     objMeshRenderer->material.shininess = 16.0f;
 
+    // add a rotator component 
     RotatorComponent* rotator = obj->AddComponent<RotatorComponent>();
     rotator->rotationAxis = ROTATION_AXIS::Y;
 
+    // Add a light (A GameObject with a light component)
+    // lights type available: point light, directional light and spot lights
     Mathlib::Transform lightTransform;
     lightTransform.position = Mathlib::Vec3(0.f, 0.0f, 0.f);
     lightTransform.scale = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
@@ -197,13 +223,16 @@ Scene* SetupSimpleCubeScene()
     return scene;
 }
 
+// Engine main loop
 void MainLoop()
 {
+    // create and intilize the scene
     Scene* scene = SetupSimpleCubeScene();
 
     scene->Initialize();
     scene->Start();
 
+    // loop
     while (!window->WindowShouldClose() && !window->CheckKeyStatus(RenderEngine::Utils::Input::KEY_ESCAPE, RenderEngine::Utils::InputStatus::PRESS))
     {
         window->Update();
@@ -213,6 +242,7 @@ void MainLoop()
     deviceContext->WaitDeviceIdle();
 }
 
+// clean used resources
 void Cleanup()
 {
     sceneManager->Cleanup();
