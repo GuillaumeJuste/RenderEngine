@@ -5,8 +5,13 @@
 
 #include "Mathlib/Mathlib/Include/Space/Vec3.hpp"
 #include "ResourceManager/Assets/Texture/Texture.hpp"
+#include "ResourceManager/Assets/Shader/ShaderDescriptorSet.hpp"
+#include "ResourceManager/Assets/Shader/Shader.hpp"
+#include "Rendering/Base/Enum/PolygonDrawMode.hpp"
+#include "Rendering/Base/Enum/FrontFace.hpp"
 
 using namespace RenderEngine::Assets;
+using namespace RenderEngine::Rendering;
 
 namespace RenderEngine::Component
 {
@@ -41,6 +46,27 @@ namespace RenderEngine::Component
         
         /// Specular constant
         Mathlib::Vec3 specular = Mathlib::Vec3::Zero;
+
+        /// Vertex Shader
+        Shader* vertexShader = nullptr;
+
+        /// Vertex Shader Descriptor set
+        ShaderDescriptorSet vertexShaderDescriptorSet;
+
+        /// Fragment Shader
+        Shader* fragmentShader = nullptr;
+        
+        /// Fragment Shader Descriptor set
+        ShaderDescriptorSet fragmentShaderDescriptorSet;
+
+        /// vertex draw order
+        FrontFace frontFace = FrontFace::CLOCKWISE;
+
+        /// mesh draw mode
+        PolygonDrawMode drawMode = PolygonDrawMode::FILL;
+
+        /// outline width
+        float lineWidth = 1.0f;
     };
 }
 

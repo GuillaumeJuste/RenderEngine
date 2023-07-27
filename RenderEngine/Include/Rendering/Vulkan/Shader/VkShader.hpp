@@ -28,7 +28,7 @@ namespace RenderEngine::Rendering
 		/// shader stage info
 		VkPipelineShaderStageCreateInfo shaderStageInfo;
 
-		static VkShaderStageFlagBits EnumToVkFlag(RenderEngine::Assets::SHADER_STAGE _stage);
+		static VkShaderStageFlagBits EnumToVkFlag(RenderEngine::Assets::ShaderStage _stage);
 
 	public:
 		/// default constructor

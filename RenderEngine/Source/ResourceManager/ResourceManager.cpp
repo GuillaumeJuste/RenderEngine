@@ -108,7 +108,7 @@ bool ResourceManager::UnloadTexture(Texture* _texture)
 	return textureManager.Unload(_texture->filePath);
 }
 
-Shader* ResourceManager::LoadShader(std::string _filePath, SHADER_STAGE _shaderStage)
+Shader* ResourceManager::LoadShader(std::string _filePath, ShaderStage _shaderStage)
 {
 	Shader* shader = GetShader(_filePath);
 	if (shader != nullptr)
@@ -121,7 +121,6 @@ Shader* ResourceManager::LoadShader(std::string _filePath, SHADER_STAGE _shaderS
 		rawShader.stage = _shaderStage;
 		renderContext->CreateShader(rawShader, newShader);
 		newShader->filePath = _filePath;
-		newShader->stage = _shaderStage;
 		shaderManager.Add(_filePath, newShader);
 
 		return newShader;

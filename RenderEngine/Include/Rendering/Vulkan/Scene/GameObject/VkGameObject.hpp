@@ -35,10 +35,6 @@ namespace RenderEngine::Rendering
 
 		std::vector<DescriptorSet> descriptorSets;
 
-		DescriptorDataList GenerateDefaultVertexShaderDescriptorSet();
-
-		DescriptorDataList GenerateDefaultFragmentShaderDescriptorSet();
-
 		void CreateDescriptorSet(std::vector<DescriptorDataList> _descriptorDatas);
 
 		void CreateDescriptorBufferObjects();

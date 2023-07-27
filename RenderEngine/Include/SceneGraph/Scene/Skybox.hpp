@@ -6,6 +6,7 @@
 #include "ResourceManager/Assets/Texture/Texture.hpp"
 #include "ResourceManager/Assets/Mesh/Mesh.hpp"
 #include "ResourceManager/Assets/Shader/Shader.hpp"
+#include "ResourceManager/Assets/Shader/ShaderDescriptorSet.hpp"
 
 using namespace RenderEngine::Assets;
 
@@ -46,10 +47,16 @@ namespace RenderEngine::SceneGraph
         */
         Shader* vertexShader;
 
+        /// Vertex Shader Descriptor set
+        ShaderDescriptorSet vertexShaderDescriptorSet;
+
         /**
          * @brief skybox's fragment shader
         */
         Shader* fragmentShader;
+
+        /// Fragment Shader Descriptor set
+        ShaderDescriptorSet fragmentShaderDescriptorSet;
     };
 }
 #endif

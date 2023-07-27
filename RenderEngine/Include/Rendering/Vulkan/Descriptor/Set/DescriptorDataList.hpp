@@ -4,6 +4,7 @@
 #define RENDERENGINE_DESCRIPTORSETDATALIST
 
 #include "Rendering/Vulkan/Descriptor/Set/DescriptorData.hpp"
+#include "Rendering/Vulkan/Descriptor/Set/DescriptorDataListCreateInfo.hpp"
 
 namespace RenderEngine::Rendering
 {
@@ -12,6 +13,7 @@ namespace RenderEngine::Rendering
 	private :
 		std::vector<DescriptorData> descriptorDatas;
 
+		static VkShaderStageFlagBits EnumToVkFlag(RenderEngine::Assets::ShaderStage _stage);
 	public :
 		DescriptorDataList() = default;
 
@@ -19,6 +21,8 @@ namespace RenderEngine::Rendering
 		void Add(const DescriptorData& _data);
 		
 		const DescriptorData& operator[](size_t _index) const;
+
+		static std::vector<DescriptorDataList> GenerateDescriptorDataLists(DescriptorDataListCreateInfo& _createInfo);
 	};
 }
 

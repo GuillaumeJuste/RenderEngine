@@ -17,9 +17,6 @@ namespace RenderEngine::Assets
         /// shader handle
         RenderEngine::Rendering::IShader* iShader;
 
-        /// shader stage
-        SHADER_STAGE stage = SHADER_STAGE::VERTEX;
-
         /// default constructor
         Shader() = default;
 

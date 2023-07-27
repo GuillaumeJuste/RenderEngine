@@ -114,7 +114,9 @@ Scene* SetupPBRScene()
     scene->skybox.mesh = resourceManager->LoadMesh("Resources/Engine/Models/cube.obj");
     scene->skybox.BRDFlut = resourceManager->LoadTexture("Resources/Engine/Textures/default_brdf_lut.png");
     scene->skybox.vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/Skybox.vert.spv", VERTEX);
+    scene->skybox.vertexShaderDescriptorSet = ShaderDescriptorSet::GenerateSkyboxVertexShaderDescriptor();
     scene->skybox.fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/Skybox.frag.spv", FRAGMENT);
+    scene->skybox.fragmentShaderDescriptorSet = ShaderDescriptorSet::GenerateSkyboxFragmentShaderDescriptor();
     scene->skybox.cubemap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftCubemap.asset");
     scene->skybox.irradianceMap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftIrradiance.asset");
     scene->skybox.prefilterMap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftPrefiltered.asset");
@@ -158,9 +160,11 @@ Scene* SetupPBRScene()
     GameObject* obj = scene->AddGameObject(createinfo);
 
     RenderEngine::Component::MeshRenderer* meshRenderer = obj->AddComponent<RenderEngine::Component::MeshRenderer>();
-    meshRenderer->vertexShader = vertexShader;
-    meshRenderer->fragmentShader = fragShader;
     meshRenderer->mesh = sphere;
+    meshRenderer->material.vertexShader = vertexShader;
+    meshRenderer->material.vertexShaderDescriptorSet = ShaderDescriptorSet::GenerateDefaultVertexShaderDescriptor();
+    meshRenderer->material.fragmentShader = fragShader;
+    meshRenderer->material.fragmentShaderDescriptorSet = ShaderDescriptorSet::GeneratePBRFragmentShaderDescriptor();
     meshRenderer->material.albedo = wallTexture;
     meshRenderer->material.metalnessMap = wallMetalnessMap;
     meshRenderer->material.roughnessMap = wallRoughnessMap;
@@ -194,9 +198,11 @@ Scene* SetupPBRScene()
     Texture* ironAoMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Rusted_iron/ao.png");
 
     RenderEngine::Component::MeshRenderer* meshRenderer2 = obj2->AddComponent<RenderEngine::Component::MeshRenderer>();
-    meshRenderer2->vertexShader = vertexShader;
-    meshRenderer2->fragmentShader = fragShader;
     meshRenderer2->mesh = sphere;
+    meshRenderer2->material.vertexShader = vertexShader;
+    meshRenderer2->material.vertexShaderDescriptorSet = ShaderDescriptorSet::GenerateDefaultVertexShaderDescriptor();
+    meshRenderer2->material.fragmentShader = fragShader;
+    meshRenderer2->material.fragmentShaderDescriptorSet = ShaderDescriptorSet::GeneratePBRFragmentShaderDescriptor();
     meshRenderer2->material.albedo = ironTexture;
     meshRenderer2->material.metalnessMap = ironMetalnessMap;
     meshRenderer2->material.roughnessMap = ironRoughnessMap;
@@ -230,9 +236,11 @@ Scene* SetupPBRScene()
     Texture* goldAoMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Gold/ao.png");
 
     RenderEngine::Component::MeshRenderer* meshRenderer3 = obj3->AddComponent<RenderEngine::Component::MeshRenderer>();
-    meshRenderer3->vertexShader = vertexShader;
-    meshRenderer3->fragmentShader = fragShader; 
     meshRenderer3->mesh = sphere;
+    meshRenderer3->material.vertexShader = vertexShader;
+    meshRenderer3->material.vertexShaderDescriptorSet = ShaderDescriptorSet::GenerateDefaultVertexShaderDescriptor();
+    meshRenderer3->material.fragmentShader = fragShader;
+    meshRenderer3->material.fragmentShaderDescriptorSet = ShaderDescriptorSet::GeneratePBRFragmentShaderDescriptor();
     meshRenderer3->material.albedo = goldTexture;
     meshRenderer3->material.metalnessMap = goldMetalnessMap;
     meshRenderer3->material.roughnessMap = goldRoughnessMap;
@@ -265,17 +273,18 @@ Scene* SetupPBRScene()
     lightComponent4->intensity = 1.f;
 
     RenderEngine::Component::MeshRenderer* meshRenderer4 = light4->AddComponent<RenderEngine::Component::MeshRenderer>();
-    meshRenderer4->enable = true;
-    meshRenderer4->vertexShader = vertexShader;
-    meshRenderer4->fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/TextureFragmentShader.frag.spv", FRAGMENT);
     meshRenderer4->mesh = resourceManager->LoadMesh("Resources/Sample/ScenePBR/Models/cube.obj");
+    meshRenderer4->material.vertexShader = vertexShader;
+    meshRenderer4->material.vertexShaderDescriptorSet = ShaderDescriptorSet::GenerateDefaultVertexShaderDescriptor();
+    meshRenderer4->material.fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/TextureFragmentShader.frag.spv", FRAGMENT);
+    meshRenderer4->material.fragmentShaderDescriptorSet = ShaderDescriptorSet::GenerateDefaultFragmentShaderDescriptor();
     meshRenderer4->material.albedo = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/white.jpg");
     meshRenderer4->material.metalnessMap = meshRenderer4->material.albedo;
     meshRenderer4->material.roughnessMap = meshRenderer4->material.albedo;
     meshRenderer4->material.normalMap = meshRenderer4->material.albedo;
     meshRenderer4->material.ambientOcclusionMap = meshRenderer4->material.albedo;
 
-    meshRenderer4->frontFace = FrontFace::COUNTER_CLOCKWISE;
+    meshRenderer4->material.frontFace = FrontFace::COUNTER_CLOCKWISE;
     meshRenderer4->enable = false;
 
     return scene;

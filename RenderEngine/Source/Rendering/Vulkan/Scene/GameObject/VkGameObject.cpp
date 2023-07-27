@@ -2,6 +2,7 @@
 
 #include "Rendering/Vulkan/UniformBuffer/UniformBufferData.hpp"
 #include "Rendering/Vulkan/Scene/Data/Material.hpp"
+#include "Rendering/Vulkan/Descriptor/Set/DescriptorDataListCreateInfo.hpp"
 
 #include "Misc/Math.hpp"
 
@@ -31,15 +32,41 @@ void VkGameObject::CreateGraphicsPipeline()
 		gpCreateInfo.renderPass = createInfo.renderpass;
 		gpCreateInfo.swapChainExtent = createInfo.swapchain->GetExtent();
 		gpCreateInfo.swapChainImageFormat = createInfo.swapchain->GetImageFormat();
-		gpCreateInfo.vertexShader = dynamic_cast<VkShader*>(meshRenderer->vertexShader->iShader);
-		gpCreateInfo.fragmentShader = dynamic_cast<VkShader*>(meshRenderer->fragmentShader->iShader);
-		gpCreateInfo.drawMode = meshRenderer->drawMode;
-		gpCreateInfo.lineWidth = meshRenderer->lineWidth;
-		gpCreateInfo.frontFace = meshRenderer->frontFace;
+		gpCreateInfo.vertexShader = dynamic_cast<VkShader*>(meshRenderer->material.vertexShader->iShader);
+		gpCreateInfo.fragmentShader = dynamic_cast<VkShader*>(meshRenderer->material.fragmentShader->iShader);
+		gpCreateInfo.drawMode = meshRenderer->material.drawMode;
+		gpCreateInfo.lineWidth = meshRenderer->material.lineWidth;
+		gpCreateInfo.frontFace = meshRenderer->material.frontFace;
 		gpCreateInfo.samples = createInfo.samples;
 
-		gpCreateInfo.descriptorDatas.push_back(GenerateDefaultVertexShaderDescriptorSet());
-		gpCreateInfo.descriptorDatas.push_back(GenerateDefaultFragmentShaderDescriptorSet());
+		DescriptorDataListCreateInfo descriptorDataListCreateInfo{};
+		descriptorDataListCreateInfo.descriptorSets.push_back(meshRenderer->material.vertexShaderDescriptorSet);
+		descriptorDataListCreateInfo.descriptorSets.push_back(meshRenderer->material.fragmentShaderDescriptorSet);
+		descriptorDataListCreateInfo.uniformBuffer = &uniformBufferObject;
+		descriptorDataListCreateInfo.materialBuffer = &materialBufferObject;
+		descriptorDataListCreateInfo.cameraBuffer = createInfo.cameraBuffer;
+		descriptorDataListCreateInfo.pointLightBuffer = createInfo.pointLightsBuffer;
+		descriptorDataListCreateInfo.directionalLightBuffer = createInfo.directionalLightsBuffer;
+		descriptorDataListCreateInfo.spotLightBuffer = createInfo.spotLightsBuffer;
+		descriptorDataListCreateInfo.skyboxMap = createInfo.skyboxMap;
+		descriptorDataListCreateInfo.irradianceMap = createInfo.irradianceMap;
+		descriptorDataListCreateInfo.prefilterMap = createInfo.prefilterMap;
+		descriptorDataListCreateInfo.BRDFlut = createInfo.BRDFlut;
+		if (meshRenderer != nullptr)
+		{
+			if(meshRenderer->material.albedo != nullptr)
+				descriptorDataListCreateInfo.albedo = dynamic_cast<VkTexture*>(meshRenderer->material.albedo->iTexture);
+			if (meshRenderer->material.metalnessMap != nullptr)
+				descriptorDataListCreateInfo.metalnessMap = dynamic_cast<VkTexture*>(meshRenderer->material.metalnessMap->iTexture);
+			if (meshRenderer->material.roughnessMap != nullptr)
+				descriptorDataListCreateInfo.roughnessMap = dynamic_cast<VkTexture*>(meshRenderer->material.roughnessMap->iTexture);
+			if (meshRenderer->material.normalMap != nullptr)
+				descriptorDataListCreateInfo.normalMap = dynamic_cast<VkTexture*>(meshRenderer->material.normalMap->iTexture);
+			if (meshRenderer->material.ambientOcclusionMap != nullptr)
+				descriptorDataListCreateInfo.ambientOcclusionMap = dynamic_cast<VkTexture*>(meshRenderer->material.ambientOcclusionMap->iTexture);
+		}
+
+		gpCreateInfo.descriptorDatas = DescriptorDataList::GenerateDescriptorDataLists(descriptorDataListCreateInfo);
 
 		GraphicsPipeline::InitalizeGraphicsPipeline(gpCreateInfo, &graphicsPipeline);
 
@@ -66,128 +93,6 @@ void VkGameObject::CreateDescriptorBufferObjects()
 	materialBufferCreateInfo.bufferSize = sizeof(Material);
 
 	DescriptorBuffer::InitializeDescriptorBuffer(materialBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &materialBufferObject);
-}
-
-DescriptorDataList VkGameObject::GenerateDefaultVertexShaderDescriptorSet()
-{
-	DescriptorDataList datalist{};
-
-	DescriptorData uniformBufferData{};
-	uniformBufferData.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	uniformBufferData.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-	uniformBufferData.binding = 0;
-	uniformBufferData.buffer = &uniformBufferObject;
-	datalist.Add(uniformBufferData);
-
-	DescriptorData cameraBufferData{};
-	cameraBufferData.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	cameraBufferData.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-	cameraBufferData.binding = 1;
-	cameraBufferData.buffer = createInfo.cameraBuffer;
-	datalist.Add(cameraBufferData);
-
-	return datalist;
-}
-
-DescriptorDataList VkGameObject::GenerateDefaultFragmentShaderDescriptorSet()
-{
-	DescriptorDataList datalist{};
-
-	if (meshRenderer != nullptr)
-	{
-		DescriptorData textureBufferData{};
-		textureBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		textureBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-		textureBufferData.binding = 0;
-		textureBufferData.texture = dynamic_cast<VkTexture*>(meshRenderer->material.albedo->iTexture);
-		datalist.Add(textureBufferData);
-
-		DescriptorData metalnessMapBufferData{};
-		metalnessMapBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		metalnessMapBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-		metalnessMapBufferData.binding = 1;
-		metalnessMapBufferData.texture = dynamic_cast<VkTexture*>(meshRenderer->material.metalnessMap->iTexture);
-		datalist.Add(metalnessMapBufferData);
-
-		DescriptorData roughnessMapBufferData{};
-		roughnessMapBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		roughnessMapBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-		roughnessMapBufferData.binding = 2;
-		roughnessMapBufferData.texture = dynamic_cast<VkTexture*>(meshRenderer->material.roughnessMap->iTexture);
-		datalist.Add(roughnessMapBufferData);
-
-		DescriptorData normalMapBufferData{};
-		normalMapBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		normalMapBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-		normalMapBufferData.binding = 3;
-		normalMapBufferData.texture = dynamic_cast<VkTexture*>(meshRenderer->material.normalMap->iTexture);
-		datalist.Add(normalMapBufferData);
-
-		DescriptorData aoMapBufferData{};
-		aoMapBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		aoMapBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-		aoMapBufferData.binding = 4;
-		aoMapBufferData.texture = dynamic_cast<VkTexture*>(meshRenderer->material.ambientOcclusionMap->iTexture);
-		datalist.Add(aoMapBufferData);
-	}
-
-	DescriptorData pointLightBufferData{};
-	pointLightBufferData.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-	pointLightBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	pointLightBufferData.binding = 5;
-	pointLightBufferData.buffer = createInfo.pointLightsBuffer;
-	datalist.Add(pointLightBufferData);
-
-	DescriptorData directionalLightBufferData{};
-	directionalLightBufferData.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-	directionalLightBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	directionalLightBufferData.binding = 6;
-	directionalLightBufferData.buffer = createInfo.directionalLightsBuffer;
-	datalist.Add(directionalLightBufferData);
-
-	DescriptorData spotLightBufferData{};
-	spotLightBufferData.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-	spotLightBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	spotLightBufferData.binding = 7;
-	spotLightBufferData.buffer = createInfo.spotLightsBuffer;
-	datalist.Add(spotLightBufferData);
-
-	DescriptorData irradianceBufferData{};
-	irradianceBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	irradianceBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	irradianceBufferData.binding = 8;
-	irradianceBufferData.texture = createInfo.irradianceMap;
-	datalist.Add(irradianceBufferData);
-
-	DescriptorData prefilterBufferData{};
-	prefilterBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	prefilterBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	prefilterBufferData.binding = 9;
-	prefilterBufferData.texture = createInfo.prefilterMap;
-	datalist.Add(prefilterBufferData);
-
-	DescriptorData brdflutBufferData{};
-	brdflutBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	brdflutBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	brdflutBufferData.binding = 10;
-	brdflutBufferData.texture = createInfo.BRDFlut;
-	datalist.Add(brdflutBufferData);
-
-	DescriptorData skyboxBufferData{};
-	skyboxBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	skyboxBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	skyboxBufferData.binding = 11;
-	skyboxBufferData.texture = createInfo.skyboxMap;
-	datalist.Add(skyboxBufferData);
-
-	DescriptorData materialBufferData{};
-	materialBufferData.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	materialBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	materialBufferData.binding = 12;
-	materialBufferData.buffer = &materialBufferObject;
-	datalist.Add(materialBufferData);
-
-	return datalist;
 }
 
 void VkGameObject::CreateDescriptorSet(std::vector<DescriptorDataList> _descriptorDatas)

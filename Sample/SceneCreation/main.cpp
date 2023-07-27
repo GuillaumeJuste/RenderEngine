@@ -128,7 +128,9 @@ Scene* SetupSimpleCubeScene()
     scene->skybox.mesh = resourceManager->LoadMesh("Resources/Engine/Models/cube.obj");
     scene->skybox.BRDFlut = resourceManager->LoadTexture("Resources/Engine/Textures/default_brdf_lut.png");
     scene->skybox.vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/Skybox.vert.spv", VERTEX);
+    scene->skybox.vertexShaderDescriptorSet = ShaderDescriptorSet::GenerateSkyboxVertexShaderDescriptor();
     scene->skybox.fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/Skybox.frag.spv", FRAGMENT);
+    scene->skybox.fragmentShaderDescriptorSet = ShaderDescriptorSet::GenerateSkyboxFragmentShaderDescriptor();
     scene->skybox.cubemap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftCubemap.asset");
     scene->skybox.irradianceMap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftIrradiance.asset");
     scene->skybox.prefilterMap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftPrefiltered.asset");
@@ -174,9 +176,11 @@ Scene* SetupSimpleCubeScene()
 
     // Add & set a MeshRenderer to the GameObject
     RenderEngine::Component::MeshRenderer* objMeshRenderer = obj->AddComponent<RenderEngine::Component::MeshRenderer>();
-    objMeshRenderer->vertexShader = vertexShader;
-    objMeshRenderer->fragmentShader = fragShader;
     objMeshRenderer->mesh = mesh;
+    objMeshRenderer->material.vertexShader = vertexShader;
+    objMeshRenderer->material.vertexShaderDescriptorSet = ShaderDescriptorSet::GenerateDefaultVertexShaderDescriptor();
+    objMeshRenderer->material.fragmentShader = fragShader;
+    objMeshRenderer->material.fragmentShaderDescriptorSet = ShaderDescriptorSet::GenerateBlinnPhongFragmentShaderDescriptor();
     objMeshRenderer->material.albedo = wallTexture;
     objMeshRenderer->material.metalnessMap = wallMetalnessMap;
     objMeshRenderer->material.roughnessMap = wallRoughnessMap;
@@ -206,9 +210,11 @@ Scene* SetupSimpleCubeScene()
     GameObject* light1 = scene->AddGameObject(lightCreateInfo);
 
     RenderEngine::Component::MeshRenderer* lightMeshRenderer = light1->AddComponent<RenderEngine::Component::MeshRenderer>();
-    lightMeshRenderer->vertexShader = vertexShader;
-    lightMeshRenderer->fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/TextureFragmentShader.frag.spv", FRAGMENT);
     lightMeshRenderer->mesh = mesh;
+    lightMeshRenderer->material.vertexShader = vertexShader;
+    lightMeshRenderer->material.vertexShaderDescriptorSet = ShaderDescriptorSet::GenerateDefaultVertexShaderDescriptor();
+    lightMeshRenderer->material.fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/TextureFragmentShader.frag.spv", FRAGMENT);
+    lightMeshRenderer->material.fragmentShaderDescriptorSet = ShaderDescriptorSet::GenerateDefaultFragmentShaderDescriptor();
     lightMeshRenderer->material.albedo = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/white.jpg");
     lightMeshRenderer->material.metalnessMap = lightMeshRenderer->material.albedo;
     lightMeshRenderer->material.roughnessMap = lightMeshRenderer->material.albedo;

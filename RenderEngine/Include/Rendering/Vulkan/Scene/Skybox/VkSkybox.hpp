@@ -3,7 +3,6 @@
 #ifndef RENDERENGINE_VKSKYBOX
 #define RENDERENGINE_VKSKYBOX
 
-#include "SceneGraph/Scene/Skybox.hpp"
 #include "Rendering/Vulkan/Scene/Skybox/VkSkyboxCreateInfo.hpp"
 #include "Rendering/Vulkan/Descriptor/Buffer/DescriptorBuffer.hpp"
 #include "Rendering/Vulkan/GraphicsPipeline/GraphicsPipeline.hpp"
@@ -28,13 +27,8 @@ namespace RenderEngine::Rendering
 
 		void CreateGraphicsPipeline(DescriptorBuffer* _cameraBuffer);
 
-		DescriptorDataList GenerateDefaultVertexShaderDescriptorSet(DescriptorBuffer* _cameraBuffer);
-
-		DescriptorDataList GenerateDefaultFragmentShaderDescriptorSet();
-
 		void CreateDescriptorSet(std::vector<DescriptorDataList> _descriptorDatas);
 	public:
-		RenderEngine::SceneGraph::Skybox* skybox = nullptr;
 
 		void InitializeSkybox(const VkSkyboxCreateInfo& _createInfo, DescriptorBuffer* _cameraBuffer);
 		void Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const;

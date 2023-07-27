@@ -63,7 +63,6 @@ layout (set = 1,binding = 7) buffer SpotLightData
 layout(set = 1, binding = 8) uniform samplerCube irradianceSampler;
 layout(set = 1, binding = 9) uniform samplerCube prefilteredSampler;
 layout(set = 1, binding = 10) uniform sampler2D BRDFlutSampler;
-layout(set = 1, binding = 11) uniform samplerCube skyboxSampler;
 
 layout(location = 0) out vec4 outColor;
 

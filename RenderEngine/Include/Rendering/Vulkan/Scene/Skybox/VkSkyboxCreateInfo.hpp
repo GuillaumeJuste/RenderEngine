@@ -6,6 +6,7 @@
 #include "Rendering/Vulkan/Misc/VulkanBaseInclude.hpp"
 #include "Rendering/Vulkan/SwapChain/SwapChain.hpp"
 #include "Rendering/Vulkan/RenderPass/RenderPass.hpp"
+#include "SceneGraph/Scene/Skybox.hpp"
 
 namespace RenderEngine::Rendering
 {
@@ -25,6 +26,8 @@ namespace RenderEngine::Rendering
 		SwapChain* swapchain = nullptr;
 
 		RenderPass* renderpass = nullptr;
+
+		RenderEngine::SceneGraph::Skybox* skybox = nullptr;
 
 		/// default constructor
 		VkSkyboxCreateInfo() = default;

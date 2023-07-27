@@ -205,14 +205,13 @@ void VkScene::CreateLightBuffer(size_t _pointLightCount, size_t _directionalLigh
 
 void VkScene::CreateSkybox()
 {
-	skybox.skybox = &createInfo.scene->skybox;
-
 	VkSkyboxCreateInfo skyboxCreateInfo{};
 	skyboxCreateInfo.physicalDevice = createInfo.physicalDevice;
 	skyboxCreateInfo.logicalDevice = createInfo.logicalDevice;
 	skyboxCreateInfo.renderpass = createInfo.renderpass;
 	skyboxCreateInfo.swapchain = createInfo.swapchain;
 	skyboxCreateInfo.samples = createInfo.samples;
+	skyboxCreateInfo.skybox = &createInfo.scene->skybox;
 
 	skybox.InitializeSkybox(skyboxCreateInfo, &cameraBuffer);
 }

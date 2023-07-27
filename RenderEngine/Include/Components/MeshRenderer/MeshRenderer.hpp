@@ -5,13 +5,9 @@
 
 #include "SceneGraph/Components/Component.hpp"
 #include "ResourceManager/Assets/Mesh/Mesh.hpp"
-#include "ResourceManager/Assets/Shader/Shader.hpp"
-#include "Rendering/Base/Enum/PolygonDrawMode.hpp"
-#include "Rendering/Base/Enum/FrontFace.hpp"
 #include "Components/MeshRenderer/Material.hpp"
 
 using namespace RenderEngine::Assets;
-using namespace RenderEngine::Rendering;
 
 namespace RenderEngine::Component
 {
@@ -27,21 +23,6 @@ namespace RenderEngine::Component
         
         /// GameObject material
         Material material;
-
-        /// Vertex Shader
-        Shader* vertexShader = nullptr;
-        
-        /// Fragment Shader
-        Shader* fragmentShader = nullptr;
-        
-        /// vertex draw order
-        FrontFace frontFace = FrontFace::CLOCKWISE;
-
-        /// mesh draw mode
-        PolygonDrawMode drawMode = PolygonDrawMode::FILL;
-
-        /// outline width
-        float lineWidth = 1.0f;
 
         /// default constructor
         MeshRenderer() = default;

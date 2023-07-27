@@ -1,18 +1,19 @@
 #include "Rendering/Vulkan/Scene/Skybox/VkSkybox.hpp"
 #include "SceneGraph/Scene/Skybox.hpp"
 #include "Rendering/Vulkan/BufferObject/BufferObject.hpp"
+#include "Rendering/Vulkan/Descriptor/Set/DescriptorDataListCreateInfo.hpp"
 
 using namespace RenderEngine::Rendering;
 
 void VkSkybox::InitializeSkybox(const VkSkyboxCreateInfo& _createInfo, DescriptorBuffer* _cameraBuffer)
 {
 	createInfo = _createInfo;
-	vbo = dynamic_cast<BufferObject*>(skybox->mesh->vertexBuffer);
-	ibo = dynamic_cast<BufferObject*>(skybox->mesh->indexBuffer);
-	cubemap = dynamic_cast<VkTexture*>(skybox->cubemap->iTexture);
-	irradiance = dynamic_cast<VkTexture*>(skybox->irradianceMap->iTexture);
-	prefilter = dynamic_cast<VkTexture*>(skybox->prefilterMap->iTexture);
-	BRDFlut = dynamic_cast<VkTexture*>(skybox->BRDFlut->iTexture);
+	vbo = dynamic_cast<BufferObject*>(createInfo.skybox->mesh->vertexBuffer);
+	ibo = dynamic_cast<BufferObject*>(createInfo.skybox->mesh->indexBuffer);
+	cubemap = dynamic_cast<VkTexture*>(createInfo.skybox->cubemap->iTexture);
+	irradiance = dynamic_cast<VkTexture*>(createInfo.skybox->irradianceMap->iTexture);
+	prefilter = dynamic_cast<VkTexture*>(createInfo.skybox->prefilterMap->iTexture);
+	BRDFlut = dynamic_cast<VkTexture*>(createInfo.skybox->BRDFlut->iTexture);
 	
 	CreateGraphicsPipeline(_cameraBuffer);
 }
@@ -24,8 +25,8 @@ void VkSkybox::CreateGraphicsPipeline(DescriptorBuffer* _cameraBuffer)
 	gpCreateInfo.renderPass = createInfo.renderpass;
 	gpCreateInfo.swapChainExtent = createInfo.swapchain->GetExtent();
 	gpCreateInfo.swapChainImageFormat = createInfo.swapchain->GetImageFormat();
-	gpCreateInfo.vertexShader = dynamic_cast<VkShader*>(skybox->vertexShader->iShader);
-	gpCreateInfo.fragmentShader = dynamic_cast<VkShader*>(skybox->fragmentShader->iShader);
+	gpCreateInfo.vertexShader = dynamic_cast<VkShader*>(createInfo.skybox->vertexShader->iShader);
+	gpCreateInfo.fragmentShader = dynamic_cast<VkShader*>(createInfo.skybox->fragmentShader->iShader);
 	gpCreateInfo.drawMode = PolygonDrawMode::FILL;
 	gpCreateInfo.lineWidth = 1.0f;
 	gpCreateInfo.frontFace = FrontFace::COUNTER_CLOCKWISE;
@@ -33,40 +34,20 @@ void VkSkybox::CreateGraphicsPipeline(DescriptorBuffer* _cameraBuffer)
 	gpCreateInfo.culling_mode = VK_CULL_MODE_FRONT_BIT;
 	gpCreateInfo.samples = createInfo.samples;
 
-	gpCreateInfo.descriptorDatas.push_back(GenerateDefaultVertexShaderDescriptorSet(_cameraBuffer));
-	gpCreateInfo.descriptorDatas.push_back(GenerateDefaultFragmentShaderDescriptorSet());
+	DescriptorDataListCreateInfo descriptorDataListCreateInfo{};
+	descriptorDataListCreateInfo.descriptorSets.push_back(createInfo.skybox->vertexShaderDescriptorSet);
+	descriptorDataListCreateInfo.descriptorSets.push_back(createInfo.skybox->fragmentShaderDescriptorSet);
+	descriptorDataListCreateInfo.cameraBuffer = _cameraBuffer;
+	descriptorDataListCreateInfo.skyboxMap = cubemap;
+	descriptorDataListCreateInfo.irradianceMap = irradiance;
+	descriptorDataListCreateInfo.prefilterMap = prefilter;
+	descriptorDataListCreateInfo.BRDFlut = BRDFlut;
+
+	gpCreateInfo.descriptorDatas = DescriptorDataList::GenerateDescriptorDataLists(descriptorDataListCreateInfo);
 
 	GraphicsPipeline::InitalizeGraphicsPipeline(gpCreateInfo, &graphicsPipeline);
 
 	CreateDescriptorSet(gpCreateInfo.descriptorDatas);
-}
-
-DescriptorDataList VkSkybox::GenerateDefaultVertexShaderDescriptorSet(DescriptorBuffer* _cameraBuffer)
-{
-	DescriptorDataList datalist{};
-
-	DescriptorData cameraBufferData{};
-	cameraBufferData.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	cameraBufferData.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-	cameraBufferData.binding = 0;
-	cameraBufferData.buffer = _cameraBuffer;
-	datalist.Add(cameraBufferData);
-
-	return datalist;
-}
-
-DescriptorDataList VkSkybox::GenerateDefaultFragmentShaderDescriptorSet()
-{
-	DescriptorDataList datalist{};
-
-	DescriptorData textureBufferData{};
-	textureBufferData.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	textureBufferData.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	textureBufferData.binding = 0;
-	textureBufferData.texture = cubemap;
-	datalist.Add(textureBufferData);
-
-	return datalist;
 }
 
 void VkSkybox::CreateDescriptorSet(std::vector<DescriptorDataList> _descriptorDatas)
@@ -103,7 +84,7 @@ void VkSkybox::Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const
 	{
 		vkCmdBindDescriptorSets(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.GetGraphicsPipelineLayout(), index, 1, &descriptorSets[index].GetFrameDescriptorSet(_currentFrame), 0, nullptr);
 	}
-	vkCmdDrawIndexed(_commandBuffer, static_cast<uint32_t>(skybox->mesh->indiceCount), 1, 0, 0, 0);
+	vkCmdDrawIndexed(_commandBuffer, static_cast<uint32_t>(createInfo.skybox->mesh->indiceCount), 1, 0, 0, 0);
 }
 
 void VkSkybox::Clean()

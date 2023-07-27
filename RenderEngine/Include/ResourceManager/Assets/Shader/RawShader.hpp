@@ -4,17 +4,10 @@
 #define RENDERENGINE_RAWSHADER
 
 #include <vector>
+#include "ResourceManager/Assets/Shader/ShaderStage.hpp"
 
 namespace RenderEngine::Assets
 {
-    /// Supported shader stages
-    enum SHADER_STAGE
-    {
-        VERTEX,
-        FRAGMENT,
-        COMPUTE,
-        GEOMETRY
-    };
     /**
      * @brief raw shader data structure
     */
@@ -24,7 +17,7 @@ namespace RenderEngine::Assets
         std::vector<char> shaderCode;
 
         /// shader stage
-        SHADER_STAGE stage = SHADER_STAGE::VERTEX;
+        ShaderStage stage = ShaderStage::VERTEX;
 
         /// default constructor
         RawShader() = default;

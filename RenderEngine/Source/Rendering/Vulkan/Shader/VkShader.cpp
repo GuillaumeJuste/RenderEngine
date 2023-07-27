@@ -28,7 +28,7 @@ void VkShader::CreateVkShader(VkShaderCreateInfo _createInfo, VkShader* _output)
 
 }
 
-VkShaderStageFlagBits VkShader::EnumToVkFlag(RenderEngine::Assets::SHADER_STAGE _stage)
+VkShaderStageFlagBits VkShader::EnumToVkFlag(RenderEngine::Assets::ShaderStage _stage)
 {
     switch (_stage)
     {

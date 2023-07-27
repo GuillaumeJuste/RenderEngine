@@ -101,7 +101,7 @@ namespace RenderEngine
          * @param _shaderStage stage of the shader (vertex, fragment...)
          * @return Pointer to the resulting shader
         */
-        Shader* LoadShader(std::string _filePath, SHADER_STAGE _shaderStage);
+        Shader* LoadShader(std::string _filePath, ShaderStage _shaderStage);
         
         /**
          * @brief Get shader from file path if it was already loaded
