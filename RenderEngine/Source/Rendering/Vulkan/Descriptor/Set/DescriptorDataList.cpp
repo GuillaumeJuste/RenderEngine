@@ -1,4 +1,5 @@
 #include "Rendering/Vulkan/Descriptor/Set/DescriptorDataList.hpp"
+#include "Rendering/Vulkan/Shader/VkShader.hpp"
 
 using namespace RenderEngine::Rendering;
 
@@ -34,14 +35,14 @@ std::vector<DescriptorDataList> DescriptorDataList::GenerateDescriptorDataLists(
 
 			if (descriptorSets[it->set].count(it->binding))
 			{
-				descriptorSets[it->set][it->binding].stageFlags = descriptorSets[it->set][it->binding].stageFlags | EnumToVkFlag(it->shaderStage);
+				descriptorSets[it->set][it->binding].stageFlags = descriptorSets[it->set][it->binding].stageFlags | VkShader::EnumToVkFlag(it->shaderStage);
 			}
 
 			else if (it->descriptorType != DescriptorType::UNKNOWN)
 			{
 				DescriptorData descriptor{};
 				descriptor.binding = it->binding;
-				descriptor.stageFlags = EnumToVkFlag(it->shaderStage);
+				descriptor.stageFlags = VkShader::EnumToVkFlag(it->shaderStage);
 
 				if (it->descriptorType <= DescriptorType::MESHRENDERER_MATERIAL_BUFFER)
 				{
@@ -106,20 +107,4 @@ std::vector<DescriptorDataList> DescriptorDataList::GenerateDescriptorDataLists(
 		}
 	}
 	return output;
-}
-
-VkShaderStageFlagBits DescriptorDataList::EnumToVkFlag(RenderEngine::Assets::ShaderStage _stage)
-{
-	switch (_stage)
-	{
-	case RenderEngine::Assets::VERTEX:
-		return VK_SHADER_STAGE_VERTEX_BIT;
-	case RenderEngine::Assets::FRAGMENT:
-		return VK_SHADER_STAGE_FRAGMENT_BIT;
-	case RenderEngine::Assets::COMPUTE:
-		return VK_SHADER_STAGE_COMPUTE_BIT;
-	case RenderEngine::Assets::GEOMETRY:
-		return VK_SHADER_STAGE_GEOMETRY_BIT;
-	}
-	return VK_SHADER_STAGE_VERTEX_BIT;
 }

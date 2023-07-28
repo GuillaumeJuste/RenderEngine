@@ -223,3 +223,25 @@ const DescriptorPool& GraphicsPipeline::GetDescriptorPool(size_t _index) const
 {
     return descriptorPool[_index];
 }
+
+std::vector<VkPushConstantRange> GraphicsPipeline::GeneratePushConstants(std::vector<ShaderDescriptorSet> _shaderDescriptors)
+{
+    std::vector<VkPushConstantRange> output;
+
+    for (int descriptorSetIndex = 0; descriptorSetIndex < _shaderDescriptors.size(); descriptorSetIndex++)
+    {
+        for (std::forward_list<PushConstant>::iterator it = _shaderDescriptors[descriptorSetIndex].pushConstants.begin(); it != _shaderDescriptors[descriptorSetIndex].pushConstants.end(); ++it)
+        {
+            if (it->size > 0)
+            {
+                VkPushConstantRange pushConstantRange{};
+                pushConstantRange.stageFlags = VkShader::EnumToVkFlag(it->shaderStage);
+                pushConstantRange.offset = it->Offset;
+                pushConstantRange.size = it->size;
+
+                output.push_back(pushConstantRange);
+            }
+        }
+    }
+    return output;
+}

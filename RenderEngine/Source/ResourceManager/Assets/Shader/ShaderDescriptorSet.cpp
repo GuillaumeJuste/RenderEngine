@@ -40,6 +40,21 @@ ShaderDescriptorSet ShaderDescriptorSet::GenerateSkyboxVertexShaderDescriptor()
 	return descriptorSet;
 }
 
+ShaderDescriptorSet ShaderDescriptorSet::GenerateFilterCubeVertexShaderDescriptor()
+{
+	ShaderDescriptorSet descriptorSet{};
+
+	PushConstant constant{
+		ShaderStage::VERTEX,
+		128u,
+		0u
+	};
+	descriptorSet.pushConstants.push_front(constant);
+
+	return descriptorSet;
+}
+
+
 ShaderDescriptorSet ShaderDescriptorSet::GenerateDefaultFragmentShaderDescriptor()
 {
 	ShaderDescriptorSet descriptorSet{};
@@ -231,6 +246,13 @@ ShaderDescriptorSet ShaderDescriptorSet::GenerateIrradianceConvolutionFragmentSh
 ShaderDescriptorSet ShaderDescriptorSet::GeneratePrefilterEnvmapFragmentShaderDescriptor(Texture* _inputTexture)
 {
 	ShaderDescriptorSet descriptorSet{};
+
+	PushConstant constant{
+		ShaderStage::FRAGMENT,
+		8u,
+		128u
+	};
+	descriptorSet.pushConstants.push_front(constant);
 
 	ShaderDescriptor textureDescriptor{
 		ShaderStage::FRAGMENT,

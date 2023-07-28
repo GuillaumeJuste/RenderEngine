@@ -5,6 +5,7 @@
 
 #include <forward_list>
 #include "ResourceManager/Assets/Shader/ShaderDescriptor.hpp"
+#include "ResourceManager/Assets/Shader/PushConstant.hpp"
 
 namespace RenderEngine::Assets
 {
@@ -15,8 +16,7 @@ namespace RenderEngine::Assets
     {
         std::forward_list<ShaderDescriptor> shaderDescriptors;
 
-        uint32_t pushConstantSize = 0u;
-        uint32_t pushConstantOffset = 0u;
+        std::forward_list<PushConstant> pushConstants;
 
         /// default constructor
         ShaderDescriptorSet() = default;
@@ -26,6 +26,7 @@ namespace RenderEngine::Assets
 
         static ShaderDescriptorSet GenerateDefaultVertexShaderDescriptor();
         static ShaderDescriptorSet GenerateSkyboxVertexShaderDescriptor();
+        static ShaderDescriptorSet GenerateFilterCubeVertexShaderDescriptor();
 
         static ShaderDescriptorSet GenerateDefaultFragmentShaderDescriptor();
         static ShaderDescriptorSet GenerateSkyboxFragmentShaderDescriptor();

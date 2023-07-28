@@ -13,7 +13,6 @@ namespace RenderEngine::Rendering
 	private :
 		std::vector<DescriptorData> descriptorDatas;
 
-		static VkShaderStageFlagBits EnumToVkFlag(RenderEngine::Assets::ShaderStage _stage);
 	public :
 		DescriptorDataList() = default;
 

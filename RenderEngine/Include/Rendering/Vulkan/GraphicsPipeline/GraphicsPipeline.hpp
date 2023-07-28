@@ -86,6 +86,8 @@ namespace RenderEngine::Rendering
 		const DescriptorSetLayout& GetDescriptorSetLayout(size_t _index) const;
 
 		const DescriptorPool& GetDescriptorPool(size_t _index) const;
+
+		static std::vector<VkPushConstantRange> GeneratePushConstants(std::vector<ShaderDescriptorSet> _shaderDescriptors);
 	};
 
 }

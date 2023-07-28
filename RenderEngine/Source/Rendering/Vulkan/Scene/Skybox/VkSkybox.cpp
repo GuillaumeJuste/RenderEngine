@@ -44,6 +44,7 @@ void VkSkybox::CreateGraphicsPipeline(DescriptorBuffer* _cameraBuffer)
 	descriptorDataListCreateInfo.BRDFlut = BRDFlut;
 
 	gpCreateInfo.descriptorDatas = DescriptorDataList::GenerateDescriptorDataLists(descriptorDataListCreateInfo);
+	gpCreateInfo.pushConstants = GraphicsPipeline::GeneratePushConstants(descriptorDataListCreateInfo.descriptorSets);
 
 	GraphicsPipeline::InitalizeGraphicsPipeline(gpCreateInfo, &graphicsPipeline);
 

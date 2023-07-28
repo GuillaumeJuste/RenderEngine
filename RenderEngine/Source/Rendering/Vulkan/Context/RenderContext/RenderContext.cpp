@@ -519,7 +519,6 @@ bool RenderContext::CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize,
 	struct defaultCameraBlock {
 		Mathlib::Mat4 invView;
 		Mathlib::Mat4 proj;
-		Mathlib::Vec3 cameraPos;
 	} cameraBlock;
 
 	VkTexture* inputTexture = dynamic_cast<VkTexture*>(_texture);
@@ -645,7 +644,6 @@ bool RenderContext::CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize,
 			// Update shader push constant block
 			cameraBlock.invView = matrices[f];
 			cameraBlock.proj = projection;
-			cameraBlock.cameraPos = Mathlib::Vec3(0.f, 0.f, 0.f);
 
 			vkCmdPushConstants(commandBuffer, tmpPipeline.GetGraphicsPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(defaultCameraBlock), &cameraBlock);
 
@@ -827,17 +825,25 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _
 
 	// Pipeline layout
 
-	struct PushBlock {
+	struct VertPushBlock {
 		Mathlib::Mat4 invView;
 		Mathlib::Mat4 proj;
+	} vertPushBlock;
+
+	struct FragPushBlock {
 		float roughness = 0.f;
 		uint32_t numSamples = 32u;
-	} pushBlock;
+	} fragPushBlock;
 
-	VkPushConstantRange cameraPushConstantRange{};
-	cameraPushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
-	cameraPushConstantRange.offset = 0;
-	cameraPushConstantRange.size = sizeof(PushBlock);
+	VkPushConstantRange vertPushConstantRange{};
+	vertPushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+	vertPushConstantRange.offset = 0;
+	vertPushConstantRange.size = sizeof(VertPushBlock);
+
+	VkPushConstantRange fragPushConstantRange{};
+	fragPushConstantRange.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+	fragPushConstantRange.offset = 128;
+	fragPushConstantRange.size = sizeof(FragPushBlock);
 
 	//fragment shader descriptor set
 	VkTexture* inputTexture = dynamic_cast<VkTexture*>(_texture);
@@ -866,7 +872,8 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _
 	gpCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
 
 	gpCreateInfo.descriptorDatas.push_back(fShaderDatalist);
-	gpCreateInfo.pushConstants.push_back(cameraPushConstantRange);
+	gpCreateInfo.pushConstants.push_back(vertPushConstantRange);
+	gpCreateInfo.pushConstants.push_back(fragPushConstantRange);
 
 	GraphicsPipeline tmpPipeline;
 
@@ -945,7 +952,7 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _
 	BufferObject* IBO = dynamic_cast<BufferObject*>(_mesh->indexBuffer);
 	for (uint32_t m = 0; m < numMips; m++)
 	{
-		pushBlock.roughness = (float)m / (float)(numMips - 1);
+		fragPushBlock.roughness = (float)m / (float)(numMips - 1);
 
 		viewport.width = static_cast<float>(width) * Mathlib::Math::Pow(0.5f, (float)m);
 		viewport.height = static_cast<float>(-height) * Mathlib::Math::Pow(0.5f, (float)m);
@@ -958,10 +965,11 @@ bool RenderContext::CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _
 			vkCmdBeginRenderPass(commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 			// Update shader push constant block
-			pushBlock.invView = matrices[f];
-			pushBlock.proj = projection;
+			vertPushBlock.invView = matrices[f];
+			vertPushBlock.proj = projection;
 
-			vkCmdPushConstants(commandBuffer, tmpPipeline.GetGraphicsPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushBlock), &pushBlock);
+			vkCmdPushConstants(commandBuffer, tmpPipeline.GetGraphicsPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(VertPushBlock), &vertPushBlock);
+			vkCmdPushConstants(commandBuffer, tmpPipeline.GetGraphicsPipelineLayout(), VK_SHADER_STAGE_FRAGMENT_BIT, 128, sizeof(FragPushBlock), &fragPushBlock);
 			
 			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, tmpPipeline.GetGraphicsPipeline());
 

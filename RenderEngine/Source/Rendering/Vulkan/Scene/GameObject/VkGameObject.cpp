@@ -67,6 +67,7 @@ void VkGameObject::CreateGraphicsPipeline()
 		}
 
 		gpCreateInfo.descriptorDatas = DescriptorDataList::GenerateDescriptorDataLists(descriptorDataListCreateInfo);
+		gpCreateInfo.pushConstants = GraphicsPipeline::GeneratePushConstants(descriptorDataListCreateInfo.descriptorSets);
 
 		GraphicsPipeline::InitalizeGraphicsPipeline(gpCreateInfo, &graphicsPipeline);
 
