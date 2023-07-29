@@ -14,8 +14,10 @@ namespace RenderEngine::Assets
     */
     struct ShaderDescriptorSet
     {
+        /// descriptors list
         std::forward_list<ShaderDescriptor> shaderDescriptors;
 
+        /// push constants list
         std::forward_list<PushConstant> pushConstants;
 
         /// default constructor
@@ -23,6 +25,8 @@ namespace RenderEngine::Assets
 
         /// destructor
         ~ShaderDescriptorSet() = default;
+
+        /// descriptor set generator for native shaders 
 
         static ShaderDescriptorSet GenerateDefaultVertexShaderDescriptor();
         static ShaderDescriptorSet GenerateSkyboxVertexShaderDescriptor();

@@ -8,12 +8,16 @@
 
 namespace RenderEngine::Assets
 {
+    /// custom buffer data structure
     struct BufferData
     {
+        /// pointer adress
         void* data = nullptr;
+        /// buffer size
         uint32_t size = 0u;
     };
 
+    /// descriptor type
     enum class DescriptorType : uint32_t
     {
         UNKNOWN = 0,
@@ -41,10 +45,19 @@ namespace RenderEngine::Assets
     */
     struct ShaderDescriptor
     {
+        /// shader stage
         ShaderStage shaderStage = ShaderStage::VERTEX;
+
+        /// descriptor type
         DescriptorType descriptorType = DescriptorType::UNKNOWN;
+
+        /// descriptor set
         uint32_t set = 0u;
+
+        /// descriptor binding
         uint32_t binding = 0u;
+
+        /// custom buffer / texture holder
         union
         {
             BufferData bufferData;
