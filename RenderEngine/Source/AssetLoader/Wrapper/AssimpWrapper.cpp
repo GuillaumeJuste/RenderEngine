@@ -1,10 +1,10 @@
-#include "ResourceManager/Wrapper/AssimpWrapper.hpp"
+#include "AssetLoader/Wrapper/AssimpWrapper.hpp"
 
 #include <assimp/postprocess.h>
 #include <stdexcept>
 #include <cstring>
 
-using namespace RenderEngine::Wrapper;
+using namespace Wrapper;
 
 Assimp::Importer AssimpWrapper::importer = Assimp::Importer();
 

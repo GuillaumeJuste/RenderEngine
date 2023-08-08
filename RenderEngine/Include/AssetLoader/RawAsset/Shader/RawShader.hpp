@@ -4,15 +4,18 @@
 #define RENDERENGINE_RAWSHADER
 
 #include <vector>
-#include "ResourceManager/Assets/Shader/ShaderStage.hpp"
+#include "AssetLoader/RawAsset/SHader/ShaderStage.hpp"
 
-namespace RenderEngine::Assets
+namespace Loader
 {
     /**
      * @brief raw shader data structure
     */
     struct RawShader
     {
+        // is the shader code stored valid
+        bool isValid = false;
+
         /// compiled shader
         std::vector<char> shaderCode;
 

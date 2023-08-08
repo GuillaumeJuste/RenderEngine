@@ -5,13 +5,16 @@
 
 #include <string>
 
-namespace RenderEngine::Assets
+namespace Loader
 {
     /**
      * @brief raw texture data struct
     */
     struct RawTexture
     {
+        // is the texture data stored valid
+        bool isValid = false;
+
         /// image width
         int width = 0;
 

@@ -1,6 +1,7 @@
 #include "ResourceManager/Assets/Shader/ShaderDescriptorSet.hpp"
 
 using namespace RenderEngine::Assets;
+using namespace Loader;
 
 ShaderDescriptorSet ShaderDescriptorSet::GenerateDefaultVertexShaderDescriptor()
 {

@@ -3,13 +3,13 @@
 #ifndef RENDERENGINE_STBIWRAPPER
 #define RENDERENGINE_STBIWRAPPER
 
-#include "ResourceManager/Assets/Texture/RawTexture.hpp"
-#include "ResourceManager/Assets/Texture/CubemapImportInfos.hpp"
+#include "AssetLoader/RawAsset/Texture/RawTexture.hpp"
+#include "AssetLoader/RawAsset/Texture/CubemapImportInfos.hpp"
 #include <string>
 
-using namespace RenderEngine::Assets;
+using namespace Loader;
 
-namespace RenderEngine::Wrapper
+namespace Wrapper
 {
     /**
      * @brief wrapper for the stb library functions

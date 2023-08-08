@@ -4,7 +4,8 @@
 #define RENDERENGINE_SHADERDESCRIPTOR
 
 #include "ResourceManager/Assets/Texture/Texture.hpp"
-#include "ResourceManager/Assets/Shader/ShaderStage.hpp"
+#include "AssetLoader/RawAsset/Shader/ShaderStage.hpp"
+using namespace Loader;
 
 namespace RenderEngine::Assets
 {
@@ -46,6 +47,7 @@ namespace RenderEngine::Assets
     struct ShaderDescriptor
     {
         /// shader stage
+
         ShaderStage shaderStage = ShaderStage::VERTEX;
 
         /// descriptor type

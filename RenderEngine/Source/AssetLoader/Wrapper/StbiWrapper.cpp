@@ -1,4 +1,4 @@
-#include "ResourceManager/Wrapper/StbiWrapper.hpp"
+#include "AssetLoader/Wrapper/StbiWrapper.hpp"
 
 #include <stdexcept>
 #include <cmath>
@@ -6,7 +6,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 
-using namespace RenderEngine::Wrapper;
+using namespace Wrapper;
 
 bool StbiWrapper::LoadTexture(const std::string& _filePath, bool _isHDR, RawTexture& _output)
 {

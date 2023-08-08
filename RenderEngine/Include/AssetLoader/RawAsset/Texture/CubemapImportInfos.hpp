@@ -3,10 +3,9 @@
 #ifndef RENDERENGINE_CUBEMAPIMPORTINFOS
 #define RENDERENGINE_CUBEMAPIMPORTINFOS
 
-#include "ResourceManager/Assets/IAsset.hpp"
-#include "Rendering/Base/Interface/Primitive/ITexture.hpp"
+#include <string>
 
-namespace RenderEngine::Assets
+namespace Loader
 {
     /**
      * @brief CubemapImportInfos data struct 

@@ -5,7 +5,6 @@
 
 #include "ResourceManager/Assets/IAsset.hpp"
 #include "Rendering/Base/Interface/Primitive/IShader.hpp"
-#include "ResourceManager/Assets/Shader/RawShader.hpp"
 
 namespace RenderEngine::Assets
 {

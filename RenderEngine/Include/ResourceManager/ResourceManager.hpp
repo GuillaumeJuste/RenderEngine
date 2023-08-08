@@ -8,14 +8,15 @@
 #include "ResourceManager/Assets/Mesh/Mesh.hpp"
 #include "ResourceManager/Assets/Texture/Texture.hpp"
 #include "ResourceManager/Assets/Shader/Shader.hpp"
-#include "ResourceManager/Assets/Shader/RawShader.hpp"
-#include "ResourceManager/Assets/Texture/CubemapImportInfos.hpp"
 #include "ResourceManager/Assets/AssetManager.hpp"
 #include "Rendering/Base/Interface/IRenderContext.hpp"
 #include "SceneGraph/Scene/Skybox.hpp"
 
+#include "AssetLoader/AssetLoader.hpp"
+
 using namespace RenderEngine::Assets;
 using namespace RenderEngine::Rendering;
+using namespace Loader;
 
 namespace RenderEngine
 {
@@ -30,6 +31,8 @@ namespace RenderEngine
         */
         IRenderContext* renderContext;
         
+        AssetLoader assetLoader;
+
         /// Mesh asset manager
         AssetManager<Mesh> meshManager;
 
@@ -38,14 +41,6 @@ namespace RenderEngine
 
         /// Shader asset manager
         AssetManager<Shader> shaderManager;
-
-        /**
-         * @brief Read shader file and fill _output with it's content
-         * @param _shaderFilePath filepath to the shader
-         * @param _output shader data struct
-         * @return true if shader was read
-        */
-        bool ReadShaderFile(const std::string& _shaderFilePath, RawShader& _output);
 
     public:
         /// constructor

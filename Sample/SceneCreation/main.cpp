@@ -20,6 +20,7 @@
 using namespace RenderEngine;
 using namespace RenderEngine::Rendering;
 using namespace RenderEngine::SceneGraph;
+using namespace Loader;
 
 /**
 * @brief Window for engine rendering

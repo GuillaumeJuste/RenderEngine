@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <array>
-#include "ResourceManager/Assets/Mesh/Vertex.hpp"
 #include "Rendering/Vulkan/Shader/VkShaderCreateInfo.hpp"
 #include "Rendering/Vulkan/Shader/VkShader.hpp"
 #include "Rendering/Vulkan/Misc/Utils.hpp"
@@ -278,14 +277,14 @@ VkScene* RenderContext::WasSceneLoaded(RenderEngine::SceneGraph::Scene* _scene)
 	return nullptr;
 }
 
-bool RenderContext::CreateMesh(const RenderEngine::Assets::RawMesh& _input, RenderEngine::Assets::Mesh* _output)
+bool RenderContext::CreateMesh(const Loader::RawMesh& _input, RenderEngine::Assets::Mesh* _output)
 {
 	CreateVertexBufferObject(_input, _output);
 	CreateIndexBufferObject(_input, _output);
 	return true;
 }
 
-void RenderContext::CreateVertexBufferObject(const RenderEngine::Assets::RawMesh& _input, RenderEngine::Assets::Mesh* _output)
+void RenderContext::CreateVertexBufferObject(const Loader::RawMesh& _input, RenderEngine::Assets::Mesh* _output)
 {
 	BufferObject stagingBufferObject;
 	BufferObjectVkCreateInfo stagingBufferCreateInfo;
@@ -319,7 +318,7 @@ void RenderContext::CreateVertexBufferObject(const RenderEngine::Assets::RawMesh
 	_output->vertexBuffer = VBO;
 }
 
-void RenderContext::CreateIndexBufferObject(const RenderEngine::Assets::RawMesh& _input, RenderEngine::Assets::Mesh* _output)
+void RenderContext::CreateIndexBufferObject(const Loader::RawMesh& _input, RenderEngine::Assets::Mesh* _output)
 {
 	BufferObject stagingBufferObject;
 	BufferObjectVkCreateInfo stagingBufferCreateInfo;
@@ -353,7 +352,7 @@ void RenderContext::CreateIndexBufferObject(const RenderEngine::Assets::RawMesh&
 	_output->indexBuffer = IBO;
 }
 
-bool RenderContext::CreateTexture(const RenderEngine::Assets::RawTexture& _input, RenderEngine::Assets::Texture* _output, bool _generateMipMap)
+bool RenderContext::CreateTexture(const Loader::RawTexture& _input, RenderEngine::Assets::Texture* _output, bool _generateMipMap)
 {
 	VkTextureVkCreateInfo textCreateInfo{};
 	textCreateInfo.logicalDevice = logicalDevice;
@@ -390,7 +389,7 @@ bool RenderContext::CreateTexture(const RenderEngine::Assets::RawTexture& _input
 	return true;
 }
 
-bool RenderContext::CreateShader(const RenderEngine::Assets::RawShader& _input, RenderEngine::Assets::Shader* _output)
+bool RenderContext::CreateShader(const Loader::RawShader& _input, RenderEngine::Assets::Shader* _output)
 {
 	VkShaderCreateInfo shaderCreateInfo{};
 	shaderCreateInfo.rawShader = _input;

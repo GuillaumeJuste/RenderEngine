@@ -1,6 +1,6 @@
-#include "ResourceManager/Assets/Texture/CubemapImportInfos.hpp"
+#include "AssetLoader/RawAsset/Texture/CubemapImportInfos.hpp"
 
-using namespace RenderEngine::Assets;
+using namespace Loader;
 
 CubemapImportInfos::CubemapImportInfos(const std::string& _right, const std::string& _left,
 	const std::string& _top, const std::string& _bottom,

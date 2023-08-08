@@ -2,7 +2,6 @@
 #include "Rendering/Vulkan/BufferObject/BufferObject.hpp"
 #include "Rendering/Vulkan/CommandBuffer/CommandBuffer.hpp"
 #include "Rendering/Vulkan/Misc/Utils.hpp"
-#include "ResourceManager/Assets/Texture/RawTexture.hpp"
 
 #include <iostream>
 

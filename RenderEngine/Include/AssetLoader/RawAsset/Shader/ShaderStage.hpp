@@ -7,7 +7,7 @@
 #include <ctime>
 #include "Utils/Event/Event.hpp"
 
-namespace RenderEngine::Assets
+namespace Loader
 {
     /// Supported shader stages
     enum ShaderStage

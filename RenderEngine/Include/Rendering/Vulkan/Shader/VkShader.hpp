@@ -52,7 +52,7 @@ namespace RenderEngine::Rendering
 		/// Get shader stage info
 		const VkPipelineShaderStageCreateInfo& GetShaderStageInfo() const;
 
-		static VkShaderStageFlagBits EnumToVkFlag(RenderEngine::Assets::ShaderStage _stage);
+		static VkShaderStageFlagBits EnumToVkFlag(Loader::ShaderStage _stage);
 	};
 
 }

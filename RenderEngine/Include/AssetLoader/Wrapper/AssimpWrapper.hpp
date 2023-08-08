@@ -3,13 +3,13 @@
 #ifndef RENDERENGINE_ASSIMPWRAPPER
 #define RENDERENGINE_ASSIMPWRAPPER
 
-#include "ResourceManager/Assets/Mesh/RawMesh.hpp"
-using namespace RenderEngine::Assets;
+#include "AssetLoader/RawAsset/Mesh/RawMesh.hpp"
+using namespace Loader;
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 
-namespace RenderEngine::Wrapper
+namespace Wrapper
 {
     /**
      * @brief wrapper for assimp library functions

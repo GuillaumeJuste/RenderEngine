@@ -1,11 +1,11 @@
 #include "Rendering/Vulkan/GraphicsPipeline/GraphicsPipeline.hpp"
-#include "ResourceManager/Assets/Mesh/Vertex.hpp"
+#include "AssetLoader/RawAsset/Mesh/Vertex.hpp"
 
 #include <iostream>
 #include <array>
 
 using namespace RenderEngine::Rendering;
-using namespace RenderEngine::Assets;
+using namespace Loader;
 
 void GraphicsPipeline::InitalizeGraphicsPipeline(const GraphicsPipelineVkCreateInfo& _createInfo, GraphicsPipeline* _output)
 {

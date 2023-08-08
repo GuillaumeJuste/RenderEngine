@@ -4,7 +4,7 @@
 #define RENDERENGINE_SHADERVKCREATEINFO
 
 #include "Rendering/Vulkan/Misc/VulkanBaseInclude.hpp"
-#include "ResourceManager/Assets/Shader/RawShader.hpp"
+#include "AssetLoader/RawAsset/SHader/RawShader.hpp"
 
 namespace RenderEngine::Rendering
 {
@@ -13,7 +13,7 @@ namespace RenderEngine::Rendering
 	*/
 	struct VkShaderCreateInfo
 	{
-		RenderEngine::Assets::RawShader rawShader;
+		Loader::RawShader rawShader;
 
 		/// logical device
 		VkDevice device = VK_NULL_HANDLE;

@@ -4,7 +4,6 @@
 #define RENDERENGINE_VKTEXURECREATEINFO
 
 #include "Rendering/Vulkan/CommandPool/CommandPool.hpp"
-#include "ResourceManager/Assets/Texture/RawTexture.hpp"
 
 namespace RenderEngine::Rendering
 {

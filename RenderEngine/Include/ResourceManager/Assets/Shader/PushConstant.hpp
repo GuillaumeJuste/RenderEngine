@@ -3,7 +3,7 @@
 #ifndef RENDERENGINE_PUSHCONSTANT
 #define RENDERENGINE_PUSHCONSTANT
 
-#include "ResourceManager/Assets/Shader/ShaderStage.hpp"
+#include "AssetLoader/RawAsset/Shader/ShaderStage.hpp"
 
 namespace RenderEngine::Assets
 {
@@ -13,7 +13,7 @@ namespace RenderEngine::Assets
     struct PushConstant
     {
         /// shader stage
-        ShaderStage shaderStage = ShaderStage::VERTEX;
+        Loader::ShaderStage shaderStage = Loader::ShaderStage::VERTEX;
         
         /// push constant block size
         uint32_t size = 0u;

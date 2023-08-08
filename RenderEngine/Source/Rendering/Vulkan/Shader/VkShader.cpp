@@ -28,17 +28,17 @@ void VkShader::CreateVkShader(VkShaderCreateInfo _createInfo, VkShader* _output)
 
 }
 
-VkShaderStageFlagBits VkShader::EnumToVkFlag(RenderEngine::Assets::ShaderStage _stage)
+VkShaderStageFlagBits VkShader::EnumToVkFlag(Loader::ShaderStage _stage)
 {
     switch (_stage)
     {
-    case RenderEngine::Assets::VERTEX:
+    case Loader::VERTEX:
         return VK_SHADER_STAGE_VERTEX_BIT;
-    case RenderEngine::Assets::FRAGMENT:
+    case Loader::FRAGMENT:
         return VK_SHADER_STAGE_FRAGMENT_BIT;
-    case RenderEngine::Assets::COMPUTE:
+    case Loader::COMPUTE:
         return VK_SHADER_STAGE_COMPUTE_BIT;
-    case RenderEngine::Assets::GEOMETRY:
+    case Loader::GEOMETRY:
         return VK_SHADER_STAGE_GEOMETRY_BIT;
     }
     return VK_SHADER_STAGE_VERTEX_BIT;

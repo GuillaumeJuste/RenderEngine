@@ -19,12 +19,8 @@ target_sources(RenderEngine PRIVATE ${SOURCES_PRIVATE})
 file(GLOB_RECURSE SOURCES "Source/*")
 
 # Add source to this project's executable.
-#add_library(RenderEngine SHARED ${SOURCES})
-#add_executable (RenderEngine ${SOURCES})
 target_include_directories(RenderEngine PUBLIC Include)
 target_include_directories(RenderEngine PUBLIC Resources)
-target_compile_definitions(RenderEngine PRIVATE VK_USE_PLATFORM_WIN32_KHR)
-target_compile_definitions(RenderEngine PRIVATE GLFW_EXPOSE_NATIVE_WIN32)
 target_compile_definitions(RenderEngine PRIVATE NOMINMAX)
 
 target_include_directories(RenderEngine PUBLIC ${CMAKE_SOURCE_DIR}/ThirdParty/Gitmodules)
