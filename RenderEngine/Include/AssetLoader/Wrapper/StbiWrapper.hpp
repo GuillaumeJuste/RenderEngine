@@ -44,12 +44,6 @@ namespace Wrapper
          * @param image pointer to the allocated data
         */
         static void FreeImage(char* image);
-
-        /**
-         * @brief free memory allocated by stb
-         * @param image image pointer to the allocated data
-        */
-        static void FreeImage(float* image);
     };
 }
 

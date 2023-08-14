@@ -36,6 +36,7 @@ bool StbiWrapper::LoadTexture(const std::string& _filePath, bool _isHDR, RawText
 
 	_output.data.clear();
 	_output.data.insert(_output.data.end(), &data[0], &data[_output.imageSize]);
+	stbi_image_free(data);
 
 	_output.imageCount = 1;
 
@@ -82,7 +83,3 @@ void StbiWrapper::FreeImage(char* image)
 	stbi_image_free(image);
 }
 
-void StbiWrapper::FreeImage(float* image)
-{
-	stbi_image_free(image);
-}
