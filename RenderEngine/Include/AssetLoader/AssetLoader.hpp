@@ -57,13 +57,6 @@ namespace Loader
         RawTexture LoadCubemap(const CubemapImportInfos& _filePaths);
 
         /**
-         * @brief Unload a texture
-         * @param _texture texture to unload
-         * @return true if the texture was removed
-        */
-        bool UnloadTexture(RawTexture& _texture);
-
-        /**
          * @brief Load a shader
          * @param _filePath file path to the shader
          * @param _shaderStage stage of the shader (vertex, fragment...)

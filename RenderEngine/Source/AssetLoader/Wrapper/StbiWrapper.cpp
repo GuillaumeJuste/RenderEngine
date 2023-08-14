@@ -10,24 +10,22 @@ using namespace Wrapper;
 
 bool StbiWrapper::LoadTexture(const std::string& _filePath, bool _isHDR, RawTexture& _output)
 {
+	int channels = 0.f;
+	char* data;
 	if (_isHDR)
 	{
-		_output.dataF = stbi_loadf(_filePath.c_str(), &_output.width, &_output.height, &_output.channels, STBI_rgb_alpha);
-
-		if (!_output.dataF)
-		{
-			return false;
-		}
+		data = reinterpret_cast<char*>(stbi_loadf(_filePath.c_str(), &_output.width, &_output.height, &channels, STBI_rgb_alpha));
 	}
 	else
 	{
-		_output.dataC = reinterpret_cast<char*>(stbi_load(_filePath.c_str(), &_output.width, &_output.height, &_output.channels, STBI_rgb_alpha));
-
-		if (!_output.dataC)
-		{
-			return false;
-		}
+		data = reinterpret_cast<char*>(stbi_load(_filePath.c_str(), &_output.width, &_output.height, &channels, STBI_rgb_alpha));
 	}
+	
+	if (!data)
+	{
+		return false;
+	}
+
 	_output.isHdr = _isHDR;
 
 	_output.channels = 4;
@@ -35,6 +33,9 @@ bool StbiWrapper::LoadTexture(const std::string& _filePath, bool _isHDR, RawText
 	_output.imageSize = _output.width * _output.height * _output.channels;
 	if (_isHDR)
 		_output.imageSize *= sizeof(float);
+
+	_output.data.clear();
+	_output.data.insert(_output.data.end(), &data[0], &data[_output.imageSize]);
 
 	_output.imageCount = 1;
 
@@ -64,11 +65,9 @@ bool StbiWrapper::LoadCubemap(const CubemapImportInfos& _importInfos, RawTexture
 
 	_output.imageSize = _output.width * _output.height * _output.channels;
 
-	_output.dataC = reinterpret_cast<char*>(stbi__malloc(6 * _output.imageSize));
-
 	for (size_t i = 0; i < 6; ++i)
 	{
-		std::memmove(_output.dataC + i * _output.imageSize, data[i], _output.imageSize);
+		_output.data.insert(_output.data.end(), &data[i][0], &data[i][_output.imageSize]);
 
 		FreeImage(data[i]);
 	}

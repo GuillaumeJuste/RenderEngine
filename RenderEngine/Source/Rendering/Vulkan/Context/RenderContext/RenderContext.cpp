@@ -375,10 +375,7 @@ bool RenderContext::CreateTexture(const Loader::RawTexture& _input, RenderEngine
 
 	VkTexture::InitializeVkTexture(textCreateInfo, vkTexture);
 
-	if (_input.isHdr == false)
-		vkTexture->FillImageBuffer<char>(_input.dataC, _input.imageSize * _input.imageCount, !_generateMipMap);
-	else
-		vkTexture->FillImageBuffer<float>(_input.dataF, _input.imageSize * _input.imageCount, !_generateMipMap);
+	vkTexture->FillImageBuffer(_input.data.data(), _input.imageSize * _input.imageCount, !_generateMipMap);
 
 	if (_input.mipLevels > 1 && _generateMipMap)
 		vkTexture->GetImageBuffer()->GenerateMipmaps();

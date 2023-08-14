@@ -69,8 +69,6 @@ Texture* ResourceManager::LoadTexture(std::string _filePath, bool _isHDR, bool _
 		newTexture->isHDR = _isHDR;
 		textureManager.Add(_filePath, newTexture);
 
-		assetLoader.UnloadTexture(rawTexture);
-
 		return newTexture;
 	}
 
@@ -145,8 +143,6 @@ Texture* ResourceManager::LoadCubemap(const CubemapImportInfos& _filePaths, std:
 		newCubemap->imageCount = 6;
 		newCubemap->isHDR = false;
 		textureManager.Add(newCubemap->filePath, newCubemap);
-
-		assetLoader.UnloadTexture(rawCubemap);
 
 		return newCubemap;
 	}
@@ -283,16 +279,10 @@ Texture* ResourceManager::LoadAsset(std::string _filePath)
 		file.read(reinterpret_cast<char*>(&rawTexture.mipLevels), sizeof(uint32_t));
 		file.read(reinterpret_cast<char*>(&rawTexture.isHdr), sizeof(bool));
 
-		if (rawTexture.isHdr)
-		{
-			rawTexture.dataF = new float[rawTexture.imageCount * rawTexture.imageSize];
-			file.read(reinterpret_cast<char*>(rawTexture.dataF), rawTexture.imageCount * rawTexture.imageSize);
-		}
-		else
-		{
-			rawTexture.dataC = new char[rawTexture.imageCount * rawTexture.imageSize];
-			file.read(rawTexture.dataC, rawTexture.imageCount * rawTexture.imageSize);
-		}
+
+		char* data = new char[rawTexture.imageCount * rawTexture.imageSize];
+		file.read(data, rawTexture.imageCount * rawTexture.imageSize);
+		rawTexture.data.insert(rawTexture.data.end(), &data[0], &data[rawTexture.imageCount * rawTexture.imageSize - 1]);
 
 		file.close();
 
@@ -308,14 +298,7 @@ Texture* ResourceManager::LoadAsset(std::string _filePath)
 		newTexture->isHDR = rawTexture.isHdr;
 		textureManager.Add(_filePath, newTexture);
 
-		if (rawTexture.isHdr)
-		{
-			delete rawTexture.dataF;
-		}
-		else
-		{
-			delete rawTexture.dataC;
-		}
+		delete []data;
 
 		return newTexture;
 	}

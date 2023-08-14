@@ -49,18 +49,6 @@ RawTexture AssetLoader::LoadCubemap(const CubemapImportInfos& _filePaths)
 	return rawCubemap;
 }
 
-bool AssetLoader::UnloadTexture(RawTexture& _texture)
-{
-	if(_texture.isHdr)
-		StbiWrapper::FreeImage(_texture.dataF);
-	else
-		StbiWrapper::FreeImage(_texture.dataC);
-
-	_texture.isValid = false;
-
-	return true;
-}
-
 RawShader AssetLoader::LoadShader(std::string _filePath, ShaderStage _shaderStage)
 {
 	RawShader rawShader;

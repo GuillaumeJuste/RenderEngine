@@ -4,6 +4,7 @@
 #define RENDERENGINE_RAWTEXTURE
 
 #include <string>
+#include <vector>
 
 namespace Loader
 {
@@ -36,16 +37,8 @@ namespace Loader
         /// is the image hdr
         bool isHdr = false;
 
-        /**
-         * @brief image data
-         * hdr type = dataF
-         * other types = dataC
-        */
-        union
-        {
-            char* dataC;
-            float* dataF;
-        };
+       ///image data
+       std::vector<char> data;
 
         /// default constructor
         RawTexture() = default;

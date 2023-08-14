@@ -40,8 +40,7 @@ namespace RenderEngine::Rendering
 
 		static void InitializeVkTexture(const VkTextureVkCreateInfo& _vkTextureCreateInfo, VkTexture* _output);
 
-		template<typename T>
-		bool FillImageBuffer(T* _imageData, uint32_t _totalImageSize, bool _copyMipMap);
+		bool FillImageBuffer(const char* _imageData, uint32_t _totalImageSize, bool _copyMipMap);
 
 		/**
 		 * @brief clean up vulkan classes
@@ -57,7 +56,4 @@ namespace RenderEngine::Rendering
 	};
 
 }
-
-#include "Rendering/Vulkan/Texture/VkTexture.inl"
-
 #endif
