@@ -37,7 +37,6 @@ RawTexture AssetLoader::LoadTexture(std::string _filePath, bool _isHDR)
 {
 	RawTexture rawTexture;
 	rawTexture.isValid = StbiWrapper::LoadTexture(_filePath, _isHDR, rawTexture);
-	loadedTextures.push_back(rawTexture);
 	return rawTexture;
 }
 
@@ -45,7 +44,6 @@ RawTexture AssetLoader::LoadCubemap(const CubemapImportInfos& _filePaths)
 {
 	RawTexture rawCubemap;
 	rawCubemap.isValid = StbiWrapper::LoadCubemap(_filePaths, rawCubemap);
-	loadedTextures.push_back(rawCubemap);
 	return rawCubemap;
 }
 
@@ -54,8 +52,4 @@ RawShader AssetLoader::LoadShader(std::string _filePath, ShaderStage _shaderStag
 	RawShader rawShader;
 	rawShader.isValid = ReadShaderFile(_filePath, rawShader);
 	return rawShader;
-}
-
-void AssetLoader::Clean()
-{
 }

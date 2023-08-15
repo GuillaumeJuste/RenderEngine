@@ -21,7 +21,7 @@ Mesh* ResourceManager::LoadMesh(std::string _filePath)
 	if (mesh != nullptr)
 		return mesh;
 
-	RawMesh rawMesh = assetLoader.LoadMesh(_filePath);
+	RawMesh rawMesh = AssetLoader::LoadMesh(_filePath);
 	if (rawMesh.isValid)
 	{
 		Mesh* newMesh = new Mesh();
@@ -52,7 +52,7 @@ Texture* ResourceManager::LoadTexture(std::string _filePath, bool _isHDR, bool _
 	if (texture != nullptr)
 		return texture;
 
-	RawTexture rawTexture = assetLoader.LoadTexture(_filePath, _isHDR);
+	RawTexture rawTexture = AssetLoader::LoadTexture(_filePath, _isHDR);
 	if (rawTexture.isValid)
 	{
 		rawTexture.mipLevels = 1;
@@ -91,7 +91,7 @@ Shader* ResourceManager::LoadShader(std::string _filePath, ShaderStage _shaderSt
 	if (shader != nullptr)
 		return shader;
 
-	RawShader rawShader = assetLoader.LoadShader(_filePath, _shaderStage);
+	RawShader rawShader = AssetLoader::LoadShader(_filePath, _shaderStage);
 	if (rawShader.isValid)
 	{
 		Shader* newShader = new Shader();
@@ -126,7 +126,7 @@ Texture* ResourceManager::LoadCubemap(const CubemapImportInfos& _filePaths, std:
 	if (cubemap != nullptr)
 		return cubemap;
 
-	RawTexture rawCubemap = assetLoader.LoadCubemap(_filePaths);
+	RawTexture rawCubemap = AssetLoader::LoadCubemap(_filePaths);
 	if (rawCubemap.isValid)
 	{
 		rawCubemap.mipLevels = 1;

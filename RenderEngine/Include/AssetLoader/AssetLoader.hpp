@@ -18,15 +18,13 @@ namespace Loader
     class AssetLoader
     {
     private:
-        std::vector<RawTexture> loadedTextures;
-
         /**
          * @brief Read shader file and fill _output with it's content
          * @param _shaderFilePath filepath to the shader
          * @param _output shader data struct
          * @return true if shader was read
         */
-        bool ReadShaderFile(const std::string& _shaderFilePath, RawShader& _output);
+        static bool ReadShaderFile(const std::string& _shaderFilePath, RawShader& _output);
 
     public:
         /// constructor
@@ -37,7 +35,7 @@ namespace Loader
          * @param _filePath file path to the mesh
          * @return Pointer to the resulting mesh
         */
-        RawMesh LoadMesh(std::string _filePath);
+        static RawMesh LoadMesh(std::string _filePath);
 
         /**
          * @brief Load a texture
@@ -45,7 +43,7 @@ namespace Loader
          * @param _isHDR is the texture .hdr
          * @return Pointer to the resulting texture
         */
-        RawTexture LoadTexture(std::string _filePath, bool _isHDR = false);
+        static RawTexture LoadTexture(std::string _filePath, bool _isHDR = false);
 
         /**
         * @brief Load a cube map
@@ -54,7 +52,7 @@ namespace Loader
         * @param _computeMipmap should compute mipmap
         * @return Pointer to the resulting texture
        */
-        RawTexture LoadCubemap(const CubemapImportInfos& _filePaths);
+        static RawTexture LoadCubemap(const CubemapImportInfos& _filePaths);
 
         /**
          * @brief Load a shader
@@ -62,13 +60,7 @@ namespace Loader
          * @param _shaderStage stage of the shader (vertex, fragment...)
          * @return Pointer to the resulting shader
         */
-        RawShader LoadShader(std::string _filePath, ShaderStage _shaderStage);
-
-       
-        /**
-         * @brief clean the resources
-        */
-        void Clean();
+        static RawShader LoadShader(std::string _filePath, ShaderStage _shaderStage);
     };
 }
 

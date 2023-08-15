@@ -31,8 +31,6 @@ namespace RenderEngine
         */
         IRenderContext* renderContext;
         
-        AssetLoader assetLoader;
-
         /// Mesh asset manager
         AssetManager<Mesh> meshManager;
 
