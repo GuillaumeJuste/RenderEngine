@@ -33,17 +33,17 @@ RawMesh AssetLoader::LoadMesh(std::string _filePath)
 	return rawMesh;
 }
 
-RawTexture AssetLoader::LoadTexture(std::string _filePath, bool _isHDR)
+RawTexture AssetLoader::LoadTexture(std::string _filePath, TextureFormat _format)
 {
 	RawTexture rawTexture;
-	rawTexture.isValid = StbiWrapper::LoadTexture(_filePath, _isHDR, rawTexture);
+	rawTexture.isValid = StbiWrapper::LoadTexture(_filePath, _format, rawTexture);
 	return rawTexture;
 }
 
-RawTexture AssetLoader::LoadCubemap(const CubemapImportInfos& _filePaths)
+RawTexture AssetLoader::LoadCubemap(const CubemapImportInfos& _filePaths, TextureFormat _format)
 {
 	RawTexture rawCubemap;
-	rawCubemap.isValid = StbiWrapper::LoadCubemap(_filePaths, rawCubemap);
+	rawCubemap.isValid = StbiWrapper::LoadCubemap(_filePaths, _format, rawCubemap);
 	return rawCubemap;
 }
 

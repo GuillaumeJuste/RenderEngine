@@ -46,13 +46,13 @@ bool ResourceManager::UnloadMesh(Mesh* _mesh)
 	return meshManager.Unload(_mesh->filePath);
 }
 
-Texture* ResourceManager::LoadTexture(std::string _filePath, bool _isHDR, bool _computeMipmap)
+Texture* ResourceManager::LoadTexture(std::string _filePath, TextureFormat _format, bool _computeMipmap)
 {
 	Texture* texture = GetTexture(_filePath);
 	if (texture != nullptr)
 		return texture;
 
-	RawTexture rawTexture = AssetLoader::LoadTexture(_filePath, _isHDR);
+	RawTexture rawTexture = AssetLoader::LoadTexture(_filePath, _format);
 	if (rawTexture.isValid)
 	{
 		rawTexture.mipLevels = 1;
@@ -66,7 +66,7 @@ Texture* ResourceManager::LoadTexture(std::string _filePath, bool _isHDR, bool _
 		newTexture->imageSize = rawTexture.imageSize;
 		newTexture->mipLevels = rawTexture.mipLevels;
 		newTexture->imageCount = 1;
-		newTexture->isHDR = _isHDR;
+		newTexture->isHDR = rawTexture.isHdr;
 		textureManager.Add(_filePath, newTexture);
 
 		return newTexture;
@@ -116,7 +116,7 @@ bool ResourceManager::UnloadShader(Shader* _shader)
 	return shaderManager.Unload(_shader->filePath);
 }
 
-Texture* ResourceManager::LoadCubemap(const CubemapImportInfos& _filePaths, std::string _assetName, bool _computeMipmap)
+Texture* ResourceManager::LoadCubemap(const CubemapImportInfos& _filePaths, std::string _assetName, TextureFormat _format, bool _computeMipmap)
 {
 	std::filesystem::path filepath(_filePaths.right);
 	filepath.remove_filename();
@@ -126,7 +126,7 @@ Texture* ResourceManager::LoadCubemap(const CubemapImportInfos& _filePaths, std:
 	if (cubemap != nullptr)
 		return cubemap;
 
-	RawTexture rawCubemap = AssetLoader::LoadCubemap(_filePaths);
+	RawTexture rawCubemap = AssetLoader::LoadCubemap(_filePaths, _format);
 	if (rawCubemap.isValid)
 	{
 		rawCubemap.mipLevels = 1;
@@ -141,7 +141,7 @@ Texture* ResourceManager::LoadCubemap(const CubemapImportInfos& _filePaths, std:
 		newCubemap->mipLevels = rawCubemap.mipLevels;
 		newCubemap->imageSize = rawCubemap.imageSize;
 		newCubemap->imageCount = 6;
-		newCubemap->isHDR = false;
+		newCubemap->isHDR = rawCubemap.isHdr;
 		textureManager.Add(newCubemap->filePath, newCubemap);
 
 		return newCubemap;

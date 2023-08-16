@@ -33,32 +33,31 @@ namespace Loader
         /**
          * @brief Load a mesh
          * @param _filePath file path to the mesh
-         * @return Pointer to the resulting mesh
+         * @return struct holding loaded mesh data
         */
         static RawMesh LoadMesh(std::string _filePath);
 
         /**
          * @brief Load a texture
          * @param _filePath file path to the texture
-         * @param _isHDR is the texture .hdr
-         * @return Pointer to the resulting texture
+         * @param _format texture format
+         * @return struct holding loaded texture data
         */
-        static RawTexture LoadTexture(std::string _filePath, bool _isHDR = false);
+        static RawTexture LoadTexture(std::string _filePath, TextureFormat _format);
 
         /**
         * @brief Load a cube map
         * @param _filePaths file path for 6 faces
-        * @param _assetName output texture name
-        * @param _computeMipmap should compute mipmap
-        * @return Pointer to the resulting texture
+        * @param _format texture format
+        * @return struct holding loaded cubemap data
        */
-        static RawTexture LoadCubemap(const CubemapImportInfos& _filePaths);
+        static RawTexture LoadCubemap(const CubemapImportInfos& _filePaths, TextureFormat _format);
 
         /**
          * @brief Load a shader
          * @param _filePath file path to the shader
          * @param _shaderStage stage of the shader (vertex, fragment...)
-         * @return Pointer to the resulting shader
+         * @return struct holding loaded shader data
         */
         static RawShader LoadShader(std::string _filePath, ShaderStage _shaderStage);
     };

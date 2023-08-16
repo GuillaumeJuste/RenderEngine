@@ -113,7 +113,7 @@ Scene* SetupPBRScene()
     scene->name = "test_scene_simple_cube";
 
     scene->skybox.mesh = resourceManager->LoadMesh("Resources/Engine/Models/cube.obj");
-    scene->skybox.BRDFlut = resourceManager->LoadTexture("Resources/Engine/Textures/default_brdf_lut.png");
+    scene->skybox.BRDFlut = resourceManager->LoadTexture("Resources/Engine/Textures/default_brdf_lut.png", TextureFormat::RGBA);
     scene->skybox.vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/Skybox.vert.spv", VERTEX);
     scene->skybox.vertexShaderDescriptorSet = ShaderDescriptorSet::GenerateSkyboxVertexShaderDescriptor();
     scene->skybox.fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/Skybox.frag.spv", FRAGMENT);
@@ -122,7 +122,7 @@ Scene* SetupPBRScene()
     scene->skybox.irradianceMap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftIrradiance.asset");
     scene->skybox.prefilterMap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftPrefiltered.asset");
 
-    /*Texture* skyboxTexture = resourceManager->LoadTexture("Resources/Engine/Textures/HDR/newport_loft.hdr", true, false);
+    /*Texture* skyboxTexture = resourceManager->LoadTexture("Resources/Engine/Textures/HDR/newport_loft.hdr", TextureFormat::HDR_RGBA, false);
     resourceManager->CreateSkyboxFromTexture(skyboxTexture, Mathlib::Vec2(512.f, 512.f), &scene->skybox);
 
     resourceManager->SaveAsset(scene->skybox.cubemap);
@@ -142,11 +142,11 @@ Scene* SetupPBRScene()
     Mesh* sphere = resourceManager->LoadMesh("Resources/Sample/ScenePBR/Models/Sphere.obj");
     Shader* vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/VertexShader.vert.spv", VERTEX);
     Shader* fragShader = resourceManager->LoadShader("Resources/Engine/Shaders/PBRFragmentShader.frag.spv", FRAGMENT);
-    Texture* wallTexture = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Wall/albedo.png");
-    Texture* wallMetalnessMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Wall/metallic.png");
-    Texture* wallRoughnessMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Wall/roughness.png");
-    Texture* wallNormalMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Wall/normal.png");
-    Texture* wallAoMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Wall/ao.png");
+    Texture* wallTexture = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Wall/albedo.png", TextureFormat::RGBA);
+    Texture* wallMetalnessMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Wall/metallic.png", TextureFormat::RGBA);
+    Texture* wallRoughnessMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Wall/roughness.png", TextureFormat::RGBA);
+    Texture* wallNormalMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Wall/normal.png", TextureFormat::RGBA);
+    Texture* wallAoMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Wall/ao.png", TextureFormat::RGBA);
 
     /*Sphere 1*/
     Mathlib::Transform transform;
@@ -192,11 +192,11 @@ Scene* SetupPBRScene()
 
     GameObject* obj2 = scene->AddGameObject(createinfo2);
 
-    Texture* ironTexture = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Rusted_iron/albedo.png");
-    Texture* ironMetalnessMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Rusted_iron/metallic.png");
-    Texture* ironRoughnessMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Rusted_iron/roughness.png");
-    Texture* ironNormalMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Rusted_iron/normal.png");
-    Texture* ironAoMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Rusted_iron/ao.png");
+    Texture* ironTexture = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Rusted_iron/albedo.png", TextureFormat::RGBA);
+    Texture* ironMetalnessMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Rusted_iron/metallic.png", TextureFormat::RGBA);
+    Texture* ironRoughnessMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Rusted_iron/roughness.png", TextureFormat::RGBA);
+    Texture* ironNormalMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Rusted_iron/normal.png", TextureFormat::RGBA);
+    Texture* ironAoMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Rusted_iron/ao.png", TextureFormat::RGBA);
 
     RenderEngine::Component::MeshRenderer* meshRenderer2 = obj2->AddComponent<RenderEngine::Component::MeshRenderer>();
     meshRenderer2->mesh = sphere;
@@ -230,11 +230,11 @@ Scene* SetupPBRScene()
 
     GameObject* obj3 = scene->AddGameObject(createinfo3);
 
-    Texture* goldTexture = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Gold/albedo.png");
-    Texture* goldMetalnessMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Gold/metallic.png");
-    Texture* goldRoughnessMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Gold/roughness.png");
-    Texture* goldNormalMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Gold/normal.png");
-    Texture* goldAoMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Gold/ao.png");
+    Texture* goldTexture = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Gold/albedo.png", TextureFormat::RGBA);
+    Texture* goldMetalnessMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Gold/metallic.png", TextureFormat::RGBA);
+    Texture* goldRoughnessMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Gold/roughness.png", TextureFormat::RGBA);
+    Texture* goldNormalMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Gold/normal.png", TextureFormat::RGBA);
+    Texture* goldAoMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Gold/ao.png", TextureFormat::RGBA);
 
     RenderEngine::Component::MeshRenderer* meshRenderer3 = obj3->AddComponent<RenderEngine::Component::MeshRenderer>();
     meshRenderer3->mesh = sphere;
@@ -279,7 +279,7 @@ Scene* SetupPBRScene()
     meshRenderer4->material.vertexShaderDescriptorSet = ShaderDescriptorSet::GenerateDefaultVertexShaderDescriptor();
     meshRenderer4->material.fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/TextureFragmentShader.frag.spv", FRAGMENT);
     meshRenderer4->material.fragmentShaderDescriptorSet = ShaderDescriptorSet::GenerateDefaultFragmentShaderDescriptor();
-    meshRenderer4->material.albedo = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/white.jpg");
+    meshRenderer4->material.albedo = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/white.jpg", TextureFormat::RGBA);
     meshRenderer4->material.metalnessMap = meshRenderer4->material.albedo;
     meshRenderer4->material.roughnessMap = meshRenderer4->material.albedo;
     meshRenderer4->material.normalMap = meshRenderer4->material.albedo;

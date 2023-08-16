@@ -8,6 +8,18 @@
 
 namespace Loader
 {
+    enum class TextureFormat
+    {
+        GREY = 0, 
+        GREY_ALPHA = 1,
+        RGB = 2,
+        RGBA = 3,
+        HDR_GREY = 4,
+        HDR_GREY_ALPHA = 5,
+        HDR_RGB = 6,
+        HDR_RGBA = 7
+    };
+
     /**
      * @brief raw texture data struct
     */
@@ -33,6 +45,9 @@ namespace Loader
 
         /// number of image hold as data
         unsigned int imageCount = 1;
+
+        /// Texture format
+        TextureFormat format = TextureFormat::RGBA;
 
         /// is the image hdr
         bool isHdr = false;

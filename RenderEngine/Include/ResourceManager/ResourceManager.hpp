@@ -68,11 +68,11 @@ namespace RenderEngine
         /**
          * @brief Load a texture
          * @param _filePath file path to the texture
-         * @param _isHDR is the texture .hdr
+         * @param _format texture format
          * @param _computeMipmap should compute the mipmaps
          * @return Pointer to the resulting texture
         */
-        Texture* LoadTexture(std::string _filePath, bool _isHDR = false, bool _computeMipmap = true);
+        Texture* LoadTexture(std::string _filePath, TextureFormat _format, bool _computeMipmap = true);
 
         /**
          * @brief Get texture from file path if it was already loaded
@@ -114,10 +114,11 @@ namespace RenderEngine
          * @brief Load a cube map
          * @param _filePaths file path for 6 faces
          * @param _assetName output texture name
+         * @param _format texture format
          * @param _computeMipmap should compute mipmap
          * @return Pointer to the resulting texture
         */
-        Texture* LoadCubemap(const CubemapImportInfos& _filePaths, std::string _assetName, bool _computeMipmap = true);
+        Texture* LoadCubemap(const CubemapImportInfos& _filePaths, std::string _assetName, TextureFormat _format, bool _computeMipmap = true);
 
         /**
          * @brief Create a cube map from a 2D texture

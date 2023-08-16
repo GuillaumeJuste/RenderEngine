@@ -8,30 +8,39 @@
 
 using namespace Wrapper;
 
-bool StbiWrapper::LoadTexture(const std::string& _filePath, bool _isHDR, RawTexture& _output)
+int StbiWrapper::GetSTBIFormat(TextureFormat _format)
 {
-	int channels = 0.f;
+	int formatToInt = (int)_format;
+	return formatToInt - (formatToInt / (int)TextureFormat::HDR_GREY) * (int)TextureFormat::HDR_GREY + 1;
+}
+
+bool StbiWrapper::LoadTexture(const std::string& _filePath, TextureFormat _format, RawTexture& _output)
+{
+	int channels = 0;
+
+	_output.isHdr = _format >= TextureFormat::HDR_GREY ? true : false;
+	int stbiFormat = GetSTBIFormat(_format);
+
 	char* data;
-	if (_isHDR)
+	if (_output.isHdr)
 	{
-		data = reinterpret_cast<char*>(stbi_loadf(_filePath.c_str(), &_output.width, &_output.height, &channels, STBI_rgb_alpha));
+		data = reinterpret_cast<char*>(stbi_loadf(_filePath.c_str(), &_output.width, &_output.height, &channels, stbiFormat));
 	}
 	else
 	{
-		data = reinterpret_cast<char*>(stbi_load(_filePath.c_str(), &_output.width, &_output.height, &channels, STBI_rgb_alpha));
+		data = reinterpret_cast<char*>(stbi_load(_filePath.c_str(), &_output.width, &_output.height, &channels, stbiFormat));
 	}
 	
 	if (!data)
 	{
 		return false;
 	}
-
-	_output.isHdr = _isHDR;
-
-	_output.channels = 4;
+	
+	_output.format = _format;
+	_output.channels = stbiFormat;
 
 	_output.imageSize = _output.width * _output.height * _output.channels;
-	if (_isHDR)
+	if (_output.isHdr)
 		_output.imageSize *= sizeof(float);
 
 	_output.data.clear();
@@ -43,18 +52,25 @@ bool StbiWrapper::LoadTexture(const std::string& _filePath, bool _isHDR, RawText
 	return true;
 }
 
-bool StbiWrapper::LoadCubemap(const CubemapImportInfos& _importInfos, RawTexture& _output)
+bool StbiWrapper::LoadCubemap(const CubemapImportInfos& _importInfos, TextureFormat _format, RawTexture& _output)
 {
+	_output.isHdr = _format >= TextureFormat::HDR_GREY ? true : false;
+	int stbiFormat = GetSTBIFormat(_format);
+
+	int channels = 0;
+
 	char* data[6]{};
 	// Load textures.
 	for (size_t i = 0; i < 6; ++i)
 	{
-		data[i] = reinterpret_cast<char*>(stbi_load(_importInfos.pathes[i].c_str(),
-			&_output.width,
-			&_output.height,
-			&_output.channels,
-			STBI_rgb_alpha
-		));
+		if (_output.isHdr)
+		{
+			data[i] = reinterpret_cast<char*>(stbi_loadf(_importInfos.pathes[i].c_str(), &_output.width, &_output.height, &channels, stbiFormat));
+		}
+		else
+		{
+			data[i] = reinterpret_cast<char*>(stbi_load(_importInfos.pathes[i].c_str(), &_output.width, &_output.height, &channels, stbiFormat));
+		}
 
 		if (!data[i])
 		{
@@ -62,9 +78,11 @@ bool StbiWrapper::LoadCubemap(const CubemapImportInfos& _importInfos, RawTexture
 		}
 	}
 
-	_output.channels = 4;
+	_output.channels = stbiFormat;
 
 	_output.imageSize = _output.width * _output.height * _output.channels;
+	if (_output.isHdr)
+		_output.imageSize *= sizeof(float);
 
 	for (size_t i = 0; i < 6; ++i)
 	{
@@ -74,6 +92,7 @@ bool StbiWrapper::LoadCubemap(const CubemapImportInfos& _importInfos, RawTexture
 	}
 
 	_output.imageCount = 6;
+	_output.format = _format;
 
 	return true;
 }
