@@ -3,10 +3,10 @@
 #ifndef RENDERENGINE_SKYBOX
 #define RENDERENGINE_SKYBOX
 
-#include "ResourceManager/Assets/Texture/Texture.hpp"
-#include "ResourceManager/Assets/Mesh/Mesh.hpp"
-#include "ResourceManager/Assets/Shader/Shader.hpp"
-#include "ResourceManager/Assets/Shader/ShaderDescriptorSet.hpp"
+#include "Rendering/Base/ResourceManager/Assets/Texture/Texture.hpp"
+#include "Rendering/Base/ResourceManager/Assets/Mesh/Mesh.hpp"
+#include "Rendering/Base/ResourceManager/Assets/Shader/Shader.hpp"
+#include "Rendering/Base/ResourceManager/Assets/Shader/ShaderDescriptorSet.hpp"
 
 using namespace RenderEngine::Assets;
 

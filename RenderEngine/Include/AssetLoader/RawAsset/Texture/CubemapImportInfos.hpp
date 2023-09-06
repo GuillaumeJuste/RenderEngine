@@ -34,6 +34,8 @@ namespace Loader
 
 		/// copy constructor
 		CubemapImportInfos(const CubemapImportInfos& _other) noexcept;
+
+		~CubemapImportInfos() = default;
     };
 }
 

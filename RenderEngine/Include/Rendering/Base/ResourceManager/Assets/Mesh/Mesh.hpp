@@ -3,7 +3,7 @@
 #ifndef RENDERENGINE_MESH
 #define RENDERENGINE_MESH
 
-#include "ResourceManager/Assets/IAsset.hpp"
+#include "Rendering/Base/ResourceManager/Assets/IAsset.hpp"
 #include "Rendering/Base/Interface/Primitive/IBuffer.hpp"
 
 namespace RenderEngine::Assets

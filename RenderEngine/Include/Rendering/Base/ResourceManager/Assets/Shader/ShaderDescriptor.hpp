@@ -3,7 +3,7 @@
 #ifndef RENDERENGINE_SHADERDESCRIPTOR
 #define RENDERENGINE_SHADERDESCRIPTOR
 
-#include "ResourceManager/Assets/Texture/Texture.hpp"
+#include "Rendering/Base/ResourceManager/Assets/Texture/Texture.hpp"
 #include "AssetLoader/RawAsset/Shader/ShaderStage.hpp"
 using namespace Loader;
 

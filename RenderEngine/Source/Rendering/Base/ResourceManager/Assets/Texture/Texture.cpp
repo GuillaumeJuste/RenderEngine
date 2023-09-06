@@ -1,4 +1,4 @@
-#include "ResourceManager/Assets/Texture/Texture.hpp"
+#include "Rendering/Base/ResourceManager/Assets/Texture/Texture.hpp"
 
 using namespace RenderEngine::Assets;
 

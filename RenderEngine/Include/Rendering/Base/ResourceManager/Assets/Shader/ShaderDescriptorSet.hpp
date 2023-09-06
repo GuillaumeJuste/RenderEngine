@@ -4,8 +4,8 @@
 #define RENDERENGINE_SHADERDESCRIPTORSET
 
 #include <forward_list>
-#include "ResourceManager/Assets/Shader/ShaderDescriptor.hpp"
-#include "ResourceManager/Assets/Shader/PushConstant.hpp"
+#include "Rendering/Base/ResourceManager/Assets/Shader/ShaderDescriptor.hpp"
+#include "Rendering/Base/ResourceManager/Assets/Shader/PushConstant.hpp"
 
 namespace RenderEngine::Assets
 {

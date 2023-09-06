@@ -1,4 +1,4 @@
-#include "ResourceManager/Assets/Shader/ShaderDescriptorSet.hpp"
+#include "Rendering/Base/ResourceManager/Assets/Shader/ShaderDescriptorSet.hpp"
 
 using namespace RenderEngine::Assets;
 using namespace Loader;

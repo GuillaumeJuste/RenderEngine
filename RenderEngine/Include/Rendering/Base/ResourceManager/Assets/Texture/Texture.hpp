@@ -3,7 +3,7 @@
 #ifndef RENDERENGINE_TEXTURE
 #define RENDERENGINE_TEXTURE
 
-#include "ResourceManager/Assets/IAsset.hpp"
+#include "Rendering/Base/ResourceManager/Assets/IAsset.hpp"
 #include "Rendering/Base/Interface/Primitive/ITexture.hpp"
 
 namespace RenderEngine::Assets

@@ -1,24 +1,23 @@
 #pragma once
 
-#ifndef RENDERENGINE_RESSOURCEMANAGER
-#define RENDERENGINE_RESSOURCEMANAGER
+#ifndef TMP_RENDERENGINE_RESSOURCEMANAGER
+#define TMP_RENDERENGINE_RESSOURCEMANAGER
 
 #include <string>
 #include <forward_list>
-#include "ResourceManager/Assets/Mesh/Mesh.hpp"
-#include "ResourceManager/Assets/Texture/Texture.hpp"
-#include "ResourceManager/Assets/Shader/Shader.hpp"
-#include "ResourceManager/Assets/AssetManager.hpp"
-#include "Rendering/Base/Interface/IRenderContext.hpp"
+#include "Rendering/Base/ResourceManager/Assets/Mesh/Mesh.hpp"
+#include "Rendering/Base/ResourceManager/Assets/Texture/Texture.hpp"
+#include "Rendering/Base/ResourceManager/Assets/Shader/Shader.hpp"
+#include "Rendering/Base/ResourceManager/Assets/AssetManager.hpp"
 #include "SceneGraph/Scene/Skybox.hpp"
+#include "Mathlib/Mathlib/Include/Space/Vec2.hpp"
 
 #include "AssetLoader/AssetLoader.hpp"
 
 using namespace RenderEngine::Assets;
-using namespace RenderEngine::Rendering;
 using namespace Loader;
 
-namespace RenderEngine
+namespace RenderEngine::Rendering
 {
     /**
      * @brief Resource manager class implementation
@@ -26,11 +25,6 @@ namespace RenderEngine
     class ResourceManager
     {
     private:
-        /**
-         * @brief reference to render context using assets
-        */
-        IRenderContext* renderContext;
-        
         /// Mesh asset manager
         AssetManager<Mesh> meshManager;
 
@@ -40,10 +34,17 @@ namespace RenderEngine
         /// Shader asset manager
         AssetManager<Shader> shaderManager;
 
-    public:
-        /// constructor
-        ResourceManager(IRenderContext* _renderContext);
+        virtual bool CreateMesh(const Loader::RawMesh& _input, RenderEngine::Assets::Mesh* _output) = 0;
+        virtual bool CreateTexture(const Loader::RawTexture& _input, RenderEngine::Assets::Texture* _output, bool _generateMipMap = true) = 0;
+        virtual bool CreateShader(const Loader::RawShader& _input, RenderEngine::Assets::Shader* _output) = 0;
+        virtual bool CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize, bool _generateMipmap, RenderEngine::Assets::Texture* _output,
+            RenderEngine::Assets::Mesh* _mesh, RenderEngine::Assets::Shader* _vertexShader, RenderEngine::Assets::Shader* _fragmentShader) = 0;
+        virtual bool CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize, RenderEngine::Assets::Texture* _output,
+            RenderEngine::Assets::Mesh* _mesh, RenderEngine::Assets::Shader* _vertexShader, RenderEngine::Assets::Shader* _fragmentShader) = 0;
 
+        virtual std::vector<char> GetTextureContent(RenderEngine::Assets::Texture* _texture, uint32_t _imageTotalSize) = 0;
+
+    public:
         /**
          * @brief Load a mesh
          * @param _filePath file path to the mesh
@@ -53,7 +54,7 @@ namespace RenderEngine
 
         /**
          * @brief Get mesh from file path if it was already loaded
-         * @param _filePath 
+         * @param _filePath
          * @return Matching mesh
         */
         Mesh* GetMesh(std::string _filePath);
@@ -76,7 +77,7 @@ namespace RenderEngine
 
         /**
          * @brief Get texture from file path if it was already loaded
-         * @param _filePath 
+         * @param _filePath
          * @return Matching texture
         */
         Texture* GetTexture(std::string _filePath);
@@ -95,14 +96,14 @@ namespace RenderEngine
          * @return Pointer to the resulting shader
         */
         Shader* LoadShader(std::string _filePath, ShaderStage _shaderStage);
-        
+
         /**
          * @brief Get shader from file path if it was already loaded
-         * @param _filePath 
+         * @param _filePath
          * @return Matching shader
         */
         Shader* GetShader(std::string _filePath);
-        
+
         /**
          * @brief Unload a shader
          * @param _shader shader to unload
@@ -131,7 +132,7 @@ namespace RenderEngine
 
         /**
          * @brief Get cubemap from file path if it was already loaded
-         * @param _filePath 
+         * @param _filePath
          * @return Matching texture
         */
         Texture* GetCubemap(std::string _filePath);

@@ -5,7 +5,7 @@
 #include "Rendering/Vulkan/Context/VulkanContext/VulkanContext.hpp"
 #include "Window/Glfw/Window.hpp"
 #include "SceneGraph/Scene/SceneManager.hpp"
-#include "ResourceManager/ResourceManager.hpp"
+#include "Rendering/Base/ResourceManager/ResourceManager.hpp"
 #include "SceneGraph/Object/GameObject/GameObject.hpp"
 #include "Components/MeshRenderer/MeshRenderer.hpp"
 #include "Components/Light/PointLight.hpp"
@@ -265,7 +265,7 @@ void Run()
 {
     InitWindow();
     InitEngine();
-    resourceManager = new ResourceManager(renderContext);
+    resourceManager = renderContext->CreateResourceManager();
     sceneManager = new SceneManager();
     MainLoop();
     Cleanup();

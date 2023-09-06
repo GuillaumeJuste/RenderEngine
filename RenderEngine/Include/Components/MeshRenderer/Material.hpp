@@ -4,9 +4,9 @@
 #define RENDERENGINE_MATERIAL
 
 #include "Mathlib/Mathlib/Include/Space/Vec3.hpp"
-#include "ResourceManager/Assets/Texture/Texture.hpp"
-#include "ResourceManager/Assets/Shader/ShaderDescriptorSet.hpp"
-#include "ResourceManager/Assets/Shader/Shader.hpp"
+#include "Rendering/Base/ResourceManager/Assets/Texture/Texture.hpp"
+#include "Rendering/Base/ResourceManager/Assets/Shader/ShaderDescriptorSet.hpp"
+#include "Rendering/Base/ResourceManager/Assets/Shader/Shader.hpp"
 #include "Rendering/Base/Enum/PolygonDrawMode.hpp"
 #include "Rendering/Base/Enum/FrontFace.hpp"
 

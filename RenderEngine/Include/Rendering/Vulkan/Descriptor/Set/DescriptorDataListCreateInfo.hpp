@@ -3,7 +3,7 @@
 #ifndef RENDERENGINE_DESCRIPTORDATALISTCREATEINFO
 #define RENDERENGINE_DESCRIPTORDATALISTCREATEINFO
 
-#include "ResourceManager/Assets/Shader/ShaderDescriptorSet.hpp"
+#include "Rendering/Base/ResourceManager/Assets/Shader/ShaderDescriptorSet.hpp"
 using namespace RenderEngine::Assets;
 
 #include "Rendering/Vulkan/Descriptor/Buffer/DescriptorBuffer.hpp"

@@ -1,4 +1,4 @@
-#include "ResourceManager/Assets/IAsset.hpp"
+#include "Rendering/Base/ResourceManager/Assets/IAsset.hpp"
 
 using namespace RenderEngine::Assets;
 

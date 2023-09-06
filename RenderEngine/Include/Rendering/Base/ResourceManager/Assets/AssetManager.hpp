@@ -53,6 +53,6 @@ namespace RenderEngine::Assets
 	};
 }
 
-#include "ResourceManager/Assets/AssetManager.inl"
+#include "Rendering/Base/ResourceManager/Assets/AssetManager.inl"
 
 #endif

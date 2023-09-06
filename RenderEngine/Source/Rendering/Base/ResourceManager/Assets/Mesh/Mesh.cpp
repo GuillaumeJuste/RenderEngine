@@ -1,4 +1,4 @@
-#include "ResourceManager/Assets/Mesh/Mesh.hpp"
+#include "Rendering/Base/ResourceManager/Assets/Mesh/Mesh.hpp"
 
 using namespace RenderEngine::Assets;
 

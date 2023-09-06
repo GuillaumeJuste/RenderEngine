@@ -4,7 +4,7 @@
 #define RENDERENGINE_MESHRENDERER
 
 #include "SceneGraph/Components/Component.hpp"
-#include "ResourceManager/Assets/Mesh/Mesh.hpp"
+#include "Rendering/Base/ResourceManager/Assets/Mesh/Mesh.hpp"
 #include "Components/MeshRenderer/Material.hpp"
 
 using namespace RenderEngine::Assets;

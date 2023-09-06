@@ -1,4 +1,4 @@
-#include "ResourceManager/Assets/Shader/Shader.hpp"
+#include "Rendering/Base/ResourceManager/Assets/Shader/Shader.hpp"
 
 using namespace RenderEngine::Assets;
 

@@ -1,19 +1,14 @@
-#include "ResourceManager/ResourceManager.hpp"
+#include "Rendering/Base/ResourceManager/ResourceManager.hpp"
 
 #include <stdexcept>
 #include <cstring>
 #include <fstream>
 #include <filesystem>
 
-using namespace RenderEngine;
+using namespace RenderEngine::Rendering;
 using namespace Loader;
 
 #define ASSETPATH "Resources/Engine/Assets/"
-
-ResourceManager::ResourceManager(IRenderContext* _renderContext) :
-	renderContext { _renderContext }
-{
-}
 
 Mesh* ResourceManager::LoadMesh(std::string _filePath)
 {
@@ -25,7 +20,7 @@ Mesh* ResourceManager::LoadMesh(std::string _filePath)
 	if (rawMesh.isValid)
 	{
 		Mesh* newMesh = new Mesh();
-		renderContext->CreateMesh(rawMesh, newMesh);
+		CreateMesh(rawMesh, newMesh);
 		newMesh->filePath = _filePath;
 		newMesh->indiceCount = rawMesh.indices.size();
 		meshManager.Add(_filePath, newMesh);
@@ -59,7 +54,7 @@ Texture* ResourceManager::LoadTexture(std::string _filePath, TextureFormat _form
 		if (_computeMipmap)
 			rawTexture.mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(rawTexture.width, rawTexture.height)))) + 1;
 		Texture* newTexture = new Texture();
-		renderContext->CreateTexture(rawTexture, newTexture);
+		CreateTexture(rawTexture, newTexture);
 		newTexture->filePath = _filePath;
 		newTexture->height = rawTexture.height;
 		newTexture->width = rawTexture.width;
@@ -96,7 +91,7 @@ Shader* ResourceManager::LoadShader(std::string _filePath, ShaderStage _shaderSt
 	{
 		Shader* newShader = new Shader();
 		rawShader.stage = _shaderStage;
-		renderContext->CreateShader(rawShader, newShader);
+		CreateShader(rawShader, newShader);
 		newShader->filePath = _filePath;
 		shaderManager.Add(_filePath, newShader);
 
@@ -134,7 +129,7 @@ Texture* ResourceManager::LoadCubemap(const CubemapImportInfos& _filePaths, std:
 			rawCubemap.mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(rawCubemap.width, rawCubemap.height)))) + 1;
 
 		Texture* newCubemap = new Texture();
-		renderContext->CreateTexture(rawCubemap, newCubemap);
+		CreateTexture(rawCubemap, newCubemap);
 		newCubemap->filePath = filepath.string();
 		newCubemap->height = rawCubemap.height;
 		newCubemap->width = rawCubemap.width;
@@ -166,7 +161,7 @@ Texture* ResourceManager::CubemapFromTexture(Texture* _texture, Mathlib::Vec2 _g
 	Shader* skyboxVertShader = LoadShader("Resources/Engine/Shaders/FilterCube.vert.spv", ShaderStage::VERTEX);
 	Shader* skyboxFragShader = LoadShader("Resources/Engine/Shaders/TextureToCubemap.frag.spv", ShaderStage::FRAGMENT);
 
-	renderContext->CreateCubemap(_texture->iTexture, _generatedTextureSize, _computeMipmap, newCubemap, skyboxMesh, skyboxVertShader, skyboxFragShader);
+	CreateCubemap(_texture->iTexture, _generatedTextureSize, _computeMipmap, newCubemap, skyboxMesh, skyboxVertShader, skyboxFragShader);
 	newCubemap->filePath = filename.string();
 	newCubemap->isHDR = true;
 
@@ -205,7 +200,7 @@ void ResourceManager::CreateSkyboxFromTexture(Texture* _texture, Mathlib::Vec2 _
 
 		Shader* irradianceFragShader = LoadShader("Resources/Engine/Shaders/IrradianceConvolution.frag.spv", ShaderStage::FRAGMENT);
 
-		renderContext->CreateCubemap(_output->cubemap->iTexture, _generatedTextureSize, false, irradianceCubemap, skyboxMesh, skyboxVertShader, irradianceFragShader);
+		CreateCubemap(_output->cubemap->iTexture, _generatedTextureSize, false, irradianceCubemap, skyboxMesh, skyboxVertShader, irradianceFragShader);
 		irradianceCubemap->filePath = irradianceFilename.string();
 		irradianceCubemap->isHDR = true;
 
@@ -227,7 +222,7 @@ void ResourceManager::CreateSkyboxFromTexture(Texture* _texture, Mathlib::Vec2 _
 
 		Shader* prefilterFragShader = LoadShader("Resources/Engine/Shaders/PrefilterEnvmap.frag.spv", ShaderStage::FRAGMENT);
 
-		renderContext->CreatePrefilteredCubemap(_output->cubemap->iTexture, _generatedTextureSize, prefilterCubemap, skyboxMesh, skyboxVertShader, prefilterFragShader);
+		CreatePrefilteredCubemap(_output->cubemap->iTexture, _generatedTextureSize, prefilterCubemap, skyboxMesh, skyboxVertShader, prefilterFragShader);
 		prefilterCubemap->filePath = prefilteredFilename.string();
 		prefilterCubemap->isHDR = true;
 
@@ -241,7 +236,7 @@ void ResourceManager::SaveAsset(Texture* _texture)
 {
 	uint32_t textureSize = _texture->ComputeTotalSize(_texture);
 
-	std::vector<char> data = renderContext->GetTextureContent(_texture, textureSize * _texture->imageCount);
+	std::vector<char> data = GetTextureContent(_texture, textureSize * _texture->imageCount);
 
 	std::filesystem::path filePath(_texture->filePath);
 	if (filePath.has_extension())
@@ -257,7 +252,7 @@ void ResourceManager::SaveAsset(Texture* _texture)
 	ofs.write(reinterpret_cast<const char*>(&_texture->mipLevels), sizeof(uint32_t));
 	ofs.write(reinterpret_cast<const char*>(&_texture->isHDR), sizeof(bool));
 	ofs.write(data.data(), data.size());
-	
+
 	ofs.close();
 }
 
@@ -288,7 +283,7 @@ Texture* ResourceManager::LoadAsset(std::string _filePath)
 
 
 		Texture* newTexture = new Texture();
-		renderContext->CreateTexture(rawTexture, newTexture, false);
+		CreateTexture(rawTexture, newTexture, false);
 		newTexture->filePath = _filePath;
 		newTexture->height = rawTexture.height;
 		newTexture->width = rawTexture.width;
@@ -298,13 +293,12 @@ Texture* ResourceManager::LoadAsset(std::string _filePath)
 		newTexture->isHDR = rawTexture.isHdr;
 		textureManager.Add(_filePath, newTexture);
 
-		delete []data;
+		delete[]data;
 
 		return newTexture;
 	}
 
 }
-
 
 void ResourceManager::Clean()
 {

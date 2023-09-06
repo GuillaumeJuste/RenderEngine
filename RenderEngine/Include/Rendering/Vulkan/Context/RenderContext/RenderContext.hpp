@@ -115,9 +115,6 @@ namespace RenderEngine::Rendering
 
 		VkScene* WasSceneLoaded(RenderEngine::SceneGraph::Scene* _scene);
 
-		void CreateVertexBufferObject(const Loader::RawMesh& _input, RenderEngine::Assets::Mesh* _output);
-		void CreateIndexBufferObject(const Loader::RawMesh& _input, RenderEngine::Assets::Mesh* _output);
-
 	public:
 		/// default constructor
 		RenderContext() = default;
@@ -132,19 +129,11 @@ namespace RenderEngine::Rendering
 		*/
 		static void InitalizeRenderContext(const RenderContextVkCreateInfo& _createInfo, RenderContext* _output);
 
+		ResourceManager* CreateResourceManager();
+
 		void DrawScene(RenderEngine::SceneGraph::Scene* _scene);
 
 		VkScene* LoadScene(RenderEngine::SceneGraph::Scene* _scene);
-
-		bool CreateMesh(const Loader::RawMesh& _input, RenderEngine::Assets::Mesh* _output);
-		bool CreateTexture(const Loader::RawTexture& _input, RenderEngine::Assets::Texture* _output, bool _generateMipMap = true);
-		bool CreateShader(const Loader::RawShader& _input, RenderEngine::Assets::Shader* _output);
-		bool CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize, bool _generateMipmap, RenderEngine::Assets::Texture* _output,
-			RenderEngine::Assets::Mesh* _mesh, RenderEngine::Assets::Shader* _vertexShader, RenderEngine::Assets::Shader* _fragmentShader);
-		bool CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize, RenderEngine::Assets::Texture* _output,
-			RenderEngine::Assets::Mesh* _mesh, RenderEngine::Assets::Shader* _vertexShader, RenderEngine::Assets::Shader* _fragmentShader);
-
-		std::vector<char> GetTextureContent(RenderEngine::Assets::Texture* _texture, uint32_t _imageTotalSize);
 
 		/**
 		 * @brief clean up vulkan classes

@@ -7,11 +7,6 @@
 
 #include <forward_list>
 
-namespace RenderEngine
-{
-    class ResourceManager;
-}
-
 namespace RenderEngine::SceneGraph
 {
     /**

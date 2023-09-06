@@ -3,7 +3,7 @@
 #ifndef RENDERENGINE_SHADER
 #define RENDERENGINE_SHADER
 
-#include "ResourceManager/Assets/IAsset.hpp"
+#include "Rendering/Base/ResourceManager/Assets/IAsset.hpp"
 #include "Rendering/Base/Interface/Primitive/IShader.hpp"
 
 namespace RenderEngine::Assets
