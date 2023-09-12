@@ -7,14 +7,7 @@ VkResourceManager::VkResourceManager(VkResourceManagerCreateInfo _createInfo) :
 {
 }
 
-bool VkResourceManager::CreateMesh(const Loader::RawMesh& _input, RenderEngine::Assets::Mesh* _output)
-{
-	CreateVertexBufferObject(_input, _output);
-	CreateIndexBufferObject(_input, _output);
-	return true;
-}
-
-void VkResourceManager::CreateVertexBufferObject(const Loader::RawMesh& _input, RenderEngine::Assets::Mesh* _output)
+IBuffer* VkResourceManager::CreateVertexBufferObject(const Loader::RawMesh& _input)
 {
 	BufferObject stagingBufferObject;
 	BufferObjectVkCreateInfo stagingBufferCreateInfo;
@@ -45,10 +38,10 @@ void VkResourceManager::CreateVertexBufferObject(const Loader::RawMesh& _input, 
 	stagingBufferObject.CopyBuffer(VBO, commandPool, graphicsQueue, stagingBufferCreateInfo.bufferSize);
 	stagingBufferObject.Clean();
 
-	_output->vertexBuffer = VBO;
+	return VBO;
 }
 
-void VkResourceManager::CreateIndexBufferObject(const Loader::RawMesh& _input, RenderEngine::Assets::Mesh* _output)
+IBuffer* VkResourceManager::CreateIndexBufferObject(const Loader::RawMesh& _input)
 {
 	BufferObject stagingBufferObject;
 	BufferObjectVkCreateInfo stagingBufferCreateInfo;
@@ -79,10 +72,10 @@ void VkResourceManager::CreateIndexBufferObject(const Loader::RawMesh& _input, R
 	stagingBufferObject.CopyBuffer(IBO, commandPool, graphicsQueue, stagingBufferCreateInfo.bufferSize);
 	stagingBufferObject.Clean();
 
-	_output->indexBuffer = IBO;
+	return IBO;
 }
 
-bool VkResourceManager::CreateTexture(const Loader::RawTexture& _input, RenderEngine::Assets::Texture* _output, bool _generateMipMap)
+ITexture* VkResourceManager::CreateTexture(const Loader::RawTexture& _input, bool _generateMipMap)
 {
 	VkTextureVkCreateInfo textCreateInfo{};
 	textCreateInfo.logicalDevice = logicalDevice;
@@ -112,11 +105,10 @@ bool VkResourceManager::CreateTexture(const Loader::RawTexture& _input, RenderEn
 	else
 		vkTexture->GetImageBuffer()->TransitionImageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
-	_output->iTexture = vkTexture;
-	return true;
+	return vkTexture;
 }
 
-bool VkResourceManager::CreateShader(const Loader::RawShader& _input, RenderEngine::Assets::Shader* _output)
+IShader* VkResourceManager::CreateShader(const Loader::RawShader& _input)
 {
 	VkShaderCreateInfo shaderCreateInfo{};
 	shaderCreateInfo.rawShader = _input;
@@ -125,9 +117,8 @@ bool VkResourceManager::CreateShader(const Loader::RawShader& _input, RenderEngi
 	VkShader* vkShader = new VkShader();
 
 	VkShader::CreateVkShader(shaderCreateInfo, vkShader);
-	_output->iShader = vkShader;
 
-	return true;
+	return vkShader;
 }
 
 bool VkResourceManager::CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize, bool _generateMipmap, RenderEngine::Assets::Texture* _output,

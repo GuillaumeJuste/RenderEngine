@@ -34,9 +34,11 @@ namespace RenderEngine::Rendering
         /// Shader asset manager
         AssetManager<Shader> shaderManager;
 
-        virtual bool CreateMesh(const Loader::RawMesh& _input, RenderEngine::Assets::Mesh* _output) = 0;
-        virtual bool CreateTexture(const Loader::RawTexture& _input, RenderEngine::Assets::Texture* _output, bool _generateMipMap = true) = 0;
-        virtual bool CreateShader(const Loader::RawShader& _input, RenderEngine::Assets::Shader* _output) = 0;
+        virtual IBuffer* CreateVertexBufferObject(const Loader::RawMesh& _input) = 0;
+        virtual IBuffer* CreateIndexBufferObject(const Loader::RawMesh& _input) = 0;
+
+        virtual ITexture* CreateTexture(const Loader::RawTexture& _input, bool _generateMipMap = true) = 0;
+        virtual IShader* CreateShader(const Loader::RawShader& _input) = 0;
         virtual bool CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize, bool _generateMipmap, RenderEngine::Assets::Texture* _output,
             RenderEngine::Assets::Mesh* _mesh, RenderEngine::Assets::Shader* _vertexShader, RenderEngine::Assets::Shader* _fragmentShader) = 0;
         virtual bool CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize, RenderEngine::Assets::Texture* _output,

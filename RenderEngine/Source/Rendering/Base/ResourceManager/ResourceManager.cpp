@@ -20,7 +20,9 @@ Mesh* ResourceManager::LoadMesh(std::string _filePath)
 	if (rawMesh.isValid)
 	{
 		Mesh* newMesh = new Mesh();
-		CreateMesh(rawMesh, newMesh);
+		newMesh->vertexBuffer = CreateVertexBufferObject(rawMesh);
+		newMesh->indexBuffer = CreateIndexBufferObject(rawMesh);
+
 		newMesh->filePath = _filePath;
 		newMesh->indiceCount = rawMesh.indices.size();
 		meshManager.Add(_filePath, newMesh);
@@ -54,7 +56,7 @@ Texture* ResourceManager::LoadTexture(std::string _filePath, TextureFormat _form
 		if (_computeMipmap)
 			rawTexture.mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(rawTexture.width, rawTexture.height)))) + 1;
 		Texture* newTexture = new Texture();
-		CreateTexture(rawTexture, newTexture);
+		newTexture->iTexture = CreateTexture(rawTexture);
 		newTexture->filePath = _filePath;
 		newTexture->height = rawTexture.height;
 		newTexture->width = rawTexture.width;
@@ -91,7 +93,7 @@ Shader* ResourceManager::LoadShader(std::string _filePath, ShaderStage _shaderSt
 	{
 		Shader* newShader = new Shader();
 		rawShader.stage = _shaderStage;
-		CreateShader(rawShader, newShader);
+		newShader->iShader = CreateShader(rawShader);
 		newShader->filePath = _filePath;
 		shaderManager.Add(_filePath, newShader);
 
@@ -129,7 +131,7 @@ Texture* ResourceManager::LoadCubemap(const CubemapImportInfos& _filePaths, std:
 			rawCubemap.mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(rawCubemap.width, rawCubemap.height)))) + 1;
 
 		Texture* newCubemap = new Texture();
-		CreateTexture(rawCubemap, newCubemap);
+		newCubemap->iTexture = CreateTexture(rawCubemap);
 		newCubemap->filePath = filepath.string();
 		newCubemap->height = rawCubemap.height;
 		newCubemap->width = rawCubemap.width;
@@ -283,7 +285,7 @@ Texture* ResourceManager::LoadAsset(std::string _filePath)
 
 
 		Texture* newTexture = new Texture();
-		CreateTexture(rawTexture, newTexture, false);
+		newTexture->iTexture = CreateTexture(rawTexture, false);
 		newTexture->filePath = _filePath;
 		newTexture->height = rawTexture.height;
 		newTexture->width = rawTexture.width;

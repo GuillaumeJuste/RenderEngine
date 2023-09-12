@@ -23,12 +23,11 @@ namespace RenderEngine::Rendering
 
 		CommandPool* commandPool;
 
-		bool CreateMesh(const Loader::RawMesh& _input, RenderEngine::Assets::Mesh* _output);
-		void CreateVertexBufferObject(const Loader::RawMesh& _input, RenderEngine::Assets::Mesh* _output);
-		void CreateIndexBufferObject(const Loader::RawMesh& _input, RenderEngine::Assets::Mesh* _output);
+		IBuffer* CreateVertexBufferObject(const Loader::RawMesh& _input);
+		IBuffer* CreateIndexBufferObject(const Loader::RawMesh& _input);
 
-		bool CreateTexture(const Loader::RawTexture& _input, RenderEngine::Assets::Texture* _output, bool _generateMipMap = true);
-		bool CreateShader(const Loader::RawShader& _input, RenderEngine::Assets::Shader* _output);
+		ITexture* CreateTexture(const Loader::RawTexture& _input, bool _generateMipMap = true);
+		IShader* CreateShader(const Loader::RawShader& _input);
 		bool CreateCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize, bool _generateMipmap, RenderEngine::Assets::Texture* _output,
 			RenderEngine::Assets::Mesh* _mesh, RenderEngine::Assets::Shader* _vertexShader, RenderEngine::Assets::Shader* _fragmentShader);
 		bool CreatePrefilteredCubemap(ITexture* _texture, Mathlib::Vec2 _outputSize, RenderEngine::Assets::Texture* _output,
