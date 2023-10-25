@@ -17,7 +17,11 @@ void GraphicsPipeline::InitalizeGraphicsPipeline(const GraphicsPipelineVkCreateI
     _output->vertexShader = _createInfo.vertexShader;
     _output->fragmentShader = _createInfo.fragmentShader;
 
-    VkPipelineShaderStageCreateInfo shaderStages[] = { _output->vertexShader->GetShaderStageInfo(), _output->fragmentShader->GetShaderStageInfo() };
+    std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
+    shaderStages.push_back(_output->vertexShader->GetShaderStageInfo());
+
+    if(_output->fragmentShader != nullptr)
+        shaderStages.push_back(_output->fragmentShader->GetShaderStageInfo());
 
     VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
     vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -117,8 +121,8 @@ void GraphicsPipeline::InitalizeGraphicsPipeline(const GraphicsPipelineVkCreateI
 
     VkGraphicsPipelineCreateInfo pipelineInfo{};
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-    pipelineInfo.stageCount = 2;
-    pipelineInfo.pStages = shaderStages;
+    pipelineInfo.stageCount = shaderStages.size();
+    pipelineInfo.pStages = shaderStages.data();
     pipelineInfo.pVertexInputState = &vertexInputInfo;
     pipelineInfo.pInputAssemblyState = &inputAssembly;
     pipelineInfo.pViewportState = &viewportState;

@@ -38,8 +38,8 @@ namespace RenderEngine::Rendering
 
 		VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT;
 
-		VkShader* vertexShader;
-		VkShader* fragmentShader;
+		VkShader* vertexShader = nullptr;
+		VkShader* fragmentShader = nullptr;
 		FrontFace frontFace = FrontFace::CLOCKWISE;
 		PolygonDrawMode drawMode = PolygonDrawMode::FILL;
 		float lineWidth = 1.0f;

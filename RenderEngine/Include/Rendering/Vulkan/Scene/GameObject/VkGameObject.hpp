@@ -28,18 +28,20 @@ namespace RenderEngine::Rendering
 		BufferObject* IBO = nullptr;
 
 		GraphicsPipeline graphicsPipeline;
-
-		DescriptorBuffer uniformBufferObject;
-
-		DescriptorBuffer materialBufferObject;
-
 		std::vector<DescriptorSet> descriptorSets;
 
-		void CreateDescriptorSet(std::vector<DescriptorDataList> _descriptorDatas);
+		GraphicsPipeline shadowGraphicsPipeline;
+		std::vector<DescriptorSet> shadowDescriptorSets;
+
+		DescriptorBuffer uniformBufferObject;
+		DescriptorBuffer materialBufferObject;
+
+
+		void CreateDescriptorSet(GraphicsPipeline& _pipeline, std::vector<DescriptorDataList> _descriptorDatas, std::vector<DescriptorSet>& _output);
 
 		void CreateDescriptorBufferObjects();
 
-		void CreateGraphicsPipeline();
+		void CreateGraphicsPipeline(GraphicsPipeline& _outputPipeline, std::vector<DescriptorSet>& _output, bool _useFragmentShader);
 
 	public:
 		VkGameObject(const VkGameObjectCreateInfo& _createInfo);

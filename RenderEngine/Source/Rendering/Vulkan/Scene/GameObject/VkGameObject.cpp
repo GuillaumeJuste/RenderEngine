@@ -20,10 +20,11 @@ VkGameObject::VkGameObject(const VkGameObjectCreateInfo& _createInfo) :
 
 	CreateDescriptorBufferObjects();
 
-	CreateGraphicsPipeline();
+	CreateGraphicsPipeline(graphicsPipeline, descriptorSets, true);
+	CreateGraphicsPipeline(shadowGraphicsPipeline, shadowDescriptorSets, false);
 }
 
-void VkGameObject::CreateGraphicsPipeline()
+void VkGameObject::CreateGraphicsPipeline(GraphicsPipeline& _outputPipeline, std::vector<DescriptorSet>& _output, bool _useFragmentShader)
 {
 	if (meshRenderer != nullptr)
 	{
@@ -33,7 +34,6 @@ void VkGameObject::CreateGraphicsPipeline()
 		gpCreateInfo.swapChainExtent = createInfo.swapchain->GetExtent();
 		gpCreateInfo.swapChainImageFormat = createInfo.swapchain->GetImageFormat();
 		gpCreateInfo.vertexShader = dynamic_cast<VkShader*>(meshRenderer->material.vertexShader->iShader);
-		gpCreateInfo.fragmentShader = dynamic_cast<VkShader*>(meshRenderer->material.fragmentShader->iShader);
 		gpCreateInfo.drawMode = meshRenderer->material.drawMode;
 		gpCreateInfo.lineWidth = meshRenderer->material.lineWidth;
 		gpCreateInfo.frontFace = meshRenderer->material.frontFace;
@@ -41,7 +41,6 @@ void VkGameObject::CreateGraphicsPipeline()
 
 		DescriptorDataListCreateInfo descriptorDataListCreateInfo{};
 		descriptorDataListCreateInfo.descriptorSets.push_back(meshRenderer->material.vertexShaderDescriptorSet);
-		descriptorDataListCreateInfo.descriptorSets.push_back(meshRenderer->material.fragmentShaderDescriptorSet);
 		descriptorDataListCreateInfo.uniformBuffer = &uniformBufferObject;
 		descriptorDataListCreateInfo.materialBuffer = &materialBufferObject;
 		descriptorDataListCreateInfo.cameraBuffer = createInfo.cameraBuffer;
@@ -66,12 +65,18 @@ void VkGameObject::CreateGraphicsPipeline()
 				descriptorDataListCreateInfo.ambientOcclusionMap = dynamic_cast<VkTexture*>(meshRenderer->material.ambientOcclusionMap->iTexture);
 		}
 
+		if (_useFragmentShader)
+		{
+			gpCreateInfo.fragmentShader = dynamic_cast<VkShader*>(meshRenderer->material.fragmentShader->iShader);
+			descriptorDataListCreateInfo.descriptorSets.push_back(meshRenderer->material.fragmentShaderDescriptorSet);
+		}
+
 		gpCreateInfo.descriptorDatas = DescriptorDataList::GenerateDescriptorDataLists(descriptorDataListCreateInfo);
 		gpCreateInfo.pushConstants = GraphicsPipeline::GeneratePushConstants(descriptorDataListCreateInfo.descriptorSets);
 
-		GraphicsPipeline::InitalizeGraphicsPipeline(gpCreateInfo, &graphicsPipeline);
+		GraphicsPipeline::InitalizeGraphicsPipeline(gpCreateInfo, &_outputPipeline);
 
-		CreateDescriptorSet(gpCreateInfo.descriptorDatas);
+		CreateDescriptorSet(_outputPipeline, gpCreateInfo.descriptorDatas, _output);
 	}
 }
 
@@ -96,21 +101,21 @@ void VkGameObject::CreateDescriptorBufferObjects()
 	DescriptorBuffer::InitializeDescriptorBuffer(materialBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &materialBufferObject);
 }
 
-void VkGameObject::CreateDescriptorSet(std::vector<DescriptorDataList> _descriptorDatas)
+void VkGameObject::CreateDescriptorSet(GraphicsPipeline& _pipeline, std::vector<DescriptorDataList> _descriptorDatas, std::vector<DescriptorSet>& _output)
 {
 	size_t descrtiptorSetCount = _descriptorDatas.size();
-	descriptorSets.resize(descrtiptorSetCount);
+	_output.resize(descrtiptorSetCount);
 
 	for (int index = 0; index < descrtiptorSetCount; index++)
 	{
 		DescriptorSetVkCreateInfo descriptorSetCreateInfo{};
 		descriptorSetCreateInfo.logicalDevice = createInfo.logicalDevice;
-		descriptorSetCreateInfo.descriptorSetLayout = graphicsPipeline.GetDescriptorSetLayout(index);
-		descriptorSetCreateInfo.descriptorPool = graphicsPipeline.GetDescriptorPool(index);
+		descriptorSetCreateInfo.descriptorSetLayout = _pipeline.GetDescriptorSetLayout(index);
+		descriptorSetCreateInfo.descriptorPool = _pipeline.GetDescriptorPool(index);
 		descriptorSetCreateInfo.descriptorDatas = _descriptorDatas[index];
 		descriptorSetCreateInfo.frameCount = MAX_FRAMES_IN_FLIGHT;
 
-		DescriptorSet::InitializeDescriptorSet(descriptorSetCreateInfo, &descriptorSets[index]);
+		DescriptorSet::InitializeDescriptorSet(descriptorSetCreateInfo, &_output[index]);
 	}
 }
 
