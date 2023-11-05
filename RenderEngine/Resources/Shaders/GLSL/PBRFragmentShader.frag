@@ -27,6 +27,7 @@ struct PointLight
 
 layout (set = 1,binding = 5) buffer PointLightData
 {
+	int lightCount;
 	PointLight lights[];
 } pointLightsBuffer;
 
@@ -40,6 +41,7 @@ struct DirectionalLight
 
 layout (set = 1,binding = 6) buffer DirectionalLightData
 {
+	int lightCount;
 	DirectionalLight lights[];
 } directionalLightsBuffer;
 
@@ -57,6 +59,7 @@ struct SpotLight
 
 layout (set = 1,binding = 7) buffer SpotLightData
 {
+	int lightCount;
 	SpotLight lights[];
 } spotLightsBuffer;
 
@@ -123,7 +126,7 @@ void main()
 
 	vec3 Lo = vec3(0.0);
 
-	for(int i = 0; i < pointLightsBuffer.lights.length(); ++i) 
+	for(int i = 0; i < pointLightsBuffer.lightCount; ++i) 
     {
 		if(pointLightsBuffer.lights[i].enable == true)
 		{
@@ -131,13 +134,13 @@ void main()
 		}
 	}
 
-	for(int i = 0; i < directionalLightsBuffer.lights.length(); i++)
+	for(int i = 0; i < directionalLightsBuffer.lightCount; i++)
 	{
 		if(directionalLightsBuffer.lights[i].enable == true)
 			Lo += ComputeDirectionalLightLighting(directionalLightsBuffer.lights[i], normal, viewDirection, albedo, metalness, roughness, F0);
 	}
 
-	for(int i = 0; i < spotLightsBuffer.lights.length(); i++)
+	for(int i = 0; i < spotLightsBuffer.lightCount; i++)
   	{
 		if(spotLightsBuffer.lights[i].enable == true)
 			Lo += ComputeSpotLightLighting(spotLightsBuffer.lights[i], normal, viewDirection, albedo, metalness, roughness, F0);
@@ -150,7 +153,6 @@ void main()
     vec3 diffuse = irradiance * albedo;
 
     vec3 prefilteredColor = prefilteredReflection(reflection, roughness);    
-    //vec3 prefilteredColor = textureLod(prefilteredSampler, reflection, 10.0).rgb;;    
     vec2 brdf  = texture(BRDFlutSampler, vec2(max(dot(normal, viewDirection), 0.0), roughness)).rg;
     vec3 specular = prefilteredColor * (kS * brdf.x + brdf.y);
 

@@ -160,7 +160,7 @@ void VkGameObject::Update(size_t _currentframe)
 	
 	uboData.model = createInfo.gameObject->GetWorldTransform().ToMatrixWithScale().Transpose();
 
-	uniformBufferObject.CopyDataToBuffer<UniformBufferData>((int)_currentframe, &uboData, sizeof(UniformBufferData));
+	uniformBufferObject.CopyDataToBuffer<UniformBufferData>((int)_currentframe, &uboData, 0, sizeof(UniformBufferData));
 
 	Material material{};
 	material.ambient = meshRenderer->material.ambient;
@@ -168,7 +168,7 @@ void VkGameObject::Update(size_t _currentframe)
 	material.specular = meshRenderer->material.specular;
 	material.shininess = meshRenderer->material.shininess;
 
-	materialBufferObject.CopyDataToBuffer<Material>((int)_currentframe, &material, sizeof(Material));
+	materialBufferObject.CopyDataToBuffer<Material>((int)_currentframe, &material, 0, sizeof(Material));
 }
 
 void VkGameObject::Cleanup()
@@ -177,4 +177,6 @@ void VkGameObject::Cleanup()
 	materialBufferObject.Cleanup();
 
 	graphicsPipeline.Cleanup();
+	shadowGraphicsPipeline.Cleanup();
+
 }

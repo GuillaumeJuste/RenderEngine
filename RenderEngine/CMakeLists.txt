@@ -37,6 +37,9 @@ target_link_libraries(RenderEngine PUBLIC assimp)
 # Add STB library
 target_link_directories(RenderEngine PUBLIC ${CMAKE_SOURCE_DIR}/ThirdParty/Gitmodules/stb) 
 
+# Add DirectXSHaderCompiler library
+target_link_libraries(RenderEngine PRIVATE DirectXShaderCompiler)
+
 #find_package(Vulkan REQUIRED)
 #if(Vulkan_FOUND)
 #	message(STATUS "Successfully located the Vulkan SDK: ${Vulkan_INCLUDE_DIRS}")	
@@ -54,7 +57,7 @@ target_link_libraries(RenderEngine PUBLIC Vulkan::Vulkan)
 if(WIN32)
     add_custom_command(TARGET RenderEngine POST_BUILD
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/RenderEngine/Resources/Shaders
-        COMMAND cmd /C ${CMAKE_SOURCE_DIR}/RenderEngine/Resources/Shaders/CompileShader.bat)
+        COMMAND cmd /C ${CMAKE_SOURCE_DIR}/RenderEngine/Resources/Shaders/GLSL/CompileShader.bat)
 
     add_custom_command(TARGET RenderEngine POST_BUILD        
     COMMAND ${CMAKE_COMMAND} -E copy_directory  

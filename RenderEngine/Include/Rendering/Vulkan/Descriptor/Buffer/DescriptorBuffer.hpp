@@ -29,7 +29,7 @@ namespace RenderEngine::Rendering
 		static void InitializeDescriptorBuffer(const BufferObjectVkCreateInfo& _createInfo, int _frameCount, DescriptorBuffer* _output);
 
 		template<typename T>
-		void CopyDataToBuffer(int _bufferIndex, T* _data, size_t _dataSize);
+		void CopyDataToBuffer(int _bufferIndex, T* _data, size_t _offset, size_t _dataSize);
 
 		void Cleanup();
 

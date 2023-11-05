@@ -9,6 +9,7 @@
 #include "AssetLoader/RawAsset/Texture/RawTexture.hpp"
 #include "AssetLoader/RawAsset/Texture/CubemapImportInfos.hpp"
 #include "AssetLoader/RawAsset/Mesh/RawMesh.hpp"
+#include "AssetLoader/Wrapper/ShaderCompiler/ShaderCompiler.hpp"
 
 namespace Loader
 {
@@ -24,18 +25,22 @@ namespace Loader
          * @param _output shader data struct
          * @return true if shader was read
         */
-        static bool ReadShaderFile(const std::string& _shaderFilePath, RawShader& _output);
+        bool ReadShaderFile(const std::string& _shaderFilePath, RawShader& _output);
+
+        Wrapper::ShaderCompiler shaderCompiler;
 
     public:
         /// constructor
-        AssetLoader() = default;
+        AssetLoader();
+
+        ~AssetLoader();
 
         /**
          * @brief Load a mesh
          * @param _filePath file path to the mesh
          * @return struct holding loaded mesh data
         */
-        static RawMesh LoadMesh(std::string _filePath);
+        RawMesh LoadMesh(std::string _filePath);
 
         /**
          * @brief Load a texture
@@ -43,7 +48,7 @@ namespace Loader
          * @param _format texture format
          * @return struct holding loaded texture data
         */
-        static RawTexture LoadTexture(std::string _filePath, TextureFormat _format);
+        RawTexture LoadTexture(std::string _filePath, TextureFormat _format);
 
         /**
         * @brief Load a cube map
@@ -51,15 +56,23 @@ namespace Loader
         * @param _format texture format
         * @return struct holding loaded cubemap data
        */
-        static RawTexture LoadCubemap(const CubemapImportInfos& _filePaths, TextureFormat _format);
+        RawTexture LoadCubemap(const CubemapImportInfos& _filePaths, TextureFormat _format);
 
         /**
-         * @brief Load a shader
+         * @brief Load a SPV shader
          * @param _filePath file path to the shader
          * @param _shaderStage stage of the shader (vertex, fragment...)
          * @return struct holding loaded shader data
         */
-        static RawShader LoadShader(std::string _filePath, ShaderStage _shaderStage);
+        RawShader LoadShaderSPV(std::string _filePath);
+
+        /**
+        * @brief Load and compile a HLSL shader
+        * @param _filePath file path to the shader
+        * @param _shaderStage stage of the shader (vertex, fragment...)
+        * @return struct holding loaded shader data
+       */
+        RawShader LoadShaderHLSL(std::string _filePath, ShaderStage _shaderStage);
     };
 }
 

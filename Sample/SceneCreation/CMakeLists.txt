@@ -19,4 +19,9 @@ if(WIN32)
     COMMAND ${CMAKE_COMMAND} -E copy_directory  
         ${CMAKE_SOURCE_DIR}/Sample/SceneCreation/Resources     
         $<TARGET_FILE_DIR:SceneCreation>/Resources/Sample/SceneCreation) 
+
+    add_custom_command(TARGET SceneCreation POST_BUILD        
+    COMMAND ${CMAKE_COMMAND} -E copy_directory  
+        ${CMAKE_SOURCE_DIR}/ThirdParty/DirectXShaderCompiler/bin/x64    
+        $<TARGET_FILE_DIR:SceneCreation>) 
 endif()

@@ -25,6 +25,8 @@ namespace RenderEngine::Rendering
     class ResourceManager
     {
     private:
+        AssetLoader assetLoader;
+
         /// Mesh asset manager
         AssetManager<Mesh> meshManager;
 

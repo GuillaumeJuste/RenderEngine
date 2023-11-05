@@ -19,4 +19,9 @@ if(WIN32)
     COMMAND ${CMAKE_COMMAND} -E copy_directory  
         ${CMAKE_SOURCE_DIR}/Sample/ScenePBR/Resources     
         $<TARGET_FILE_DIR:ScenePBR>/Resources/Sample/ScenePBR) 
+
+    add_custom_command(TARGET ScenePBR POST_BUILD        
+    COMMAND ${CMAKE_COMMAND} -E copy_directory  
+        ${CMAKE_SOURCE_DIR}/ThirdParty/DirectXShaderCompiler/bin/x64    
+        $<TARGET_FILE_DIR:ScenePBR>) 
 endif()

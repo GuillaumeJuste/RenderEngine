@@ -7,6 +7,16 @@ using namespace Wrapper;
 
 #include <fstream>
 
+AssetLoader::AssetLoader()
+{
+	shaderCompiler.Create();
+}
+
+AssetLoader::~AssetLoader()
+{
+	shaderCompiler.Destroy();
+}
+
 bool AssetLoader::ReadShaderFile(const std::string& _shaderFilePath, RawShader& _output)
 {
 	std::ifstream file(_shaderFilePath, std::ios::ate | std::ios::binary);
@@ -47,9 +57,38 @@ RawTexture AssetLoader::LoadCubemap(const CubemapImportInfos& _filePaths, Textur
 	return rawCubemap;
 }
 
-RawShader AssetLoader::LoadShader(std::string _filePath, ShaderStage _shaderStage)
+RawShader AssetLoader::LoadShaderSPV(std::string _filePath)
 {
 	RawShader rawShader;
 	rawShader.isValid = ReadShaderFile(_filePath, rawShader);
+	return rawShader;
+}
+
+RawShader AssetLoader::LoadShaderHLSL(std::string _filePath, ShaderStage _shaderStage)
+{
+	ShaderCompileInfo compileInfo;
+	compileInfo.path = _filePath;
+	compileInfo.entrypoint = "main";
+
+	switch (_shaderStage)
+	{
+	case Loader::VERTEX:
+		compileInfo.target = "vs_6_5";
+		break;
+	case Loader::FRAGMENT:
+		compileInfo.target = "ps_6_5";
+		break;
+	case Loader::COMPUTE:
+		compileInfo.target = "cs_6_5";
+		break;
+	case Loader::GEOMETRY:
+		compileInfo.target = "gs_6_5";
+		break;
+	default:
+		break;
+	}
+
+	RawShader rawShader = shaderCompiler.CompileSPIRV(compileInfo);
+
 	return rawShader;
 }

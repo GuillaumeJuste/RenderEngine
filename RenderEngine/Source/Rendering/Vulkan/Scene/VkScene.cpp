@@ -163,7 +163,7 @@ std::vector<SpotLightData> VkScene::GenerateSpotLightsData()
 
 void VkScene::CreateLightBuffer(size_t _pointLightCount, size_t _directionalLightCount, size_t _spotLightCount)
 {
-	size_t pointLightBufferSize = sizeof(PointLightData) * _pointLightCount;
+	size_t pointLightBufferSize = sizeof(PointLightData) * _pointLightCount + lightBufferLightCountOffset;
 	if (pointLightBufferSize > pointLightsBuffer.GetBufferSize())
 	{
 		BufferObjectVkCreateInfo pointLightsBufferCreateInfo;
@@ -176,7 +176,7 @@ void VkScene::CreateLightBuffer(size_t _pointLightCount, size_t _directionalLigh
 		DescriptorBuffer::InitializeDescriptorBuffer(pointLightsBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &pointLightsBuffer);
 	}
 
-	size_t directionalLightBufferSize = sizeof(DirectionalLightData) * _directionalLightCount;
+	size_t directionalLightBufferSize = sizeof(DirectionalLightData) * _directionalLightCount + lightBufferLightCountOffset;
 	if (directionalLightBufferSize > directionalLightsBuffer.GetBufferSize())
 	{
 	BufferObjectVkCreateInfo directionalLightsBufferCreateInfo;
@@ -189,7 +189,7 @@ void VkScene::CreateLightBuffer(size_t _pointLightCount, size_t _directionalLigh
 	DescriptorBuffer::InitializeDescriptorBuffer(directionalLightsBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &directionalLightsBuffer);
 	}
 
-	size_t spotLightBufferSize = sizeof(SpotLightData) * _spotLightCount;
+	size_t spotLightBufferSize = sizeof(SpotLightData) * _spotLightCount + lightBufferLightCountOffset;
 	if (spotLightBufferSize > spotLightsBuffer.GetBufferSize())
 	{
 		BufferObjectVkCreateInfo spotLightsBufferCreateInfo;
@@ -235,16 +235,23 @@ void VkScene::Update(size_t _currentframe)
 	cameraBufferdata.invView = camera->GetInvViewMatrix().Transpose();
 	cameraBufferdata.proj = camera->GetProjectionMatrix((float)extent.width / (float)extent.height).Transpose();
 	cameraBufferdata.cameraPos = camera->GetWorldTransform().position;
-	cameraBuffer.CopyDataToBuffer<CameraBufferData>((int)_currentframe, &cameraBufferdata, sizeof(CameraBufferData));
+	cameraBuffer.CopyDataToBuffer<CameraBufferData>((int)_currentframe, &cameraBufferdata, 0, sizeof(CameraBufferData));
+
 
 	std::vector<PointLightData> pointLightsdata = GeneratePointLightsData();
-	pointLightsBuffer.CopyDataToBuffer<PointLightData>((int)_currentframe, pointLightsdata.data(), sizeof(PointLightData) * pointLightsdata.size());
+	int lightCount = pointLightsdata.size();
+	pointLightsBuffer.CopyDataToBuffer<int>((int)_currentframe, &lightCount, 0, sizeof(int));
+	pointLightsBuffer.CopyDataToBuffer<PointLightData>((int)_currentframe, pointLightsdata.data(), lightBufferLightCountOffset, sizeof(PointLightData) * lightCount);
 
 	std::vector<DirectionalLightData> directionalLightsdata = GenerateDirectionalLightsData();
-	directionalLightsBuffer.CopyDataToBuffer<DirectionalLightData>((int)_currentframe, directionalLightsdata.data(), sizeof(DirectionalLightData) * directionalLightsdata.size());
+	lightCount = directionalLightsdata.size();
+	directionalLightsBuffer.CopyDataToBuffer<int>((int)_currentframe, &lightCount, 0, sizeof(int));
+	directionalLightsBuffer.CopyDataToBuffer<DirectionalLightData>((int)_currentframe, directionalLightsdata.data(), lightBufferLightCountOffset, sizeof(DirectionalLightData) * lightCount);
 
 	std::vector<SpotLightData> spotLightsdata = GenerateSpotLightsData();
-	spotLightsBuffer.CopyDataToBuffer<SpotLightData>((int)_currentframe, spotLightsdata.data(), sizeof(SpotLightData) * spotLightsdata.size());
+	lightCount = spotLightsdata.size();
+	spotLightsBuffer.CopyDataToBuffer<int>((int)_currentframe, &lightCount, 0, sizeof(int));
+	spotLightsBuffer.CopyDataToBuffer<SpotLightData>((int)_currentframe, spotLightsdata.data(), lightBufferLightCountOffset, sizeof(SpotLightData) * lightCount);
 
 	for (std::forward_list<VkGameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{

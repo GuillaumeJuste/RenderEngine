@@ -16,7 +16,7 @@ Mesh* ResourceManager::LoadMesh(std::string _filePath)
 	if (mesh != nullptr)
 		return mesh;
 
-	RawMesh rawMesh = AssetLoader::LoadMesh(_filePath);
+	RawMesh rawMesh = assetLoader.LoadMesh(_filePath);
 	if (rawMesh.isValid)
 	{
 		Mesh* newMesh = new Mesh();
@@ -49,7 +49,7 @@ Texture* ResourceManager::LoadTexture(std::string _filePath, TextureFormat _form
 	if (texture != nullptr)
 		return texture;
 
-	RawTexture rawTexture = AssetLoader::LoadTexture(_filePath, _format);
+	RawTexture rawTexture = assetLoader.LoadTexture(_filePath, _format);
 	if (rawTexture.isValid)
 	{
 		rawTexture.mipLevels = 1;
@@ -88,7 +88,13 @@ Shader* ResourceManager::LoadShader(std::string _filePath, ShaderStage _shaderSt
 	if (shader != nullptr)
 		return shader;
 
-	RawShader rawShader = AssetLoader::LoadShader(_filePath, _shaderStage);
+	RawShader rawShader;
+	std::filesystem::path filePath(_filePath);
+	if (filePath.extension() == ".spv")
+		rawShader = assetLoader.LoadShaderSPV(_filePath);
+	else if(filePath.extension() == ".hlsl")
+		rawShader = assetLoader.LoadShaderHLSL(_filePath, _shaderStage);
+
 	if (rawShader.isValid)
 	{
 		Shader* newShader = new Shader();
@@ -123,7 +129,7 @@ Texture* ResourceManager::LoadCubemap(const CubemapImportInfos& _filePaths, std:
 	if (cubemap != nullptr)
 		return cubemap;
 
-	RawTexture rawCubemap = AssetLoader::LoadCubemap(_filePaths, _format);
+	RawTexture rawCubemap = assetLoader.LoadCubemap(_filePaths, _format);
 	if (rawCubemap.isValid)
 	{
 		rawCubemap.mipLevels = 1;
@@ -160,8 +166,8 @@ Texture* ResourceManager::CubemapFromTexture(Texture* _texture, Mathlib::Vec2 _g
 	Texture* newCubemap = new Texture();
 
 	Mesh* skyboxMesh = LoadMesh("Resources/Engine/Models/cube.obj");
-	Shader* skyboxVertShader = LoadShader("Resources/Engine/Shaders/FilterCube.vert.spv", ShaderStage::VERTEX);
-	Shader* skyboxFragShader = LoadShader("Resources/Engine/Shaders/TextureToCubemap.frag.spv", ShaderStage::FRAGMENT);
+	Shader* skyboxVertShader = LoadShader("Resources/Engine/Shaders/GLSL/FilterCube.vert.spv", ShaderStage::VERTEX);
+	Shader* skyboxFragShader = LoadShader("Resources/Engine/Shaders/GLSL/TextureToCubemap.frag.spv", ShaderStage::FRAGMENT);
 
 	CreateCubemap(_texture->iTexture, _generatedTextureSize, _computeMipmap, newCubemap, skyboxMesh, skyboxVertShader, skyboxFragShader);
 	newCubemap->filePath = filename.string();
@@ -187,7 +193,7 @@ void ResourceManager::CreateSkyboxFromTexture(Texture* _texture, Mathlib::Vec2 _
 	_output->cubemap = CubemapFromTexture(_texture, _generatedTextureSize, false);
 
 	Mesh* skyboxMesh = LoadMesh("Resources/Engine/Models/cube.obj");
-	Shader* skyboxVertShader = LoadShader("Resources/Engine/Shaders/FilterCube.vert.spv", ShaderStage::VERTEX);
+	Shader* skyboxVertShader = LoadShader("Resources/Engine/Shaders/GLSL/FilterCube.vert.spv", ShaderStage::VERTEX);
 
 	std::filesystem::path irradianceFilename(_texture->filePath);
 	irradianceFilename.replace_extension();
@@ -200,7 +206,7 @@ void ResourceManager::CreateSkyboxFromTexture(Texture* _texture, Mathlib::Vec2 _
 	{
 		irradianceCubemap = new Texture();
 
-		Shader* irradianceFragShader = LoadShader("Resources/Engine/Shaders/IrradianceConvolution.frag.spv", ShaderStage::FRAGMENT);
+		Shader* irradianceFragShader = LoadShader("Resources/Engine/Shaders/GLSL/IrradianceConvolution.frag.spv", ShaderStage::FRAGMENT);
 
 		CreateCubemap(_output->cubemap->iTexture, _generatedTextureSize, false, irradianceCubemap, skyboxMesh, skyboxVertShader, irradianceFragShader);
 		irradianceCubemap->filePath = irradianceFilename.string();
@@ -222,7 +228,7 @@ void ResourceManager::CreateSkyboxFromTexture(Texture* _texture, Mathlib::Vec2 _
 	{
 		prefilterCubemap = new Texture();
 
-		Shader* prefilterFragShader = LoadShader("Resources/Engine/Shaders/PrefilterEnvmap.frag.spv", ShaderStage::FRAGMENT);
+		Shader* prefilterFragShader = LoadShader("Resources/Engine/Shaders/GLSL/PrefilterEnvmap.frag.spv", ShaderStage::FRAGMENT);
 
 		CreatePrefilteredCubemap(_output->cubemap->iTexture, _generatedTextureSize, prefilterCubemap, skyboxMesh, skyboxVertShader, prefilterFragShader);
 		prefilterCubemap->filePath = prefilteredFilename.string();

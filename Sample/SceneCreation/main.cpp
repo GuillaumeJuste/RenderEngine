@@ -128,9 +128,9 @@ Scene* SetupSimpleCubeScene()
     // setup skybox
     scene->skybox.mesh = resourceManager->LoadMesh("Resources/Engine/Models/cube.obj");
     scene->skybox.BRDFlut = resourceManager->LoadTexture("Resources/Engine/Textures/default_brdf_lut.png", TextureFormat::RGBA);
-    scene->skybox.vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/Skybox.vert.spv", VERTEX);
+    scene->skybox.vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/GLSL/Skybox.vert.spv", VERTEX);
     scene->skybox.vertexShaderDescriptorSet = ShaderDescriptorSet::GenerateSkyboxVertexShaderDescriptor();
-    scene->skybox.fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/Skybox.frag.spv", FRAGMENT);
+    scene->skybox.fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/GLSL/Skybox.frag.spv", FRAGMENT);
     scene->skybox.fragmentShaderDescriptorSet = ShaderDescriptorSet::GenerateSkyboxFragmentShaderDescriptor();
     scene->skybox.cubemap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftCubemap.asset");
     scene->skybox.irradianceMap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftIrradiance.asset");
@@ -166,8 +166,8 @@ Scene* SetupSimpleCubeScene()
     GameObject* obj = scene->AddGameObject(objCreateinfo);
 
     // load assets used for rendering
-    Shader* vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/VertexShader.vert.spv", VERTEX);
-    Shader* fragShader = resourceManager->LoadShader("Resources/Engine/Shaders/BlinnPhongFragmentShader.frag.spv", FRAGMENT);
+    Shader* vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/GLSL/VertexShader.vert.spv", VERTEX);
+    Shader* fragShader = resourceManager->LoadShader("Resources/Engine/Shaders/GLSL/BlinnPhongFragmentShader.frag.spv", FRAGMENT);
     Mesh* mesh = resourceManager->LoadMesh("Resources/Sample/SceneCreation/Models/cube.obj");
     Texture* wallTexture = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Brick/bricks.jpg", TextureFormat::RGBA);
     Texture* wallMetalnessMap = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/Wall/metallic.png", TextureFormat::RGBA);
@@ -214,7 +214,7 @@ Scene* SetupSimpleCubeScene()
     lightMeshRenderer->mesh = mesh;
     lightMeshRenderer->material.vertexShader = vertexShader;
     lightMeshRenderer->material.vertexShaderDescriptorSet = ShaderDescriptorSet::GenerateDefaultVertexShaderDescriptor();
-    lightMeshRenderer->material.fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/TextureFragmentShader.frag.spv", FRAGMENT);
+    lightMeshRenderer->material.fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/GLSL/TextureFragmentShader.frag.spv", FRAGMENT);
     lightMeshRenderer->material.fragmentShaderDescriptorSet = ShaderDescriptorSet::GenerateDefaultFragmentShaderDescriptor();
     lightMeshRenderer->material.albedo = resourceManager->LoadTexture("Resources/Sample/SceneCreation/Textures/white.jpg", TextureFormat::RGBA);
     lightMeshRenderer->material.metalnessMap = lightMeshRenderer->material.albedo;
