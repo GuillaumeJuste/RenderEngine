@@ -9,10 +9,10 @@ namespace RenderEngine::Rendering
 {
 	struct DirectionalLightData
 	{
-		int enable = false;
 		alignas(16) Mathlib::Vec3 color;
 		alignas(16) Mathlib::Vec3 direction;
 		float intensity = 1.0f;
+		int enable = false;
 
 		/// default constructor
 		DirectionalLightData() = default;

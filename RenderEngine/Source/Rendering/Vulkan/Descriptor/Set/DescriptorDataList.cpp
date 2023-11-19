@@ -57,7 +57,7 @@ std::vector<DescriptorDataList> DescriptorDataList::GenerateDescriptorDataLists(
 
 				else if (it->descriptorType > DescriptorType::MESHRENDERER_MATERIAL_BUFFER && it->descriptorType <= DescriptorType::CUSTOM_BUFFER)
 				{
-					descriptor.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+					descriptor.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 					if (it->descriptorType == DescriptorType::POINT_LIGHT_BUFFER && _createInfo.pointLightBuffer != nullptr)
 						descriptor.buffer = _createInfo.pointLightBuffer;
 					if (it->descriptorType == DescriptorType::DIRECTIONAL_LIGHT_BUFFER && _createInfo.directionalLightBuffer != nullptr)

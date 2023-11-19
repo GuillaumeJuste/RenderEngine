@@ -16,51 +16,49 @@ layout(set = 1, binding = 2) uniform sampler2D roughnessMapSampler;
 layout(set = 1, binding = 3) uniform sampler2D normalMapSampler;
 layout(set = 1, binding = 4) uniform sampler2D aoMapSampler;
 
+const int LIGHT_COUNT = 10;
+
 struct PointLight
 {
-	bool enable;
 	vec3 position;
 	vec3 color;
 	float intensity;
 	float range;
+	bool enable;
 };
 
-layout (set = 1,binding = 5) buffer PointLightData
+layout (set = 1,binding = 5) uniform PointLightData
 {
-	int lightCount;
-	PointLight lights[];
+	PointLight lights[LIGHT_COUNT];
 } pointLightsBuffer;
 
 struct DirectionalLight
 {
-	bool enable;
 	vec3 color;
 	vec3 direction;
 	float intensity;
+	bool enable;
 };
 
-layout (set = 1,binding = 6) buffer DirectionalLightData
+layout (set = 1,binding = 6) uniform DirectionalLightData
 {
-	int lightCount;
-	DirectionalLight lights[];
+	DirectionalLight lights[LIGHT_COUNT];
 } directionalLightsBuffer;
 
 struct SpotLight
 {
-	bool enable;
 	vec3 position;
 	vec3 color;
 	vec3 direction;
 	float intensity;
 	float range;
 	float cutOff;
-	
+	bool enable;
 };
 
-layout (set = 1,binding = 7) buffer SpotLightData
+layout (set = 1,binding = 7) uniform SpotLightData
 {
-	int lightCount;
-	SpotLight lights[];
+	SpotLight lights[LIGHT_COUNT];
 } spotLightsBuffer;
 
 layout(set = 1, binding = 8) uniform samplerCube irradianceSampler;
@@ -126,7 +124,7 @@ void main()
 
 	vec3 Lo = vec3(0.0);
 
-	for(int i = 0; i < pointLightsBuffer.lightCount; ++i) 
+	for(int i = 0; i < LIGHT_COUNT; ++i) 
     {
 		if(pointLightsBuffer.lights[i].enable == true)
 		{
@@ -134,13 +132,13 @@ void main()
 		}
 	}
 
-	for(int i = 0; i < directionalLightsBuffer.lightCount; i++)
+	for(int i = 0; i < LIGHT_COUNT; i++)
 	{
 		if(directionalLightsBuffer.lights[i].enable == true)
 			Lo += ComputeDirectionalLightLighting(directionalLightsBuffer.lights[i], normal, viewDirection, albedo, metalness, roughness, F0);
 	}
 
-	for(int i = 0; i < spotLightsBuffer.lightCount; i++)
+	for(int i = 0; i < LIGHT_COUNT; i++)
   	{
 		if(spotLightsBuffer.lights[i].enable == true)
 			Lo += ComputeSpotLightLighting(spotLightsBuffer.lights[i], normal, viewDirection, albedo, metalness, roughness, F0);

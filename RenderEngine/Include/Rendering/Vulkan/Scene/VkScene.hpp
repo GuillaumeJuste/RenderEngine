@@ -28,8 +28,7 @@ namespace RenderEngine::Rendering
 	private:
 		VkSceneCreateInfo createInfo;
 
-		int minimumLightCount = 5;
-		int lightBufferLightCountOffset = 16;
+		int minimumLightCount = 10;
 
 		DescriptorBuffer cameraBuffer;
 		DescriptorBuffer pointLightsBuffer;

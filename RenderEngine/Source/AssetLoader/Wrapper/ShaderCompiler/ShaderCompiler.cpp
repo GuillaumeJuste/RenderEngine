@@ -104,7 +104,6 @@ Loader::RawShader ShaderCompiler::CompileSPIRV(const ShaderCompileInfo& _info)
 	std::list<std::wstring> strBuff;
 	std::vector<LPCWSTR> cArgs = ProcessParams(_info, strBuff);
 	cArgs.push_back(L"-spirv"); // Add SPIRV compile option.
-	cArgs.push_back(L"-fspv-reflect"); // Better SPIRV reflection.
 
 
 	CComPtr<IDxcResult> compileResult = Compile_Internal(src.dx, cArgs, _info);

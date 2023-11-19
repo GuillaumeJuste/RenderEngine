@@ -112,9 +112,6 @@ Scene* SetupPBRScene()
     Scene* scene = sceneManager->AddScene();
     scene->name = "test_scene_simple_cube";
 
-    Shader* hlslVert = resourceManager->LoadShader("Resources/Engine/Shaders/HLSL/VertexShader.hlsl", VERTEX);
-    Shader* hlslFrag = resourceManager->LoadShader("Resources/Engine/Shaders/HLSL/PBRFragmentShader.hlsl", FRAGMENT);
-
     scene->skybox.mesh = resourceManager->LoadMesh("Resources/Engine/Models/cube.obj");
     scene->skybox.BRDFlut = resourceManager->LoadTexture("Resources/Engine/Textures/default_brdf_lut.png", TextureFormat::RGBA);
     scene->skybox.vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/GLSL/Skybox.vert.spv", VERTEX);
@@ -139,12 +136,16 @@ Scene* SetupPBRScene()
     camera->SetLocalTransform(cameraTransform);
     camera->fov = 90.f;
 
-    RenderEngine::Component::CameraController* cameraController = camera->AddComponent<RenderEngine::Component::CameraController>();
-    cameraController->window = window;
+    /*RenderEngine::Component::CameraController* cameraController = camera->AddComponent<RenderEngine::Component::CameraController>();
+    cameraController->window = window;*/
 
     Mesh* sphere = resourceManager->LoadMesh("Resources/Sample/ScenePBR/Models/Sphere.obj");
     Shader* vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/HLSL/VertexShader.hlsl", VERTEX);
     Shader* fragShader = resourceManager->LoadShader("Resources/Engine/Shaders/HLSL/PBRFragmentShader.hlsl", FRAGMENT);
+
+    /*Shader* vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/GLSL/VertexShader.vert.spv", VERTEX);
+    Shader* fragShader = resourceManager->LoadShader("Resources/Engine/Shaders/GLSL/PBRFragmentShader.frag.spv", FRAGMENT);*/
+
     Texture* wallTexture = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Wall/albedo.png", TextureFormat::RGBA);
     Texture* wallMetalnessMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Wall/metallic.png", TextureFormat::RGBA);
     Texture* wallRoughnessMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Wall/roughness.png", TextureFormat::RGBA);

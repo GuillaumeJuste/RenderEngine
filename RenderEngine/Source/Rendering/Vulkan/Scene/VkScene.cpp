@@ -163,39 +163,39 @@ std::vector<SpotLightData> VkScene::GenerateSpotLightsData()
 
 void VkScene::CreateLightBuffer(size_t _pointLightCount, size_t _directionalLightCount, size_t _spotLightCount)
 {
-	size_t pointLightBufferSize = sizeof(PointLightData) * _pointLightCount + lightBufferLightCountOffset;
+	size_t pointLightBufferSize = sizeof(PointLightData) * _pointLightCount;
 	if (pointLightBufferSize > pointLightsBuffer.GetBufferSize())
 	{
 		BufferObjectVkCreateInfo pointLightsBufferCreateInfo;
 		pointLightsBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
 		pointLightsBufferCreateInfo.logicalDevice = createInfo.logicalDevice;
-		pointLightsBufferCreateInfo.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+		pointLightsBufferCreateInfo.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 		pointLightsBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 		pointLightsBufferCreateInfo.bufferSize = pointLightBufferSize;
 
 		DescriptorBuffer::InitializeDescriptorBuffer(pointLightsBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &pointLightsBuffer);
 	}
 
-	size_t directionalLightBufferSize = sizeof(DirectionalLightData) * _directionalLightCount + lightBufferLightCountOffset;
+	size_t directionalLightBufferSize = sizeof(DirectionalLightData) * _directionalLightCount;
 	if (directionalLightBufferSize > directionalLightsBuffer.GetBufferSize())
 	{
 	BufferObjectVkCreateInfo directionalLightsBufferCreateInfo;
 	directionalLightsBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
 	directionalLightsBufferCreateInfo.logicalDevice = createInfo.logicalDevice;
-	directionalLightsBufferCreateInfo.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+	directionalLightsBufferCreateInfo.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 	directionalLightsBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 	directionalLightsBufferCreateInfo.bufferSize = directionalLightBufferSize;
 
 	DescriptorBuffer::InitializeDescriptorBuffer(directionalLightsBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &directionalLightsBuffer);
 	}
 
-	size_t spotLightBufferSize = sizeof(SpotLightData) * _spotLightCount + lightBufferLightCountOffset;
+	size_t spotLightBufferSize = sizeof(SpotLightData) * _spotLightCount;
 	if (spotLightBufferSize > spotLightsBuffer.GetBufferSize())
 	{
 		BufferObjectVkCreateInfo spotLightsBufferCreateInfo;
 		spotLightsBufferCreateInfo.physicalDevice = createInfo.physicalDevice;
 		spotLightsBufferCreateInfo.logicalDevice = createInfo.logicalDevice;
-		spotLightsBufferCreateInfo.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+		spotLightsBufferCreateInfo.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 		spotLightsBufferCreateInfo.memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 		spotLightsBufferCreateInfo.bufferSize = spotLightBufferSize;
 
@@ -239,19 +239,13 @@ void VkScene::Update(size_t _currentframe)
 
 
 	std::vector<PointLightData> pointLightsdata = GeneratePointLightsData();
-	int lightCount = pointLightsdata.size();
-	pointLightsBuffer.CopyDataToBuffer<int>((int)_currentframe, &lightCount, 0, sizeof(int));
-	pointLightsBuffer.CopyDataToBuffer<PointLightData>((int)_currentframe, pointLightsdata.data(), lightBufferLightCountOffset, sizeof(PointLightData) * lightCount);
+	pointLightsBuffer.CopyDataToBuffer<PointLightData>((int)_currentframe, pointLightsdata.data(), 0, sizeof(PointLightData) * pointLightsdata.size());
 
 	std::vector<DirectionalLightData> directionalLightsdata = GenerateDirectionalLightsData();
-	lightCount = directionalLightsdata.size();
-	directionalLightsBuffer.CopyDataToBuffer<int>((int)_currentframe, &lightCount, 0, sizeof(int));
-	directionalLightsBuffer.CopyDataToBuffer<DirectionalLightData>((int)_currentframe, directionalLightsdata.data(), lightBufferLightCountOffset, sizeof(DirectionalLightData) * lightCount);
+	directionalLightsBuffer.CopyDataToBuffer<DirectionalLightData>((int)_currentframe, directionalLightsdata.data(), 0, sizeof(DirectionalLightData) * directionalLightsdata.size());
 
 	std::vector<SpotLightData> spotLightsdata = GenerateSpotLightsData();
-	lightCount = spotLightsdata.size();
-	spotLightsBuffer.CopyDataToBuffer<int>((int)_currentframe, &lightCount, 0, sizeof(int));
-	spotLightsBuffer.CopyDataToBuffer<SpotLightData>((int)_currentframe, spotLightsdata.data(), lightBufferLightCountOffset, sizeof(SpotLightData) * lightCount);
+	spotLightsBuffer.CopyDataToBuffer<SpotLightData>((int)_currentframe, spotLightsdata.data(), 0, sizeof(SpotLightData) * spotLightsdata.size());
 
 	for (std::forward_list<VkGameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{

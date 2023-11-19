@@ -33,51 +33,49 @@ Texture2D<float4> aoMap : register(t4, space1);
 [[vk::combinedImageSampler]]
 SamplerState aoMapSampler : register(s4, space1);
 
+static const int LIGHT_COUNT = 10;
+
 struct PointLight
 {
-    bool enable;
     float3 position;
     float3 color;
     float intensity;
     float range;
+    bool enable;
 };
 
-cbuffer pointLightsBuffer : register(b5, space1)
+cbuffer pointLightsBuffer: register(b5, space1)
 {
-    int pointLightCount;
-    StructuredBuffer<PointLight> pointLightsBuffers[];
+    PointLight pointLightsBuffer[LIGHT_COUNT];
 }
 
 struct DirectionalLight
 {
-    bool enable;
     float3 color;
     float3 direction;
     float intensity;
+    bool enable;
 };
 
 cbuffer directionalLightsBuffer : register(b6, space1)
 {
-    int directionalLightCount;
-    StructuredBuffer<DirectionalLight> directionalLightsBuffer[];
+    DirectionalLight directionalLightsBuffer[LIGHT_COUNT];
 }
 
 struct SpotLight
 {
-    bool enable;
     float3 position;
     float3 color;
     float3 direction;
     float intensity;
     float range;
     float cutOff;
-	
+    bool enable;	
 };
 
 cbuffer spotLightsBuffer : register(b7, space1)
 {
-    int spotlightCount;
-    StructuredBuffer<SpotLight> spotLightsBuffer[];
+    SpotLight spotLightsBuffer[LIGHT_COUNT];
 }
 
 [[vk::combinedImageSampler]]
@@ -152,28 +150,28 @@ float4 main(VSOutput _input) : SV_TARGET
 
     float3 Lo = float3(0.0, 0.0, 0.0);
 
-    //for (int i = 0; i < pointLightCount; ++i)
-    //{
-    //    PointLight element = pointLightsBuffers[i];
-    //    if (element.enable == true)
-    //    {
-    //        Lo += ComputePointLightLighting(_input.fragPos, element, normal, viewDirection, albedo, metalness, roughness, F0);
-    //    }
-    //}
+    for (int i = 0; i < LIGHT_COUNT; ++i)
+    {
+        PointLight element = pointLightsBuffer[i];
+        if (element.enable == true)
+        {
+            Lo += ComputePointLightLighting(_input.fragPos, element, normal, viewDirection, albedo, metalness, roughness, F0);
+        }
+    }
 
-    //for (int i = 0; i < directionalLightCount; i++)
-    //{
-    //    DirectionalLight element = directionalLightsBuffer[i];
-    //    if (element.enable == true)
-    //        Lo += ComputeDirectionalLightLighting(element, normal, viewDirection, albedo, metalness, roughness, F0);
-    //}
+    for (int i = 0; i < LIGHT_COUNT; i++)
+    {
+        DirectionalLight element = directionalLightsBuffer[i];
+        if (element.enable == true)
+            Lo += ComputeDirectionalLightLighting(element, normal, viewDirection, albedo, metalness, roughness, F0);
+    }
 
-    //for (int i = 0; i < spotlightCount; i++)
-    //{
-    //    SpotLight element = spotLightsBuffer[i];
-    //    if (element.enable == true)
-    //        Lo += ComputeSpotLightLighting(_input.fragPos, element, normal, viewDirection, albedo, metalness, roughness, F0);
-    //}
+    for (int i = 0; i < LIGHT_COUNT; i++)
+    {
+        SpotLight element = spotLightsBuffer[i];
+        if (element.enable == true)
+            Lo += ComputeSpotLightLighting(_input.fragPos, element, normal, viewDirection, albedo, metalness, roughness, F0);
+    }
 
     float3 kS = FresnelSchlickRoughness(max(dot(normal, viewDirection), 0.0), F0, roughness);
     float3 kD = 1.0 - kS;

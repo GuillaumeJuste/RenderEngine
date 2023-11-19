@@ -22,48 +22,49 @@ layout(set = 1, binding = 3) uniform MaterialBufferObject
 	vec3 Ks;
 } material;
 
+const int LIGHT_COUNT = 10;
+
 struct PointLight
 {
-	bool enable;
 	vec3 position;
 	vec3 color;
 	float intensity;
 	float range;
+	bool enable;
 };
 
-layout (set = 1,binding = 4) buffer PointLightData
+layout (set = 1,binding = 5) uniform PointLightData
 {
-	PointLight lights[];
+	PointLight lights[LIGHT_COUNT];
 } pointLightsBuffer;
 
 struct DirectionalLight
 {
-	bool enable;
 	vec3 color;
 	vec3 direction;
 	float intensity;
+	bool enable;
 };
 
-layout (set = 1,binding = 5) buffer DirectionalLightData
+layout (set = 1,binding = 6) uniform DirectionalLightData
 {
-	DirectionalLight lights[];
+	DirectionalLight lights[LIGHT_COUNT];
 } directionalLightsBuffer;
 
 struct SpotLight
 {
-	bool enable;
 	vec3 position;
 	vec3 color;
 	vec3 direction;
 	float intensity;
 	float range;
 	float cutOff;
-	
+	bool enable;
 };
 
-layout (set = 1,binding = 6) buffer SpotLightData
+layout (set = 1,binding = 7) uniform SpotLightData
 {
-	SpotLight lights[];
+	SpotLight lights[LIGHT_COUNT];
 } spotLightsBuffer;
 
 
@@ -94,19 +95,19 @@ void main()
     vec3 viewDirection = normalize(fsIn.cameraPos - fsIn.fragPos);
 
 	vec3 color = vec3(0.0);
-	for(int i = 0; i < pointLightsBuffer.lights.length(); i++)
+	for(int i = 0; i < LIGHT_COUNT; i++)
 	{
 		if(pointLightsBuffer.lights[i].enable == true)
 			color += ComputePointLightLighting(pointLightsBuffer.lights[i], normal, viewDirection, albedo, metalness);
 	}
 
-	for(int i = 0; i < directionalLightsBuffer.lights.length(); i++)
+	for(int i = 0; i < LIGHT_COUNT; i++)
 	{
 		if(directionalLightsBuffer.lights[i].enable == true)
 			color += ComputeDirectionalLightLighting(directionalLightsBuffer.lights[i], normal, viewDirection, albedo, metalness);
 	}
 
-	for(int i = 0; i < spotLightsBuffer.lights.length(); i++)
+	for(int i = 0; i < LIGHT_COUNT; i++)
   	{
 		if(spotLightsBuffer.lights[i].enable == true)
 			color += ComputeSpotLightLighting(spotLightsBuffer.lights[i], normal, viewDirection, albedo, metalness);
