@@ -1,3 +1,8 @@
+#include "Light/PointLight.hlsl"
+#include "Light/DirectionalLight.hlsl"
+#include "Light/SpotLight.hlsl"
+#include "Common/Normal.hlsl"
+
 struct VSOutput
 {
     float4 svPosition : SV_POSITION;
@@ -35,43 +40,15 @@ SamplerState aoMapSampler : register(s4, space1);
 
 static const int LIGHT_COUNT = 10;
 
-struct PointLight
-{
-    float3 position;
-    float3 color;
-    float intensity;
-    float range;
-    bool enable;
-};
-
 cbuffer pointLightsBuffer: register(b5, space1)
 {
     PointLight pointLightsBuffer[LIGHT_COUNT];
 }
 
-struct DirectionalLight
-{
-    float3 color;
-    float3 direction;
-    float intensity;
-    bool enable;
-};
-
 cbuffer directionalLightsBuffer : register(b6, space1)
 {
     DirectionalLight directionalLightsBuffer[LIGHT_COUNT];
 }
-
-struct SpotLight
-{
-    float3 position;
-    float3 color;
-    float3 direction;
-    float intensity;
-    float range;
-    float cutOff;
-    bool enable;	
-};
 
 cbuffer spotLightsBuffer : register(b7, space1)
 {
@@ -93,45 +70,8 @@ Texture2D<float4> BRDFlut : register(t10, space1);
 [[vk::combinedImageSampler]]
 SamplerState BRDFlutSampler : register(s10, space1);
 
-static const float PI = 3.14159265359;
-
-struct Light
-{
-    float3 direction;
-    float3 radiance;
-};
-
-
-// _N : normal
-// _H : halfwayDirection
-// _roughness : material roughness from map
-float DistributionGGX(float3 _N, float3 _H, float _roughness);
-
-// _H : halfwayDirection
-// _V : viewDirection
-// _F0 : reflectance at normal incidence
-float3 FresnelSchlickRoughness(float _cosTheta, float3 _F0, float _roughness);
-
-// _NdotV : normal and  view dot product
-// _roughness : material roughness
-float GeometrySchlickGGX(float _NdotV, float _roughness);
-
-// _N : normale
-// _V : viewDirection
-// _L : lightDirection
-// _roughness : material roughness
-float GeometrySmith(float3 _N, float3 _V, float3 _L, float _roughness);
 
 float3 prefilteredReflection(float3 _reflection, float _roughness);
-
-float3 getNormalFromMap(VSOutput _input);
-
-float ComputeAttenuation(float _distance, float _lightRange);
-float3 ComputePointLightLighting(float3 _fragPos, PointLight _light, float3 _normal, float3 _viewDirection, float3 _albdeo, float _metalness, float _roughness, float3 _F0);
-float3 ComputeDirectionalLightLighting(DirectionalLight _light, float3 _normal, float3 _viewDirection, float3 _albdeo, float _metalness, float _roughness, float3 _F0);
-float3 ComputeSpotLightLighting(float3 _fragPos, SpotLight _light, float3 _normal, float3 _viewDirection, float3 _albdeo, float _metalness, float _roughness, float3 _F0);
-
-float3 ComputeLighting(Light _light, float3 _normal, float3 _viewDirection, float3 _albdeo, float _metalness, float _roughness, float3 _F0);
 
 float4 main(VSOutput _input) : SV_TARGET
 {
@@ -140,7 +80,7 @@ float4 main(VSOutput _input) : SV_TARGET
     float roughness = roughnessMap.Sample(roughnessMapSampler, _input.texCoord.xy).x;
     float ao = aoMap.Sample(aoMapSampler, _input.texCoord.xy).x;
 
-    float3 normal = getNormalFromMap(_input);
+    float3 normal = getNormalFromMap(_input.texCoord.xy, _input.normal, _input.tangent, normalMap, normalMapSampler);
     float3 viewDirection = normalize(_input.cameraPos - _input.fragPos);
     float3 reflection = reflect(-viewDirection, normal);
 
@@ -155,7 +95,8 @@ float4 main(VSOutput _input) : SV_TARGET
         PointLight element = pointLightsBuffer[i];
         if (element.enable == true)
         {
-            Lo += ComputePointLightLighting(_input.fragPos, element, normal, viewDirection, albedo, metalness, roughness, F0);
+            Light light = GenerateLightFromPointLight(_input.fragPos, element);
+            Lo += ComputePBRLighting(light, normal, viewDirection, albedo, metalness, roughness, F0);
         }
     }
 
@@ -163,16 +104,21 @@ float4 main(VSOutput _input) : SV_TARGET
     {
         DirectionalLight element = directionalLightsBuffer[i];
         if (element.enable == true)
-            Lo += ComputeDirectionalLightLighting(element, normal, viewDirection, albedo, metalness, roughness, F0);
+        {
+            Light light = GenerateLightFromDirectionalLight(element);
+            Lo += ComputePBRLighting(light, normal, viewDirection, albedo, metalness, roughness, F0);
+        }
     }
-
     for (int i = 0; i < LIGHT_COUNT; i++)
     {
         SpotLight element = spotLightsBuffer[i];
         if (element.enable == true)
-            Lo += ComputeSpotLightLighting(_input.fragPos, element, normal, viewDirection, albedo, metalness, roughness, F0);
+        {
+            Light light = GenerateLightFromSpotLight(_input.fragPos, element);
+            if (light.isValid)
+                Lo += ComputePBRLighting(light, normal, viewDirection, albedo, metalness, roughness, F0);
+        }
     }
-
     float3 kS = FresnelSchlickRoughness(max(dot(normal, viewDirection), 0.0), F0, roughness);
     float3 kD = 1.0 - kS;
     kD *= 1.0 - metalness;
@@ -192,111 +138,6 @@ float4 main(VSOutput _input) : SV_TARGET
     return float4(color, 1.0);
 }
 
-float3 ComputePointLightLighting(float3 _fragPos, PointLight _light, float3 _normal, float3 _viewDirection, float3 _albdeo, float _metalness, float _roughness, float3 _F0)
-{
-    Light light;
-    light.direction = normalize(_light.position - _fragPos);
-
-    float distance = length(_light.position - _fragPos);
-    float attenuation = ComputeAttenuation(distance, _light.range);
-    light.radiance = _light.color * _light.intensity * attenuation;
-
-    return ComputeLighting(light, _normal, _viewDirection, _albdeo, _metalness, _roughness, _F0);
-}
-
-float3 ComputeDirectionalLightLighting(DirectionalLight _light, float3 _normal, float3 _viewDirection, float3 _albdeo, float _metalness, float _roughness, float3 _F0)
-{
-    Light light;
-    light.direction = normalize(-_light.direction);
-    light.radiance = _light.color * _light.intensity;
-
-    return ComputeLighting(light, _normal, _viewDirection, _albdeo, _metalness, _roughness, _F0);
-}
-
-float3 ComputeSpotLightLighting(float3 _fragPos, SpotLight _light, float3 _normal, float3 _viewDirection, float3 _albdeo, float _metalness, float _roughness, float3 _F0)
-{
-    Light light;
-    light.direction = normalize(_light.position - _fragPos);
-    float lightTheta = dot(light.direction, normalize(-_light.direction));
-	
-    if (lightTheta > _light.cutOff)
-    {
-        float distance = length(_light.position - _fragPos);
-        float attenuation = ComputeAttenuation(distance, _light.range);
-        light.radiance = _light.color * _light.intensity * attenuation;
-
-        return ComputeLighting(light, _normal, _viewDirection, _albdeo, _metalness, _roughness, _F0);
-    }
-    return float3(0.0, 0.0, 0.0);
-}
-
-float3 ComputeLighting(Light _light, float3 _normal, float3 _viewDirection, float3 _albdeo, float _metalness, float _roughness, float3 _F0)
-{
-    float3 halfwayDirection = normalize(_viewDirection + _light.direction);
-
-    float D = DistributionGGX(_normal, halfwayDirection, _roughness);
-    float3 F = FresnelSchlickRoughness(max(dot(halfwayDirection, _viewDirection), 0.0), _F0, _roughness);
-    float G = GeometrySmith(_normal, _viewDirection, _light.direction, _roughness);
-
-    float3 numerator = D * F * G;
-    float denominator = 4.0 * max(dot(_normal, _viewDirection), 0.0) * max(dot(_normal, _light.direction), 0.0) + 0.0001; // + 0.0001 to prevent divide by zero
-    float3 specular = numerator / denominator;
-
-    float3 kS = F;
-    float3 kD = float3(1.0, 1.0, 1.0) - kS;
-    kD *= 1.0 - _metalness;
-
-	// scale light by NdotL
-    float NdotL = max(dot(_normal, _light.direction), 0.0);
-
-	// add to outgoing radiance Lo
-    return (kD * _albdeo / PI + specular) * _light.radiance * NdotL;
-}
-
-float DistributionGGX(float3 _N, float3 _H, float _roughness)
-{
-    float a = _roughness * _roughness;
-    float a2 = a * a;
-    float NdotH = max(dot(_N, _H), 0.0);
-    float NdotH2 = NdotH * NdotH;
-
-    float nom = a2;
-    float denom = (NdotH2 * (a2 - 1.0) + 1.0);
-    denom = PI * denom * denom;
-
-    return nom / denom;
-}
-
-float3 FresnelSchlickRoughness(float _cosTheta, float3 _F0, float _roughness)
-{
-    return _F0 + (max(float3(1.0 - _roughness, 1.0 - _roughness, 1.0 - _roughness), _F0) - _F0) * pow(clamp(1.0 - _cosTheta, 0.0, 1.0), 5.0);
-}
-
-float GeometrySchlickGGX(float _NdotV, float _roughness)
-{
-    float nom = _NdotV;
-    float denom = _NdotV * (1.0 - _roughness) + _roughness;
-	
-    return nom / denom;
-}
-  
-float GeometrySmith(float3 _N, float3 _V, float3 _L, float _roughness)
-{
-    float NdotV = max(dot(_N, _V), 0.0);
-    float NdotL = max(dot(_N, _L), 0.0);
-    float ggx1 = GeometrySchlickGGX(NdotV, _roughness);
-    float ggx2 = GeometrySchlickGGX(NdotL, _roughness);
-	
-    return ggx1 * ggx2;
-}
-
-float ComputeAttenuation(float _distance, float _lightRange)
-{
-    float linearFactor  = 4.5 / _lightRange;
-    float quadraticFactor = 75.0 / (_lightRange * _lightRange);
-    return 1.0 / (1.0 + linearFactor * _distance + quadraticFactor * (_distance * _distance));
-}
-
 float3 prefilteredReflection(float3 _reflection, float _roughness)
 {
     const float MAX_REFLECTION_LOD = 10.0; // todo: param/const
@@ -306,16 +147,4 @@ float3 prefilteredReflection(float3 _reflection, float _roughness)
     float3 a = prefilteredMap.SampleLevel(prefilteredSampler, _reflection, lodf).rgb;
     float3 b = prefilteredMap.SampleLevel(prefilteredSampler, _reflection, lodc).rgb;
     return lerp(a, b, lod - lodf);
-}
-
-float3 getNormalFromMap(VSOutput _input)
-{
-    float3 N = normalize(_input.normal);
-    float3 T = normalize(_input.tangent);
-    float3 B = cross(N, T);
-    float3x3 TBN = float3x3(T.x, B.x, N.x,
-                            T.y, B.y, N.y,
-                            T.z, B.z, N.z);
-    
-    return normalize(mul(TBN, (normalMap.Sample(normalMapSampler, _input.texCoord.xy).rgb * 2.0 - 1.0)));
 }

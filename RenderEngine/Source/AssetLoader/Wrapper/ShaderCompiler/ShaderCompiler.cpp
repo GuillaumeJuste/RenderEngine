@@ -1,5 +1,6 @@
 #include "AssetLoader/Wrapper/ShaderCompiler/ShaderCompiler.hpp"
 #include <iostream>
+#include <filesystem>
 
 using namespace Wrapper;
 
@@ -35,6 +36,12 @@ std::vector<LPCWSTR> ShaderCompiler::ProcessParams(const ShaderCompileInfo& _inf
 	std::wstring& wTarget = _strBuff.emplace_back(ToWString(_info.target));
 	std::wstring& wStandard = _strBuff.emplace_back(ToWString(_info.standard));
 
+	std::filesystem::path shaderFilename(_info.path);
+	shaderFilename.remove_filename();
+
+	std::wstring& wfolderPath = _strBuff.emplace_back(shaderFilename.wstring());
+
+
 	std::vector<LPCWSTR> cArgs
 	{
 		L"-E",
@@ -47,7 +54,9 @@ std::vector<LPCWSTR> ShaderCompiler::ProcessParams(const ShaderCompileInfo& _inf
 		DXC_ARG_PACK_MATRIX_COLUMN_MAJOR,
 		DXC_ARG_ALL_RESOURCES_BOUND,
 		L"-I",
-		L"/Resources/Engine/Shaders",
+		L"/Resources/Engine/Shaders/HLSL",
+		L"-I",
+		wfolderPath.c_str()
 	};
 
 	cArgs.push_back(DXC_ARG_OPTIMIZATION_LEVEL3);
