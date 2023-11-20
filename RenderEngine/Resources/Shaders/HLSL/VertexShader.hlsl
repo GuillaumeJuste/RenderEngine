@@ -1,16 +1,11 @@
+#include "Common/CameraBuffer.hlsl"
+
 struct UBO
 {
     float4x4 model;
 };
 
 cbuffer ubo : register(b0, space0) { UBO ubo; }
-
-struct CBO
-{
-    float4x4 invView;
-    float4x4 proj;
-    float3 cameraPos;
-};
 
 cbuffer cbo : register(b1, space0) { CBO cbo; }
 

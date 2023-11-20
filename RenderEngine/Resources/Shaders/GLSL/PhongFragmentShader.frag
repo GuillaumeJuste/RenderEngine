@@ -33,7 +33,7 @@ struct PointLight
 	bool enable;
 };
 
-layout (set = 1,binding = 5) uniform PointLightData
+layout (set = 1,binding = 4) uniform PointLightData
 {
 	PointLight lights[LIGHT_COUNT];
 } pointLightsBuffer;
@@ -46,7 +46,7 @@ struct DirectionalLight
 	bool enable;
 };
 
-layout (set = 1,binding = 6) uniform DirectionalLightData
+layout (set = 1,binding = 5) uniform DirectionalLightData
 {
 	DirectionalLight lights[LIGHT_COUNT];
 } directionalLightsBuffer;
@@ -62,7 +62,7 @@ struct SpotLight
 	bool enable;
 };
 
-layout (set = 1,binding = 7) uniform SpotLightData
+layout (set = 1,binding = 6) uniform SpotLightData
 {
 	SpotLight lights[LIGHT_COUNT];
 } spotLightsBuffer;

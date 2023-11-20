@@ -1,9 +1,12 @@
+#ifndef RENDERENGINE_SHADER_PBRFRAGMENT
+#define RENDERENGINE_SHADER_PBRFRAGMENT
+
 #include "Light/PointLight.hlsl"
 #include "Light/DirectionalLight.hlsl"
 #include "Light/SpotLight.hlsl"
 #include "Common/Normal.hlsl"
 
-struct VSOutput
+struct PSInput
 {
     float4 svPosition : SV_POSITION;
     float3 fragPos : POSITION0;
@@ -73,7 +76,7 @@ SamplerState BRDFlutSampler : register(s10, space1);
 
 float3 prefilteredReflection(float3 _reflection, float _roughness);
 
-float4 main(VSOutput _input) : SV_TARGET
+float4 main(PSInput _input) : SV_TARGET
 {
     float3 albedo = albedoText.Sample(albedoSampler, _input.texCoord.xy).xyz;
     float metalness = metalnessMap.Sample(metalnessMapSampler, _input.texCoord.xy).x;
@@ -148,3 +151,5 @@ float3 prefilteredReflection(float3 _reflection, float _roughness)
     float3 b = prefilteredMap.SampleLevel(prefilteredSampler, _reflection, lodc).rgb;
     return lerp(a, b, lod - lodf);
 }
+
+#endif

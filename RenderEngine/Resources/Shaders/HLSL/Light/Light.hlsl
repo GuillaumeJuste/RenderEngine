@@ -1,6 +1,8 @@
 #ifndef RENDERENGINE_SHADER_LIGHT
 #define RENDERENGINE_SHADER_LIGHT
 
+#include "../Common/Material.hlsl"
+
 struct Light
 {
     float3 direction;
@@ -87,6 +89,48 @@ float ComputeAttenuation(float _distance, float _lightRange)
     float linearFactor = 4.5 / _lightRange;
     float quadraticFactor = 75.0 / (_lightRange * _lightRange);
     return 1.0 / (1.0 + linearFactor * _distance + quadraticFactor * (_distance * _distance));
+}
+
+float3 ComputePhongLighting(Light _light, PhongMaterial _material, float3 _normal, float3 _viewDirection, float3 _albedo, float _metalness)
+{
+    float3 ambient = _material.Ka * _albedo;
+    float3 diffuse = float3(0.0, 0.0, 0.0);
+    float3 specular = float3(0.0, 0.0, 0.0);
+
+    float cosTheta = dot(_normal, _light.direction);
+
+	// Only if the light is visible from the surface point.
+    if (cosTheta > 0.0)
+    {
+        diffuse = _material.Kd * _albedo * cosTheta;
+
+        float3 reflectDirection = 2.0 * dot(_light.direction, _normal) * _normal - _light.direction;
+
+        specular = _material.Ks * _albedo * pow(max(dot(_viewDirection, reflectDirection), 0.0), _material.shininess) * _metalness;
+    }
+
+    return (ambient + diffuse + specular) * _light.radiance;
+}
+
+float3 ComputeBlinnPhongLighting(Light _light, PhongMaterial _material, float3 _normal, float3 _viewDirection, float3 _albedo, float _metalness)
+{
+    float3 ambient = _material.Ka * _albedo;
+    float3 diffuse = float3(0.0, 0.0, 0.0);
+    float3 specular = float3(0.0, 0.0, 0.0);
+
+    float cosTheta = dot(_normal, _light.direction);
+
+	// Only if the light is visible from the surface point.
+    if (cosTheta > 0.0)
+    {
+        diffuse = _material.Kd * _albedo * cosTheta;
+
+        float3 halfwayDirection = normalize(_light.direction + _viewDirection);
+
+        specular = _material.Ks * _albedo * pow(max(dot(_normal, halfwayDirection), 0.0), _material.shininess) * _metalness;
+    }
+
+    return (ambient + diffuse + specular) * _light.radiance;
 }
 
 #endif

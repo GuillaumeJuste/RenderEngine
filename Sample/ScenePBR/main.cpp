@@ -114,9 +114,9 @@ Scene* SetupPBRScene()
 
     scene->skybox.mesh = resourceManager->LoadMesh("Resources/Engine/Models/cube.obj");
     scene->skybox.BRDFlut = resourceManager->LoadTexture("Resources/Engine/Textures/default_brdf_lut.png", TextureFormat::RGBA);
-    scene->skybox.vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/GLSL/Skybox.vert.spv", VERTEX);
+    scene->skybox.vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/HLSL/SkyboxVertex.hlsl", VERTEX);
     scene->skybox.vertexShaderDescriptorSet = ShaderDescriptorSet::GenerateSkyboxVertexShaderDescriptor();
-    scene->skybox.fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/GLSL/Skybox.frag.spv", FRAGMENT);
+    scene->skybox.fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/HLSL/SkyboxPixel.hlsl", FRAGMENT);
     scene->skybox.fragmentShaderDescriptorSet = ShaderDescriptorSet::GenerateSkyboxFragmentShaderDescriptor();
     scene->skybox.cubemap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftCubemap.asset");
     scene->skybox.irradianceMap = resourceManager->LoadAsset("Resources/Engine/Textures/HDR/newport_loftIrradiance.asset");
@@ -141,10 +141,8 @@ Scene* SetupPBRScene()
 
     Mesh* sphere = resourceManager->LoadMesh("Resources/Sample/ScenePBR/Models/Sphere.obj");
     Shader* vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/HLSL/VertexShader.hlsl", VERTEX);
-    Shader* fragShader = resourceManager->LoadShader("Resources/Engine/Shaders/HLSL/PBRFragmentShader.hlsl", FRAGMENT);
-
-    /*Shader* vertexShader = resourceManager->LoadShader("Resources/Engine/Shaders/GLSL/VertexShader.vert.spv", VERTEX);
-    Shader* fragShader = resourceManager->LoadShader("Resources/Engine/Shaders/GLSL/PBRFragmentShader.frag.spv", FRAGMENT);*/
+    Shader* fragShader = resourceManager->LoadShader("Resources/Engine/Shaders/HLSL/PBRPixel.hlsl", FRAGMENT);
+    Shader* phongFragShader = resourceManager->LoadShader("Resources/Engine/Shaders/HLSL/PhongPixel.hlsl", FRAGMENT);
 
     Texture* wallTexture = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Wall/albedo.png", TextureFormat::RGBA);
     Texture* wallMetalnessMap = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/Wall/metallic.png", TextureFormat::RGBA);
@@ -168,8 +166,8 @@ Scene* SetupPBRScene()
     meshRenderer->mesh = sphere;
     meshRenderer->material.vertexShader = vertexShader;
     meshRenderer->material.vertexShaderDescriptorSet = ShaderDescriptorSet::GenerateDefaultVertexShaderDescriptor();
-    meshRenderer->material.fragmentShader = fragShader;
-    meshRenderer->material.fragmentShaderDescriptorSet = ShaderDescriptorSet::GeneratePBRFragmentShaderDescriptor();
+    meshRenderer->material.fragmentShader = phongFragShader;
+    meshRenderer->material.fragmentShaderDescriptorSet = ShaderDescriptorSet::GenerateBlinnPhongFragmentShaderDescriptor();
     meshRenderer->material.albedo = wallTexture;
     meshRenderer->material.metalnessMap = wallMetalnessMap;
     meshRenderer->material.roughnessMap = wallRoughnessMap;
