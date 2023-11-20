@@ -1,3 +1,6 @@
+#ifndef RENDERENGINE_SHADER_VERTEXSHADER
+#define RENDERENGINE_SHADER_VERTEXSHADER
+
 #include "Common/CameraBuffer.hlsl"
 
 struct UBO
@@ -50,3 +53,5 @@ VSOutput main(vertexInfo input, uint VertexIndex : SV_VertexID)
     
     return output;
 }
+
+#endif

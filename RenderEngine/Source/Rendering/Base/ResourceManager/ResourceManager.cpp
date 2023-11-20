@@ -166,8 +166,8 @@ Texture* ResourceManager::CubemapFromTexture(Texture* _texture, Mathlib::Vec2 _g
 	Texture* newCubemap = new Texture();
 
 	Mesh* skyboxMesh = LoadMesh("Resources/Engine/Models/cube.obj");
-	Shader* skyboxVertShader = LoadShader("Resources/Engine/Shaders/GLSL/FilterCube.vert.spv", ShaderStage::VERTEX);
-	Shader* skyboxFragShader = LoadShader("Resources/Engine/Shaders/GLSL/TextureToCubemap.frag.spv", ShaderStage::FRAGMENT);
+	Shader* skyboxVertShader = LoadShader("Resources/Engine/Shaders/HLSL/FilterCubeVertex.hlsl", ShaderStage::VERTEX);
+	Shader* skyboxFragShader = LoadShader("Resources/Engine/Shaders/HLSL/TextureToCubemapPixel.hlsl", ShaderStage::FRAGMENT);
 
 	CreateCubemap(_texture->iTexture, _generatedTextureSize, _computeMipmap, newCubemap, skyboxMesh, skyboxVertShader, skyboxFragShader);
 	newCubemap->filePath = filename.string();
