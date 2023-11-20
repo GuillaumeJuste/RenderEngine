@@ -1,7 +1,7 @@
 #ifndef RENDERENGINE_SHADER_IRRADIANCECONVOLUTION
 #define RENDERENGINE_SHADER_IRRADIANCECONVOLUTION
 
-#include "Common/Pi.hlsl"
+#include "Common/Constant.hlsl"
 
 struct PSInput
 {

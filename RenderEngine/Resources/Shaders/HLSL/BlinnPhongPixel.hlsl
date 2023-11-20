@@ -36,8 +36,6 @@ cbuffer MaterialBufferObject : register(b3, space1)
     PhongMaterial material;
 }
 
-static const int LIGHT_COUNT = 10;
-
 cbuffer pointLightsBuffer : register(b4, space1)
 {
     PointLight pointLightsBuffer[LIGHT_COUNT];

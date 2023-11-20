@@ -1,7 +1,7 @@
 #ifndef RENDERENGINE_SHADER_PREFILTERENVMAP
 #define RENDERENGINE_SHADER_PREFILTERENVMAP
 
-#include "Common/Pi.hlsl"
+#include "Common/Constant.hlsl"
 
 struct PSInput
 {

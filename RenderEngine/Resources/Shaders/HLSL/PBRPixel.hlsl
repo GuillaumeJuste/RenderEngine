@@ -41,8 +41,6 @@ Texture2D<float4> aoMap : register(t4, space1);
 [[vk::combinedImageSampler]]
 SamplerState aoMapSampler : register(s4, space1);
 
-static const int LIGHT_COUNT = 10;
-
 cbuffer pointLightsBuffer: register(b5, space1)
 {
     PointLight pointLightsBuffer[LIGHT_COUNT];

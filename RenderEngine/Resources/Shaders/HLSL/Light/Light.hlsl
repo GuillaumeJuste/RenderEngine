@@ -2,7 +2,7 @@
 #define RENDERENGINE_SHADER_LIGHT
 
 #include "../Common/Material.hlsl"
-#include "../Common/Pi.hlsl"
+#include "../Common/Constant.hlsl"
 
 struct Light
 {
