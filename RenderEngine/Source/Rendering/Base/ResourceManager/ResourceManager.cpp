@@ -193,7 +193,7 @@ void ResourceManager::CreateSkyboxFromTexture(Texture* _texture, Mathlib::Vec2 _
 	_output->cubemap = CubemapFromTexture(_texture, _generatedTextureSize, false);
 
 	Mesh* skyboxMesh = LoadMesh("Resources/Engine/Models/cube.obj");
-	Shader* skyboxVertShader = LoadShader("Resources/Engine/Shaders/GLSL/FilterCube.vert.spv", ShaderStage::VERTEX);
+	Shader* skyboxVertShader = LoadShader("Resources/Engine/Shaders/HLSL/FilterCubeVertex.hlsl", ShaderStage::VERTEX);
 
 	std::filesystem::path irradianceFilename(_texture->filePath);
 	irradianceFilename.replace_extension();
@@ -206,7 +206,7 @@ void ResourceManager::CreateSkyboxFromTexture(Texture* _texture, Mathlib::Vec2 _
 	{
 		irradianceCubemap = new Texture();
 
-		Shader* irradianceFragShader = LoadShader("Resources/Engine/Shaders/GLSL/IrradianceConvolution.frag.spv", ShaderStage::FRAGMENT);
+		Shader* irradianceFragShader = LoadShader("Resources/Engine/Shaders/HLSL/IrradianceConvolutionPixel.hlsl", ShaderStage::FRAGMENT);
 
 		CreateCubemap(_output->cubemap->iTexture, _generatedTextureSize, false, irradianceCubemap, skyboxMesh, skyboxVertShader, irradianceFragShader);
 		irradianceCubemap->filePath = irradianceFilename.string();
@@ -228,7 +228,7 @@ void ResourceManager::CreateSkyboxFromTexture(Texture* _texture, Mathlib::Vec2 _
 	{
 		prefilterCubemap = new Texture();
 
-		Shader* prefilterFragShader = LoadShader("Resources/Engine/Shaders/GLSL/PrefilterEnvmap.frag.spv", ShaderStage::FRAGMENT);
+		Shader* prefilterFragShader = LoadShader("Resources/Engine/Shaders/HLSL/PrefilterEnvmapPixel.hlsl", ShaderStage::FRAGMENT);
 
 		CreatePrefilteredCubemap(_output->cubemap->iTexture, _generatedTextureSize, prefilterCubemap, skyboxMesh, skyboxVertShader, prefilterFragShader);
 		prefilterCubemap->filePath = prefilteredFilename.string();

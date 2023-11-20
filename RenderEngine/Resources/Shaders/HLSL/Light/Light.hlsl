@@ -2,6 +2,7 @@
 #define RENDERENGINE_SHADER_LIGHT
 
 #include "../Common/Material.hlsl"
+#include "../Common/Pi.hlsl"
 
 struct Light
 {
@@ -9,8 +10,6 @@ struct Light
     float3 radiance;
     bool isValid;
 };
-
-static const float PI = 3.14159265359;
 
 // _N : normal
 // _H : halfwayDirection
