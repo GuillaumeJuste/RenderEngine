@@ -18,6 +18,12 @@ using namespace RenderEngine::Component;
 
 namespace RenderEngine::Rendering
 {
+	enum RenderType
+	{
+		NORMAL,
+		DEPTH_ONLY
+	};
+
 	class VkGameObject
 	{
 	private:
@@ -41,14 +47,14 @@ namespace RenderEngine::Rendering
 
 		void CreateDescriptorBufferObjects();
 
-		void CreateGraphicsPipeline(GraphicsPipeline& _outputPipeline, std::vector<DescriptorSet>& _output, bool _useFragmentShader);
+		void CreateGraphicsPipeline(GraphicsPipeline& _outputPipeline, std::vector<DescriptorSet>& _output, DescriptorBuffer* _cameraBuffer, bool _useFragmentShader);
 
 	public:
 		VkGameObject(const VkGameObjectCreateInfo& _createInfo);
 		~VkGameObject() = default;
 
 
-		void Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const;
+		void Draw(VkCommandBuffer _commandBuffer, int _currentFrame, RenderType _renderType) const;
 
 		MeshRenderer* GetMeshRenderer() const;
 

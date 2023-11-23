@@ -31,6 +31,7 @@ namespace RenderEngine::Rendering
 		int minimumLightCount = 10;
 
 		DescriptorBuffer cameraBuffer;
+		DescriptorBuffer shadowCameraBuffer;
 		DescriptorBuffer pointLightsBuffer;
 		DescriptorBuffer directionalLightsBuffer;
 		DescriptorBuffer spotLightsBuffer;

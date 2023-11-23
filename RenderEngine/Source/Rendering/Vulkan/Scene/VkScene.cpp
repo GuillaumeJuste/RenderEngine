@@ -25,12 +25,14 @@ VkScene::VkScene(const VkSceneCreateInfo& _createInfo) :
 	cameraBufferCreateInfo.bufferSize = sizeof(CameraBufferData);
 
 	DescriptorBuffer::InitializeDescriptorBuffer(cameraBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &cameraBuffer);
+	DescriptorBuffer::InitializeDescriptorBuffer(cameraBufferCreateInfo, MAX_FRAMES_IN_FLIGHT, &shadowCameraBuffer);
 
 	CreateLightBuffer(minimumLightCount, minimumLightCount, minimumLightCount);
 
 	CreateSkybox();
 
 	gaoCreateInfo.cameraBuffer = &cameraBuffer;
+	gaoCreateInfo.shadowCameraBuffer = &shadowCameraBuffer;
 	gaoCreateInfo.pointLightsBuffer = &pointLightsBuffer;
 	gaoCreateInfo.directionalLightsBuffer = &directionalLightsBuffer;
 	gaoCreateInfo.spotLightsBuffer = &spotLightsBuffer;
@@ -221,7 +223,7 @@ void VkScene::Draw(VkCommandBuffer _commandBuffer, int _currentFrame)
 {
 	for (std::forward_list<VkGameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{
-		it->Draw(_commandBuffer, _currentFrame);
+		it->Draw(_commandBuffer, _currentFrame, RenderType::NORMAL);
 	}
 	skybox.Draw(_commandBuffer, _currentFrame);
 }
@@ -237,6 +239,13 @@ void VkScene::Update(size_t _currentframe)
 	cameraBufferdata.cameraPos = camera->GetWorldTransform().position;
 	cameraBuffer.CopyDataToBuffer<CameraBufferData>((int)_currentframe, &cameraBufferdata, 0, sizeof(CameraBufferData));
 
+	CameraBufferData shadowCameraBufferdata{};
+	VkSpotLight spotlight = sceneSpotLights[0];
+	Mathlib::Transform tmp = spotlight.gameObject->GetWorldTransform();
+	shadowCameraBufferdata.invView = Mathlib::Mat4::InvViewMatrix(Mathlib::COORDINATE_SYSTEM::LEFT_HAND, tmp.position, tmp.GetForwardVector(), tmp.GetUpVector()).Transpose();
+	shadowCameraBufferdata.proj = camera->GetProjectionMatrix((float)extent.width / (float)extent.height).Transpose();
+	shadowCameraBufferdata.cameraPos = tmp.position;
+	shadowCameraBuffer.CopyDataToBuffer<CameraBufferData>((int)_currentframe, &shadowCameraBufferdata, 0, sizeof(CameraBufferData));
 
 	std::vector<PointLightData> pointLightsdata = GeneratePointLightsData();
 	pointLightsBuffer.CopyDataToBuffer<PointLightData>((int)_currentframe, pointLightsdata.data(), 0, sizeof(PointLightData) * pointLightsdata.size());
@@ -247,6 +256,8 @@ void VkScene::Update(size_t _currentframe)
 	std::vector<SpotLightData> spotLightsdata = GenerateSpotLightsData();
 	spotLightsBuffer.CopyDataToBuffer<SpotLightData>((int)_currentframe, spotLightsdata.data(), 0, sizeof(SpotLightData) * spotLightsdata.size());
 
+	
+
 	for (std::forward_list<VkGameObject>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{
 		it->Update(_currentframe);
@@ -256,6 +267,7 @@ void VkScene::Update(size_t _currentframe)
 void VkScene::Cleanup()
 {
 	cameraBuffer.Cleanup();
+	shadowCameraBuffer.Cleanup();
 	pointLightsBuffer.Cleanup();
 	directionalLightsBuffer.Cleanup();
 	spotLightsBuffer.Cleanup();

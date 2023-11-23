@@ -32,6 +32,7 @@ namespace RenderEngine::Rendering
 		RenderEngine::SceneGraph::GameObject* gameObject = nullptr;
 
 		DescriptorBuffer* cameraBuffer;
+		DescriptorBuffer* shadowCameraBuffer;
 		DescriptorBuffer* pointLightsBuffer;
 		DescriptorBuffer* directionalLightsBuffer;
 		DescriptorBuffer* spotLightsBuffer;

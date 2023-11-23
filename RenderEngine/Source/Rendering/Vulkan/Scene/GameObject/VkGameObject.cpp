@@ -20,11 +20,11 @@ VkGameObject::VkGameObject(const VkGameObjectCreateInfo& _createInfo) :
 
 	CreateDescriptorBufferObjects();
 
-	CreateGraphicsPipeline(graphicsPipeline, descriptorSets, true);
-	CreateGraphicsPipeline(shadowGraphicsPipeline, shadowDescriptorSets, false);
+	CreateGraphicsPipeline(graphicsPipeline, descriptorSets, createInfo.cameraBuffer, true);
+	CreateGraphicsPipeline(shadowGraphicsPipeline, shadowDescriptorSets, createInfo.shadowCameraBuffer, false);
 }
 
-void VkGameObject::CreateGraphicsPipeline(GraphicsPipeline& _outputPipeline, std::vector<DescriptorSet>& _output, bool _useFragmentShader)
+void VkGameObject::CreateGraphicsPipeline(GraphicsPipeline& _outputPipeline, std::vector<DescriptorSet>& _output, DescriptorBuffer* _cameraBuffer, bool _useFragmentShader)
 {
 	if (meshRenderer != nullptr)
 	{
@@ -43,7 +43,7 @@ void VkGameObject::CreateGraphicsPipeline(GraphicsPipeline& _outputPipeline, std
 		descriptorDataListCreateInfo.descriptorSets.push_back(meshRenderer->material.vertexShaderDescriptorSet);
 		descriptorDataListCreateInfo.uniformBuffer = &uniformBufferObject;
 		descriptorDataListCreateInfo.materialBuffer = &materialBufferObject;
-		descriptorDataListCreateInfo.cameraBuffer = createInfo.cameraBuffer;
+		descriptorDataListCreateInfo.cameraBuffer = _cameraBuffer;
 		descriptorDataListCreateInfo.pointLightBuffer = createInfo.pointLightsBuffer;
 		descriptorDataListCreateInfo.directionalLightBuffer = createInfo.directionalLightsBuffer;
 		descriptorDataListCreateInfo.spotLightBuffer = createInfo.spotLightsBuffer;
@@ -119,13 +119,34 @@ void VkGameObject::CreateDescriptorSet(GraphicsPipeline& _pipeline, std::vector<
 	}
 }
 
-void VkGameObject::Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const
+void VkGameObject::Draw(VkCommandBuffer _commandBuffer, int _currentFrame, RenderType _renderType) const
 {
 	if (HasMeshRenderer())
 	{
 		if (meshRenderer->enable)
 		{
-			vkCmdBindPipeline(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.GetGraphicsPipeline());
+			GraphicsPipeline renderPipeline;
+			std::vector<DescriptorSet> renderDescriptorSet;
+
+			switch (_renderType)
+			{
+			case RenderEngine::Rendering::NORMAL:
+			{
+				renderPipeline = graphicsPipeline;
+				renderDescriptorSet = descriptorSets;
+				break;
+			}
+			case RenderEngine::Rendering::DEPTH_ONLY:
+			{	
+				renderPipeline = shadowGraphicsPipeline;
+				renderDescriptorSet = shadowDescriptorSets;
+				break;
+			}
+			default:
+				break;
+			}
+
+			vkCmdBindPipeline(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, renderPipeline.GetGraphicsPipeline());
 
 			VkBuffer vertexBuffers[] = { VBO->GetVkBuffer() };
 			VkDeviceSize offsets[] = { 0 };
@@ -133,11 +154,11 @@ void VkGameObject::Draw(VkCommandBuffer _commandBuffer, int _currentFrame) const
 
 			vkCmdBindIndexBuffer(_commandBuffer, IBO->GetVkBuffer(), 0, VK_INDEX_TYPE_UINT16);
 			
-			size_t descrtiptorSetCount = descriptorSets.size();
+			size_t descrtiptorSetCount = renderDescriptorSet.size();
 
 			for (int index = 0; index < descrtiptorSetCount; index++)
 			{
-				vkCmdBindDescriptorSets(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.GetGraphicsPipelineLayout(), index, 1, &descriptorSets[index].GetFrameDescriptorSet(_currentFrame), 0, nullptr);
+				vkCmdBindDescriptorSets(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, renderPipeline.GetGraphicsPipelineLayout(), index, 1, &renderDescriptorSet[index].GetFrameDescriptorSet(_currentFrame), 0, nullptr);
 			}
 			vkCmdDrawIndexed(_commandBuffer, static_cast<uint32_t>(meshRenderer->mesh->indiceCount), 1, 0, 0, 0);
 		}

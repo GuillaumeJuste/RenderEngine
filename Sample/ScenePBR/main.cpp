@@ -257,37 +257,67 @@ Scene* SetupPBRScene()
     RotatorComponent* rotator3 = obj3->AddComponent<RotatorComponent>();
     rotator3->rotationAxis = ROTATION_AXIS::Y;
 
-    /*light 1*/
+    /*Background*/
+
     Mathlib::Transform transform4;
-    transform4.position = Mathlib::Vec3(0.f, 0.0f, -1.f);
-    transform4.scale = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
+    transform4.position = Mathlib::Vec3(0.f, 0.f, 5.0f);
+    transform4.scale = Mathlib::Vec3(6.0f, 6.0f, 3.0f);
 
     GameObjectCreateInfo createinfo4;
     createinfo4.transform = transform4;
     createinfo4.parent = nullptr;
-    createinfo4.name = "light_4";
+    createinfo4.name = "background";
 
-    GameObject* light4 = scene->AddGameObject(createinfo4);
+    GameObject* obj4 = scene->AddGameObject(createinfo4);
 
-    RenderEngine::Component::PointLight* lightComponent4 = light4->AddComponent<RenderEngine::Component::PointLight>();
-    lightComponent4->color = Mathlib::Vec3(1.0f, 1.0f, 1.f);
-    lightComponent4->range = 30.f;
-    lightComponent4->intensity = 1.f;
-
-    RenderEngine::Component::MeshRenderer* meshRenderer4 = light4->AddComponent<RenderEngine::Component::MeshRenderer>();
-    meshRenderer4->mesh = resourceManager->LoadMesh("Resources/Sample/ScenePBR/Models/cube.obj");
+    RenderEngine::Component::MeshRenderer* meshRenderer4 = obj4->AddComponent<RenderEngine::Component::MeshRenderer>();
+    meshRenderer4->mesh = resourceManager->LoadMesh("Resources/Sample/SceneCreation/Models/cube.obj");
     meshRenderer4->material.vertexShader = vertexShader;
     meshRenderer4->material.vertexShaderDescriptorSet = ShaderDescriptorSet::GenerateDefaultVertexShaderDescriptor();
-    meshRenderer4->material.fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/HLSL/TexturePixel.hlsl", FRAGMENT);
-    meshRenderer4->material.fragmentShaderDescriptorSet = ShaderDescriptorSet::GenerateDefaultFragmentShaderDescriptor();
-    meshRenderer4->material.albedo = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/white.jpg", TextureFormat::RGBA);
-    meshRenderer4->material.metalnessMap = meshRenderer4->material.albedo;
-    meshRenderer4->material.roughnessMap = meshRenderer4->material.albedo;
-    meshRenderer4->material.normalMap = meshRenderer4->material.albedo;
-    meshRenderer4->material.ambientOcclusionMap = meshRenderer4->material.albedo;
+    meshRenderer4->material.fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/HLSL/BlinnPhongPixel.hlsl", FRAGMENT);
+    meshRenderer4->material.fragmentShaderDescriptorSet = ShaderDescriptorSet::GenerateBlinnPhongFragmentShaderDescriptor();
+    meshRenderer4->material.albedo = wallTexture;
+    meshRenderer4->material.metalnessMap = wallMetalnessMap;
+    meshRenderer4->material.roughnessMap = wallRoughnessMap;
+    meshRenderer4->material.normalMap = wallNormalMap;
+    meshRenderer4->material.ambientOcclusionMap = wallAoMap;
+    meshRenderer4->material.ambient = Mathlib::Vec4(0.3f, 0.3f, 0.3f, 1.f);
+    meshRenderer4->material.diffuse = Mathlib::Vec4(0.4f, 0.4f, 0.4f, 1.f);
+    meshRenderer4->material.specular = Mathlib::Vec4(0.8f, 0.8f, 0.8f, 1.f);
+    meshRenderer4->material.shininess = 32.0f;
 
-    meshRenderer4->material.frontFace = FrontFace::COUNTER_CLOCKWISE;
-    meshRenderer4->enable = false;
+    /*light 1*/
+    Mathlib::Transform lightTransform;
+    lightTransform.position = Mathlib::Vec3(0.f, 0.0f, -1.f);
+    lightTransform.scale = Mathlib::Vec3(0.1f, 0.1f, 0.1f);
+
+    GameObjectCreateInfo lightCreateInfo;
+    lightCreateInfo.transform = lightTransform;
+    lightCreateInfo.parent = nullptr;
+    lightCreateInfo.name = "light_4";
+
+    GameObject* light = scene->AddGameObject(lightCreateInfo);
+
+    RenderEngine::Component::SpotLight* lightComponent = light->AddComponent<RenderEngine::Component::SpotLight>();
+    lightComponent->color = Mathlib::Vec3(1.0f, 1.0f, 1.f);
+    lightComponent->range = 50.f;
+    lightComponent->intensity = 1.f;
+    lightComponent->cutOff = 30.f;
+
+    RenderEngine::Component::MeshRenderer* lightMeshRenderer = light->AddComponent<RenderEngine::Component::MeshRenderer>();
+    lightMeshRenderer->mesh = resourceManager->LoadMesh("Resources/Sample/ScenePBR/Models/cube.obj");
+    lightMeshRenderer->material.vertexShader = vertexShader;
+    lightMeshRenderer->material.vertexShaderDescriptorSet = ShaderDescriptorSet::GenerateDefaultVertexShaderDescriptor();
+    lightMeshRenderer->material.fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/HLSL/TexturePixel.hlsl", FRAGMENT);
+    lightMeshRenderer->material.fragmentShaderDescriptorSet = ShaderDescriptorSet::GenerateDefaultFragmentShaderDescriptor();
+    lightMeshRenderer->material.albedo = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/white.jpg", TextureFormat::RGBA);
+    lightMeshRenderer->material.metalnessMap = lightMeshRenderer->material.albedo;
+    lightMeshRenderer->material.roughnessMap = lightMeshRenderer->material.albedo;
+    lightMeshRenderer->material.normalMap = lightMeshRenderer->material.albedo;
+    lightMeshRenderer->material.ambientOcclusionMap = lightMeshRenderer->material.albedo;
+
+    lightMeshRenderer->material.frontFace = FrontFace::COUNTER_CLOCKWISE;
+    lightMeshRenderer->enable = false;
 
     return scene;
 }
