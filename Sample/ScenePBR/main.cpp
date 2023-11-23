@@ -278,7 +278,7 @@ Scene* SetupPBRScene()
     meshRenderer4->mesh = resourceManager->LoadMesh("Resources/Sample/ScenePBR/Models/cube.obj");
     meshRenderer4->material.vertexShader = vertexShader;
     meshRenderer4->material.vertexShaderDescriptorSet = ShaderDescriptorSet::GenerateDefaultVertexShaderDescriptor();
-    meshRenderer4->material.fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/GLSL/TextureFragmentShader.frag.spv", FRAGMENT);
+    meshRenderer4->material.fragmentShader = resourceManager->LoadShader("Resources/Engine/Shaders/HLSL/TexturePixel.hlsl", FRAGMENT);
     meshRenderer4->material.fragmentShaderDescriptorSet = ShaderDescriptorSet::GenerateDefaultFragmentShaderDescriptor();
     meshRenderer4->material.albedo = resourceManager->LoadTexture("Resources/Sample/ScenePBR/Textures/white.jpg", TextureFormat::RGBA);
     meshRenderer4->material.metalnessMap = meshRenderer4->material.albedo;
